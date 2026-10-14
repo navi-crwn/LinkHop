@@ -105,7 +105,7 @@
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
                                         @if($bioPage->avatar_url && Storage::disk('public')->exists($bioPage->avatar_url))
-                                            <img src="{{ Storage::url($bioPage->avatar_url) }}" class="h-10 w-10 rounded-full object-cover" alt="{{ $bioPage->title }}">
+                                            <img src="{{ Storage::disk('public')->url($bioPage->avatar_url) }}" class="h-10 w-10 rounded-full object-cover" alt="{{ $bioPage->title }}">
                                         @else
                                             <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-lg font-bold text-white">
                                                 {{ substr($bioPage->title, 0, 1) }}

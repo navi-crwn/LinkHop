@@ -228,7 +228,7 @@
                         @forelse($recentBioPages as $bio)
                             <div class="flex items-center gap-3">
                                 @if($bio->avatar_url)
-                                    <img src="{{ Storage::url($bio->avatar_url) }}" class="h-10 w-10 rounded-full object-cover" alt="">
+                                    <img src="{{ Storage::disk('public')->url($bio->avatar_url) }}" class="h-10 w-10 rounded-full object-cover" alt="">
                                 @else
                                     <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-lg font-bold text-white">
                                         {{ substr($bio->title, 0, 1) }}

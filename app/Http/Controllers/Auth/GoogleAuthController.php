@@ -26,10 +26,8 @@ class GoogleAuthController extends Controller
     {
         if (request()->get('from_register') == '1') {
             session(['google_oauth_from' => 'register']);
-            \Log::info('Google OAuth: Setting session to REGISTER');
         } else {
             session(['google_oauth_from' => 'login']);
-            \Log::info('Google OAuth: Setting session to LOGIN');
         }
 
         return Socialite::driver('google')->redirect();
@@ -40,11 +38,6 @@ class GoogleAuthController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
             $fromPage = session('google_oauth_from', 'login');
-            \Log::info('Google OAuth Callback', [
-                'email' => $googleUser->email,
-                'from_page' => $fromPage,
-                'session_id' => session()->getId(),
-            ]);
             session()->forget('google_oauth_from');
             // Accounts are matched by email, so only trust addresses Google has verified.
             $raw = (array) ($googleUser->user ?? []);
@@ -55,15 +48,11 @@ class GoogleAuthController extends Controller
                 ->orWhere('google_id', $googleUser->id)
                 ->first();
             if ($fromPage === 'login' && ! $user) {
-                \Log::info('User not found, redirecting to register', ['email' => $googleUser->email]);
-
                 return redirect()->route('login')
                     ->with('error', 'Account not found. Please register first to continue.')
                     ->with('google_email', $googleUser->email);
             }
             if ($fromPage === 'register' && $user) {
-                \Log::info('User already exists, redirecting to login', ['email' => $googleUser->email]);
-
                 return redirect()->route('login')->with('error', 'Account already exists. Please login instead.');
             }
             if ($user) {

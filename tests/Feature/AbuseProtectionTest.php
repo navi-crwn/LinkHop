@@ -6,6 +6,7 @@ use App\Models\BioPage;
 use App\Models\DomainBlacklist;
 use App\Models\Link;
 use App\Models\User;
+use App\Services\LinkSafety;
 use Illuminate\Support\Facades\File;
 
 function bioPageFor(User $user, string $slug, array $attrs = []): BioPage
@@ -214,4 +215,43 @@ test('vcard values cannot break out of the inline handler', function () {
     expect($html)->not->toContain("downloadVCard('x');alert")
         ->not->toContain('downloadVCard(&#039;x&#039;);alert')
         ->toContain('downloadVCard(\'x\u0027);alert');
+});
+
+test('uploaded images resolve on the public disk whatever the default disk is', function () {
+    config(['filesystems.default' => 's3']);
+    bioPageFor(User::factory()->create(), 'avatarpage', ['avatar_url' => 'avatars/me.jpg']);
+
+    $this->get('/b/avatarpage')->assertOk()->assertSee('/storage/avatars/me.jpg', false);
+});
+
+test('an admin can edit any user link, other users cannot', function () {
+    config(['auth.superadmin_email' => 'boss@example.com']);
+    $owner = User::factory()->create();
+    $admin = User::factory()->create(['email' => 'boss@example.com']);
+    $link = Link::create(['user_id' => $owner->id, 'slug' => 'sneaky', 'target_url' => 'https://example.com', 'status' => 'active']);
+    $payload = ['target_url' => 'https://example.com/safe', 'slug' => 'sneaky', 'status' => 'inactive'];
+
+    $this->actingAs(User::factory()->create())->put("/links/{$link->id}", $payload)->assertForbidden();
+    $this->actingAs($admin)->get("/links/{$link->id}/edit")->assertOk();
+    $this->actingAs($admin)->put("/links/{$link->id}", $payload)->assertSessionHasNoErrors();
+    expect($link->fresh())->target_url->toBe('https://example.com/safe')->status->toBe('inactive')->user_id->toBe($owner->id);
+});
+
+test('remember me lasts 30 days', function () {
+    $user = User::factory()->create();
+    $response = $this->post('/login', ['email' => $user->email, 'password' => 'password', 'remember' => 'on']);
+
+    $cookie = collect($response->headers->getCookies())->first(fn ($c) => str_starts_with($c->getName(), 'remember_web_'));
+    expect($cookie)->not->toBeNull()
+        ->and($cookie->getExpiresTime())->toBeBetween(now()->addDays(30)->subMinute()->timestamp, now()->addDays(30)->addMinute()->timestamp);
+});
+
+test('csam terms from the old url safety list are blocked and file hosts are flagged', function () {
+    $safety = app(LinkSafety::class);
+
+    expect($safety->assess('https://example.com/hussyfan-pack')['signals'])->toContain('csam')
+        ->and($safety->assess('https://example.com/kid-porn')['signals'])->toContain('csam')
+        ->and($safety->assess('https://example.com/pedometer-review')['signals'])->not->toContain('csam')
+        ->and($safety->assess('https://www.gofile.io/d/abc')['signals'])->toContain('file_host')
+        ->and($safety->assess('https://www.gofile.io/d/abc')['score'])->toBeLessThan(config('abuse.thresholds.disable'));
 });

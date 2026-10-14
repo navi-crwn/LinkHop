@@ -15,7 +15,7 @@
     <meta property="og:title" content="{{ $bioPage->seo_title ?? $bioPage->title }} | By HEL.ink">
     <meta property="og:description" content="{{ $bioPage->seo_description ?? $bioPage->bio ?? 'Check out my links' }}">
     @if($bioPage->avatar_url)
-        <meta property="og:image" content="{{ Storage::url($bioPage->avatar_url) }}">
+        <meta property="og:image" content="{{ Storage::disk('public')->url($bioPage->avatar_url) }}">
     @endif
     <meta property="og:url" content="{{ url('/b/' . $bioPage->slug) }}">
     <meta property="og:type" content="profile">
@@ -87,7 +87,7 @@
             if (str_starts_with($bgImage, 'http') || str_starts_with($bgImage, '/storage/')) {
                 $bgUrl = $bgImage;
             } else {
-                $bgUrl = Storage::url($bgImage);
+                $bgUrl = Storage::disk('public')->url($bgImage);
             }
             $bgStyle = "background: url('{$bgUrl}') center/cover fixed;";
         } elseif ($hasTheme && $themeData) {
@@ -724,7 +724,7 @@
             <div class="rounded-3xl p-8">
                 <div class="text-center {{ $showHeaderBg ? 'bio-header-bg' : '' }}">
                     @if($bioPage->avatar_url)
-                        <img src="{{ Storage::url($bioPage->avatar_url) }}" 
+                        <img src="{{ Storage::disk('public')->url($bioPage->avatar_url) }}" 
                              alt="{{ $bioPage->title }}" 
                              class="mx-auto mb-4 h-24 w-24 object-cover"
                              style="border-radius: {{ $bioPage->avatar_shape === 'rounded' ? '16px' : ($bioPage->avatar_shape === 'square' ? '0' : '50%') }};">
@@ -835,7 +835,7 @@
                                     @php
                                         $thumbUrl = $link->thumbnail_url ?? $link->thumbnail;
                                         if (!str_starts_with($thumbUrl, 'http') && !str_starts_with($thumbUrl, '/storage/') && !str_starts_with($thumbUrl, '/')) {
-                                            $thumbUrl = Storage::url($thumbUrl);
+                                            $thumbUrl = Storage::disk('public')->url($thumbUrl);
                                         }
                                     @endphp
                                     <img src="{{ $thumbUrl }}" 
@@ -870,7 +870,7 @@
                             @php
                                 $imageUrl = $link->content ?: $link->thumbnail_url;
                                 if ($imageUrl && !str_starts_with($imageUrl, 'http') && !str_starts_with($imageUrl, '/storage/')) {
-                                    $imageUrl = Storage::url($imageUrl);
+                                    $imageUrl = Storage::disk('public')->url($imageUrl);
                                 }
                             @endphp
                             <div class="image-block-wrapper">
