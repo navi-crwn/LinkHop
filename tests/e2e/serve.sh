@@ -18,10 +18,13 @@ BASE="$( [ -f .env ] && echo .env || echo .env.example )"
   echo "TURNSTILE_SECRET_KEY=${TURNSTILE_SECRET_KEY:-}"
   echo "CACHE_STORE=file"
   echo "SESSION_DRIVER=file"
+  # Plain http on 127.0.0.1: a Secure cookie would be dropped by Playwright's request API.
+  echo "SESSION_SECURE_COOKIE=false"
   echo "QUEUE_CONNECTION=${QUEUE_CONNECTION:-sync}"
   echo "MAIL_MAILER=log"
   echo "SPAMHAUS_DBL=false"
-  echo "TRUSTED_PROXIES="
+  # Each synthetic user sends its own X-Forwarded-For, like real visitors behind a proxy.
+  echo "TRUSTED_PROXIES=127.0.0.1"
   echo "PHP_CLI_SERVER_WORKERS=${PHP_CLI_SERVER_WORKERS:-8}"
   if [ "${E2E_DB:-sqlite}" = "sqlite" ]; then
     echo "DB_CONNECTION=sqlite"
@@ -30,7 +33,7 @@ BASE="$( [ -f .env ] && echo .env || echo .env.example )"
     echo "DB_CONNECTION=mysql"
     for v in DB_HOST DB_PORT DB_DATABASE DB_USERNAME DB_PASSWORD; do echo "$v=${!v:-}"; done
   fi
-  grep -vE '^(APP_ENV|APP_DEBUG|APP_URL|DB_|CACHE_STORE|SESSION_DRIVER|QUEUE_CONNECTION|MAIL_MAILER|TURNSTILE_|SUPERADMIN_EMAIL|TRUSTED_PROXIES|SPAMHAUS_DBL|PHP_CLI_SERVER_WORKERS|E2E_)' "$BASE"
+  grep -vE '^(APP_ENV|APP_DEBUG|APP_URL|DB_|CACHE_STORE|SESSION_DRIVER|SESSION_SECURE_COOKIE|QUEUE_CONNECTION|MAIL_MAILER|TURNSTILE_|SUPERADMIN_EMAIL|TRUSTED_PROXIES|SPAMHAUS_DBL|PHP_CLI_SERVER_WORKERS|E2E_)' "$BASE"
 } > .env.e2e
 grep -q '^APP_KEY=base64' .env.e2e || echo "APP_KEY=base64:$(head -c 32 /dev/urandom | base64)" >> .env.e2e
 export APP_ENV=e2e
