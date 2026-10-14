@@ -62,7 +62,6 @@ class ProfileController extends Controller
             'password' => ['required', 'current_password'],
         ]);
         try {
-            \Log::info("Starting user deletion for ID: {$user->id}, Email: {$user->email}");
             // Collect statistics before deletion
             $stats = [
                 'links_count' => $user->links()->count(),
@@ -88,9 +87,7 @@ class ProfileController extends Controller
                 DB::table('links')->where('user_id', $user->id)->delete();
                 DB::table('folders')->where('user_id', $user->id)->delete();
                 DB::table('tags')->where('user_id', $user->id)->delete();
-                \Log::info('About to delete user record...');
-                $deleted = DB::table('users')->where('id', $user->id)->delete();
-                \Log::info('User deletion result: '.($deleted ? 'SUCCESS' : 'FAILED')." (rows affected: {$deleted})");
+                DB::table('users')->where('id', $user->id)->delete();
             });
             Auth::logout();
             $request->session()->invalidate();

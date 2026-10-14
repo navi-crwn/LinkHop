@@ -30,7 +30,7 @@
         <!-- Google Sign In Button -->
         <div class="mb-6">
             <a href="{{ route('auth.google', ['from_register' => 1]) }}" 
-               @click.prevent="console.log('Google clicked, TOS:', tosAccepted); if (!tosAccepted) { showTosError = true; setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 100); } else { window.location.href = $el.href; }"
+               @click.prevent="if (!tosAccepted) { showTosError = true; setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 100); } else { window.location.href = $el.href; }"
                class="w-full inline-flex items-center justify-center gap-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all shadow-sm">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
