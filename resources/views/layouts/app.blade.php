@@ -24,7 +24,8 @@
         <script nonce="{{ Vite::cspNonce() }}" src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
         <script nonce="{{ Vite::cspNonce() }}" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-        <script nonce="{{ Vite::cspNonce() }}" src="https://unpkg.com/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+        {{-- Only used from Alpine components, which start after deferred scripts (P2). --}}
+        <script nonce="{{ Vite::cspNonce() }}" defer src="https://unpkg.com/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
         @stack('scripts-head')
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @stack('styles')
@@ -96,22 +97,22 @@
                                     <span class="hidden sm:inline">New bio</span>
                                 </a>
                             @elseif (request()->routeIs('folders.*'))
-                                <button type="button" onclick="window.openFolderModal && window.openFolderModal()" class="btn-primary btn-sm sm:btn">
+                                <button type="button" data-call="openFolderModal" class="btn-primary btn-sm sm:btn">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
                                     <span class="hidden sm:inline">New folder</span>
                                 </button>
                             @elseif (request()->routeIs('tags.*'))
-                                <button type="button" onclick="window.openTagModal && window.openTagModal()" class="btn-primary btn-sm sm:btn">
+                                <button type="button" data-call="openTagModal" class="btn-primary btn-sm sm:btn">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
                                     <span class="hidden sm:inline">New tag</span>
                                 </button>
                             @else
-                                <button type="button" onclick="window.openLinkPanel ? window.openLinkPanel() : (window.location = '{{ route('links.index') }}?create=1')" class="create-link-trigger btn-primary btn-sm sm:btn">
+                                <button type="button" data-call="openLinkPanel" data-fallback-href="{{ route('links.index') }}?create=1" class="create-link-trigger btn-primary btn-sm sm:btn">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
                                     <span class="hidden sm:inline">New link</span>
                                 </button>
                             @endif
-                            <button type="button" onclick="toggleTheme()" id="theme-toggle-button" class="icon-btn" aria-label="Toggle theme" title="Toggle theme">
+                            <button type="button" data-call="toggleTheme" id="theme-toggle-button" class="icon-btn" aria-label="Toggle theme" title="Toggle theme">
                                 <svg class="h-[18px] w-[18px] dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></svg>
                                 <svg class="hidden h-[18px] w-[18px] dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path stroke-linecap="round" d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
                             </button>

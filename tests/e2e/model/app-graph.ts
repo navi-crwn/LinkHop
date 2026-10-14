@@ -223,9 +223,9 @@ export const ACTIONS: Action[] = [
   },
 
   // ---- folders / tags ----
-  { id: 'open_folder_modal', from: ['user_folders'], to: 'user_folder_modal', run: async ({ page }) => { await page.locator('button[onclick*="openFolderModal"]').first().click(); await page.getByRole('heading', { name: 'Create New Folder' }).waitFor(); } },
+  { id: 'open_folder_modal', from: ['user_folders'], to: 'user_folder_modal', run: async ({ page }) => { await page.locator('button[data-call="openFolderModal"]').first().click(); await page.getByRole('heading', { name: 'Create New Folder' }).waitFor(); } },
   { id: 'close_folder_modal', from: ['user_folder_modal'], to: 'user_folders', run: async ({ page }) => { await page.keyboard.press('Escape'); await page.waitForTimeout(400); } },
-  { id: 'open_tag_modal', from: ['user_tags'], to: 'user_tag_modal', run: async ({ page }) => { await page.locator('button[onclick*="openTagModal"]').first().click(); await page.getByRole('heading', { name: 'Create New Tag' }).waitFor(); } },
+  { id: 'open_tag_modal', from: ['user_tags'], to: 'user_tag_modal', run: async ({ page }) => { await page.locator('button[data-call="openTagModal"]').first().click(); await page.getByRole('heading', { name: 'Create New Tag' }).waitFor(); } },
   { id: 'close_tag_modal', from: ['user_tag_modal'], to: 'user_tags', run: async ({ page }) => { await page.keyboard.press('Escape'); await page.waitForTimeout(400); } },
 
   // ---- link in bio ----

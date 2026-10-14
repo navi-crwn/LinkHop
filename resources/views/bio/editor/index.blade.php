@@ -581,7 +581,7 @@
                         <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>
                         Unsaved
                     </span>
-                    <button type="button" onclick="toggleTheme()" id="theme-toggle-button" class="p-2 rounded-lg editor-text-muted hover:editor-text hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" title="Toggle theme" aria-label="Toggle theme">
+                    <button type="button" data-call="toggleTheme" id="theme-toggle-button" class="p-2 rounded-lg editor-text-muted hover:editor-text hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" title="Toggle theme" aria-label="Toggle theme">
                         <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
                         </svg>
@@ -710,7 +710,7 @@
                                     :class="{ 'ring-2 ring-blue-500 var(--editor-hover-bg)': editingBlock && editingBlock.brand === id }"
                                     class="p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 border [border-color:var(--editor-border)] hover:[border-color:var(--editor-border)] transition-colors flex flex-col items-center gap-2">
                                 <div class="w-10 h-10 rounded-lg flex items-center justify-center" :style="{ backgroundColor: brand.color || '#6b7280' }">
-                                    <img :src="'/images/brands/' + (brand.icon || id + '.svg') + '?v=20251212'" class="w-6 h-6" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+                                    <img :src="'/images/brands/' + (brand.icon || id + '.svg') + '?v=20251212'" class="w-6 h-6" style="filter: brightness(0) invert(1);" data-fallback="hide">
                                 </div>
                                 <span class="text-xs editor-text-muted truncate w-full text-center" x-text="brand.name"></span>
                             </button>
@@ -1357,7 +1357,7 @@
                                  :style="{ backgroundColor: platform.color || '#6b7280' }">
                                 <img :src="'/images/brands/' + (platform.icon || id + '.svg') + '?v=20251212'" 
                                      class="w-6 h-6" style="filter: brightness(0) invert(1);" 
-                                     onerror="this.src='/images/brands/link.svg?v=20251212'">
+                                     data-fallback-src="/images/brands/link.svg?v=20251212">
                             </div>
                             <div class="flex-1 text-left">
                                 <div class="text-sm font-medium editor-text" x-text="platform.name"></div>
@@ -1382,7 +1382,7 @@
                              :style="{ backgroundColor: platforms[editingSocial.platform]?.color || '#6b7280' }">
                             <img :src="getIconUrl(editingSocial.platform || 'link', 'ffffff')" 
                                  class="w-6 h-6"
-                                 onerror="this.src='/images/brands/' + (this.closest('[x-data]')?.__x?.$data?.editingSocial?.platform || 'link') + '.svg?v=20251212'">
+                                 x-on:error="if (!$el.dataset.fallbackDone) { $el.dataset.fallbackDone = 1; $el.src = '/images/brands/' + (editingSocial.platform || 'link') + '.svg?v=20251212'; }">
                         </div>
                         <h3 class="modal-title" x-text="'Add ' + (platforms[editingSocial.platform]?.name || 'Social') + ' Link'"></h3>
                     </div>

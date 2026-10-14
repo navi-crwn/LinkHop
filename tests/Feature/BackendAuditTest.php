@@ -7,6 +7,7 @@ use App\Services\GeoIpService;
 use App\Support\BioThemes;
 use App\Support\QrPng;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -240,4 +241,23 @@ test('the editor, the create form and the server share the title and bio limits'
 
     $this->actingAs($page->user)->putJson("/bio/{$page->slug}", ['title' => str_repeat('n', BioPage::TITLE_MAX)])->assertOk();
     $this->actingAs($page->user)->putJson("/bio/{$page->slug}", ['title' => str_repeat('n', BioPage::TITLE_MAX + 1)])->assertUnprocessable();
+});
+
+test('no view uses inline event handler attributes, so a strict script-src-attr policy breaks nothing', function () {
+    $offenders = [];
+    foreach (File::allFiles(resource_path('views')) as $file) {
+        foreach (preg_split('/\R/', $file->getContents()) as $n => $line) {
+            if (preg_match('/(?<![\w:@.-])on[a-z]+\s*=\s*["\']/', $line)) {
+                $offenders[] = $file->getRelativePathname().':'.($n + 1);
+            }
+        }
+    }
+    expect($offenders)->toBe([]);
+});
+
+test('the public bio page loads Alpine once and the QR library only when sharing', function () {
+    $page = backendPage();
+    $html = $this->get("/b/{$page->slug}")->assertOk()->getContent();
+    expect($html)->not->toContain('alpinejs@')
+        ->not->toMatch('/<script[^>]+qr-code-styling/');
 });

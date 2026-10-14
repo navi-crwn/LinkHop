@@ -172,7 +172,7 @@
                                                 </svg>
                                             </button>
                                         </form>
-                                        <form action="{{ route('admin.bio.destroy', $bioPage) }}" method="POST" class="inline" onsubmit="return confirm('Delete this bio page?')">
+                                        <form action="{{ route('admin.bio.destroy', $bioPage) }}" method="POST" class="inline" data-confirm="Delete this bio page?">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="rounded bg-red-100 p-2 text-red-600 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50" title="Delete">

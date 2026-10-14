@@ -70,7 +70,7 @@
                                             <button class="rounded-full bg-slate-800 px-3 py-1 text-xs font-semibold text-white hover:bg-slate-700">Confirm</button>
                                         </form>
                                     @endif
-                                    <form method="POST" action="{{ route('admin.abuse.flags.restore', $flag) }}" class="inline" onsubmit="return confirm('Restore this item and stop flagging it?')">
+                                    <form method="POST" action="{{ route('admin.abuse.flags.restore', $flag) }}" class="inline" data-confirm="Restore this item and stop flagging it?">
                                         @csrf
                                         <button class="rounded-full border border-gray-300 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800">Restore</button>
                                     </form>

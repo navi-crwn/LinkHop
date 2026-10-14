@@ -617,25 +617,25 @@
 @endphp
 <body class="bio-container {{ $hoverEffect && $hoverEffect !== 'none' ? 'hover-' . $hoverEffect : '' }}" data-theme="{{ $bioPage->theme }}" data-bg-animation="{{ $bgAnimation }}">
     <div class="bg-animation-container" id="bg-animation"></div>
-    <button aria-label="Share this page" onclick="document.getElementById('share-modal').classList.remove('hidden')" 
+    <button aria-label="Share this page" data-show="#share-modal" 
             class="fixed top-4 right-4 z-40 w-10 h-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center hover:bg-white dark:hover:bg-slate-700 transition-all">
         <svg class="w-5 h-5 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
         </svg>
     </button>
-    <div id="share-modal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index: 999999;" onclick="if(event.target === this) this.classList.add('hidden')">
+    <div id="share-modal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index: 999999;" data-hide-self-on-backdrop>
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
         <div class="share-modal-content relative rounded-2xl p-4 max-w-xs w-full shadow-2xl" style="background: {{ $isDarkTheme ? '#1e293b' : '#ffffff' }}; color: {{ $isDarkTheme ? '#f1f5f9' : '#1e293b' }}; max-height: 90vh; overflow-y: auto;">
             <div class="flex items-center justify-between mb-3">
                 <h3 class="text-base font-semibold" style="color: {{ $isDarkTheme ? '#f1f5f9' : '#1e293b' }};">Share this Page</h3>
-                <button aria-label="Close" onclick="document.getElementById('share-modal').classList.add('hidden')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/10 transition-colors" style="color: {{ $isDarkTheme ? '#94a3b8' : '#64748b' }};">
+                <button aria-label="Close" data-hide="#share-modal" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/10 transition-colors" style="color: {{ $isDarkTheme ? '#94a3b8' : '#64748b' }};">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
             <div class="flex items-center gap-2 p-2 rounded-lg mb-3" style="background: {{ $isDarkTheme ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }};">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: {{ $isDarkTheme ? '#94a3b8' : '#64748b' }};"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
                 <input type="text" value="{{ url()->current() }}" readonly class="flex-1 bg-transparent border-none text-xs focus:outline-none min-w-0" style="color: {{ $isDarkTheme ? '#e2e8f0' : '#334155' }};" id="share-url">
-                <button onclick="navigator.clipboard.writeText(document.getElementById('share-url').value); this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy', 2000)" class="px-2 py-1 text-xs font-medium rounded-md transition-colors flex-shrink-0" style="background: #3b82f6; color: #ffffff;">Copy</button>
+                <button data-copy-from="#share-url" class="px-2 py-1 text-xs font-medium rounded-md transition-colors flex-shrink-0" style="background: #3b82f6; color: #ffffff;">Copy</button>
             </div>
             <div class="grid grid-cols-4 gap-2 mb-3">
                 <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->current()) }}" target="_blank" class="flex flex-col items-center gap-1 p-2 rounded-lg transition-colors hover:bg-black/5" title="Facebook">
@@ -666,7 +666,7 @@
             <div class="border-t pt-3" style="border-color: {{ $isDarkTheme ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' }};">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-medium" style="color: {{ $isDarkTheme ? '#94a3b8' : '#64748b' }};">QR Code</span>
-                    <button onclick="downloadShareQR()" class="px-2 py-1 text-[10px] font-medium rounded transition-colors flex items-center gap-1" style="background: {{ $isDarkTheme ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }}; color: {{ $isDarkTheme ? '#e2e8f0' : '#334155' }};">
+                    <button data-call="downloadShareQR" class="px-2 py-1 text-[10px] font-medium rounded transition-colors flex items-center gap-1" style="background: {{ $isDarkTheme ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }}; color: {{ $isDarkTheme ? '#e2e8f0' : '#334155' }};">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                         Save
                     </button>
@@ -693,7 +693,7 @@
                     @if($bioPage->avatar_url)
                         <img src="{{ Storage::disk('public')->url($bioPage->avatar_url) }}" 
                              alt="{{ $bioPage->title }}" 
-                             class="mx-auto mb-4 h-24 w-24 object-cover"
+                             class="mx-auto mb-4 h-24 w-24 object-cover" width="96" height="96" fetchpriority="high"
                              style="border-radius: {{ $bioPage->avatar_shape === 'rounded' ? '16px' : ($bioPage->avatar_shape === 'square' ? '0' : '50%') }};">
                     @else
                         <div class="mx-auto mb-4 flex h-24 w-24 items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-3xl font-bold text-white"
@@ -742,9 +742,9 @@
                                    style="background: {{ $brandColor }};">
                                     <img src="/images/brands/{{ $platform }}.svg?v=20251212" 
                                          alt="{{ ucfirst(str_replace('-', ' ', $platform)) }}" 
-                                         class="social-icon h-5 w-5"
+                                         class="social-icon h-5 w-5" width="20" height="20" decoding="async"
                                          style="filter: brightness(0) invert(1);"
-                                         onerror="this.style.display='none';">
+                                         data-fallback="hide">
                                 </a>
                             @endif
                         @endforeach
@@ -806,17 +806,17 @@
                                         }
                                     @endphp
                                     <img src="{{ $thumbUrl }}" 
-                                         alt="" class="block-thumbnail">
+                                         alt="" class="block-thumbnail" width="42" height="42" loading="lazy" decoding="async">
                                 @elseif($iconPath)
                                     <img src="{{ $iconPath }}" 
                                          alt="{{ $link->brand ?? 'icon' }}" 
-                                         class="block-icon"
+                                         class="block-icon" width="24" height="24" loading="lazy" decoding="async"
                                          style="{{ $iconStyle }}">
                                 @endif
                                 <span class="block-title">{{ $link->title ?? 'Untitled Link' }}</span>
                             </a>
                         @elseif($link->type === 'text')
-                            <div class="text-block-styled" onclick="this.classList.toggle('expanded')">
+                            <div class="text-block-styled" data-toggle-class="expanded">
                                 <div class="text-block-header">
                                     <div class="text-block-dots">
                                         <span class="dot red"></span>
@@ -844,7 +844,7 @@
                                 <div class="image-block">
                                     <img src="{{ $imageUrl }}" 
                                          alt="{{ $link->title ?? 'Image' }}" 
-                                         class="image-block-img">
+                                         class="image-block-img" loading="lazy" decoding="async">
                                 </div>
                                 @if($link->title)
                                     <p class="mt-2 text-center text-sm" style="color: inherit;">{{ $link->title }}</p>
@@ -881,7 +881,7 @@
                                         </div>
                                     @endif
                                 </div>
-                                <button onclick="downloadVCard(@js($link->vcard_name), @js($link->vcard_phone), @js($link->vcard_email), @js($link->vcard_company))" 
+                                <button type="button" data-call="downloadVCard" data-args="{{ json_encode([$link->vcard_name, $link->vcard_phone, $link->vcard_email, $link->vcard_company]) }}" 
                                         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all"
                                         style="background: var(--button-bg, #6366f1); color: var(--button-text, #fff);">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
@@ -947,6 +947,7 @@
                                         height="200" 
                                         style="border:0;" 
                                         allowfullscreen="" 
+                                        title="{{ $link->title ?: 'Map' }}"
                                         loading="lazy">
                                     </iframe>
                                 </div>
@@ -998,9 +999,9 @@
                                    style="background: {{ $brandColor }};">
                                     <img src="/images/brands/{{ $platform }}.svg?v=20251212" 
                                          alt="{{ ucfirst(str_replace('-', ' ', $platform)) }}" 
-                                         class="social-icon h-5 w-5"
+                                         class="social-icon h-5 w-5" width="20" height="20" decoding="async"
                                          style="filter: brightness(0) invert(1);"
-                                         onerror="this.style.display='none';">
+                                         data-fallback="hide">
                                 </a>
                             @endif
                         @endforeach
@@ -1059,8 +1060,6 @@ END:VCARD`;
             URL.revokeObjectURL(url);
         }
     </script>
-    <script nonce="{{ Vite::cspNonce() }}" defer src="https://unpkg.com/alpinejs@3.15.2/dist/cdn.min.js"></script>
-    <script nonce="{{ Vite::cspNonce() }}" src="https://unpkg.com/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
     <script nonce="{{ Vite::cspNonce() }}">
         const qrSettings = @json($bioPage->qr_settings ?? []);
         const qrColor = qrSettings.dotsOptions?.color || qrSettings.color || '#000000';
@@ -1072,9 +1071,25 @@ END:VCARD`;
         const qrCornerDotColor = qrSettings.cornersDotOptions?.color || qrColor;
         const qrLogoUrl = qrSettings.image || qrSettings.logo_url || null;
         let shareQrInstance = null;
-        function initShareQR() {
+        // Alpine comes from app.js; the QR library loads only when the share dialog opens (P2).
+        let qrLibrary = null;
+        function loadQrLibrary() {
+            if (window.QRCodeStyling) return Promise.resolve();
+            qrLibrary ??= new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'https://unpkg.com/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js';
+                script.nonce = @js(Vite::cspNonce());
+                script.addEventListener('load', resolve);
+                script.addEventListener('error', () => { qrLibrary = null; reject(); });
+                document.head.appendChild(script);
+            });
+            return qrLibrary;
+        }
+        async function initShareQR() {
             const container = document.getElementById('share-qr-container');
             if (!container || shareQrInstance) return;
+            try { await loadQrLibrary(); } catch (e) { return; }
+            if (shareQrInstance) return;
             shareQrInstance = new QRCodeStyling({
                 width: 120,
                 height: 120,
@@ -1105,10 +1120,11 @@ END:VCARD`;
             container.innerHTML = '';
             shareQrInstance.append(container);
         }
-        function downloadShareQR() {
+        async function downloadShareQR() {
             if (!shareQrInstance) {
-                initShareQR();
+                await initShareQR();
             }
+            if (!window.QRCodeStyling) return;
             const qrSize = 400;
             const padding = 40;
             const totalSize = qrSize + (padding * 2);
@@ -1175,14 +1191,7 @@ END:VCARD`;
             if (!e.target.closest('.share-modal-content')) return;
             initShareQR();
         });
-        const shareBtn = document.querySelector('[onclick*="share-modal"]');
-        if (shareBtn) {
-            const originalOnclick = shareBtn.onclick;
-            shareBtn.onclick = function(e) {
-                originalOnclick?.call(this, e);
-                setTimeout(initShareQR, 100);
-            };
-        }
+        document.querySelector('[data-show="#share-modal"]')?.addEventListener('click', () => setTimeout(initShareQR, 100));
         document.addEventListener('alpine:init', () => {
             Alpine.directive('collapse', (el, { expression }, { effect, evaluateLater }) => {
                 el.style.overflow = 'hidden';

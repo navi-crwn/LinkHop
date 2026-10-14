@@ -13,7 +13,7 @@
                 <p class="text-sm text-slate-500 dark:text-slate-400">Platform-wide statistics and performance</p>
             </div>
             <div class="flex items-center gap-2">
-                <select aria-label="Period" onchange="window.location.href='?period='+this.value" class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                <select aria-label="Period" data-nav="?period={value}" class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
                     <option value="daily" {{ $period === 'daily' ? 'selected' : '' }}>Daily (30 days)</option>
                     <option value="weekly" {{ $period === 'weekly' ? 'selected' : '' }}>Weekly (12 weeks)</option>
                     <option value="monthly" {{ $period === 'monthly' ? 'selected' : '' }}>Monthly (12 months)</option>
@@ -138,7 +138,7 @@
                                             <img src="https://flagcdn.com/24x18/{{ strtolower($countryCode) }}.png" 
                                                  alt="{{ $countryCode }}" 
                                                  class="w-6 h-4 rounded shadow-sm"
-                                                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2218%22><rect width=%22100%%22 height=%22100%%22 fill=%22%23ccc%22/></svg>'">
+                                                 data-fallback-src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2218%22><rect width=%22100%%22 height=%22100%%22 fill=%22%23ccc%22/></svg>">
                                         @else
                                             <div class="w-6 h-4 bg-slate-200 dark:bg-slate-700 rounded"></div>
                                         @endif
@@ -194,7 +194,7 @@
                                             <img src="https://flagcdn.com/16x12/{{ strtolower($countryCode) }}.png" 
                                                  alt="{{ $countryCode }}" 
                                                  class="w-4 h-3 rounded shadow-sm"
-                                                 onerror="this.style.display='none'">
+                                                 data-fallback="hide">
                                         @endif
                                         <span class="text-slate-600 dark:text-slate-400 truncate">{{ $click->city ?? $click->country ?? '—' }}</span>
                                     </div>
@@ -247,7 +247,7 @@
                                             <img src="https://flagcdn.com/16x12/{{ strtolower($countryCode) }}.png" 
                                                  alt="{{ $countryCode }}" 
                                                  class="w-4 h-3 rounded shadow-sm"
-                                                 onerror="this.style.display='none'">
+                                                 data-fallback="hide">
                                         @endif
                                         <span class="text-xs text-slate-600 dark:text-slate-400">{{ $countryName }}</span>
                                     </div>
@@ -320,7 +320,7 @@
                                     @php $code = strtoupper($country->country ?? ''); @endphp
                                     <li>
                                         <button type="button" class="flex w-full items-center justify-between rounded-lg border border-slate-200 px-2.5 py-2 text-left hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700/80"
-                                            onclick="window.focusGlobalCountry('{{ $code }}')">
+                                            data-call="focusGlobalCountry" data-args='@json([$code])'>
                                             <span class="flex items-center gap-2 text-slate-800 dark:text-slate-100">
                                                 {!! country_flag($code) !!} {{ $code }}
                                             </span>
@@ -541,7 +541,7 @@
                     .catch(error => {
                         console.error('❌ Map loading error:', error);
                         document.getElementById('choropleth-map').innerHTML = 
-                            '<div class="flex items-center justify-center h-full"><div class="text-center"><p class="text-sm text-red-600 font-semibold">Map Failed to Load</p><p class="text-xs text-slate-500 mt-1">' + error.message + '</p><button onclick="location.reload()" class="mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">Retry</button></div></div>';
+                            '<div class="flex items-center justify-center h-full"><div class="text-center"><p class="text-sm text-red-600 font-semibold">Map Failed to Load</p><p class="text-xs text-slate-500 mt-1">Please try again.</p><button type="button" data-reload class="mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">Retry</button></div></div>';
                     });
             } catch (error) {
                 console.error('❌ Map initialization error:', error);

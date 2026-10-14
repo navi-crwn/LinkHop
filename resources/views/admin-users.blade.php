@@ -113,7 +113,7 @@
                                                 </select>
                                                 <button class="rounded-lg bg-indigo-600 px-3 py-1 text-xs font-semibold text-white hover:bg-indigo-500">Update status</button>
                                             </form>
-                                            <form method="POST" action="{{ route('admin.users.destroy', $user) }}" onsubmit="return confirm('Delete this account and all links?')" class="inline-flex items-center gap-2">
+                                            <form method="POST" action="{{ route('admin.users.destroy', $user) }}" data-confirm="Delete this account and all links?" class="inline-flex items-center gap-2">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button class="rounded-lg border border-rose-200 px-3 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:border-rose-900/30 dark:text-rose-200 dark:hover:bg-rose-900/30">Delete user</button>

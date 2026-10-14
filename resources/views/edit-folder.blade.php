@@ -3,7 +3,7 @@
         <x-page-header title="Manage Folder" subtitle="Focus on the links inside {{ $folder->name }}">
             <x-slot name="actions">
                 <a href="{{ route('folders.index') }}" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">Back to folders</a>
-                <button type="button" onclick="window.openLinkPanel && window.openLinkPanel()" class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 hover:bg-blue-500">+ Create link</button>
+                <button type="button" data-call="openLinkPanel" class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 hover:bg-blue-500">+ Create link</button>
             </x-slot>
         </x-page-header>
     </x-slot>
@@ -62,7 +62,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                             </svg>
                         </a>
-                        <form method="POST" action="{{ route('folders.destroy', $folder) }}" onsubmit="return confirm('Delete this folder?')" class="rounded-2xl border border-rose-200 px-4 py-3 text-rose-600 dark:border-rose-900/30 dark:text-rose-200">
+                        <form method="POST" action="{{ route('folders.destroy', $folder) }}" data-confirm="Delete this folder?" class="rounded-2xl border border-rose-200 px-4 py-3 text-rose-600 dark:border-rose-900/30 dark:text-rose-200">
                             @csrf
                             @method('DELETE')
                             <div class="flex items-center justify-between text-sm">
@@ -118,7 +118,7 @@
                                         <div class="flex items-center justify-end gap-2 text-xs">
                                             <a href="{{ route('links.show', $link) }}" class="rounded-full border border-slate-200 px-3 py-1 text-slate-500 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">Analytics</a>
                                             <a href="{{ route('links.edit', $link) }}" class="rounded-full border border-slate-200 px-3 py-1 text-slate-500 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">Edit</a>
-                                            <form method="POST" action="{{ route('links.destroy', $link) }}" onsubmit="return confirm('Delete this link?')">
+                                            <form method="POST" action="{{ route('links.destroy', $link) }}" data-confirm="Delete this link?">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button class="rounded-full border border-rose-200 px-3 py-1 text-rose-600 hover:bg-rose-50 dark:border-rose-900/30 dark:text-rose-200 dark:hover:bg-rose-900/20">Delete</button>

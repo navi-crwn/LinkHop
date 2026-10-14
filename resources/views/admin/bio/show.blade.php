@@ -22,7 +22,7 @@
                         {{ $bioPage->is_published ? 'Unpublish' : 'Publish' }}
                     </button>
                 </form>
-                <form action="{{ route('admin.bio.destroy', $bioPage) }}" method="POST" class="inline" onsubmit="return confirm('Delete this bio page permanently?')">
+                <form action="{{ route('admin.bio.destroy', $bioPage) }}" method="POST" class="inline" data-confirm="Delete this bio page permanently?">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:border-red-700 dark:text-red-400 dark:hover:bg-red-900/20">

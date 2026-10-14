@@ -293,10 +293,10 @@
                                         <div class="text-sm font-mono text-white">{{ $code }}</div>
                                     @endforeach
                                 </div>
-                                <form method="POST" action="{{ route('settings.2fa.recovery-codes') }}" class="mt-4" onsubmit="return confirm('Are you sure you want to regenerate recovery codes? Your old codes will no longer work.')">
+                                <form method="POST" action="{{ route('settings.2fa.recovery-codes') }}" class="mt-4" data-confirm="Are you sure you want to regenerate recovery codes? Your old codes will no longer work.">
                                     @csrf
                                     <input type="hidden" name="password" value="">
-                                    <button type="button" onclick="this.previousElementSibling.value = prompt('Enter your password to regenerate codes:'); if(this.previousElementSibling.value) this.form.submit();" class="rounded-lg bg-slate-600 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-500">
+                                    <button type="button" data-prompt-password="Enter your password to regenerate codes:" class="rounded-lg bg-slate-600 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-500">
                                         Regenerate Codes
                                     </button>
                                 </form>
@@ -306,11 +306,11 @@
                                 <p class="mt-1 text-sm text-red-800 dark:text-red-200">
                                     Remove two-factor authentication from your account. This will make your account less secure.
                                 </p>
-                                <form method="POST" action="{{ route('settings.2fa.disable') }}" class="mt-4" onsubmit="return confirm('Are you sure you want to disable two-factor authentication?')">
+                                <form method="POST" action="{{ route('settings.2fa.disable') }}" class="mt-4" data-confirm="Are you sure you want to disable two-factor authentication?">
                                     @csrf
                                     @method('DELETE')
                                     <input type="hidden" name="password" value="">
-                                    <button type="button" onclick="this.previousElementSibling.value = prompt('Enter your password to disable 2FA:'); if(this.previousElementSibling.value) this.form.submit();" class="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">
+                                    <button type="button" data-prompt-password="Enter your password to disable 2FA:" class="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">
                                         Disable 2FA
                                     </button>
                                 </form>
@@ -615,7 +615,7 @@
                                             <span>Rate limit: {{ $token->rate_limit }}/hour</span>
                                         </div>
                                     </div>
-                                    <form method="POST" action="{{ route('api-tokens.destroy', $token) }}" onsubmit="return confirm('Are you sure you want to revoke this token? This action cannot be undone.')">
+                                    <form method="POST" action="{{ route('api-tokens.destroy', $token) }}" data-confirm="Are you sure you want to revoke this token? This action cannot be undone.">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="rounded-lg border border-red-300 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:border-red-700 dark:text-red-400 dark:hover:bg-red-900/20">

@@ -75,7 +75,7 @@
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        <form method="POST" action="{{ route('admin.ip-watchlist.destroy', $item) }}" onsubmit="return confirm('Remove this IP from watchlist?')">
+                                        <form method="POST" action="{{ route('admin.ip-watchlist.destroy', $item) }}" data-confirm="Remove this IP from watchlist?">
                                             @csrf
                                             @method('DELETE')
                                             <button class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">Remove</button>
