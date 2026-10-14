@@ -64,13 +64,13 @@ Route::middleware('ip.ban')->group(function () {
     Route::get('/faq', [MarketingPageController::class, 'faq'])->name('faq');
     Route::get('/products', [MarketingPageController::class, 'products'])->name('products');
     Route::get('/feature-requests', [MarketingPageController::class, 'featureRequests'])->name('feature.requests');
-    Route::get('/api/qr-generate', [BioPageController::class, 'generateQR'])->name('api.qr.generate')->middleware('throttle:60,1');
+    Route::get('/api/qr-generate', [BioPageController::class, 'generateQR'])->name('api.qr.generate')->middleware('throttle:60,1,qr');
     Route::post('/shorten', [PublicLinkController::class, 'store'])
         ->middleware(['throttle:shorten', 'quota'])
         ->name('shorten.store');
     Route::middleware(['auth'])->group(function () {
         Route::get('/two-factor-challenge', [TwoFactorController::class, 'show'])->name('two-factor.show');
-        Route::post('/two-factor-challenge', [TwoFactorController::class, 'verify'])->middleware('throttle:5,1')->name('two-factor.verify');
+        Route::post('/two-factor-challenge', [TwoFactorController::class, 'verify'])->middleware('throttle:5,1,two-factor')->name('two-factor.verify');
     });
     Route::middleware(['auth', '2fa'])->group(function () {
         Route::get('/dashboard', [LinkController::class, 'index'])->name('dashboard');
@@ -187,9 +187,9 @@ Route::middleware('ip.ban')->group(function () {
             Route::post('/bio/{bioPage}/toggle', [AdminBioController::class, 'togglePublish'])->name('bio.toggle');
             Route::post('/bio/bulk-delete', [AdminBioController::class, 'bulkDelete'])->name('bio.bulk-delete');
         });
-    Route::get('/check', LinkCheckController::class)->middleware('throttle:30,1')->name('link.check');
+    Route::get('/check', LinkCheckController::class)->middleware('throttle:30,1,link-check')->name('link.check');
     Route::get('/report-abuse', [AbuseReportController::class, 'create'])->name('report.create');
-    Route::post('/report-abuse', [AbuseReportController::class, 'store'])->middleware('throttle:5,10')->name('report.store');
+    Route::post('/report-abuse', [AbuseReportController::class, 'store'])->middleware('throttle:5,10,report-abuse')->name('report.store');
     Route::prefix('b')->name('bio.public.')->group(function () {
         Route::match(['get', 'post'], '/{slug}', [PublicBioController::class, 'show'])->name('show');
         Route::get('/{slug}/qr', [PublicBioController::class, 'qr'])->name('qr');
@@ -203,7 +203,7 @@ Route::post('/csp-report', function (Request $request) {
         ->warning('csp', array_intersect_key($report, array_flip(['document-uri', 'violated-directive', 'blocked-uri', 'source-file', 'line-number', 'script-sample'])));
 
     return response()->noContent();
-})->middleware('throttle:60,1')->name('csp.report');
+})->middleware('throttle:60,1,csp-report')->name('csp.report');
 require __DIR__.'/auth.php';
 if (env('E2E_HOOKS') === true && ! app()->isProduction()) {
     require __DIR__.'/e2e.php';
