@@ -74,7 +74,7 @@
                                     required
                                     value="{{ old('title') }}"
                                     placeholder="Your Name or Brand"
-                                    maxlength="45"
+                                    maxlength="{{ \App\Models\BioPage::TITLE_MAX }}"
                                     class="mt-2 w-full rounded-lg border border-slate-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                                 >
                                 @error('title')
@@ -90,7 +90,7 @@
                                     id="bio" 
                                     rows="3"
                                     placeholder="Tell your visitors about yourself..."
-                                    maxlength="155"
+                                    maxlength="{{ \App\Models\BioPage::BIO_MAX }}"
                                     class="mt-2 w-full rounded-lg border border-slate-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                                 >{{ old('bio') }}</textarea>
                                 <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Maximum 155 characters</p>

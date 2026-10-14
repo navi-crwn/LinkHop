@@ -753,7 +753,7 @@
                         </div>
                         <div class="form-group">
                             <label for="bfindex-1" class="form-label">Title</label>
-                            <input id="bfindex-1" type="text" x-model="editingBlock.title" class="form-input" placeholder="Button title" autocomplete="off" data-lpignore="true" data-form-type="other">
+                            <input maxlength="100" id="bfindex-1" type="text" x-model="editingBlock.title" class="form-input" placeholder="Button title" autocomplete="off" data-lpignore="true" data-form-type="other">
                         </div>
                         <template x-if="editingBlock && editingBlock?.type === 'link'">
                             <div class="space-y-4">
@@ -944,7 +944,7 @@
                                                                    :value="editingBlock.btn_bg_color || getEffectiveButtonBg()"
                                                                    class="w-10 h-10 rounded cursor-pointer border-0 bg-transparent"
                                                                    @input="markBlockDirty(editingBlock.id)">
-                                                            <input aria-label="Button background hex value" type="text" x-model="editingBlock.btn_bg_color" 
+                                                            <input maxlength="30" aria-label="Button background hex value" type="text" x-model="editingBlock.btn_bg_color" 
                                                                    class="form-input text-xs font-mono flex-1" 
                                                                    :placeholder="getEffectiveButtonBg()"
                                                                    @change="markBlockDirty(editingBlock.id)">
@@ -964,7 +964,7 @@
                                                             <input aria-label="Button text color" type="color" x-model="editingBlock.btn_text_color" 
                                                                    :value="editingBlock.btn_text_color || getEffectiveButtonText()"
                                                                    class="w-10 h-10 rounded cursor-pointer border-0 bg-transparent">
-                                                            <input aria-label="Button text color hex value" type="text" x-model="editingBlock.btn_text_color" 
+                                                            <input maxlength="30" aria-label="Button text color hex value" type="text" x-model="editingBlock.btn_text_color" 
                                                                    class="form-input text-xs font-mono flex-1" 
                                                                    :placeholder="getEffectiveButtonText()">
                                                         </div>
@@ -977,7 +977,7 @@
                                                             <input id="bfindex-4" type="color" x-model="editingBlock.btn_border_color" 
                                                                    :value="editingBlock.btn_border_color || '#ffffff'"
                                                                    class="w-10 h-10 rounded cursor-pointer border-0 bg-transparent">
-                                                            <input aria-label="Button border color hex value" type="text" x-model="editingBlock.btn_border_color" 
+                                                            <input maxlength="30" aria-label="Button border color hex value" type="text" x-model="editingBlock.btn_border_color" 
                                                                    class="form-input text-xs font-mono flex-1" placeholder="None">
                                                         </div>
                                                     </div>
@@ -1052,7 +1052,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="bfindex-6" class="form-label">Link URL (optional)</label>
-                                    <input id="bfindex-6" type="url" x-model="editingBlock.url" class="form-input" placeholder="https://example.com">
+                                    <input maxlength="500" id="bfindex-6" type="url" x-model="editingBlock.url" class="form-input" placeholder="https://example.com">
                                     <p class="text-xs editor-text-muted mt-1">Where should this image link to when clicked?</p>
                                 </div>
                             </div>
@@ -1061,12 +1061,12 @@
                             <div class="space-y-4">
                                 <div class="form-group">
                                     <label for="bfindex-7" class="form-label">YouTube Video URL</label>
-                                    <input id="bfindex-7" type="url" x-model="editingBlock.embed_url" class="form-input" placeholder="https://youtube.com/watch?v=...">
+                                    <input maxlength="500" id="bfindex-7" type="url" x-model="editingBlock.embed_url" class="form-input" placeholder="https://youtube.com/watch?v=...">
                                     <p class="text-xs editor-text-muted mt-1">Paste the full YouTube video URL</p>
                                 </div>
                                 <div class="form-group">
                                     <label for="bfindex-8" class="form-label">Title (Optional)</label>
-                                    <input id="bfindex-8" type="text" x-model="editingBlock.title" class="form-input" placeholder="My Video">
+                                    <input maxlength="100" id="bfindex-8" type="text" x-model="editingBlock.title" class="form-input" placeholder="My Video">
                                 </div>
                             </div>
                         </template>
@@ -1074,12 +1074,12 @@
                             <div class="space-y-4">
                                 <div class="form-group">
                                     <label for="bfindex-9" class="form-label">Spotify URL</label>
-                                    <input id="bfindex-9" type="url" x-model="editingBlock.embed_url" class="form-input" placeholder="https://open.spotify.com/track/...">
+                                    <input maxlength="500" id="bfindex-9" type="url" x-model="editingBlock.embed_url" class="form-input" placeholder="https://open.spotify.com/track/...">
                                     <p class="text-xs editor-text-muted mt-1">Supports tracks, albums, playlists, and artists</p>
                                 </div>
                                 <div class="form-group">
                                     <label for="bfindex-10" class="form-label">Title (Optional)</label>
-                                    <input id="bfindex-10" type="text" x-model="editingBlock.title" class="form-input" placeholder="My Music">
+                                    <input maxlength="100" id="bfindex-10" type="text" x-model="editingBlock.title" class="form-input" placeholder="My Music">
                                 </div>
                             </div>
                         </template>
@@ -1087,12 +1087,12 @@
                             <div class="space-y-4">
                                 <div class="form-group">
                                     <label for="bfindex-11" class="form-label">SoundCloud URL</label>
-                                    <input id="bfindex-11" type="url" x-model="editingBlock.embed_url" class="form-input" placeholder="https://soundcloud.com/...">
+                                    <input maxlength="500" id="bfindex-11" type="url" x-model="editingBlock.embed_url" class="form-input" placeholder="https://soundcloud.com/...">
                                     <p class="text-xs editor-text-muted mt-1">Paste any SoundCloud track or profile URL</p>
                                 </div>
                                 <div class="form-group">
                                     <label for="bfindex-12" class="form-label">Title (Optional)</label>
-                                    <input id="bfindex-12" type="text" x-model="editingBlock.title" class="form-input" placeholder="My Track">
+                                    <input maxlength="100" id="bfindex-12" type="text" x-model="editingBlock.title" class="form-input" placeholder="My Track">
                                 </div>
                             </div>
                         </template>
@@ -1100,7 +1100,7 @@
                             <div class="space-y-4">
                                 <div class="form-group">
                                     <label for="bfindex-13" class="form-label">Block Title</label>
-                                    <input id="bfindex-13" type="text" x-model="editingBlock.title" class="form-input" placeholder="Code Example">
+                                    <input maxlength="100" id="bfindex-13" type="text" x-model="editingBlock.title" class="form-input" placeholder="Code Example">
                                 </div>
                                 <div class="form-group">
                                     <label for="bfindex-14" class="form-label">Code</label>
@@ -1124,11 +1124,11 @@
                             <div class="space-y-4">
                                 <div class="form-group">
                                     <label for="bfindex-16" class="form-label">Location Title</label>
-                                    <input id="bfindex-16" type="text" x-model="editingBlock.title" class="form-input" placeholder="Our Office">
+                                    <input maxlength="100" id="bfindex-16" type="text" x-model="editingBlock.title" class="form-input" placeholder="Our Office">
                                 </div>
                                 <div class="form-group">
                                     <label for="bfindex-17" class="form-label">Address</label>
-                                    <textarea id="bfindex-17" x-model="editingBlock.map_address" class="form-input form-textarea" rows="2" placeholder="Jl. Example No. 123, Jakarta, Indonesia"></textarea>
+                                    <textarea maxlength="500" id="bfindex-17" x-model="editingBlock.map_address" class="form-input form-textarea" rows="2" placeholder="Jl. Example No. 123, Jakarta, Indonesia"></textarea>
                                 </div>
                                 <div class="form-group">
                                     <label for="bfindex-18" class="form-label">Zoom Level</label>
@@ -1141,7 +1141,7 @@
                             <div class="space-y-4">
                                 <div class="form-group">
                                     <label for="bfindex-19" class="form-label">Countdown Label</label>
-                                    <input id="bfindex-19" type="text" x-model="editingBlock.countdown_label" class="form-input" placeholder="Event starts in...">
+                                    <input maxlength="100" id="bfindex-19" type="text" x-model="editingBlock.countdown_label" class="form-input" placeholder="Event starts in...">
                                 </div>
                                 <div class="form-group">
                                     <label for="bfindex-20" class="form-label">Target Date & Time</label>
@@ -1154,7 +1154,7 @@
                             <div class="space-y-4">
                                 <div class="form-group">
                                     <label for="bfindex-21" class="form-label">Header Text</label>
-                                    <input id="bfindex-21" type="text" x-model="editingBlock.title" class="form-input" placeholder="Section Header">
+                                    <input maxlength="100" id="bfindex-21" type="text" x-model="editingBlock.title" class="form-input" placeholder="Section Header">
                                 </div>
                             </div>
                         </template>
@@ -1162,19 +1162,19 @@
                             <div class="space-y-4">
                                 <div class="form-group">
                                     <label for="bfindex-22" class="form-label">Full Name</label>
-                                    <input id="bfindex-22" type="text" x-model="editingBlock.vcard_name" class="form-input" placeholder="John Doe">
+                                    <input maxlength="100" id="bfindex-22" type="text" x-model="editingBlock.vcard_name" class="form-input" placeholder="John Doe">
                                 </div>
                                 <div class="form-group">
                                     <label for="bfindex-23" class="form-label">Phone Number</label>
-                                    <input id="bfindex-23" type="tel" x-model="editingBlock.vcard_phone" class="form-input" placeholder="+1 234 567 8900">
+                                    <input maxlength="30" id="bfindex-23" type="tel" x-model="editingBlock.vcard_phone" class="form-input" placeholder="+1 234 567 8900">
                                 </div>
                                 <div class="form-group">
                                     <label for="bfindex-24" class="form-label">Email</label>
-                                    <input id="bfindex-24" type="email" x-model="editingBlock.vcard_email" class="form-input" placeholder="john@example.com">
+                                    <input maxlength="100" id="bfindex-24" type="email" x-model="editingBlock.vcard_email" class="form-input" placeholder="john@example.com">
                                 </div>
                                 <div class="form-group">
                                     <label for="bfindex-25" class="form-label">Company (Optional)</label>
-                                    <input id="bfindex-25" type="text" x-model="editingBlock.vcard_company" class="form-input" placeholder="Company Name">
+                                    <input maxlength="100" id="bfindex-25" type="text" x-model="editingBlock.vcard_company" class="form-input" placeholder="Company Name">
                                 </div>
                             </div>
                         </template>
@@ -1182,7 +1182,7 @@
                             <div class="space-y-4">
                                 <div class="form-group">
                                     <label for="bfindex-26" class="form-label">Block Title (Optional)</label>
-                                    <input id="bfindex-26" type="text" x-model="editingBlock.title" class="form-input" placeholder="Custom HTML Block">
+                                    <input maxlength="100" id="bfindex-26" type="text" x-model="editingBlock.title" class="form-input" placeholder="Custom HTML Block">
                                 </div>
                                 <div class="form-group">
                                     <label for="bfindex-27" class="form-label">HTML Code</label>
@@ -1913,12 +1913,12 @@ window.bioEditorV2 = function() {
                                 : null,
                             // Typography
                             textColor: bioPageData.text_color || '#1e293b',
-                            titleColor: bioPageData.title_color || bioPageData.text_color || '#1e293b',
-                            bioColor: bioPageData.bio_color || '#64748b',
+                            titleColor: bioPageData.title_color || bioPageData.text_color || @js(config('bio-themes.defaults.title')),
+                            bioColor: bioPageData.bio_color || @js(config('bio-themes.defaults.bio')),
                             fontFamily: bioPageData.font_family || 'inter',
                             // Buttons
-                            buttonBgColor: bioPageData.link_bg_color || bioPageData.button_bg_color || '#6366f1',
-                            buttonTextColor: bioPageData.link_text_color || bioPageData.button_text_color || '#ffffff',
+                            buttonBgColor: bioPageData.link_bg_color || bioPageData.button_bg_color || @js(config('bio-themes.defaults.link_bg')),
+                            buttonTextColor: bioPageData.link_text_color || bioPageData.button_text_color || @js(config('bio-themes.defaults.link_text')),
                             buttonShape: bioPageData.block_shape || bioPageData.button_shape || 'rounded',
                             buttonShadow: bioPageData.block_shadow || bioPageData.button_shadow || 'md',
                             // Animations

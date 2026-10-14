@@ -182,8 +182,8 @@ class BioPageController extends Controller
         $request->merge(['slug' => strtolower($request->slug)]);
         $validated = $request->validate([
             'slug' => $this->slugRules(),
-            'title' => 'required|string|max:45',
-            'bio' => 'nullable|string|max:155',
+            'title' => 'required|string|max:'.BioPage::TITLE_MAX,
+            'bio' => 'nullable|string|max:'.BioPage::BIO_MAX,
             'qr_settings' => 'nullable|json',
         ]);
         $this->assertSafeContent($validated);
@@ -231,8 +231,8 @@ class BioPageController extends Controller
         }
         $validated = $request->validate([
             'slug' => ['sometimes', ...$this->slugRules($bioPage)],
-            'title' => 'sometimes|required|string|max:45',
-            'bio' => 'nullable|string|max:155',
+            'title' => 'sometimes|required|string|max:'.BioPage::TITLE_MAX,
+            'bio' => 'nullable|string|max:'.BioPage::BIO_MAX,
             'theme' => CssValue::keyword(50),
             'layout' => CssValue::keyword(50),
             'background_type' => 'nullable|in:color,gradient,image,solid',

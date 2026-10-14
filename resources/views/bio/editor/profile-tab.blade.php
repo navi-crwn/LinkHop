@@ -63,12 +63,12 @@
                 <!-- Form fields -->
                 <div class="flex-1 min-w-0 space-y-3">
                     <div class="form-group mb-0">
-                        <label for="bfprofil-1" class="form-label">Display Name <span class="text-xs editor-text-muted" x-text="'(' + (bioPage.title?.length || 0) + '/25)'"></span></label>
-                        <input id="bfprofil-1" type="text" x-model="bioPage.title" @input="bioPage.title = $event.target.value.slice(0, 25)" class="form-input" placeholder="Your name" maxlength="25" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
+                        <label for="bfprofil-1" class="form-label">Display Name <span class="text-xs editor-text-muted" x-text="'(' + (bioPage.title?.length || 0) + '/{{ \App\Models\BioPage::TITLE_MAX }})'"></span></label>
+                        <input id="bfprofil-1" type="text" x-model="bioPage.title" @input="bioPage.title = $event.target.value.slice(0, {{ \App\Models\BioPage::TITLE_MAX }})" class="form-input" placeholder="Your name" maxlength="{{ \App\Models\BioPage::TITLE_MAX }}" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
                     </div>
                     <div class="form-group mb-0">
-                        <label for="bfprofil-2" class="form-label">Bio <span class="text-xs editor-text-muted" x-text="'(' + (bioPage.bio?.length || 0) + '/80)'"></span></label>
-                        <textarea id="bfprofil-2" x-model="bioPage.bio" @input="bioPage.bio = $event.target.value.slice(0, 80)" class="form-input form-textarea" placeholder="Tell visitors about yourself..." rows="2" maxlength="80"></textarea>
+                        <label for="bfprofil-2" class="form-label">Bio <span class="text-xs editor-text-muted" x-text="'(' + (bioPage.bio?.length || 0) + '/{{ \App\Models\BioPage::BIO_MAX }})'"></span></label>
+                        <textarea id="bfprofil-2" x-model="bioPage.bio" @input="bioPage.bio = $event.target.value.slice(0, {{ \App\Models\BioPage::BIO_MAX }})" class="form-input form-textarea" placeholder="Tell visitors about yourself..." rows="2" maxlength="{{ \App\Models\BioPage::BIO_MAX }}"></textarea>
                     </div>
                     <!-- Badge Feature -->
                     <div class="form-group mb-0">
