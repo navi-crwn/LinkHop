@@ -7,8 +7,7 @@
         <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png">
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=inter:400,500,600&display=swap" rel="stylesheet" />
-        <script nonce="{{ Vite::cspNonce() }}" src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-        @vite(['resources/css/app.css'])
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="min-h-full bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 font-['Inter']">
         <div class="mx-auto flex min-h-screen max-w-2xl flex-col justify-center px-6 py-12">
@@ -29,7 +28,7 @@
                         </ul>
                     </div>
                 @endif
-                <form method="POST" action="{{ route('report.store') }}" class="mt-6 space-y-4">
+                <form method="POST" action="{{ route('report.store') }}" class="mt-6 space-y-4" x-data="turnstileForm(@js(config('services.turnstile.site_key')))" x-on:submit="handleSubmit($event)">
                     @csrf
                     <input type="hidden" name="slug" value="{{ old('slug', $prefill['slug'] ?? '') }}">
                     <div>
@@ -44,12 +43,12 @@
                         <label class="text-sm text-white/80">Reason</label>
                         <textarea name="reason" rows="4" class="mt-1 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/40 focus:border-blue-500 focus:ring-blue-500" placeholder="Describe why this link is harmful." required>{{ old('reason') }}</textarea>
                     </div>
-                    <div class="cf-turnstile" data-sitekey="{{ config('services.turnstile.site_key') }}"></div>
+                    <x-turnstile />
                     <div class="flex items-center justify-between text-xs text-white/60">
                         <span>Limit: 5 reports per 10 minutes per IP to avoid spam.</span>
                         <a href="{{ url('/') }}" class="text-blue-300 hover:underline">Back home</a>
                     </div>
-                    <button type="submit" class="w-full rounded-2xl bg-blue-500 py-3 text-lg font-semibold text-white shadow-lg shadow-blue-500/40 hover:bg-blue-400">Submit report</button>
+                    <button type="submit" class="w-full rounded-2xl bg-blue-500 py-3 text-lg font-semibold text-white shadow-lg shadow-blue-500/40 hover:bg-blue-400"><span x-show="!waiting">Submit report</span><span x-cloak x-show="waiting">Verifying…</span></button>
                 </form>
             </div>
         </div>
