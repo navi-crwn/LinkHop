@@ -102,6 +102,14 @@ class BioPage extends Model
         return $this->hasMany(BioLink::class)->orderBy('order');
     }
 
+    /**
+     * Used by scoped route bindings ({bioPage}/links/{bioLink}).
+     */
+    public function bioLinks(): HasMany
+    {
+        return $this->hasMany(BioLink::class);
+    }
+
     public function clicks(): HasManyThrough
     {
         return $this->hasManyThrough(BioClick::class, BioLink::class);

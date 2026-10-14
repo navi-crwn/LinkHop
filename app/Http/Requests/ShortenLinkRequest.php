@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\DomainBlacklist;
+use App\Services\LinkSafety;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -53,11 +53,10 @@ class ShortenLinkRequest extends FormRequest
             if ($url && ! filter_var($url, FILTER_VALIDATE_URL)) {
                 $validator->errors()->add('target_url', 'Invalid URL format. Please check the URL format.');
             }
-            if ($url) {
-                $blocked = DomainBlacklist::isBlocked($url);
-                if ($blocked) {
-                    $category = $blocked['category'] ? ' ('.ucfirst($blocked['category']).')' : '';
-                    $validator->errors()->add('target_url', 'This domain is not allowed due to our security policy'.$category.'.');
+            if ($url && ! $validator->errors()->has('target_url')) {
+                $reason = app(LinkSafety::class)->rejectionReason($url, (string) $this->input('slug'));
+                if ($reason) {
+                    $validator->errors()->add('target_url', $reason);
                 }
             }
         });

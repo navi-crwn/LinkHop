@@ -11,6 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Filename predates the bio_links create migration; on fresh installs the table
+        // does not exist yet. 2026_10_14_000001 re-applies this once it does.
+        if (! Schema::hasTable('bio_links')) {
+            return;
+        }
         Schema::table('bio_links', function (Blueprint $table) {
             if (! Schema::hasColumn('bio_links', 'brand')) {
                 $table->string('brand', 50)->nullable()->after('thumbnail_url');
@@ -26,6 +31,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (! Schema::hasTable('bio_links')) {
+            return;
+        }
         Schema::table('bio_links', function (Blueprint $table) {
             if (Schema::hasColumn('bio_links', 'brand')) {
                 $table->dropColumn('brand');
