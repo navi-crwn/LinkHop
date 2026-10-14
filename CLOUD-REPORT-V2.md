@@ -11,9 +11,9 @@ Tanggal: 14 Oktober 2026. Repo: `navi-crwn/hel.ink`.
 | #10 (PR-D) | Homepage arah B | Sudah di-merge |
 | #11 | Privasi IP pengunjung (IP klik disimpan sebagai hash, migrasi tidak bisa dibatalkan) | Sudah di-merge |
 | #8 (PR-A) | Turnstile langsung siap saat halaman dibuka, `/health/queue` | Draft, CI hijau |
-| #12 (PR-E) | Suite manusia sintetis, CI per PR dan nightly, uji beban k6, lima perbaikan bug dari suite | Draft, sudah digabung dengan `main` terbaru, menggantikan #9 |
+| #12 (PR-E) | Suite manusia sintetis, CI per PR dan nightly, uji beban k6, lima perbaikan bug dari suite | Sudah di-merge; perbaikan slug (temuan 5) menyusul di PR terpisah |
 
-Suite di #12 sudah dijalankan di atas `main` yang berisi #6, #7, #10 dan #11: tidak ada konflik, 98 test PHP lulus, dan semua perjalanan lulus.
+Suite sudah dijalankan di atas `main` yang berisi #6, #7, #10 dan #11: 98 test PHP lulus dan semua perjalanan lulus.
 
 ## 2. Apa itu suite manusia sintetis
 
@@ -79,12 +79,12 @@ Uji beban tidak boleh diarahkan ke produksi. Untuk staging, isi `BASE_URL`, `BIO
 
 ### Urutan merge
 
-#6, #7, #10 dan #11 sudah di-merge. Sisanya:
+#6, #7, #10, #11 dan #12 sudah di-merge. Sisanya:
 
-1. #8 (Turnstile). Konflik kecil di `routes/web.php` dengan #12 mungkin terjadi; isi kedua sisi dipertahankan.
-2. #12 (suite dan lima perbaikan).
+1. #8 (Turnstile). Kalau ada konflik di `routes/web.php`: pertahankan `throttle:60,1,csp-report`, letakkan `/health/queue` di atas route catch-all, dan biarkan `require e2e.php` setelah `auth.php`. Hasil gabungan ini sudah dicoba: 104 test PHP dan suite lulus.
+2. PR perbaikan pola slug (temuan 5).
 
-Tutup #9 setelah #12 di-merge, karena #12 sudah berisi commit #9.
+Tutup #9, karena isinya sudah masuk lewat #12.
 
 Karena #11 meng-hash IP lama secara permanen, backup database **wajib** dibuat sebelum `migrate` di produksi.
 
