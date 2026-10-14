@@ -17,16 +17,16 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="form-label">Page Title</label>
-            <input type="text" x-model="bioPage.seo_title" class="form-input" placeholder="Leave empty to use display name" maxlength="47" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
+            <label for="bfsettin-1" class="form-label">Page Title</label>
+            <input id="bfsettin-1" type="text" x-model="bioPage.seo_title" class="form-input" placeholder="Leave empty to use display name" maxlength="47" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
             <div class="flex justify-between mt-1">
                 <p class="text-xs editor-text-muted">Appears in browser tab and search results (+ " | By HEL.ink")</p>
                 <p class="text-xs" :class="(bioPage.seo_title || '').length > 40 ? 'text-orange-500' : 'editor-text-muted'" x-text="(bioPage.seo_title || '').length + '/47'"></p>
             </div>
         </div>
         <div class="form-group">
-            <label class="form-label">Meta Description</label>
-            <textarea x-model="bioPage.seo_description" class="form-input form-textarea" placeholder="Brief description for search engines" rows="2" maxlength="160" autocomplete="off" data-lpignore="true" data-1p-ignore="true"></textarea>
+            <label for="bfsettin-2" class="form-label">Meta Description</label>
+            <textarea id="bfsettin-2" x-model="bioPage.seo_description" class="form-input form-textarea" placeholder="Brief description for search engines" rows="2" maxlength="160" autocomplete="off" data-lpignore="true" data-1p-ignore="true"></textarea>
             <div class="flex justify-between mt-1">
                 <p class="text-xs editor-text-muted">Recommended: 120-160 characters</p>
                 <p class="text-xs" :class="(bioPage.seo_description || '').length > 150 ? 'text-orange-500' : 'editor-text-muted'" x-text="(bioPage.seo_description || '').length + '/160'"></p>
@@ -46,7 +46,7 @@
                 <p class="text-sm editor-text-muted">Anyone with the link can view your page</p>
             </div>
             <label class="toggle-switch">
-                <input type="checkbox" x-model="bioPage.is_published">
+                <input type="checkbox" x-model="bioPage.is_published" aria-label="Public page">
                 <span class="toggle-slider"></span>
             </label>
         </div>
@@ -56,7 +56,7 @@
                 <p class="text-sm editor-text-muted">Allow search engines to index this page</p>
             </div>
             <label class="toggle-switch">
-                <input type="checkbox" x-model="bioPage.allow_indexing">
+                <input type="checkbox" x-model="bioPage.allow_indexing" aria-label="Search engine indexing">
                 <span class="toggle-slider"></span>
             </label>
         </div>
@@ -72,7 +72,7 @@
                 <p class="text-sm editor-text-muted">Visitors must confirm age before viewing</p>
             </div>
             <label class="toggle-switch">
-                <input type="checkbox" x-model="bioPage.is_adult_content">
+                <input type="checkbox" x-model="bioPage.is_adult_content" aria-label="18+ zone">
                 <span class="toggle-slider"></span>
             </label>
         </div>
@@ -89,15 +89,15 @@
                     <p class="text-sm editor-text-muted">Require a password to view this page</p>
                 </div>
                 <label class="toggle-switch">
-                    <input type="checkbox" x-model="bioPage.password_enabled" @change="if(!$event.target.checked) bioPage.password = ''">
+                    <input type="checkbox" aria-label="Password protection" x-model="bioPage.password_enabled" @change="if(!$event.target.checked) bioPage.password = ''">
                     <span class="toggle-slider"></span>
                 </label>
             </div>
             <div x-show="bioPage.password_enabled" x-collapse>
                 <div class="form-group mb-0">
-                    <label class="form-label">Password</label>
+                    <label for="bfsettin-3" class="form-label">Password</label>
                     <div class="relative">
-                        <input :type="showPassword ? 'text' : 'password'" 
+                        <input id="bfsettin-3" :type="showPassword ? 'text' : 'password'" 
                                x-model="bioPage.password" 
                                class="form-input pr-10" 
                                placeholder="Enter password for your page"
@@ -106,7 +106,7 @@
                                data-lpignore="true"
                                data-1p-ignore="true"
                                data-form-type="other">
-                        <button type="button" @click="showPassword = !showPassword" 
+                        <button :aria-label="showPassword ? 'Hide password' : 'Show password'" type="button" @click="showPassword = !showPassword" 
                                 class="absolute right-3 top-1/2 -translate-y-1/2 editor-text-muted hover:editor-text">
                             <svg x-show="!showPassword" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -130,18 +130,18 @@
     </div>
     <div class="space-y-4">
         <div class="form-group">
-            <label class="form-label">Google Analytics ID</label>
-            <input type="text" x-model="bioPage.google_analytics_id" class="form-input" placeholder="G-XXXXXXXXXX" pattern="G-[A-Z0-9]+" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other" inputmode="text">
+            <label for="bfsettin-4" class="form-label">Google Analytics ID</label>
+            <input id="bfsettin-4" type="text" x-model="bioPage.google_analytics_id" class="form-input" placeholder="G-XXXXXXXXXX" pattern="G-[A-Z0-9]+" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other" inputmode="text">
             <p class="text-xs editor-text-muted mt-1">Format: G-XXXXXXXXXX (e.g., G-ABC123DEF4)</p>
         </div>
         <div class="form-group">
-            <label class="form-label">Facebook Pixel ID</label>
-            <input type="text" x-model="bioPage.facebook_pixel_id" class="form-input" placeholder="123456789012345" pattern="\d{10,20}" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other" inputmode="numeric">
+            <label for="bfsettin-5" class="form-label">Facebook Pixel ID</label>
+            <input id="bfsettin-5" type="text" x-model="bioPage.facebook_pixel_id" class="form-input" placeholder="123456789012345" pattern="\d{10,20}" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other" inputmode="numeric">
             <p class="text-xs editor-text-muted mt-1">Format: 15 digit number (e.g., 123456789012345)</p>
         </div>
         <div class="form-group">
-            <label class="form-label">TikTok Pixel ID</label>
-            <input type="text" x-model="bioPage.tiktok_pixel_id" class="form-input" placeholder="CXXXXXXXXXXXXXXXXXX" pattern="[A-Z0-9]{20,30}" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other" inputmode="text">
+            <label for="bfsettin-6" class="form-label">TikTok Pixel ID</label>
+            <input id="bfsettin-6" type="text" x-model="bioPage.tiktok_pixel_id" class="form-input" placeholder="CXXXXXXXXXXXXXXXXXX" pattern="[A-Z0-9]{20,30}" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other" inputmode="text">
             <p class="text-xs editor-text-muted mt-1">Format: 20-30 character ID (e.g., C123ABC456DEF789GHI)</p>
         </div>
     </div>

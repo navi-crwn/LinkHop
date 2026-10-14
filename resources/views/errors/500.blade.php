@@ -58,7 +58,7 @@
                         </svg>
                         Go to Homepage
                     </a>
-                    <button onclick="window.history.back()" class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-6 py-3 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                    <button type="button" id="go-back" class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-6 py-3 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                         </svg>
@@ -76,5 +76,8 @@
             </div>
         </div>
     </div>
+    <script nonce="{{ Vite::cspNonce() }}">
+        document.getElementById('go-back').addEventListener('click', () => window.history.back());
+    </script>
 </body>
 </html>

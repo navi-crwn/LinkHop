@@ -99,7 +99,7 @@
                 @empty
                     <div class="px-4 py-10 text-center">
                         <p class="text-sm text-muted">No links yet.</p>
-                        <button type="button" onclick="window.openLinkPanel && window.openLinkPanel()" class="btn-primary btn-sm mt-3">Create your first link</button>
+                        <button type="button" data-call="openLinkPanel" class="btn-primary btn-sm mt-3">Create your first link</button>
                     </div>
                 @endforelse
             </div>
@@ -114,12 +114,11 @@
                 </div>
                 <dl class="mt-3 space-y-3 text-xs">
                     @foreach ([['Created today', $quota['daily'], 'bg-indigo-500'], ['Active links', $quota['active'], 'bg-emerald-500'], ['Bio pages', $quota['bio'], 'bg-violet-500']] as [$label, $q, $color])
-                        <div>
-                            <div class="mb-1 flex justify-between">
-                                <dt class="text-muted">{{ $label }}</dt>
-                                <dd class="font-semibold tabular-nums text-ink">{{ $q['used'] }} / {{ $q['limit'] }}</dd>
-                            </div>
-                            <div class="progress"><span class="{{ $color }}" style="width: {{ max(2, $pct($q)) }}%"></span></div>
+                        {{-- dt/dd must be direct children of the group div (dl > div > dt + dd) --}}
+                        <div class="flex flex-wrap justify-between">
+                            <dt class="mb-1 text-muted">{{ $label }}</dt>
+                            <dd class="mb-1 font-semibold tabular-nums text-ink">{{ $q['used'] }} / {{ $q['limit'] }}</dd>
+                            <dd class="w-full"><div class="progress" aria-hidden="true"><span class="{{ $color }}" style="width: {{ max(2, $pct($q)) }}%"></span></div></dd>
                         </div>
                     @endforeach
                 </dl>

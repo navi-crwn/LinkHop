@@ -13,24 +13,24 @@
             @endif
             <form method="GET" class="grid gap-2 rounded-xl border border-gray-100 bg-white p-3 shadow-sm dark:border-gray-800 dark:bg-gray-900 md:grid-cols-5">
                 <input type="text" name="q" value="{{ $search }}" placeholder="Search slug or destination..." class="rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white md:col-span-2" />
-                <select name="status" class="rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                <select name="status" aria-label="Status" class="rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
                     <option value="">All statuses</option>
                     <option value="active" @selected($status === 'active')>Active</option>
                     <option value="inactive" @selected($status === 'inactive')>Inactive</option>
                 </select>
-                <select name="user_id" class="rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                <select name="user_id" aria-label="Owner" class="rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
                     <option value="">All users</option>
                     @foreach ($users as $user)
                         <option value="{{ $user->id }}" @selected(($filters['user_id'] ?? null) == $user->id)>{{ $user->name }}</option>
                     @endforeach
                 </select>
-                <select name="folder_id" class="rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                <select name="folder_id" aria-label="Folder" class="rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
                     <option value="">All folders</option>
                     @foreach ($folders as $folder)
                         <option value="{{ $folder->id }}" @selected(($filters['folder_id'] ?? null) == $folder->id)>{{ $folder->name }}</option>
                     @endforeach
                 </select>
-                <select name="tag_id" class="rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                <select name="tag_id" aria-label="Tag" class="rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
                     <option value="">All tags</option>
                     @foreach ($tags as $tag)
                         <option value="{{ $tag->id }}" @selected(($filters['tag_id'] ?? null) == $tag->id)>{{ $tag->name }}</option>
@@ -45,18 +45,18 @@
                 <form method="POST" action="{{ route('admin.links.bulk') }}" id="bulk-form">
                     @csrf
                     <div class="flex flex-wrap items-center gap-2 border-b border-gray-100 px-3 py-2 dark:border-gray-800">
-                        <select name="action" class="w-40 rounded-full border-gray-200 bg-gray-50 px-4 py-2 text-sm dark:border-gray-800 dark:bg-gray-900 dark:text-white">
+                        <select name="action" aria-label="Bulk action" class="w-40 rounded-full border-gray-200 bg-gray-50 px-4 py-2 text-sm dark:border-gray-800 dark:bg-gray-900 dark:text-white">
                             <option value="disable">Disable Selected</option>
                             <option value="delete">Delete Selected</option>
                         </select>
-                        <button type="submit" class="rounded-full bg-rose-100 px-4 py-2 text-sm font-semibold text-rose-600 hover:bg-rose-200 dark:bg-rose-900/30 dark:text-rose-200">Apply to selected</button>
+                        <button type="submit" class="rounded-full bg-rose-100 px-4 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-200 dark:bg-rose-900/30 dark:text-rose-200">Apply to selected</button>
                     </div>
                     <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800 text-xs">
                         <thead class="bg-gray-50 text-left text-gray-600 dark:bg-gray-900 dark:text-gray-300">
                             <tr>
                                 <th class="px-3 py-2">
-                                    <input type="checkbox" @click="toggleAll($event)" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                    <input type="checkbox" aria-label="Select all links" @click="toggleAll($event)" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                 </th>
                                 <th class="px-3 py-2">Slug</th>
                                 <th class="px-3 py-2">Owner</th>
@@ -70,7 +70,7 @@
                             @forelse ($links as $link)
                                 <tr>
                                     <td class="px-3 py-2">
-                                        <input type="checkbox" name="ids[]" value="{{ $link->id }}" class="link-check rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                        <input type="checkbox" aria-label="Select {{ $link->slug }}" name="ids[]" value="{{ $link->id }}" class="link-check rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                     </td>
                                     <td class="px-3 py-2">
                                         <p class="font-semibold text-blue-600 dark:text-blue-400 text-xs">{{ $link->short_url }}</p>

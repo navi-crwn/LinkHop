@@ -66,12 +66,12 @@
                         @csrf
                         @method('PATCH')
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Name</label>
-                            <input type="text" name="name" value="{{ old('name', auth()->user()->name) }}" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
+                            <label for="fsettin-1" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Name</label>
+                            <input id="fsettin-1" type="text" name="name" value="{{ old('name', auth()->user()->name) }}" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Email</label>
-                            <input type="email" name="email" value="{{ old('email', auth()->user()->email) }}" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
+                            <label for="fsettin-2" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Email</label>
+                            <input id="fsettin-2" type="email" name="email" value="{{ old('email', auth()->user()->email) }}" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
                         </div>
                         <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">
                             Update Account
@@ -105,16 +105,16 @@
                             </div>
                         @endif
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Current Password</label>
-                            <input type="password" name="current_password" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
+                            <label for="fsettin-3" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Current Password</label>
+                            <input id="fsettin-3" type="password" name="current_password" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">New Password</label>
-                            <input type="password" name="password" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
+                            <label for="fsettin-4" class="block text-sm font-medium text-slate-700 dark:text-slate-300">New Password</label>
+                            <input id="fsettin-4" type="password" name="password" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Confirm New Password</label>
-                            <input type="password" name="password_confirmation" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
+                            <label for="fsettin-5" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Confirm New Password</label>
+                            <input id="fsettin-5" type="password" name="password_confirmation" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
                         </div>
                         <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">
                             Update Password
@@ -168,8 +168,8 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <div>
-                                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Confirm your password</label>
-                                                    <input 
+                                                    <label for="fsettin-6" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Confirm your password</label>
+                                                    <input id="fsettin-6" 
                                                         type="password" 
                                                         name="password" 
                                                         x-model="password"
@@ -226,8 +226,8 @@
                             <form method="POST" action="{{ route('settings.2fa.enable') }}" class="mt-4 space-y-3">
                                 @csrf
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Confirm your password</label>
-                                    <input type="password" name="password" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
+                                    <label for="fsettin-7" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Confirm your password</label>
+                                    <input id="fsettin-7" type="password" name="password" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
                                 </div>
                                 <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">
                                     Enable 2FA
@@ -260,8 +260,8 @@
                                 <form method="POST" action="{{ route('settings.2fa.confirm') }}" class="mt-4 space-y-3">
                                     @csrf
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Enter 6-digit code from your app</label>
-                                        <input type="text" name="code" maxlength="6" pattern="[0-9]{6}" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
+                                        <label for="fsettin-8" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Enter 6-digit code from your app</label>
+                                        <input id="fsettin-8" type="text" name="code" maxlength="6" pattern="[0-9]{6}" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
                                     </div>
                                     <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">
                                         Confirm & Activate
@@ -293,10 +293,10 @@
                                         <div class="text-sm font-mono text-white">{{ $code }}</div>
                                     @endforeach
                                 </div>
-                                <form method="POST" action="{{ route('settings.2fa.recovery-codes') }}" class="mt-4" onsubmit="return confirm('Are you sure you want to regenerate recovery codes? Your old codes will no longer work.')">
+                                <form method="POST" action="{{ route('settings.2fa.recovery-codes') }}" class="mt-4" data-confirm="Are you sure you want to regenerate recovery codes? Your old codes will no longer work.">
                                     @csrf
                                     <input type="hidden" name="password" value="">
-                                    <button type="button" onclick="this.previousElementSibling.value = prompt('Enter your password to regenerate codes:'); if(this.previousElementSibling.value) this.form.submit();" class="rounded-lg bg-slate-600 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-500">
+                                    <button type="button" data-prompt-password="Enter your password to regenerate codes:" class="rounded-lg bg-slate-600 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-500">
                                         Regenerate Codes
                                     </button>
                                 </form>
@@ -306,11 +306,11 @@
                                 <p class="mt-1 text-sm text-red-800 dark:text-red-200">
                                     Remove two-factor authentication from your account. This will make your account less secure.
                                 </p>
-                                <form method="POST" action="{{ route('settings.2fa.disable') }}" class="mt-4" onsubmit="return confirm('Are you sure you want to disable two-factor authentication?')">
+                                <form method="POST" action="{{ route('settings.2fa.disable') }}" class="mt-4" data-confirm="Are you sure you want to disable two-factor authentication?">
                                     @csrf
                                     @method('DELETE')
                                     <input type="hidden" name="password" value="">
-                                    <button type="button" onclick="this.previousElementSibling.value = prompt('Enter your password to disable 2FA:'); if(this.previousElementSibling.value) this.form.submit();" class="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">
+                                    <button type="button" data-prompt-password="Enter your password to disable 2FA:" class="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">
                                         Disable 2FA
                                     </button>
                                 </form>
@@ -340,21 +340,21 @@
                             <div x-show="showFilters" x-cloak class="space-y-4 p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">From Date</label>
-                                        <input type="date" name="date_from" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                                        <label for="fsettin-9" class="block text-sm font-medium text-slate-700 dark:text-slate-300">From Date</label>
+                                        <input id="fsettin-9" type="date" name="date_from" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">To Date</label>
-                                        <input type="date" name="date_to" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                                        <label for="fsettin-10" class="block text-sm font-medium text-slate-700 dark:text-slate-300">To Date</label>
+                                        <input id="fsettin-10" type="date" name="date_to" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Minimum Clicks</label>
-                                        <input type="number" name="min_clicks" min="0" placeholder="e.g., 10" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                                        <label for="fsettin-11" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Minimum Clicks</label>
+                                        <input id="fsettin-11" type="number" name="min_clicks" min="0" placeholder="e.g., 10" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
                                         <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Only links with this many clicks or more</p>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Sort By</label>
-                                        <select name="sort_by" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                                        <label for="fsettin-12" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Sort By</label>
+                                        <select id="fsettin-12" name="sort_by" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
                                             <option value="newest">Newest First</option>
                                             <option value="oldest">Oldest First</option>
                                             <option value="most_clicked">Most Clicked First</option>
@@ -362,8 +362,8 @@
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Folder</label>
-                                        <select name="folder_id" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                                        <label for="fsettin-13" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Folder</label>
+                                        <select id="fsettin-13" name="folder_id" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
                                             <option value="">All Folders</option>
                                             <option value="default">Default (No Folder)</option>
                                             @foreach($folders as $folder)
@@ -372,8 +372,8 @@
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Tag</label>
-                                        <select name="tag_id" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                                        <label for="fsettin-14" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Tag</label>
+                                        <select id="fsettin-14" name="tag_id" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
                                             <option value="">All Tags</option>
                                             @foreach($tags as $tag)
                                                 <option value="{{ $tag->id }}">{{ $tag->name }}</option>
@@ -398,6 +398,20 @@
                             <p class="text-xs text-blue-800 dark:text-blue-200">
                                 <strong>Complete export includes:</strong> Short URL, Destination URL, Redirect type, Folder, Tags, Password status, Status, Total clicks, Unique visitors, Created date, Expiration date, Last clicked date
                             </p>
+                        </div>
+                    </div>
+                    <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                                <h4 class="font-medium text-slate-900 dark:text-white">Download My Account Data</h4>
+                                <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                                    Profile, links, folders, tags, bio pages with their blocks, recent sign-ins and activity log (JSON)
+                                </p>
+                            </div>
+                            <form method="POST" action="{{ route('settings.export.account') }}">
+                                @csrf
+                                <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">Download JSON</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -429,12 +443,12 @@
                         <input type="hidden" name="tab" value="activity">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">From Date</label>
-                                <input type="date" name="activity_from" value="{{ request('activity_from') }}" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                                <label for="fsettin-15" class="block text-sm font-medium text-slate-700 dark:text-slate-300">From Date</label>
+                                <input id="fsettin-15" type="date" name="activity_from" value="{{ request('activity_from') }}" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">To Date</label>
-                                <input type="date" name="activity_to" value="{{ request('activity_to') }}" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                                <label for="fsettin-16" class="block text-sm font-medium text-slate-700 dark:text-slate-300">To Date</label>
+                                <input id="fsettin-16" type="date" name="activity_to" value="{{ request('activity_to') }}" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
                             </div>
                         </div>
                         <div class="mt-3 flex gap-2">
@@ -546,8 +560,8 @@
                         <form method="POST" action="{{ route('api-tokens.store') }}" @submit.prevent="createToken" class="space-y-3">
                             @csrf
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Token Name</label>
-                                <input 
+                                <label for="fsettin-17" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Token Name</label>
+                                <input id="fsettin-17" 
                                     type="text" 
                                     name="name" 
                                     x-model="newTokenName"
@@ -601,7 +615,7 @@
                                             <span>Rate limit: {{ $token->rate_limit }}/hour</span>
                                         </div>
                                     </div>
-                                    <form method="POST" action="{{ route('api-tokens.destroy', $token) }}" onsubmit="return confirm('Are you sure you want to revoke this token? This action cannot be undone.')">
+                                    <form method="POST" action="{{ route('api-tokens.destroy', $token) }}" data-confirm="Are you sure you want to revoke this token? This action cannot be undone.">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="rounded-lg border border-red-300 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:border-red-700 dark:text-red-400 dark:hover:bg-red-900/20">

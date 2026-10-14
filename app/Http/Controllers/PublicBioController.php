@@ -6,13 +6,15 @@ use App\Models\BioLink;
 use App\Models\BioPage;
 use App\Services\GeoIpService;
 use App\Services\UserAgentService;
+use App\Support\QrPng;
 use App\Support\SafeContent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
+use function Illuminate\Support\defer;
 
 class PublicBioController extends Controller
 {
@@ -98,13 +100,14 @@ class PublicBioController extends Controller
             && ! RateLimiter::tooManyAttempts($ipKey, self::COUNTED_CLICKS_PER_IP)
             && Cache::add($dedupKey, true, now()->addMinutes(10))) {
             RateLimiter::hit($ipKey, 600);
-            $bioLink->recordClick([
+            $click = [
                 'ip_address' => $ipAddress,
                 'device' => strtolower($ua['device']),
                 'browser' => $ua['browser'],
                 'referrer' => request()->header('referer'),
-                'country' => $this->getCountryFromIp($ipAddress),
-            ]);
+            ];
+            // The country lookup can take seconds for a new IP; record after the redirect is sent.
+            defer(fn () => $bioLink->recordClick($click + ['country' => $this->getCountryFromIp($ipAddress)]));
         }
         $response = redirect()->away($target)->header('Referrer-Policy', 'strict-origin-when-cross-origin');
         if ($newVisitorId !== null) {
@@ -131,11 +134,7 @@ class PublicBioController extends Controller
         $bioPage = BioPage::where('slug', $slug)->first();
         abort_unless($this->isVisible($bioPage), 404);
         $url = url('/b/'.$bioPage->slug);
-        $qrCode = QrCode::format('png')
-            ->size(512)
-            ->margin(2)
-            ->errorCorrection('H')
-            ->generate($url);
+        $qrCode = QrPng::render($url, 512, margin: 2);
 
         return response($qrCode)
             ->header('Content-Type', 'image/png')

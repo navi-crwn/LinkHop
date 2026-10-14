@@ -32,32 +32,32 @@
                     <form method="POST" action="{{ route('admin.users.store') }}" class="mt-4 grid gap-4 md:grid-cols-2">
                         @csrf
                         <div class="md:col-span-1">
-                            <label class="text-sm text-gray-600 dark:text-gray-300">Name</label>
-                            <input type="text" name="name" value="{{ old('name') }}" required class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" autocomplete="off">
+                            <label for="fadminu-1" class="text-sm text-gray-600 dark:text-gray-300">Name</label>
+                            <input id="fadminu-1" type="text" name="name" value="{{ old('name') }}" required class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" autocomplete="off">
                             @error('name')
                                 <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
                             @enderror
                         </div>
                         <div class="md:col-span-1">
-                            <label class="text-sm text-gray-600 dark:text-gray-300">Email</label>
-                            <input type="email" name="email" value="{{ old('email') }}" required class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" autocomplete="off">
+                            <label for="fadminu-2" class="text-sm text-gray-600 dark:text-gray-300">Email</label>
+                            <input id="fadminu-2" type="email" name="email" value="{{ old('email') }}" required class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" autocomplete="off">
                             @error('email')
                                 <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
                             @enderror
                         </div>
                         <div class="md:col-span-1">
-                            <label class="text-sm text-gray-600 dark:text-gray-300">Password</label>
-                            <input type="password" name="password" required class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" autocomplete="new-password">
+                            <label for="fadminu-3" class="text-sm text-gray-600 dark:text-gray-300">Password</label>
+                            <input id="fadminu-3" type="password" name="password" required class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" autocomplete="new-password">
                             @error('password')
                                 <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
                             @enderror
                         </div>
                         <div class="md:col-span-1">
-                            <label class="text-sm text-gray-600 dark:text-gray-300">Confirm password</label>
-                            <input type="password" name="password_confirmation" required class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" autocomplete="new-password">
+                            <label for="fadminu-4" class="text-sm text-gray-600 dark:text-gray-300">Confirm password</label>
+                            <input id="fadminu-4" type="password" name="password_confirmation" required class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" autocomplete="new-password">
                         </div>
                         <div class="md:col-span-2 flex justify-end">
-                            <button type="submit" class="rounded-full bg-emerald-600 px-6 py-2 text-sm font-semibold text-white hover:bg-emerald-500">Create User</button>
+                            <button type="submit" class="rounded-full bg-emerald-700 px-6 py-2 text-sm font-semibold text-white hover:bg-emerald-600">Create User</button>
                         </div>
                     </form>
                 </div>
@@ -107,13 +107,13 @@
                                             <form method="POST" action="{{ route('admin.users.status', $user) }}" class="inline-flex items-center gap-2">
                                                 @csrf
                                                 @method('PATCH')
-                                                <select name="status" class="rounded-lg border-gray-200 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                                                <select name="status" aria-label="Account status" class="rounded-lg border-gray-200 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
                                                     <option value="active" @selected($user->status === 'active')>Active</option>
                                                     <option value="suspended" @selected($user->status === 'suspended')>Suspended</option>
                                                 </select>
                                                 <button class="rounded-lg bg-indigo-600 px-3 py-1 text-xs font-semibold text-white hover:bg-indigo-500">Update status</button>
                                             </form>
-                                            <form method="POST" action="{{ route('admin.users.destroy', $user) }}" onsubmit="return confirm('Delete this account and all links?')" class="inline-flex items-center gap-2">
+                                            <form method="POST" action="{{ route('admin.users.destroy', $user) }}" data-confirm="Delete this account and all links?" class="inline-flex items-center gap-2">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button class="rounded-lg border border-rose-200 px-3 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:border-rose-900/30 dark:text-rose-200 dark:hover:bg-rose-900/30">Delete user</button>

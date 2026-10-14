@@ -75,7 +75,7 @@
                     </p>
                 </div>
             @else
-                <p class="px-3 pb-2 text-[11px] text-slate-400 dark:text-white/40">
+                <p class="px-3 pb-2 text-[11px] text-slate-500 dark:text-white/60">
                     No account needed. Guest links expire after {{ $idleDays }} days without clicks ({{ $maxDays }} days max).
                 </p>
             @endif
@@ -143,10 +143,10 @@
             </div>
         </div>
         <a href="https://p.hel.ink" target="_blank" rel="noopener" class="{{ $card }} group block p-6 transition hover:bg-white dark:hover:bg-white/[0.08]">
-            <p class="text-xs font-semibold uppercase tracking-wider text-cyan-600 dark:text-cyan-200/80">HEL.ink family</p>
+            <p class="text-xs font-semibold uppercase tracking-wider text-cyan-700 dark:text-cyan-200/80">HEL.ink family</p>
             <h2 class="mt-2 text-xl font-semibold">PixelHop</h2>
             <p class="mt-2 text-sm text-slate-600 dark:text-white/60">Free image hosting with compress, resize, convert, OCR and background removal.</p>
-            <p class="mt-4 text-sm font-medium text-cyan-600 group-hover:underline dark:text-cyan-200">p.hel.ink →</p>
+            <p class="mt-4 text-sm font-medium text-cyan-700 group-hover:underline dark:text-cyan-200">p.hel.ink →</p>
         </a>
     </section>
 </x-marketing-layout>

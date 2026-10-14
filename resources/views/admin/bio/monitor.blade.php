@@ -10,7 +10,7 @@
             <div class="flex items-center gap-3">
                 {{-- Period Filter --}}
                 <form method="GET" class="flex items-center gap-2">
-                    <select name="period" onchange="this.form.submit()" class="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                    <select name="period" data-autosubmit class="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
                         <option value="7" {{ $period == '7' ? 'selected' : '' }}>Last 7 days</option>
                         <option value="14" {{ $period == '14' ? 'selected' : '' }}>Last 14 days</option>
                         <option value="30" {{ $period == '30' ? 'selected' : '' }}>Last 30 days</option>
@@ -364,7 +364,7 @@
                                     <p class="text-xs text-slate-500 dark:text-slate-400">
                                         {{ $click->bioLink->bioPage->title ?? 'Unknown' }}
                                     </p>
-                                    <div class="mt-1 flex items-center justify-between text-xs text-slate-400 dark:text-slate-500">
+                                    <div class="mt-1 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                                         <span>{{ $click->created_at->diffForHumans() }}</span>
                                         <div class="flex items-center gap-2">
                                             @if($click->country)

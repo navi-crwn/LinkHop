@@ -19,63 +19,9 @@
     @endif
     <meta property="og:url" content="{{ url('/b/' . $bioPage->slug) }}">
     <meta property="og:type" content="profile">
-    @if($bioPage->google_analytics_id && preg_match('/^G-[A-Z0-9]+$/', $bioPage->google_analytics_id))
-    <script nonce="{{ Vite::cspNonce() }}" async src="https://www.googletagmanager.com/gtag/js?id={{ $bioPage->google_analytics_id }}"></script>
-    <script nonce="{{ Vite::cspNonce() }}">
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '{{ $bioPage->google_analytics_id }}');
-    </script>
-    @endif
-    @if($bioPage->facebook_pixel_id && preg_match('/^\d{10,20}$/', $bioPage->facebook_pixel_id))
-    <script nonce="{{ Vite::cspNonce() }}">
-        !function(f,b,e,v,n,t,s)
-        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}(window, document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '{{ $bioPage->facebook_pixel_id }}');
-        fbq('track', 'PageView');
-    </script>
-    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{ $bioPage->facebook_pixel_id }}&ev=PageView&noscript=1"/></noscript>
-    @endif
-    @if($bioPage->tiktok_pixel_id && preg_match('/^[A-Z0-9]{20,30}$/', $bioPage->tiktok_pixel_id))
-    <script nonce="{{ Vite::cspNonce() }}">
-        !function (w, d, t) {
-            w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var o=document.createElement("script");o.type="text/javascript",o.async=!0,o.src=i+"?sdkid="+e+"&lib="+t;var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
-            ttq.load('{{ $bioPage->tiktok_pixel_id }}');
-            ttq.page();
-        }(window, document, 'ttq');
-    </script>
-    @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @php
-        $themes = [
-            'light' => ['background' => '#ffffff', 'text' => '#1e293b', 'bio' => '#64748b', 'link_bg' => '#f1f5f9', 'link_text' => '#1e293b'],
-            'dark' => ['background' => 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', 'text' => '#f1f5f9', 'bio' => 'rgba(241,245,249,0.8)', 'link_bg' => 'rgba(51, 65, 85, 0.9)', 'link_text' => '#f1f5f9'],
-            'modern' => ['background' => 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 'text' => '#ffffff', 'bio' => 'rgba(255,255,255,0.8)', 'link_bg' => 'rgba(255, 255, 255, 0.2)', 'link_text' => '#ffffff'],
-            'classic' => ['background' => 'linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%)', 'text' => '#1e293b', 'bio' => '#64748b', 'link_bg' => '#ffffff', 'link_text' => '#1e293b'],
-            'minimal-light' => ['background' => '#fafafa', 'text' => '#171717', 'bio' => '#525252', 'link_bg' => '#ffffff', 'link_text' => '#171717'],
-            'minimal-dark' => ['background' => '#171717', 'text' => '#fafafa', 'bio' => '#a3a3a3', 'link_bg' => '#262626', 'link_text' => '#fafafa'],
-            'ocean' => ['background' => 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 'text' => '#ffffff', 'bio' => 'rgba(255,255,255,0.8)', 'link_bg' => 'rgba(255, 255, 255, 0.2)', 'link_text' => '#ffffff'],
-            'sunset' => ['background' => 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', 'text' => '#ffffff', 'bio' => 'rgba(255,255,255,0.9)', 'link_bg' => 'rgba(255, 255, 255, 0.25)', 'link_text' => '#ffffff'],
-            'forest' => ['background' => 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)', 'text' => '#ffffff', 'bio' => 'rgba(255,255,255,0.85)', 'link_bg' => 'rgba(255, 255, 255, 0.2)', 'link_text' => '#ffffff'],
-            'galaxy' => ['background' => 'linear-gradient(135deg, #0c0a3e 0%, #2d1b69 50%, #7b2cbf 100%)', 'text' => '#ffffff', 'bio' => '#e0aaff', 'link_bg' => 'rgba(255,255,255,0.15)', 'link_text' => '#ffffff'],
-            'neon' => ['background' => '#0a0a0a', 'text' => '#39ff14', 'bio' => '#00ff88', 'link_bg' => 'rgba(57, 255, 20, 0.15)', 'link_text' => '#39ff14', 'link_border' => '#39ff14'],
-            'pastel' => ['background' => 'linear-gradient(180deg, #ffecd2 0%, #fcb69f 100%)', 'text' => '#5c4742', 'bio' => '#8b7355', 'link_bg' => '#ffffff', 'link_text' => '#5c4742'],
-            'cyberpunk' => ['background' => 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)', 'text' => '#00fff5', 'bio' => '#ff006e', 'link_bg' => 'rgba(0,255,245,0.1)', 'link_text' => '#00fff5'],
-            'aurora' => ['background' => 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)', 'text' => '#b8b8d1', 'bio' => '#7f7f9a', 'link_bg' => 'rgba(88,86,214,0.3)', 'link_text' => '#ffffff'],
-            'cherry' => ['background' => 'linear-gradient(180deg, #ffc0cb 0%, #ffb6c1 50%, #ff69b4 100%)', 'text' => '#4a1942', 'bio' => '#722f37', 'link_bg' => '#ffffff', 'link_text' => '#4a1942'],
-            'midnight' => ['background' => 'linear-gradient(180deg, #0f0f23 0%, #1a1a3e 100%)', 'text' => '#e8e8ff', 'bio' => '#8888aa', 'link_bg' => 'rgba(99,102,241,0.2)', 'link_text' => '#a5b4fc'],
-            'retro' => ['background' => '#f4e4ba', 'text' => '#2d1b00', 'bio' => '#5c4033', 'link_bg' => '#e07a5f', 'link_text' => '#ffffff'],
-            'ice' => ['background' => 'linear-gradient(180deg, #e0f7fa 0%, #b2ebf2 50%, #80deea 100%)', 'text' => '#006064', 'bio' => '#00838f', 'link_bg' => '#ffffff', 'link_text' => '#00838f'],
-            'lavender' => ['background' => 'linear-gradient(135deg, #e6e6fa 0%, #d8bfd8 50%, #dda0dd 100%)', 'text' => '#4b0082', 'bio' => '#663399', 'link_bg' => '#ffffff', 'link_text' => '#4b0082'],
-            'matrix' => ['background' => '#000000', 'text' => '#00ff00', 'bio' => '#00cc00', 'link_bg' => 'rgba(0,255,0,0.1)', 'link_text' => '#00ff00'],
-        ];
+        $themes = config('bio-themes.presets');
         $currentTheme = $bioPage->theme ?? 'none';
         $hasTheme = $currentTheme && $currentTheme !== 'none' && isset($themes[$currentTheme]);
         $themeData = $hasTheme ? $themes[$currentTheme] : null;
@@ -111,48 +57,14 @@
             $linkBgColor = $themeData['link_bg'];
             $themeLinkBorder = $themeData['link_border'] ?? null;
         } else {
-            $titleColor = $bioPage->title_color ?? '#1e293b';
-            $bioColor = $bioPage->bio_color ?? '#64748b';
-            $linkTextColor = $bioPage->link_text_color ?? '#1e293b';
-            $linkBgColor = $bioPage->link_bg_color ?? '#ffffff';
+            $titleColor = $bioPage->title_color ?: config('bio-themes.defaults.title');
+            $bioColor = $bioPage->bio_color ?: config('bio-themes.defaults.bio');
+            $linkTextColor = $bioPage->link_text_color ?: config('bio-themes.defaults.link_text');
+            $linkBgColor = $bioPage->link_bg_color ?: config('bio-themes.defaults.link_bg');
             $themeLinkBorder = null;
         }
-        $themeGlowColors = [
-            'default' => 'rgba(99, 102, 241, 0.4)',
-            'light' => 'rgba(99, 102, 241, 0.4)',
-            'dark' => 'rgba(96, 165, 250, 0.5)',
-            'modern' => 'rgba(139, 92, 246, 0.5)',
-            'classic' => 'rgba(71, 85, 105, 0.4)',
-            'minimal-light' => 'rgba(23, 23, 23, 0.3)',
-            'minimal-dark' => 'rgba(250, 250, 250, 0.3)',
-            'ocean' => 'rgba(118, 75, 162, 0.5)',
-            'sunset' => 'rgba(245, 87, 108, 0.5)',
-            'forest' => 'rgba(113, 178, 128, 0.5)',
-            'galaxy' => 'rgba(123, 44, 191, 0.5)',
-            'neon' => 'rgba(57, 255, 20, 0.5)',
-            'pastel' => 'rgba(252, 182, 159, 0.5)',
-            'cyberpunk' => 'rgba(0, 255, 245, 0.5)',
-            'aurora' => 'rgba(88, 86, 214, 0.5)',
-            'cherry' => 'rgba(255, 105, 180, 0.5)',
-            'midnight' => 'rgba(165, 180, 252, 0.5)',
-            'retro' => 'rgba(224, 122, 95, 0.5)',
-            'ice' => 'rgba(0, 131, 143, 0.5)',
-            'lavender' => 'rgba(75, 0, 130, 0.4)',
-            'matrix' => 'rgba(0, 255, 0, 0.5)',
-        ];
-        $themeHueShifts = [
-            'default' => '30deg',
-            'neon' => '60deg',
-            'cyberpunk' => '-40deg',
-            'matrix' => '120deg',
-            'sunset' => '-30deg',
-            'ocean' => '40deg',
-            'galaxy' => '45deg',
-            'aurora' => '50deg',
-            'cherry' => '-20deg',
-            'ice' => '20deg',
-            'retro' => '-25deg',
-        ];
+        $themeGlowColors = config('bio-themes.glow');
+        $themeHueShifts = config('bio-themes.hue');
         $themeGlowColor = $themeGlowColors[$currentTheme] ?? 'rgba(99, 102, 241, 0.4)';
         $themeHueShift = $themeHueShifts[$currentTheme] ?? '30deg';
         $fontFamily = match($bioPage->font_family ?? 'inter') {
@@ -189,11 +101,13 @@
             'pill' => 'border-radius: 9999px;',
             default => 'border-radius: 0.75rem;'
         };
-        $blockShadow = match($bioPage->block_shadow ?? 'sm') {
+        // Same default and scale as the .shadow-* classes the preview uses (M7).
+        $blockShadow = match($bioPage->block_shadow ?? 'md') {
             'none' => 'box-shadow: none;',
-            'md' => 'box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);',
-            'lg' => 'box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);',
-            default => 'box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);'
+            'sm' => 'box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);',
+            'lg' => 'box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.15);',
+            'xl' => 'box-shadow: 0 25px 35px -5px rgba(0, 0, 0, 0.2);',
+            default => 'box-shadow: 0 4px 8px -1px rgba(0, 0, 0, 0.12);'
         };
         $cardBg = 'transparent';
         $blockBg = $linkBgColor;
@@ -479,6 +393,18 @@
         .attention-bounce { animation: attentionBounce 1s ease-in-out infinite; }
         .bg-animation-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
         .bg-particle { position: absolute; pointer-events: none; }
+        /* Visitors who asked for less motion get the final state without animating. */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                animation-delay: 0s !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            #bg-animation { display: none !important; }
+        }
+
         @keyframes fall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0.3; } }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
         .text-block-expandable .text-block-text {
@@ -658,25 +584,25 @@
 @endphp
 <body class="bio-container {{ $hoverEffect && $hoverEffect !== 'none' ? 'hover-' . $hoverEffect : '' }}" data-theme="{{ $bioPage->theme }}" data-bg-animation="{{ $bgAnimation }}">
     <div class="bg-animation-container" id="bg-animation"></div>
-    <button onclick="document.getElementById('share-modal').classList.remove('hidden')" 
+    <button aria-label="Share this page" data-show="#share-modal" 
             class="fixed top-4 right-4 z-40 w-10 h-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center hover:bg-white dark:hover:bg-slate-700 transition-all">
         <svg class="w-5 h-5 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
         </svg>
     </button>
-    <div id="share-modal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index: 999999;" onclick="if(event.target === this) this.classList.add('hidden')">
+    <div id="share-modal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index: 999999;" data-hide-self-on-backdrop>
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
         <div class="share-modal-content relative rounded-2xl p-4 max-w-xs w-full shadow-2xl" style="background: {{ $isDarkTheme ? '#1e293b' : '#ffffff' }}; color: {{ $isDarkTheme ? '#f1f5f9' : '#1e293b' }}; max-height: 90vh; overflow-y: auto;">
             <div class="flex items-center justify-between mb-3">
                 <h3 class="text-base font-semibold" style="color: {{ $isDarkTheme ? '#f1f5f9' : '#1e293b' }};">Share this Page</h3>
-                <button onclick="document.getElementById('share-modal').classList.add('hidden')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/10 transition-colors" style="color: {{ $isDarkTheme ? '#94a3b8' : '#64748b' }};">
+                <button aria-label="Close" data-hide="#share-modal" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/10 transition-colors" style="color: {{ $isDarkTheme ? '#94a3b8' : '#64748b' }};">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
             <div class="flex items-center gap-2 p-2 rounded-lg mb-3" style="background: {{ $isDarkTheme ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }};">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: {{ $isDarkTheme ? '#94a3b8' : '#64748b' }};"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
                 <input type="text" value="{{ url()->current() }}" readonly class="flex-1 bg-transparent border-none text-xs focus:outline-none min-w-0" style="color: {{ $isDarkTheme ? '#e2e8f0' : '#334155' }};" id="share-url">
-                <button onclick="navigator.clipboard.writeText(document.getElementById('share-url').value); this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy', 2000)" class="px-2 py-1 text-xs font-medium rounded-md transition-colors flex-shrink-0" style="background: #3b82f6; color: #ffffff;">Copy</button>
+                <button data-copy-from="#share-url" class="px-2 py-1 text-xs font-medium rounded-md transition-colors flex-shrink-0" style="background: #3b82f6; color: #ffffff;">Copy</button>
             </div>
             <div class="grid grid-cols-4 gap-2 mb-3">
                 <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->current()) }}" target="_blank" class="flex flex-col items-center gap-1 p-2 rounded-lg transition-colors hover:bg-black/5" title="Facebook">
@@ -707,7 +633,7 @@
             <div class="border-t pt-3" style="border-color: {{ $isDarkTheme ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' }};">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-medium" style="color: {{ $isDarkTheme ? '#94a3b8' : '#64748b' }};">QR Code</span>
-                    <button onclick="downloadShareQR()" class="px-2 py-1 text-[10px] font-medium rounded transition-colors flex items-center gap-1" style="background: {{ $isDarkTheme ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }}; color: {{ $isDarkTheme ? '#e2e8f0' : '#334155' }};">
+                    <button data-call="downloadShareQR" class="px-2 py-1 text-[10px] font-medium rounded transition-colors flex items-center gap-1" style="background: {{ $isDarkTheme ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }}; color: {{ $isDarkTheme ? '#e2e8f0' : '#334155' }};">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                         Save
                     </button>
@@ -734,7 +660,7 @@
                     @if($bioPage->avatar_url)
                         <img src="{{ Storage::disk('public')->url($bioPage->avatar_url) }}" 
                              alt="{{ $bioPage->title }}" 
-                             class="mx-auto mb-4 h-24 w-24 object-cover"
+                             class="mx-auto mb-4 h-24 w-24 object-cover" width="96" height="96" fetchpriority="high"
                              style="border-radius: {{ $bioPage->avatar_shape === 'rounded' ? '16px' : ($bioPage->avatar_shape === 'square' ? '0' : '50%') }};">
                     @else
                         <div class="mx-auto mb-4 flex h-24 w-24 items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-3xl font-bold text-white"
@@ -783,9 +709,9 @@
                                    style="background: {{ $brandColor }};">
                                     <img src="/images/brands/{{ $platform }}.svg?v=20251212" 
                                          alt="{{ ucfirst(str_replace('-', ' ', $platform)) }}" 
-                                         class="social-icon h-5 w-5"
+                                         class="social-icon h-5 w-5" width="20" height="20" decoding="async"
                                          style="filter: brightness(0) invert(1);"
-                                         onerror="this.style.display='none';">
+                                         data-fallback="hide">
                                 </a>
                             @endif
                         @endforeach
@@ -847,17 +773,17 @@
                                         }
                                     @endphp
                                     <img src="{{ $thumbUrl }}" 
-                                         alt="" class="block-thumbnail">
+                                         alt="" class="block-thumbnail" width="42" height="42" loading="lazy" decoding="async">
                                 @elseif($iconPath)
                                     <img src="{{ $iconPath }}" 
                                          alt="{{ $link->brand ?? 'icon' }}" 
-                                         class="block-icon"
+                                         class="block-icon" width="24" height="24" loading="lazy" decoding="async"
                                          style="{{ $iconStyle }}">
                                 @endif
                                 <span class="block-title">{{ $link->title ?? 'Untitled Link' }}</span>
                             </a>
                         @elseif($link->type === 'text')
-                            <div class="text-block-styled" onclick="this.classList.toggle('expanded')">
+                            <div class="text-block-styled" data-toggle-class="expanded">
                                 <div class="text-block-header">
                                     <div class="text-block-dots">
                                         <span class="dot red"></span>
@@ -885,7 +811,7 @@
                                 <div class="image-block">
                                     <img src="{{ $imageUrl }}" 
                                          alt="{{ $link->title ?? 'Image' }}" 
-                                         class="image-block-img">
+                                         class="image-block-img" loading="lazy" decoding="async">
                                 </div>
                                 @if($link->title)
                                     <p class="mt-2 text-center text-sm" style="color: inherit;">{{ $link->title }}</p>
@@ -895,81 +821,8 @@
                             <div class="header-block" style="color: inherit;">{{ $link->title }}</div>
                         @elseif($link->type === 'divider')
                             <div class="divider-block" style="background: currentColor;"></div>
-                        @elseif($link->type === 'video' && $link->embed_url)
-                            <div class="w-full rounded-xl overflow-hidden" style="background: rgba(0,0,0,0.05);">
-                                @if($link->title)
-                                    <div class="px-4 py-2 text-sm font-medium" style="color: inherit;">{{ $link->title }}</div>
-                                @endif
-                                <div class="aspect-video">
-                                    @php
-                                        $videoUrl = $link->embed_url;
-                                        $embedHtml = '';
-                                        if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/', $videoUrl, $ytMatch)) {
-                                            $embedHtml = '<iframe src="https://www.youtube.com/embed/'.$ytMatch[1].'" class="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
-                                        } elseif (preg_match('/vimeo\.com\/(\d+)/', $videoUrl, $vimeoMatch)) {
-                                            $embedHtml = '<iframe src="https://player.vimeo.com/video/'.$vimeoMatch[1].'" class="w-full h-full" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>';
-                                        }
-                                    @endphp
-                                    {!! $embedHtml !!}
-                                </div>
-                            </div>
-                        @elseif($link->type === 'music' && $link->embed_url)
-                            <div class="w-full rounded-xl overflow-hidden p-3" style="background: rgba(0,0,0,0.05);">
-                                @if($link->title)
-                                    <div class="mb-2 text-sm font-medium" style="color: inherit;">{{ $link->title }}</div>
-                                @endif
-                                @php
-                                    $musicUrl = $link->embed_url;
-                                    $musicEmbed = '';
-                                    if (preg_match('/spotify\.com\/(track|album|playlist|artist)\/([a-zA-Z0-9]+)/', $musicUrl, $spotifyMatch)) {
-                                        $musicEmbed = '<iframe src="https://open.spotify.com/embed/'.$spotifyMatch[1].'/'.$spotifyMatch[2].'" height="152" class="w-full rounded-lg" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>';
-                                    } elseif (str_contains($musicUrl, 'soundcloud.com')) {
-                                        $musicEmbed = '<iframe height="166" class="w-full" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url='.urlencode($musicUrl).'&color=%236366f1&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>';
-                                    }
-                                @endphp
-                                {!! $musicEmbed !!}
-                            </div>
-                        @elseif($link->type === 'youtube' && $link->embed_url)
-                            <div class="w-full rounded-xl overflow-hidden" style="background: rgba(0,0,0,0.05);">
-                                @if($link->title)
-                                    <div class="px-4 py-2 text-sm font-medium" style="color: inherit;">{{ $link->title }}</div>
-                                @endif
-                                <div class="aspect-video">
-                                    @php
-                                        $ytUrl = $link->embed_url;
-                                        $ytEmbed = '';
-                                        if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/', $ytUrl, $ytMatch)) {
-                                            $ytEmbed = '<iframe src="https://www.youtube.com/embed/'.$ytMatch[1].'" class="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
-                                        }
-                                    @endphp
-                                    {!! $ytEmbed !!}
-                                </div>
-                            </div>
-                        @elseif($link->type === 'spotify' && $link->embed_url)
-                            <div class="w-full rounded-xl overflow-hidden p-3" style="background: rgba(0,0,0,0.05);">
-                                @if($link->title)
-                                    <div class="mb-2 text-sm font-medium" style="color: inherit;">{{ $link->title }}</div>
-                                @endif
-                                @php
-                                    $spotifyUrl = $link->embed_url;
-                                    $spotifyEmbed = '';
-                                    if (preg_match('/spotify\.com\/(track|album|playlist|artist)\/([a-zA-Z0-9]+)/', $spotifyUrl, $spotifyMatch)) {
-                                        $spotifyEmbed = '<iframe src="https://open.spotify.com/embed/'.$spotifyMatch[1].'/'.$spotifyMatch[2].'" height="152" class="w-full rounded-lg" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>';
-                                    }
-                                @endphp
-                                {!! $spotifyEmbed !!}
-                            </div>
-                        @elseif($link->type === 'soundcloud' && $link->embed_url)
-                            <div class="w-full rounded-xl overflow-hidden p-3" style="background: rgba(0,0,0,0.05);">
-                                @if($link->title)
-                                    <div class="mb-2 text-sm font-medium" style="color: inherit;">{{ $link->title }}</div>
-                                @endif
-                                @php
-                                    $scUrl = $link->embed_url;
-                                    $scEmbed = '<iframe height="166" class="w-full" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url='.urlencode($scUrl).'&color=%236366f1&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>';
-                                @endphp
-                                {!! $scEmbed !!}
-                            </div>
+                        @elseif(in_array($link->type, ['video', 'youtube', 'music', 'spotify', 'soundcloud'], true) && $link->embed_url)
+                            @include('bio.partials.embed', ['link' => $link])
                         @elseif($link->type === 'vcard')
                             <div class="w-full rounded-2xl p-5 text-center" style="background: rgba(0,0,0,0.05);">
                                 <div class="w-20 h-20 mx-auto mb-3 rounded-full flex items-center justify-center" style="background: var(--button-bg, #6366f1);">
@@ -995,7 +848,7 @@
                                         </div>
                                     @endif
                                 </div>
-                                <button onclick="downloadVCard(@js($link->vcard_name), @js($link->vcard_phone), @js($link->vcard_email), @js($link->vcard_company))" 
+                                <button type="button" data-call="downloadVCard" data-args="{{ json_encode([$link->vcard_name, $link->vcard_phone, $link->vcard_email, $link->vcard_company]) }}" 
                                         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all"
                                         style="background: var(--button-bg, #6366f1); color: var(--button-text, #fff);">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
@@ -1017,7 +870,7 @@
                         @elseif($link->type === 'countdown' && $link->countdown_date)
                             <div class="countdown-block w-full rounded-2xl p-4 text-center overflow-hidden" style="background: {{ $countdownBg }}; color: {{ $countdownText }};">
                                 <div class="text-sm font-medium mb-3 opacity-90">{{ $link->countdown_label ?? 'Countdown' }}</div>
-                                <div class="countdown-timer flex justify-center items-center gap-1 sm:gap-2 flex-wrap" data-target="{{ $link->countdown_date }}">
+                                <div class="countdown-timer flex justify-center items-center gap-1 sm:gap-2 flex-wrap" data-target="{{ $link->countdown_date->copy()->utc()->toIso8601ZuluString() }}">
                                     <div class="countdown-unit flex flex-col items-center min-w-[40px] sm:min-w-[50px]">
                                         <span class="countdown-days text-xl sm:text-2xl font-bold">00</span>
                                         <span class="text-[10px] sm:text-xs uppercase opacity-80 mt-0.5">Days</span>
@@ -1061,6 +914,7 @@
                                         height="200" 
                                         style="border:0;" 
                                         allowfullscreen="" 
+                                        title="{{ $link->title ?: 'Map' }}"
                                         loading="lazy">
                                     </iframe>
                                 </div>
@@ -1112,9 +966,9 @@
                                    style="background: {{ $brandColor }};">
                                     <img src="/images/brands/{{ $platform }}.svg?v=20251212" 
                                          alt="{{ ucfirst(str_replace('-', ' ', $platform)) }}" 
-                                         class="social-icon h-5 w-5"
+                                         class="social-icon h-5 w-5" width="20" height="20" decoding="async"
                                          style="filter: brightness(0) invert(1);"
-                                         onerror="this.style.display='none';">
+                                         data-fallback="hide">
                                 </a>
                             @endif
                         @endforeach
@@ -1173,8 +1027,6 @@ END:VCARD`;
             URL.revokeObjectURL(url);
         }
     </script>
-    <script nonce="{{ Vite::cspNonce() }}" defer src="https://unpkg.com/alpinejs@3.15.2/dist/cdn.min.js"></script>
-    <script nonce="{{ Vite::cspNonce() }}" src="https://unpkg.com/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
     <script nonce="{{ Vite::cspNonce() }}">
         const qrSettings = @json($bioPage->qr_settings ?? []);
         const qrColor = qrSettings.dotsOptions?.color || qrSettings.color || '#000000';
@@ -1186,9 +1038,25 @@ END:VCARD`;
         const qrCornerDotColor = qrSettings.cornersDotOptions?.color || qrColor;
         const qrLogoUrl = qrSettings.image || qrSettings.logo_url || null;
         let shareQrInstance = null;
-        function initShareQR() {
+        // Alpine comes from app.js; the QR library loads only when the share dialog opens (P2).
+        let qrLibrary = null;
+        function loadQrLibrary() {
+            if (window.QRCodeStyling) return Promise.resolve();
+            qrLibrary ??= new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'https://unpkg.com/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js';
+                script.nonce = @js(Vite::cspNonce());
+                script.addEventListener('load', resolve);
+                script.addEventListener('error', () => { qrLibrary = null; reject(); });
+                document.head.appendChild(script);
+            });
+            return qrLibrary;
+        }
+        async function initShareQR() {
             const container = document.getElementById('share-qr-container');
             if (!container || shareQrInstance) return;
+            try { await loadQrLibrary(); } catch (e) { return; }
+            if (shareQrInstance) return;
             shareQrInstance = new QRCodeStyling({
                 width: 120,
                 height: 120,
@@ -1219,10 +1087,11 @@ END:VCARD`;
             container.innerHTML = '';
             shareQrInstance.append(container);
         }
-        function downloadShareQR() {
+        async function downloadShareQR() {
             if (!shareQrInstance) {
-                initShareQR();
+                await initShareQR();
             }
+            if (!window.QRCodeStyling) return;
             const qrSize = 400;
             const padding = 40;
             const totalSize = qrSize + (padding * 2);
@@ -1289,14 +1158,7 @@ END:VCARD`;
             if (!e.target.closest('.share-modal-content')) return;
             initShareQR();
         });
-        const shareBtn = document.querySelector('[onclick*="share-modal"]');
-        if (shareBtn) {
-            const originalOnclick = shareBtn.onclick;
-            shareBtn.onclick = function(e) {
-                originalOnclick?.call(this, e);
-                setTimeout(initShareQR, 100);
-            };
-        }
+        document.querySelector('[data-show="#share-modal"]')?.addEventListener('click', () => setTimeout(initShareQR, 100));
         document.addEventListener('alpine:init', () => {
             Alpine.directive('collapse', (el, { expression }, { effect, evaluateLater }) => {
                 el.style.overflow = 'hidden';
@@ -1318,6 +1180,7 @@ END:VCARD`;
             const theme = document.body.dataset.theme;
             const container = document.getElementById('bg-animation');
             if (!container) return;
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
             if ((theme === 'neon' || theme === 'matrix') && bgAnim === 'matrix') {
                 initMatrixEffect(container);
                 return; // Matrix is the only animation
@@ -1504,7 +1367,9 @@ END:VCARD`;
                 }
             }
             const particles = [];
-            for (let i = 0; i < c.count; i++) {
+            // Fewer particles on small screens: a phone gets about a third of the desktop count.
+            const density = Math.min(1, Math.max(0.35, (window.innerWidth * window.innerHeight) / (1440 * 900)));
+            for (let i = 0; i < Math.round(c.count * density); i++) {
                 particles.push(new Particle());
             }
             let windowDroplets = [];
@@ -1647,5 +1512,6 @@ END:VCARD`;
             }
         })();
     </script>
+    @include('bio.partials.trackers')
 </body>
 </html>

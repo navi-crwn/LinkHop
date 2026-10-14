@@ -5,18 +5,21 @@ namespace App\Http\Controllers;
 use App\Helpers\SocialUrlHelper;
 use App\Models\AbuseFlag;
 use App\Models\BioClick;
-use App\Models\BioLink;
 use App\Models\BioPage;
 use App\Services\LinkSafety;
+use App\Support\BioUploads;
+use App\Support\CssValue;
+use App\Support\QrPng;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class BioPageController extends Controller
 {
+    private const ANALYTICS_RANGES = [7, 30];
+
     private const MAX_PAGES = 3;
 
     public function index()
@@ -33,20 +36,28 @@ class BioPageController extends Controller
 
     public function checkSlug(Request $request)
     {
-        $slug = $request->input('slug');
-        if (! $slug || strlen($slug) < 3) {
-            return response()->json(['available' => false]);
-        }
-        if (! preg_match('/^[a-zA-Z0-9]+$/', $slug)) {
-            return response()->json(['available' => false]);
-        }
-        $slug = strtolower($slug);
-        $exists = BioPage::where('slug', $slug)->exists();
-        $reserved = in_array($slug, config('shortener.reserved_slugs', []));
+        // Same rules as store() and update(), so "available" here means saving will accept it.
+        $current = $request->filled('current') ? $request->user()->bioPages()->where('slug', $request->input('current'))->first() : null;
+        $slug = strtolower((string) $request->input('slug'));
+        $valid = validator(['slug' => $slug], ['slug' => $this->slugRules($current)])->passes();
 
-        return response()->json([
-            'available' => ! $exists && ! $reserved,
-        ]);
+        return response()->json(['available' => $valid]);
+    }
+
+    /** Validation for a bio page slug; $current is the page being renamed, if any. */
+    private function slugRules(?BioPage $current = null): array
+    {
+        return [
+            'required',
+            'string',
+            'min:3',
+            'max:20',
+            'regex:/^[a-z0-9]+$/',
+            Rule::unique('bio_pages', 'slug')->ignore($current?->id),
+            // Reserved words are refused for new slugs; an existing slug is left alone.
+            fn ($attribute, $value, $fail) => $value !== $current?->slug && in_array($value, config('shortener.reserved_slugs', []), true)
+                ? $fail('This slug is reserved.') : null,
+        ];
     }
 
     public function generateQR(Request $request)
@@ -66,79 +77,39 @@ class BioPageController extends Controller
         if (strlen((string) $data) > 2048) {
             return response('Data too long', 400);
         }
+        $rgb = fn (string $hex) => [hexdec(substr($hex, 0, 2)), hexdec(substr($hex, 2, 2)), hexdec(substr($hex, 4, 2))];
         try {
-            // Generate QR code with high error correction for logo overlay
-            $qrString = QrCode::format('png')
-                ->size($size)
-                ->color(hexdec(substr($color, 0, 2)), hexdec(substr($color, 2, 2)), hexdec(substr($color, 4, 2)))
-                ->backgroundColor(hexdec(substr($bgcolor, 0, 2)), hexdec(substr($bgcolor, 2, 2)), hexdec(substr($bgcolor, 4, 2)))
-                ->errorCorrection('H') // High error correction for logo overlay
-                ->margin(1)
-                ->generate($data);
-            // If logo is provided, overlay it on the QR code
-            if ($logoData && str_starts_with($logoData, 'data:image')) {
-                // Create image from QR code
-                $qrImage = @imagecreatefromstring($qrString);
-                if (! $qrImage) {
-                    return response($qrString)->header('Content-Type', 'image/png');
-                }
-                // Extract base64 data and decode
-                $logoData = preg_replace('/^data:image\/\w+;base64,/', '', $logoData);
-                $logoDecoded = base64_decode($logoData);
-                if (! $logoDecoded) {
-                    imagedestroy($qrImage);
+            // High error correction leaves room for the logo overlay.
+            $qrString = QrPng::render((string) $data, $size, $rgb($color), $rgb($bgcolor));
+        } catch (\Throwable $e) {
+            report($e);
 
-                    return response($qrString)->header('Content-Type', 'image/png');
-                }
-                $logo = @imagecreatefromstring($logoDecoded);
-                if (! $logo) {
-                    imagedestroy($qrImage);
-
-                    return response($qrString)->header('Content-Type', 'image/png');
-                }
-                // Get dimensions
-                $qrWidth = imagesx($qrImage);
-                $qrHeight = imagesy($qrImage);
-                $logoWidth = imagesx($logo);
-                $logoHeight = imagesy($logo);
-                // Logo size: 20% of QR code size
-                $logoSize = (int) ($qrWidth * 0.2);
-                $logoX = (int) (($qrWidth - $logoSize) / 2);
-                $logoY = (int) (($qrHeight - $logoSize) / 2);
-                // Create white background for logo (slightly larger for padding)
-                $bgSize = (int) ($logoSize + 20);
-                $bgX = (int) (($qrWidth - $bgSize) / 2);
-                $bgY = (int) (($qrHeight - $bgSize) / 2);
-                $white = imagecolorallocate($qrImage, 255, 255, 255);
-                imagefilledrectangle($qrImage, $bgX, $bgY, $bgX + $bgSize, $bgY + $bgSize, $white);
-                // Overlay logo on QR code with resampling for quality
-                imagecopyresampled(
-                    $qrImage,
-                    $logo,
-                    $logoX,
-                    $logoY,
-                    0,
-                    0,
-                    $logoSize,
-                    $logoSize,
-                    $logoWidth,
-                    $logoHeight
-                );
-                // Output final image
-                ob_start();
-                imagepng($qrImage, null, 9); // Max compression
-                $finalQr = ob_get_clean();
-                // Clean up
-                imagedestroy($qrImage);
-                imagedestroy($logo);
-
-                return response($finalQr)->header('Content-Type', 'image/png');
-            }
-
-            return response($qrString)->header('Content-Type', 'image/png');
-        } catch (\Exception $e) {
             return response('Error generating QR code', 500);
         }
+        // Optional logo; anything too large or not an image is ignored (QrPng::logo).
+        $logo = QrPng::logo(is_string($logoData) ? $logoData : null);
+        $qrImage = $logo ? @imagecreatefromstring($qrString) : false;
+        if (! $logo || ! $qrImage) {
+            return response($qrString)->header('Content-Type', 'image/png');
+        }
+        $qrWidth = imagesx($qrImage);
+        $qrHeight = imagesy($qrImage);
+        // Logo covers 20% of the code, on a white square with 10px padding.
+        $logoSize = (int) ($qrWidth * 0.2);
+        $logoX = (int) (($qrWidth - $logoSize) / 2);
+        $logoY = (int) (($qrHeight - $logoSize) / 2);
+        $bgSize = $logoSize + 20;
+        $bgX = (int) (($qrWidth - $bgSize) / 2);
+        $bgY = (int) (($qrHeight - $bgSize) / 2);
+        imagefilledrectangle($qrImage, $bgX, $bgY, $bgX + $bgSize, $bgY + $bgSize, imagecolorallocate($qrImage, 255, 255, 255));
+        imagecopyresampled($qrImage, $logo, $logoX, $logoY, 0, 0, $logoSize, $logoSize, imagesx($logo), imagesy($logo));
+        ob_start();
+        imagepng($qrImage, null, 9);
+        $finalQr = ob_get_clean();
+        imagedestroy($qrImage);
+        imagedestroy($logo);
+
+        return response($finalQr)->header('Content-Type', 'image/png');
     }
 
     private function handleQrImage($settings, $oldSettings = null)
@@ -171,35 +142,6 @@ class BioPageController extends Controller
      *
      * @return array<int, string|null>
      */
-    private function uploadedFiles(BioPage $bioPage): array
-    {
-        $files = [$bioPage->avatar_url, $bioPage->background_image, $bioPage->qr_settings['image'] ?? null, $bioPage->qr_settings['logo_url'] ?? null];
-        foreach ($bioPage->links()->get(['thumbnail_url', 'custom_icon', 'content']) as $link) {
-            array_push($files, $link->thumbnail_url, $link->custom_icon, $link->content);
-        }
-
-        return $files;
-    }
-
-    private function deleteUnusedUpload(?string $path): void
-    {
-        $path = preg_replace('#^/?storage/#', '', trim((string) $path));
-        if (! preg_match('#^(avatars|bio-images|bio-thumbnails|bio-icons|qr-logos)/[A-Za-z0-9._-]+$#', $path)) {
-            return;
-        }
-        $like = '%'.$path.'%';
-        $inUse = BioPage::where(fn ($q) => $q->where('avatar_url', 'like', $like)
-            ->orWhere('qr_settings', 'like', $like)
-            ->orWhere('background_value', 'like', $like)
-            ->orWhere('background_image', 'like', $like))->exists()
-            || BioLink::where(fn ($q) => $q->where('thumbnail_url', 'like', $like)
-                ->orWhere('custom_icon', 'like', $like)
-                ->orWhere('content', 'like', $like))->exists();
-        if (! $inUse) {
-            Storage::disk('public')->delete($path);
-        }
-    }
-
     /**
      * Reject abusive page text and unsafe social link values.
      */
@@ -239,17 +181,9 @@ class BioPageController extends Controller
         }
         $request->merge(['slug' => strtolower($request->slug)]);
         $validated = $request->validate([
-            'slug' => [
-                'required',
-                'string',
-                'min:3',
-                'max:20',
-                'regex:/^[a-zA-Z0-9]+$/',
-                'unique:bio_pages,slug',
-                Rule::notIn(config('shortener.reserved_slugs', [])),
-            ],
-            'title' => 'required|string|max:45',
-            'bio' => 'nullable|string|max:155',
+            'slug' => $this->slugRules(),
+            'title' => 'required|string|max:'.BioPage::TITLE_MAX,
+            'bio' => 'nullable|string|max:'.BioPage::BIO_MAX,
             'qr_settings' => 'nullable|json',
         ]);
         $this->assertSafeContent($validated);
@@ -283,45 +217,43 @@ class BioPageController extends Controller
     public function update(Request $request, BioPage $bioPage)
     {
         $this->authorize('update', $bioPage);
+        // Two editor tabs: the later save must not silently overwrite the earlier one (L2).
+        $base = $request->input('base_updated_at');
+        if (is_string($base) && $base !== '' && $bioPage->updated_at
+            && strtotime($base) !== $bioPage->updated_at->getTimestamp()) {
+            return response()->json([
+                'message' => 'This page was changed in another tab or window. Reload the editor to get the latest version.',
+                'conflict' => true,
+            ], 409);
+        }
         if ($request->has('slug')) {
             $request->merge(['slug' => strtolower($request->slug)]);
         }
         $validated = $request->validate([
-            'slug' => [
-                'sometimes',
-                'required',
-                'string',
-                'min:3',
-                'max:20',
-                'regex:/^[a-zA-Z0-9]+$/',
-                Rule::unique('bio_pages')->ignore($bioPage->id),
-                // Same reserved list as store(); an existing slug is left alone.
-                fn ($attribute, $value, $fail) => $value !== $bioPage->slug && in_array($value, config('shortener.reserved_slugs', []), true)
-                    ? $fail('This slug is reserved.') : null,
-            ],
-            'title' => 'sometimes|required|string|max:45',
-            'bio' => 'nullable|string|max:155',
-            'theme' => 'nullable|string|max:50',
-            'layout' => 'nullable|string|max:50',
+            'slug' => ['sometimes', ...$this->slugRules($bioPage)],
+            'title' => 'sometimes|required|string|max:'.BioPage::TITLE_MAX,
+            'bio' => 'nullable|string|max:'.BioPage::BIO_MAX,
+            'theme' => CssValue::keyword(50),
+            'layout' => CssValue::keyword(50),
             'background_type' => 'nullable|in:color,gradient,image,solid',
-            'background_value' => 'nullable|string',
-            'background_color' => 'nullable|string|max:100',
-            'background_gradient' => 'nullable|string|max:255',
-            'background_image' => 'nullable|string|max:500',
-            'text_color' => 'nullable|string|max:50',
-            'title_color' => 'nullable|string|max:50',
-            'bio_color' => 'nullable|string|max:50',
-            'link_bg_color' => 'nullable|string|max:100',
-            'link_text_color' => 'nullable|string|max:50',
-            'button_bg_color' => 'nullable|string|max:100',
-            'button_text_color' => 'nullable|string|max:50',
-            'button_shape' => 'nullable|string|max:50',
-            'button_shadow' => 'nullable|string|max:50',
-            'header_bg_color' => 'nullable|string|max:50',
-            'font_family' => 'nullable|string|max:50',
-            'block_shape' => 'nullable|string|max:50',
-            'block_shadow' => 'nullable|string|max:50',
-            'social_icon_color' => 'nullable|string|max:20',
+            'background_value' => ['nullable', 'string', 'max:500', fn ($attribute, $value, $fail) => CssValue::isBackground($value) ? null : $fail('Use a colour, a gradient or an uploaded image.')],
+            'background_color' => CssValue::color(20),
+            'background_gradient' => ['nullable', 'string', 'max:255', 'regex:'.CssValue::GRADIENT],
+            'background_image' => ['nullable', 'string', 'max:500', 'regex:'.CssValue::IMAGE],
+            'text_color' => CssValue::color(50),
+            'title_color' => CssValue::color(50),
+            'bio_color' => CssValue::color(50),
+            'link_bg_color' => CssValue::color(100),
+            'link_text_color' => CssValue::color(50),
+            'button_bg_color' => CssValue::color(100),
+            'button_text_color' => CssValue::color(50),
+            'button_shape' => CssValue::keyword(50),
+            'button_shadow' => CssValue::keyword(50),
+            'header_bg_color' => ['nullable', 'string', 'max:50', fn ($attribute, $value, $fail) => preg_match(CssValue::COLOR, (string) $value) || preg_match(CssValue::GRADIENT, (string) $value) ? null : $fail('Use a colour or a gradient.')],
+            'font_family' => CssValue::keyword(50),
+            'block_shape' => CssValue::keyword(20),
+            'block_shadow' => CssValue::keyword(20),
+            'social_icon_color' => CssValue::color(20),
             'social_placement' => 'nullable|in:top,bottom',
             'social_links' => 'nullable|array',
             'social_links.*' => 'nullable|array',
@@ -333,7 +265,7 @@ class BioPageController extends Controller
             'social_icons_position' => 'nullable|in:below_bio,bottom_page',
             'avatar_shape' => 'nullable|in:circle,rounded,square',
             'badge' => 'nullable|in:verified,star,crown,fire',
-            'badge_color' => 'nullable|string|max:20',
+            'badge_color' => CssValue::color(20),
             'seo_title' => 'nullable|string|max:47',
             'seo_description' => 'nullable|string|max:160',
             'seo_noindex' => 'nullable|boolean',
@@ -347,13 +279,13 @@ class BioPageController extends Controller
             'facebook_pixel_id' => 'nullable|string|max:50',
             'tiktok_pixel_id' => ['nullable', 'regex:/^[A-Z0-9]{20,30}$/'],
             'avatar' => 'nullable|image|max:2048',
-            'avatar_url' => 'nullable|string',
+            'avatar_url' => 'nullable|string|max:255',
             'password_enabled' => 'nullable|boolean',
             'password' => 'nullable|string|max:50',
             'allow_indexing' => 'nullable|boolean',
             'qr_settings' => 'nullable|array',
-            'hover_effect' => 'nullable|string|max:50',
-            'background_animation' => 'nullable|string|max:50',
+            'hover_effect' => CssValue::keyword(30),
+            'background_animation' => CssValue::keyword(30),
         ]);
         $this->assertSafeContent($validated);
         if (! empty($validated['is_published']) && ! $bioPage->is_published && AbuseFlag::locks('bio_page', $bioPage->id)) {
@@ -367,9 +299,7 @@ class BioPageController extends Controller
         if ($request->hasFile('avatar')) {
             $validated['avatar_url'] = $request->file('avatar')->store('avatars', 'public');
         }
-        if (isset($validated['socials'])) {
-            $validated['socials'] = json_encode($validated['socials']);
-        }
+        // socials is cast to array on the model; encoding it here stored a JSON string inside JSON (L1).
         if (isset($validated['qr_settings'])) {
             $validated['qr_settings'] = $this->handleQrImage($validated['qr_settings'], $bioPage->qr_settings);
         }
@@ -387,7 +317,7 @@ class BioPageController extends Controller
             }
         }
         $bioPage->update($validated);
-        array_map(fn ($file) => $this->deleteUnusedUpload($file), $oldFiles);
+        BioUploads::deleteUnused($oldFiles);
         // Return JSON for AJAX requests
         if ($request->expectsJson() || $request->wantsJson()) {
             return response()->json([
@@ -403,9 +333,9 @@ class BioPageController extends Controller
     public function destroy(BioPage $bioPage)
     {
         $this->authorize('delete', $bioPage);
-        $files = $this->uploadedFiles($bioPage);
+        $files = BioUploads::ofPage($bioPage);
         $bioPage->delete();
-        array_map(fn ($file) => $this->deleteUnusedUpload($file), $files);
+        BioUploads::deleteUnused($files);
 
         return redirect()->route('bio.index')->with('success', 'Bio page deleted successfully!');
     }
@@ -413,7 +343,9 @@ class BioPageController extends Controller
     public function analytics(BioPage $bioPage)
     {
         $this->authorize('view', $bioPage);
-        $days = request('days', 30);
+        // Only the ranges the page offers; click logs are kept 30 days (privacy policy).
+        $days = (int) request('days', 30);
+        $days = in_array($days, self::ANALYTICS_RANGES, true) ? $days : 30;
         $clicksData = BioClick::query()
             ->whereIn('bio_link_id', $bioPage->links->pluck('id'))
             ->where('clicked_at', '>=', now()->subDays($days))
@@ -429,7 +361,9 @@ class BioPageController extends Controller
             $clickCount = $clicksData->firstWhere('date', $date);
             $viewsChartData[] = $clickCount ? $clickCount->count : 0;
         }
+        // reorder(): the relation sorts by position, which would win over click_count.
         $topLinks = $bioPage->links()
+            ->reorder()
             ->where('is_active', true)
             ->orderByDesc('click_count')
             ->limit(10)
@@ -489,7 +423,7 @@ class BioPageController extends Controller
             'recentClicks' => $recentClicks,
         ];
 
-        return view('bio.analytics', compact('bioPage', 'stats'));
+        return view('bio.analytics', compact('bioPage', 'stats', 'days'));
     }
 
     private function getCountryFlag($countryCode)
@@ -570,7 +504,7 @@ class BioPageController extends Controller
             $oldAvatar = $bioPage->avatar_url;
             $path = $request->file('avatar')->store('avatars', 'public');
             $bioPage->update(['avatar_url' => $path]);
-            $this->deleteUnusedUpload($oldAvatar);
+            BioUploads::deleteIfUnused($oldAvatar);
 
             return response()->json([
                 'success' => true,
@@ -648,7 +582,7 @@ class BioPageController extends Controller
             $qrSettings = $bioPage->qr_settings ?? [];
             $qrSettings['logo_url'] = '/storage/'.$path;
             $bioPage->update(['qr_settings' => $qrSettings]);
-            $this->deleteUnusedUpload($oldLogo);
+            BioUploads::deleteIfUnused($oldLogo);
 
             return response()->json([
                 'success' => true,

@@ -1,5 +1,8 @@
 <?php
 
+// Guest links never live longer than 30 days, whatever the server's .env says.
+$guestMaxDays = min(30, max(1, (int) env('GUEST_LINK_MAX_DAYS', 30)));
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -8,11 +11,11 @@ return [
     |
     | Links created without an account stop working after `guest_idle_days`
     | without a click and, at the latest, `guest_max_days` after creation.
-    | `links:prune-guest` deletes them daily.
+    | `links:prune-guest` deletes them daily. Both are capped at 30 days.
     |
     */
-    'guest_idle_days' => (int) env('GUEST_LINK_IDLE_DAYS', 14),
-    'guest_max_days' => (int) env('GUEST_LINK_MAX_DAYS', 30),
+    'guest_idle_days' => min($guestMaxDays, max(1, (int) env('GUEST_LINK_IDLE_DAYS', 14))),
+    'guest_max_days' => $guestMaxDays,
 
     /*
     |--------------------------------------------------------------------------

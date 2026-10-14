@@ -29,7 +29,7 @@
                     <span class="text-base font-semibold tracking-tight text-ink">HEL.ink</span>
                 </a>
                 <button type="button" class="icon-btn" aria-label="Toggle theme"
-                    onclick="const d = document.documentElement.classList.toggle('dark'); try { localStorage.setItem('helink-theme', d ? 'dark' : 'light') } catch (e) {}">
+                    data-toggle-dark>
                     <svg class="h-[18px] w-[18px] dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></svg>
                     <svg class="hidden h-[18px] w-[18px] dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path stroke-linecap="round" d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
                 </button>

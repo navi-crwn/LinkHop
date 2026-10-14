@@ -49,7 +49,7 @@
             </div>
             @foreach ($footerBlocks as $block)
                 <div>
-                    <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-white/40">{{ $block['title'] }}</p>
+                    <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-white/60">{{ $block['title'] }}</p>
                     <ul class="mt-3 space-y-2 text-[13px]">
                         @foreach ($block['items'] as $item)
                             <li><a href="{{ $item['route'] }}" @if (! empty($item['external'])) target="_blank" rel="noopener" @endif class="transition hover:text-slate-900 dark:hover:text-white">{{ $item['label'] }}</a></li>
@@ -58,6 +58,6 @@
                 </div>
             @endforeach
         </div>
-        <p class="mt-8 border-t border-slate-200 pt-5 text-xs text-slate-400 dark:border-white/10 dark:text-white/40">© {{ date('Y') }} HEL.ink · <a href="https://db-ip.com" target="_blank" rel="noopener" class="hover:text-slate-900 dark:hover:text-white">IP Geolocation by DB-IP</a></p>
+        <p class="mt-8 border-t border-slate-200 pt-5 text-xs text-slate-500 dark:border-white/10 dark:text-white/60">© {{ date('Y') }} HEL.ink · <a href="https://db-ip.com" target="_blank" rel="noopener" class="hover:text-slate-900 dark:hover:text-white">IP Geolocation by DB-IP</a></p>
     </div>
 </footer>

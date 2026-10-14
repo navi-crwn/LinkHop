@@ -14,7 +14,9 @@
                     <template x-for="(item, idx) in blocks" :key="item.id">
                         <div class="block-item" :data-id="item.id" :class="{ 'opacity-50': item && !item.is_active }">
                             <!-- Drag Handle -->
-                            <div class="block-drag-handle">
+                            <div class="block-drag-handle" role="button" tabindex="0"
+                                 :aria-label="'Move ' + getBlockDisplayTitle(item) + '. Use the up and down arrow keys.'"
+                                 @keydown.arrow-up.prevent="moveBlock(idx, -1)" @keydown.arrow-down.prevent="moveBlock(idx, 1)">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>
                                 </svg>
@@ -25,7 +27,7 @@
                                     <img :src="item.custom_icon" alt="" class="w-5 h-5 object-contain">
                                 </template>
                                 <template x-if="!item.custom_icon && item.brand">
-                                    <img :src="getPlatformIcon(item.brand)" alt="" class="w-5 h-5" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+                                    <img :src="getPlatformIcon(item.brand)" alt="" class="w-5 h-5" style="filter: brightness(0) invert(1);" data-fallback="hide">
                                 </template>
                                 <template x-if="!item.custom_icon && !item.brand">
                                     <div x-html="getBlockTypeIcon(item.type)"></div>
@@ -40,17 +42,17 @@
                             <div class="block-actions">
                                 <!-- Visibility Toggle -->
                                 <label class="toggle-switch">
-                                    <input type="checkbox" :checked="item.is_active" @change="toggleBlock(idx)">
+                                    <input type="checkbox" :checked="item.is_active" @change="toggleBlock(idx)" :aria-label="'Show ' + getBlockDisplayTitle(item) + ' on page'">
                                     <span class="toggle-slider"></span>
                                 </label>
                                 <!-- Edit Button -->
-                                <button @click="openBlockEditor(item)" class="block-action-btn">
+                                <button type="button" @click="openBlockEditor(item)" class="block-action-btn" :aria-label="'Edit ' + getBlockDisplayTitle(item)">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                     </svg>
                                 </button>
                                 <!-- Delete Button -->
-                                <button @click="removeBlock(idx)" class="block-action-btn delete">
+                                <button type="button" @click="removeBlock(idx)" class="block-action-btn delete" :aria-label="'Delete ' + getBlockDisplayTitle(item)">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                     </svg>
@@ -85,25 +87,25 @@
                 <div class="grid grid-cols-2 gap-2">
                     <button @click="addQuickBlock('link')" class="quick-add-btn-mini group">
                         <div class="quick-add-icon-mini bg-blue-500">
-                            <img src="/images/quick-add/link.svg" alt="Link" class="w-5 h-5" style="filter: brightness(0) invert(1);">
+                            <img src="/images/quick-add/link.svg" alt="" class="w-5 h-5" style="filter: brightness(0) invert(1);">
                         </div>
                         <span>Link</span>
                     </button>
                     <button @click="addQuickBlock('text')" class="quick-add-btn-mini group">
                         <div class="quick-add-icon-mini bg-green-500">
-                            <img src="/images/quick-add/text.svg" alt="Text" class="w-5 h-5" style="filter: brightness(0) invert(1);">
+                            <img src="/images/quick-add/text.svg" alt="" class="w-5 h-5" style="filter: brightness(0) invert(1);">
                         </div>
                         <span>Text</span>
                     </button>
                     <button @click="addQuickBlock('image')" class="quick-add-btn-mini group">
                         <div class="quick-add-icon-mini" style="background-color: #f43f5e;">
-                            <img src="/images/quick-add/image.svg" alt="Image" class="w-5 h-5" style="filter: brightness(0) invert(1);">
+                            <img src="/images/quick-add/image.svg" alt="" class="w-5 h-5" style="filter: brightness(0) invert(1);">
                         </div>
                         <span>Image</span>
                     </button>
                     <button @click="addDividerInstant()" class="quick-add-btn-mini group">
                         <div class="quick-add-icon-mini" style="background-color: #64748b;">
-                            <img src="/images/quick-add/divider.svg" alt="Divider" class="w-5 h-5" style="filter: brightness(0) invert(1);">
+                            <img src="/images/quick-add/divider.svg" alt="" class="w-5 h-5" style="filter: brightness(0) invert(1);">
                         </div>
                         <span>Divider</span>
                     </button>
@@ -114,14 +116,13 @@
                     <div class="grid grid-cols-3 gap-2">
                         <template x-for="brandId in ['instagram', 'tiktok', 'youtube', 'twitter', 'spotify', 'whatsapp', 'telegram', 'email', 'facebook']" :key="brandId">
                             <button @click="addBrandBlock(brandId)" 
-                                    class="p-2 rounded-lg transition-colors flex flex-col items-center gap-1" 
+                                    class="p-2 rounded-lg transition-colors flex flex-col items-center gap-1 hover:[background:var(--editor-hover-bg)]" 
                                     style="border: 1px solid var(--editor-border);"
-                                    onmouseover="this.style.background='var(--editor-hover-bg)'"
-                                    onmouseout="this.style.background=''"
-                                    :title="brands[brandId]?.name">
+                                    :title="brands[brandId]?.name"
+                                    :aria-label="'Add ' + (brands[brandId]?.name || brandId)">
                                 <div class="w-8 h-8 rounded-md flex items-center justify-center" 
                                      :style="{ backgroundColor: brands[brandId]?.color || '#6b7280' }">
-                                    <img :src="'/images/brands/' + brandId + '.svg'" class="w-5 h-5" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+                                    <img :src="'/images/brands/' + brandId + '.svg'" alt="" class="w-5 h-5" style="filter: brightness(0) invert(1);" data-fallback="hide">
                                 </div>
                                 <span class="text-[10px] capitalize truncate w-full text-center" style="color: var(--editor-text-muted);" x-text="brandId === 'twitter' ? 'X' : brandId"></span>
                             </button>

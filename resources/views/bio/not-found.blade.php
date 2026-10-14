@@ -59,7 +59,7 @@
             <p class="text-slate-300 mb-4">Looking for something specific?</p>
             <form action="{{ url('/') }}" method="GET" class="flex gap-2">
                 <input type="text" name="search" placeholder="Search bio pages..." class="flex-1 px-4 py-2 bg-white/10 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg">
+                <button aria-label="Search" type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
@@ -67,7 +67,7 @@
             </form>
         </div>
         <div class="mt-8">
-            <img src="{{ asset('images/logo-light.svg') }}" alt="HEL.ink" class="h-6 mx-auto opacity-50" onerror="this.style.display='none'">
+            <img src="{{ asset('images/logo-light.svg') }}" alt="HEL.ink" class="h-6 mx-auto opacity-50" data-fallback="hide">
             <p class="text-slate-500 text-sm mt-2">Powered by HEL.ink</p>
         </div>
     </div>

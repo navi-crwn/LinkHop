@@ -52,18 +52,18 @@
                     </div>
                 </div>
             </div>
-            <select name="hours" onchange="this.form.submit()" class="input" aria-label="Time range">
+            <select name="hours" data-autosubmit class="input" aria-label="Time range">
                 @foreach ([6, 12, 24, 48, 72] as $option)
                     <option value="{{ $option }}" @selected($range == $option)>Last {{ $option }}h</option>
                 @endforeach
             </select>
-            <select name="country" onchange="this.form.submit()" class="input" aria-label="Location">
+            <select name="country" data-autosubmit class="input" aria-label="Location">
                 <option value="all" @selected($countryFilter === 'all')>All locations</option>
                 @foreach ($availableCountries as $country)
                     <option value="{{ $country->country ?? 'unknown' }}" @selected(($country->country ?? 'unknown') === $countryFilter)>{{ $country->label }}</option>
                 @endforeach
             </select>
-            <select name="device" onchange="this.form.submit()" class="input" aria-label="Device">
+            <select name="device" data-autosubmit class="input" aria-label="Device">
                 <option value="all" @selected($deviceFilter === 'all')>All devices</option>
                 @foreach ($availableDevices as $device)
                     <option value="{{ strtolower($device) }}" @selected(strtolower($device) === $deviceFilter)>{{ $device }}</option>

@@ -58,47 +58,47 @@
                 </div>
                 <div class="grid gap-4 md:grid-cols-2">
                     <div>
-                        <label class="text-sm text-gray-600 dark:text-gray-300">Site Title</label>
-                        <input type="text" name="site_title" x-model="siteTitle" value="{{ old('site_title', $seo->site_title ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                        <label for="fadmins-1" class="text-sm text-gray-600 dark:text-gray-300">Site Title</label>
+                        <input id="fadmins-1" type="text" name="site_title" x-model="siteTitle" value="{{ old('site_title', $seo->site_title ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
                         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Aim for 55–60 characters to avoid truncation.</p>
                     </div>
                     <div>
-                        <label class="text-sm text-gray-600 dark:text-gray-300">Keywords</label>
-                        <input type="text" name="meta_keywords" value="{{ old('meta_keywords', $seo->meta_keywords ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="shortlink, url shortener, hel.ink">
+                        <label for="fadmins-2" class="text-sm text-gray-600 dark:text-gray-300">Keywords</label>
+                        <input id="fadmins-2" type="text" name="meta_keywords" value="{{ old('meta_keywords', $seo->meta_keywords ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="shortlink, url shortener, hel.ink">
                         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Optional, but useful for internal searching.</p>
                     </div>
                 </div>
                 <div>
-                    <label class="text-sm text-gray-600 dark:text-gray-300">Meta Description</label>
-                    <textarea name="meta_description" rows="3" x-model="metaDescription" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">{{ old('meta_description', $seo->meta_description ?? '') }}</textarea>
+                    <label for="fadmins-3" class="text-sm text-gray-600 dark:text-gray-300">Meta Description</label>
+                    <textarea id="fadmins-3" name="meta_description" rows="3" x-model="metaDescription" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">{{ old('meta_description', $seo->meta_description ?? '') }}</textarea>
                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Keep between 150–160 characters for the best preview.</p>
                 </div>
                 <div class="grid gap-4 md:grid-cols-2">
                     <div>
-                        <label class="text-sm text-gray-600 dark:text-gray-300">Open Graph Title</label>
-                        <input type="text" name="og_title" x-model="ogTitle" value="{{ old('og_title', $seo->og_title ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                        <label for="fadmins-4" class="text-sm text-gray-600 dark:text-gray-300">Open Graph Title</label>
+                        <input id="fadmins-4" type="text" name="og_title" x-model="ogTitle" value="{{ old('og_title', $seo->og_title ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
                     </div>
                     <div>
-                        <label class="text-sm text-gray-600 dark:text-gray-300">Open Graph Description</label>
-                        <input type="text" name="og_description" x-model="ogDescription" value="{{ old('og_description', $seo->og_description ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                        <label for="fadmins-5" class="text-sm text-gray-600 dark:text-gray-300">Open Graph Description</label>
+                        <input id="fadmins-5" type="text" name="og_description" x-model="ogDescription" value="{{ old('og_description', $seo->og_description ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
                         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Displayed whenever links are shared to social media.</p>
                     </div>
                 </div>
                 <div class="grid gap-4 md:grid-cols-2">
                     <div>
-                        <label class="text-sm text-gray-600 dark:text-gray-300">OG Image URL</label>
-                        <input type="url" name="og_image" value="{{ old('og_image', $seo->og_image ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="https://">
+                        <label for="fadmins-6" class="text-sm text-gray-600 dark:text-gray-300">OG Image URL</label>
+                        <input id="fadmins-6" type="url" name="og_image" value="{{ old('og_image', $seo->og_image ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="https://">
                         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Use 1200×630px JPG/PNG for rich previews.</p>
                     </div>
                     <div>
-                        <label class="text-sm text-gray-600 dark:text-gray-300">Favicon / Icon URL</label>
-                        <input type="url" name="favicon" x-model="favicon" value="{{ old('favicon', $seo->favicon ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                        <label for="fadmins-7" class="text-sm text-gray-600 dark:text-gray-300">Favicon / Icon URL</label>
+                        <input id="fadmins-7" type="url" name="favicon" x-model="favicon" value="{{ old('favicon', $seo->favicon ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
                         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Supply a square PNG (at least 96×96; 512×512 works best).</p>
                     </div>
                 </div>
                 <div>
-                    <label class="text-sm text-gray-600 dark:text-gray-300">Website logo URL</label>
-                    <input type="url" name="logo" x-model="logo" value="{{ old('logo', $seo->logo ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="https://">
+                    <label for="fadmins-8" class="text-sm text-gray-600 dark:text-gray-300">Website logo URL</label>
+                    <input id="fadmins-8" type="url" name="logo" x-model="logo" value="{{ old('logo', $seo->logo ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="https://">
                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Ideal for headers/emails; use a transparent PNG (min 256×256).</p>
                 </div>
                 <div class="flex justify-end gap-3">

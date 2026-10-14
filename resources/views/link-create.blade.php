@@ -13,12 +13,12 @@
                 @csrf
                 <input type="hidden" name="status" value="active">
                 <div>
-                    <label class="text-sm text-slate-600">Destination URL</label>
-                    <input type="url" name="target_url" value="{{ old('target_url') }}" required class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3">
+                    <label for="flinkcr-1" class="text-sm text-slate-600">Destination URL</label>
+                    <input id="flinkcr-1" type="url" name="target_url" value="{{ old('target_url') }}" required class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-3">
                 </div>
                 <div>
-                    <label class="text-sm text-slate-600">Slug (optional)</label>
-                    <input type="text" name="slug" value="{{ old('slug') }}" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-2" placeholder="custom-slug">
+                    <label for="flinkcr-2" class="text-sm text-slate-600">Slug (optional)</label>
+                    <input id="flinkcr-2" type="text" name="slug" value="{{ old('slug') }}" class="mt-1 w-full rounded-2xl border border-slate-200 px-4 py-2" placeholder="custom-slug">
                 </div>
                 <div class="flex justify-end gap-3">
                     <a href="{{ route('dashboard') }}" class="rounded-2xl border px-5 py-2">Cancel</a>

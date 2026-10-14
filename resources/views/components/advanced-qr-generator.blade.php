@@ -36,8 +36,8 @@
         <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Customize QR Code</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Module Style</label>
-                <select x-model="settings.dotsType" @change="updateQR()" class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white">
+                <label for="fadvanc-1" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Module Style</label>
+                <select id="fadvanc-1" x-model="settings.dotsType" @change="updateQR()" class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white">
                     <option value="square">Square</option>
                     <option value="dots">Dots</option>
                     <option value="rounded">Rounded</option>
@@ -47,58 +47,58 @@
                 </select>
             </div>
             <div>
-                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Corner Square (Outer)</label>
-                <select x-model="settings.cornerSquareType" @change="updateQR()" class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white">
+                <label for="fadvanc-2" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Corner Square (Outer)</label>
+                <select id="fadvanc-2" x-model="settings.cornerSquareType" @change="updateQR()" class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white">
                     <option value="square">Square</option>
                     <option value="dot">Dot</option>
                     <option value="extra-rounded">Extra Rounded</option>
                 </select>
             </div>
             <div>
-                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Corner Dot (Inner)</label>
-                <select x-model="settings.cornerDotType" @change="updateQR()" class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white">
+                <label for="fadvanc-3" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Corner Dot (Inner)</label>
+                <select id="fadvanc-3" x-model="settings.cornerDotType" @change="updateQR()" class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white">
                     <option value="square">Square</option>
                     <option value="dot">Dot</option>
                 </select>
             </div>
             <div>
-                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">QR Color</label>
+                <label for="fadvanc-4" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">QR Color</label>
                 <div class="flex gap-2">
-                    <input type="color" x-model="settings.dotsColor" @change="updateQR()" class="h-10 w-20 rounded border border-slate-300 cursor-pointer">
+                    <input id="fadvanc-4" type="color" x-model="settings.dotsColor" @change="updateQR()" class="h-10 w-20 rounded border border-slate-300 cursor-pointer">
                     <input type="text" x-model="settings.dotsColor" @change="updateQR()" class="flex-1 rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white">
                 </div>
             </div>
             <div>
-                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Background Color</label>
+                <label for="fadvanc-5" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Background Color</label>
                 <div class="flex gap-2">
-                    <input type="color" x-model="settings.backgroundColor" @change="updateQR()" class="h-10 w-20 rounded border border-slate-300 cursor-pointer">
+                    <input id="fadvanc-5" type="color" x-model="settings.backgroundColor" @change="updateQR()" class="h-10 w-20 rounded border border-slate-300 cursor-pointer">
                     <input type="text" x-model="settings.backgroundColor" @change="updateQR()" class="flex-1 rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white">
                 </div>
             </div>
             <div>
-                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Corner Color</label>
+                <label for="fadvanc-6" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Corner Color</label>
                 <div class="flex gap-2">
-                    <input type="color" x-model="settings.cornerSquareColor" @change="updateQR()" class="h-10 w-20 rounded border border-slate-300 cursor-pointer">
+                    <input id="fadvanc-6" type="color" x-model="settings.cornerSquareColor" @change="updateQR()" class="h-10 w-20 rounded border border-slate-300 cursor-pointer">
                     <input type="text" x-model="settings.cornerSquareColor" @change="updateQR()" class="flex-1 rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white">
                 </div>
             </div>
             <div>
-                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Frame Color</label>
+                <label for="fadvanc-7" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Frame Color</label>
                 <div class="flex gap-2">
-                    <input type="color" x-model="settings.frameColor" class="h-10 w-20 rounded border border-slate-300 cursor-pointer">
+                    <input id="fadvanc-7" type="color" x-model="settings.frameColor" class="h-10 w-20 rounded border border-slate-300 cursor-pointer">
                     <input type="text" x-model="settings.frameColor" class="flex-1 rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white">
                 </div>
             </div>
             <div>
-                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Frame Text Color</label>
+                <label for="fadvanc-8" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Frame Text Color</label>
                 <div class="flex gap-2">
-                    <input type="color" x-model="settings.frameTextColor" class="h-10 w-20 rounded border border-slate-300 cursor-pointer">
+                    <input id="fadvanc-8" type="color" x-model="settings.frameTextColor" class="h-10 w-20 rounded border border-slate-300 cursor-pointer">
                     <input type="text" x-model="settings.frameTextColor" class="flex-1 rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white">
                 </div>
             </div>
             <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Logo (Center)</label>
-                <input 
+                <label for="fadvanc-9" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Logo (Center)</label>
+                <input id="fadvanc-9" 
                     type="file" 
                     accept="image/*"
                     @change="handleLogoUpload($event)"

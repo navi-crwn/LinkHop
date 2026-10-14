@@ -32,16 +32,16 @@
                     @csrf
                     <input type="hidden" name="slug" value="{{ old('slug', $prefill['slug'] ?? '') }}">
                     <div>
-                        <label class="text-sm text-white/80">URL</label>
-                        <input type="url" name="url" value="{{ old('url', $prefill['url'] ?? '') }}" class="mt-1 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/40 focus:border-blue-500 focus:ring-blue-500" placeholder="https://hel.ink/..." required>
+                        <label for="freport-1" class="text-sm text-white/80">URL</label>
+                        <input id="freport-1" type="url" name="url" value="{{ old('url', $prefill['url'] ?? '') }}" class="mt-1 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/40 focus:border-blue-500 focus:ring-blue-500" placeholder="https://hel.ink/..." required>
                     </div>
                     <div>
-                        <label class="text-sm text-white/80">Email (required for contact)</label>
-                        <input type="email" name="email" value="{{ old('email') }}" class="mt-1 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/40 focus:border-blue-500 focus:ring-blue-500" placeholder="your@email.com" required>
+                        <label for="freport-2" class="text-sm text-white/80">Email (required for contact)</label>
+                        <input id="freport-2" type="email" name="email" value="{{ old('email') }}" class="mt-1 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/40 focus:border-blue-500 focus:ring-blue-500" placeholder="your@email.com" required>
                     </div>
                     <div>
-                        <label class="text-sm text-white/80">Reason</label>
-                        <textarea name="reason" rows="4" class="mt-1 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/40 focus:border-blue-500 focus:ring-blue-500" placeholder="Describe why this link is harmful." required>{{ old('reason') }}</textarea>
+                        <label for="freport-3" class="text-sm text-white/80">Reason</label>
+                        <textarea id="freport-3" name="reason" rows="4" class="mt-1 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/40 focus:border-blue-500 focus:ring-blue-500" placeholder="Describe why this link is harmful." required>{{ old('reason') }}</textarea>
                     </div>
                     <x-turnstile />
                     <div class="flex items-center justify-between text-xs text-white/60">
