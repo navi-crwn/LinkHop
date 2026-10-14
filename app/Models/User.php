@@ -80,6 +80,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(BioPage::class);
     }
 
+    public function loginHistories(): HasMany
+    {
+        return $this->hasMany(LoginHistory::class);
+    }
+
+    public function activityLogs(): HasMany
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
+
     public function isAdmin(): bool
     {
         return $this->isSuperAdmin();

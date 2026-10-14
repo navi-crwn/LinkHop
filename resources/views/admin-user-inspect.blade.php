@@ -34,7 +34,7 @@
                                 @csrf
                                 @method('PATCH')
                                 <input type="hidden" name="status" value="{{ \App\Models\User::STATUS_SUSPENDED }}">
-                                <button type="submit" onclick="return confirm('Suspend this user account?')" class="px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium">
+                                <button type="submit" data-confirm="Suspend this user account?" class="px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium">
                                     Suspend Account
                                 </button>
                             </form>
@@ -52,7 +52,7 @@
                             <form method="POST" action="{{ route('admin.users.destroy', $user) }}" class="inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" onclick="return confirm('Permanently delete this user and all their data?')" class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-medium">
+                                <button type="submit" data-confirm="Permanently delete this user and all their data?" class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-medium">
                                     Delete Account
                                 </button>
                             </form>

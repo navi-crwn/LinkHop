@@ -10,7 +10,7 @@
 </head>
 <body class="bg-slate-50 dark:bg-slate-950">
     <div class="fixed top-4 right-4 z-50">
-        <button @click="darkMode = !darkMode" class="rounded-full bg-white dark:bg-slate-800 p-3 shadow-lg hover:shadow-xl transition-all border border-slate-200 dark:border-slate-700">
+        <button aria-label="Toggle theme" @click="darkMode = !darkMode" class="rounded-full bg-white dark:bg-slate-800 p-3 shadow-lg hover:shadow-xl transition-all border border-slate-200 dark:border-slate-700">
             <svg x-show="!darkMode" class="h-5 w-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
             </svg>

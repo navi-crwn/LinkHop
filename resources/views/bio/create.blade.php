@@ -74,7 +74,7 @@
                                     required
                                     value="{{ old('title') }}"
                                     placeholder="Your Name or Brand"
-                                    maxlength="45"
+                                    maxlength="{{ \App\Models\BioPage::TITLE_MAX }}"
                                     class="mt-2 w-full rounded-lg border border-slate-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                                 >
                                 @error('title')
@@ -90,7 +90,7 @@
                                     id="bio" 
                                     rows="3"
                                     placeholder="Tell your visitors about yourself..."
-                                    maxlength="155"
+                                    maxlength="{{ \App\Models\BioPage::BIO_MAX }}"
                                     class="mt-2 w-full rounded-lg border border-slate-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                                 >{{ old('bio') }}</textarea>
                                 <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Maximum 155 characters</p>
@@ -153,7 +153,7 @@
                                 </label>
                                 <div class="flex items-center gap-2">
                                     <input 
-                                        type="file" 
+                                        type="file" aria-label="Upload QR logo" 
                                         accept="image/*"
                                         @change="uploadLogo($event)"
                                         class="block w-full text-xs text-slate-500 file:mr-2 file:rounded file:border-0 file:bg-blue-50 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/30 dark:file:text-blue-400"
@@ -191,13 +191,13 @@
                                             Dots Color
                                         </label>
                                         <div class="flex flex-wrap gap-2">
-                                            <button type="button" @click="setColor('#000000')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': qrColor === '#000000' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-all shadow-sm" style="background-color: #000000;"></button>
-                                            <button type="button" @click="setColor('#1E40AF')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': qrColor === '#1E40AF' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-all shadow-sm" style="background-color: #1E40AF;"></button>
-                                            <button type="button" @click="setColor('#EF4444')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': qrColor === '#EF4444' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-all shadow-sm" style="background-color: #EF4444;"></button>
-                                            <button type="button" @click="setColor('#10B981')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': qrColor === '#10B981' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-all shadow-sm" style="background-color: #10B981;"></button>
-                                            <button type="button" @click="setColor('#8B5CF6')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': qrColor === '#8B5CF6' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-all shadow-sm" style="background-color: #8B5CF6;"></button>
+                                            <button aria-label="Black" type="button" @click="setColor('#000000')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': qrColor === '#000000' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-all shadow-sm" style="background-color: #000000;"></button>
+                                            <button aria-label="Blue" type="button" @click="setColor('#1E40AF')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': qrColor === '#1E40AF' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-all shadow-sm" style="background-color: #1E40AF;"></button>
+                                            <button aria-label="Red" type="button" @click="setColor('#EF4444')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': qrColor === '#EF4444' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-all shadow-sm" style="background-color: #EF4444;"></button>
+                                            <button aria-label="Green" type="button" @click="setColor('#10B981')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': qrColor === '#10B981' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-all shadow-sm" style="background-color: #10B981;"></button>
+                                            <button aria-label="Purple" type="button" @click="setColor('#8B5CF6')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': qrColor === '#8B5CF6' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-all shadow-sm" style="background-color: #8B5CF6;"></button>
                                             <div class="relative" x-data="{ showColorPicker: false }">
-                                                <button type="button" @click="showColorPicker = !showColorPicker" class="flex h-10 w-10 items-center justify-center rounded-lg border-2 border-slate-300 bg-gradient-to-br from-red-500 via-yellow-500 to-blue-500 hover:scale-110 transition-all shadow-sm">
+                                                <button aria-label="Custom color" type="button" @click="showColorPicker = !showColorPicker" class="flex h-10 w-10 items-center justify-center rounded-lg border-2 border-slate-300 bg-gradient-to-br from-red-500 via-yellow-500 to-blue-500 hover:scale-110 transition-all shadow-sm">
                                                     <svg class="h-5 w-5 text-white drop-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
                                                 </button>
                                                 <div x-show="showColorPicker" @click.away="showColorPicker = false" class="absolute left-0 top-12 z-10 rounded border border-slate-300 bg-white p-2 shadow-xl dark:border-slate-600 dark:bg-slate-800">
@@ -211,13 +211,13 @@
                                             Background Color
                                         </label>
                                         <div class="flex flex-wrap gap-2">
-                                            <button type="button" @click="updateBgColor('#ffffff')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': bgColor === '#ffffff' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-transform shadow-sm" style="background-color: #ffffff;"></button>
-                                            <button type="button" @click="updateBgColor('#F3F4F6')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': bgColor === '#F3F4F6' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-transform shadow-sm" style="background-color: #F3F4F6;"></button>
-                                            <button type="button" @click="updateBgColor('#FEF3C7')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': bgColor === '#FEF3C7' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-transform shadow-sm" style="background-color: #FEF3C7;"></button>
-                                            <button type="button" @click="updateBgColor('#DBEAFE')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': bgColor === '#DBEAFE' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-transform shadow-sm" style="background-color: #DBEAFE;"></button>
-                                            <button type="button" @click="updateBgColor('#FEE2E2')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': bgColor === '#FEE2E2' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-transform shadow-sm" style="background-color: #FEE2E2;"></button>
+                                            <button aria-label="White background" type="button" @click="updateBgColor('#ffffff')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': bgColor === '#ffffff' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-transform shadow-sm" style="background-color: #ffffff;"></button>
+                                            <button aria-label="Gray background" type="button" @click="updateBgColor('#F3F4F6')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': bgColor === '#F3F4F6' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-transform shadow-sm" style="background-color: #F3F4F6;"></button>
+                                            <button aria-label="Yellow background" type="button" @click="updateBgColor('#FEF3C7')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': bgColor === '#FEF3C7' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-transform shadow-sm" style="background-color: #FEF3C7;"></button>
+                                            <button aria-label="Light blue background" type="button" @click="updateBgColor('#DBEAFE')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': bgColor === '#DBEAFE' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-transform shadow-sm" style="background-color: #DBEAFE;"></button>
+                                            <button aria-label="Light red background" type="button" @click="updateBgColor('#FEE2E2')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': bgColor === '#FEE2E2' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-transform shadow-sm" style="background-color: #FEE2E2;"></button>
                                             <div class="relative" x-data="{ showBgPicker: false }">
-                                                <button type="button" @click="showBgPicker = !showBgPicker" class="flex h-10 w-10 items-center justify-center rounded-lg border-2 border-slate-300 bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-500 hover:scale-110 transition-all shadow-sm">
+                                                <button aria-label="Custom background color" type="button" @click="showBgPicker = !showBgPicker" class="flex h-10 w-10 items-center justify-center rounded-lg border-2 border-slate-300 bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-500 hover:scale-110 transition-all shadow-sm">
                                                     <svg class="h-5 w-5 text-white drop-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
                                                 </button>
                                                 <div x-show="showBgPicker" @click.away="showBgPicker = false" class="absolute left-0 top-12 z-10 rounded border border-slate-300 bg-white p-2 shadow-xl dark:border-slate-600 dark:bg-slate-800">

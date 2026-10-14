@@ -10,6 +10,11 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class BioPage extends Model
 {
+    // One limit for the create form, the editor and the server (L3).
+    public const TITLE_MAX = 45;
+
+    public const BIO_MAX = 155;
+
     use HasFactory;
 
     protected $fillable = [

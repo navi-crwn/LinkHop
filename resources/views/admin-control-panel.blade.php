@@ -104,7 +104,7 @@
                                 </div>
                                 <form method="POST" action="{{ route('admin.queue.restart') }}" class="ml-2" @submit="restarting = true">
                                     @csrf
-                                    <button type="submit" 
+                                    <button aria-label="Restart queue worker" type="submit" 
                                             :disabled="restarting"
                                             class="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed"
                                             title="Restart queue worker">
@@ -253,7 +253,7 @@
                         <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Links</p>
                         <h3 class="text-lg font-semibold text-slate-900 dark:text-white">New Link</h3>
                     </div>
-                    <button @click="panel = false" class="text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors">
+                    <button aria-label="Close" @click="panel = false" class="text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                         </svg>
@@ -294,8 +294,8 @@
                                 <p class="mt-1 text-xs text-slate-500">Leave empty for random slug</p>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Folder</label>
-                                <select 
+                                <label for="fadminc-1" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Folder</label>
+                                <select id="fadminc-1" 
                                     name="folder_id" 
                                     class="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-shadow"
                                 >
@@ -349,8 +349,8 @@
                             <div class="space-y-4 pt-2">
                                 <div class="grid gap-4 sm:grid-cols-2">
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Redirect Type</label>
-                                        <select 
+                                        <label for="fadminc-2" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Redirect Type</label>
+                                        <select id="fadminc-2" 
                                             name="redirect_type" 
                                             class="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                                         >
@@ -362,8 +362,8 @@
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Expiry Date</label>
-                                        <input 
+                                        <label for="fadminc-3" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Expiry Date</label>
+                                        <input id="fadminc-3" 
                                             type="datetime-local" 
                                             name="expires_at" 
                                             value="{{ old('expires_at') }}" 
@@ -372,8 +372,8 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Password Protection</label>
-                                    <input 
+                                    <label for="fadminc-4" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Password Protection</label>
+                                    <input id="fadminc-4" 
                                         type="password" 
                                         name="password" 
                                         class="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
@@ -431,14 +431,14 @@
                                             <div class="p-3">
                                                 <p class="text-sm font-semibold text-slate-900 dark:text-white" x-text="ogTitle || 'Link Title'"></p>
                                                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1" x-text="ogDescription || 'Link description will appear here'"></p>
-                                                <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">hel.ink</p>
+                                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">hel.ink</p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Internal Notes</label>
-                                    <textarea 
+                                    <label for="fadminc-5" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Internal Notes</label>
+                                    <textarea id="fadminc-5" 
                                         name="comment" 
                                         rows="2"
                                         class="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-white placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"

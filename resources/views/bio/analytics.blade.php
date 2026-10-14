@@ -3,7 +3,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <div class="flex items-center gap-3">
-                    <a href="{{ route('bio.index') }}" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+                    <a aria-label="Back to bio pages" href="{{ route('bio.index') }}" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                         </svg>
@@ -30,13 +30,14 @@
             </div>
         </div>
     </x-slot>
-    <div class="py-6" x-data="{ dateRange: 7 }">
+    <div class="py-6">
         <div class="space-y-6">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                    <button @click="dateRange = 7" :class="dateRange === 7 ? 'bg-blue-600 text-white' : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-700'" class="px-4 py-2 rounded-lg text-sm font-medium transition">7 Days</button>
-                    <button @click="dateRange = 30" :class="dateRange === 30 ? 'bg-blue-600 text-white' : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-700'" class="px-4 py-2 rounded-lg text-sm font-medium transition">30 Days</button>
-                    <button @click="dateRange = 90" :class="dateRange === 90 ? 'bg-blue-600 text-white' : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-700'" class="px-4 py-2 rounded-lg text-sm font-medium transition">90 Days</button>
+                    @foreach ([7, 30] as $range)
+                        <a href="{{ route('bio.analytics', ['bioPage' => $bioPage, 'days' => $range]) }}" @if ($days === $range) aria-current="page" @endif
+                           class="px-4 py-2 rounded-lg text-sm font-medium transition {{ $days === $range ? 'bg-blue-600 text-white' : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-700' }}">{{ $range }} Days</a>
+                    @endforeach
                 </div>
                 <a href="{{ route('bio.public.qr', $bioPage->slug) }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -98,7 +99,7 @@
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Views Over Time</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Clicks Over Time</h3>
                     <div class="h-80">
                         <canvas id="viewsChart"></canvas>
                     </div>
@@ -242,7 +243,7 @@
                 data: {
                     labels: @json($stats['viewsChart']['labels']),
                     datasets: [{
-                        label: 'Page Views',
+                        label: 'Link clicks',
                         data: @json($stats['viewsChart']['data']),
                         borderColor: 'rgb(59, 130, 246)',
                         backgroundColor: 'rgba(59, 130, 246, 0.1)',

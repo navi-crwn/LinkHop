@@ -38,14 +38,16 @@
                 <template x-for="(item, idx) in (bioPage.social_links || [])" :key="item._uid || (item.platform + '-' + idx)">
                     <div class="block-item" x-show="item">
                         <!-- Drag Handle -->
-                        <div class="social-drag-handle block-drag-handle">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="social-drag-handle block-drag-handle" role="button" tabindex="0"
+                             :aria-label="'Move ' + (platforms[item.platform]?.name || item.platform) + '. Use the up and down arrow keys.'"
+                             @keydown.arrow-up.prevent="moveSocial(idx, -1)" @keydown.arrow-down.prevent="moveSocial(idx, 1)">
+                            <svg class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>
                             </svg>
                         </div>
                         <!-- Icon -->
                         <div class="block-icon" :style="{ backgroundColor: getPlatformColor(item.platform) }">
-                            <img :src="getPlatformIcon(item.platform)" alt="" class="w-5 h-5" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+                            <img :src="getPlatformIcon(item.platform)" alt="" class="w-5 h-5" style="filter: brightness(0) invert(1);" data-fallback="hide">
                         </div>
                         <!-- Input -->
                         <div class="block-content">
@@ -56,16 +58,17 @@
                                    autocomplete="off"
                                    data-lpignore="true"
                                    data-form-type="other"
-                                   class="w-full bg-transparent border-none focus:outline-none text-sm text-white placeholder-slate-500">
+                                   :aria-label="(platforms[item.platform]?.name || item.platform) + ' username or URL'"
+                                   class="w-full bg-transparent border-none focus:outline-none text-sm editor-text placeholder-slate-500">
                             <div class="text-xs editor-text-muted" x-text="platforms[item.platform]?.name || item.platform"></div>
                         </div>
                         <!-- Actions -->
                         <div class="block-actions">
                             <label class="toggle-switch">
-                                <input type="checkbox" x-model="item.enabled">
+                                <input type="checkbox" x-model="item.enabled" :aria-label="'Show ' + (platforms[item.platform]?.name || item.platform)">
                                 <span class="toggle-slider"></span>
                             </label>
-                            <button @click="removeSocial(idx)" class="block-action-btn delete">
+                            <button type="button" @click="removeSocial(idx)" class="block-action-btn delete" :aria-label="'Remove ' + (platforms[item.platform]?.name || item.platform)">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                 </svg>

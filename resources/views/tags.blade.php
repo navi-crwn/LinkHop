@@ -68,7 +68,7 @@
                             </div>
                             <div class="flex flex-wrap justify-end gap-2 text-sm">
                                 <a href="{{ route('tags.manage', $tag) }}" class="rounded-full border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800">Edit</a>
-                                <form method="POST" action="{{ route('tags.destroy', $tag) }}" onsubmit="return confirm('Delete this tag?')">
+                                <form method="POST" action="{{ route('tags.destroy', $tag) }}" data-confirm="Delete this tag?">
                                     @csrf
                                     @method('DELETE')
                                     <button class="rounded-full border border-red-200 px-4 py-2 text-red-600 hover:bg-red-50 dark:border-red-900/40 dark:text-red-300 dark:hover:bg-red-900/30">Delete</button>
@@ -117,10 +117,10 @@
                                             <div class="rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm shadow-sm dark:border-slate-700 dark:bg-slate-800">
                                                 <p class="font-semibold text-blue-600 dark:text-blue-400" x-text="link.short_url"></p>
                                                 <p class="mt-1 text-xs text-slate-500 dark:text-slate-400" x-text="link.target_preview"></p>
-                                                <p class="mt-1 text-[11px] text-slate-400 dark:text-slate-500" x-text="`${link.clicks} clicks • ${link.created_at || '—'}`"></p>
+                                                <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400" x-text="`${link.clicks} clicks • ${link.created_at || '—'}`"></p>
                                                 <div class="mt-2 flex gap-2 text-xs">
                                                     <a :href="link.edit_url" class="rounded-full border border-slate-300 px-3 py-1 text-slate-700 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">Edit</a>
-                                                    <form method="POST" :action="link.delete_url" class="inline" onsubmit="return confirm('Delete this link?')">
+                                                    <form method="POST" :action="link.delete_url" class="inline" data-confirm="Delete this link?">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button class="rounded-full border border-red-200 px-3 py-1 text-red-600 hover:bg-red-50 dark:border-red-900/40 dark:text-red-300 dark:hover:bg-red-900/30">Delete</button>
@@ -168,7 +168,7 @@
                      class="relative w-full max-w-md transform rounded-2xl bg-white p-6 shadow-2xl dark:bg-slate-800">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Create New Tag</h3>
-                        <button @click="open = false" class="rounded-full p-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700">
+                        <button aria-label="Close" @click="open = false" class="rounded-full p-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>

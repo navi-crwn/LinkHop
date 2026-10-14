@@ -28,7 +28,7 @@
                         @break
 
                     @case('bio')
-                        <p class="text-xs font-semibold uppercase tracking-wider text-white/45">Link in Bio page</p>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-white/70">Link in Bio page</p>
                         <p class="mt-2 text-lg font-semibold">{{ $result['page']->title }}</p>
                         <p class="text-sm text-white/60">{{ $host }}/b/{{ $result['page']->slug }} · {{ $result['page']->links_count }} links</p>
                         <a href="{{ url('/b/'.$result['page']->slug) }}" rel="noopener" class="mt-4 inline-block rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-900">Open page</a>
@@ -48,12 +48,15 @@
                         @if ($result['protected'])
                             <p class="mt-4 font-medium">This link is password protected.</p>
                             <p class="mt-1 text-sm text-white/60">Its destination is only shown after entering the password.</p>
+                        @elseif (! empty($result['hidden']))
+                            <p class="mt-4 font-medium">This link no longer works.</p>
+                            <p class="mt-1 text-sm text-white/70">Its destination is not shown because the link is {{ $result['state'] }}.</p>
                         @else
-                            <p class="mt-4 text-xs font-semibold uppercase tracking-wider text-white/45">Destination</p>
+                            <p class="mt-4 text-xs font-semibold uppercase tracking-wider text-white/70">Destination</p>
                             <p class="mt-1 break-all text-[15px] text-white" x-data>
                                 {{ $link->target_url }}
                             </p>
-                            <p class="mt-1 text-sm text-white/55">Domain: <span class="font-medium text-white/80">{{ $result['host'] }}</span></p>
+                            <p class="mt-1 text-sm text-white/70">Domain: <span class="font-medium text-white/80">{{ $result['host'] }}</span></p>
 
                             @if ($result['blocked'])
                                 <div class="mt-4 rounded-2xl bg-rose-500/15 p-3 text-sm text-rose-100 ring-1 ring-rose-400/30">
@@ -79,7 +82,7 @@
                                 @endif
                             </div>
                         @endif
-                        <p class="mt-5 border-t border-white/10 pt-4 text-xs text-white/45">
+                        <p class="mt-5 border-t border-white/10 pt-4 text-xs text-white/70">
                             Created {{ $link->created_at?->diffForHumans() }}{{ $link->user_id ? '' : ' by a guest' }}.
                             Something wrong? <a href="{{ route('report.create', ['slug' => $link->slug]) }}" class="underline hover:text-white">Report this link</a>.
                         </p>

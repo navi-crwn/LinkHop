@@ -69,12 +69,12 @@
                     </div>
                     <div class="flex flex-wrap gap-2">
                         <input x-model="searchQuery" @input="filterClicks" type="text" placeholder="Search country, device, referrer..." class="text-xs rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 px-3 py-1.5 w-64">
-                        <select x-model="deviceFilter" @change="filterClicks" class="text-xs rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 px-3 py-1.5">
+                        <select aria-label="Filter by device" x-model="deviceFilter" @change="filterClicks" class="text-xs rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 px-3 py-1.5">
                             <option value="">All Devices</option>
                             <option value="Mobile">Mobile</option>
                             <option value="Desktop">Desktop</option>
                         </select>
-                        <select x-model="proxyFilter" @change="filterClicks" class="text-xs rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 px-3 py-1.5">
+                        <select aria-label="Filter by connection type" x-model="proxyFilter" @change="filterClicks" class="text-xs rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 px-3 py-1.5">
                             <option value="">All Traffic</option>
                             <option value="clean">Clean IPs</option>
                             <option value="proxy">Proxy/VPN</option>

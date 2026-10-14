@@ -38,7 +38,7 @@ class LinkCheckController extends Controller
         if (preg_match('#^b/([A-Za-z0-9]+)$#', $path, $m)) {
             $page = BioPage::where('slug', strtolower($m[1]))->where('is_published', true)->withCount(['links' => fn ($q) => $q->where('is_active', true)])->first();
 
-            return $page
+            return $page && ! $page->user?->isSuspended()
                 ? ['type' => 'bio', 'page' => $page]
                 : ['type' => 'missing', 'slug' => $path];
         }
@@ -48,10 +48,15 @@ class LinkCheckController extends Controller
             return ['type' => 'missing', 'slug' => $path];
         }
         $state = match (true) {
+            $link->user?->isSuspended() => 'suspended',
             $link->status !== Link::STATUS_ACTIVE => 'inactive',
             $link->isExpired() => 'expired',
             default => 'active',
         };
+        // A link that no longer redirects keeps its destination private too.
+        if ($state !== 'active') {
+            return ['type' => 'link', 'link' => $link, 'state' => $state, 'protected' => false, 'hidden' => true];
+        }
         // Never reveal where a password-protected link points.
         if ($link->requiresPassword()) {
             return ['type' => 'link', 'link' => $link, 'state' => $state, 'protected' => true];
