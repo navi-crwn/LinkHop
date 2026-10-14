@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 class Link extends Model
 {
@@ -99,18 +100,19 @@ class Link extends Model
     }
 
     /**
-     * Anonymous links live until `guest_idle_days` without a click, and never
-     * longer than `guest_max_days` after creation.
+     * Anonymous links count whole days in `shortener.guest_timezone` and stop
+     * working at 00:00: after `guest_idle_days` full days without a click, and
+     * after day `guest_max_days` (the day they were created is day 1).
      */
     public function isGuestExpired(): bool
     {
         if ($this->user_id !== null || ! $this->created_at) {
             return false;
         }
-        $lastActivity = $this->last_clicked_at ?? $this->created_at;
+        [$createdBefore, $idleBefore] = self::guestCutoffs();
 
-        return $this->created_at->lt(now()->subDays((int) config('shortener.guest_max_days', 30)))
-            || $lastActivity->lt(now()->subDays((int) config('shortener.guest_idle_days', 14)));
+        return $this->created_at->lt($createdBefore)
+            || ($this->last_clicked_at ?? $this->created_at)->lt($idleBefore);
     }
 
     /**
@@ -118,10 +120,29 @@ class Link extends Model
      */
     public function scopeGuestExpired($query)
     {
-        return $query->whereNull('user_id')->where(function ($q) {
-            $q->where('created_at', '<', now()->subDays((int) config('shortener.guest_max_days', 30)))
-                ->orWhereRaw('COALESCE(last_clicked_at, created_at) < ?', [now()->subDays((int) config('shortener.guest_idle_days', 14))]);
+        [$createdBefore, $idleBefore] = self::guestCutoffs();
+        $tz = config('app.timezone');
+
+        return $query->whereNull('user_id')->where(function ($q) use ($createdBefore, $idleBefore, $tz) {
+            $q->where('created_at', '<', $createdBefore->copy()->setTimezone($tz)->toDateTimeString())
+                ->orWhereRaw('COALESCE(last_clicked_at, created_at) < ?', [$idleBefore->copy()->setTimezone($tz)->toDateTimeString()]);
         });
+    }
+
+    /**
+     * Midnight-based cutoffs for guest links: created before the first, or last
+     * clicked (else created) before the second, means expired.
+     *
+     * @return array{0: Carbon, 1: Carbon}
+     */
+    public static function guestCutoffs(): array
+    {
+        $today = now(config('shortener.guest_timezone', config('app.timezone')))->startOfDay();
+
+        return [
+            $today->copy()->subDays(max(0, (int) config('shortener.guest_max_days', 30) - 1)),
+            $today->copy()->subDays((int) config('shortener.guest_idle_days', 14)),
+        ];
     }
 
     public function requiresPassword(): bool

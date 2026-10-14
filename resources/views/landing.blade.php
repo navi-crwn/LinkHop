@@ -28,7 +28,9 @@
                 action="{{ route('shorten.store') }}"
             >
                 @csrf
-                <div class="flex flex-col gap-2 sm:flex-row">
+                {{-- Wide screens: [ link | Shorten | security check ]. The check only takes room when
+                     Cloudflare actually asks for a click (interaction-only), so the bar stays balanced. --}}
+                <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap lg:flex-nowrap">
                     <label for="target_url" class="sr-only">Long URL</label>
                     <input id="target_url" type="url" name="target_url" value="{{ old('target_url') }}" required
                         placeholder="Paste a long link…"
@@ -37,6 +39,9 @@
                         class="rounded-2xl bg-gradient-to-r from-indigo-500 via-sky-500 to-fuchsia-500 px-6 py-3.5 font-semibold text-white shadow-md shadow-indigo-500/25 transition hover:brightness-110 active:scale-[0.98] disabled:opacity-50">
                         <span x-show="!waiting">Shorten</span><span x-cloak x-show="waiting">Verifying…</span>
                     </button>
+                    {{-- Kept rendered but collapsed (Turnstile needs a live container); the negative margin cancels the row gap. --}}
+                    <x-turnstile size="flexible" class="lg:shrink-0"
+                        x-bind:class="challenge || status === 'error' ? 'w-full lg:w-[300px]' : 'h-0 w-0 overflow-hidden -mt-2 sm:mt-0 sm:-ml-2'" />
                 </div>
                 <div class="px-2 pb-1 pt-2">
                     <button type="button" class="text-xs text-slate-500 hover:text-slate-900 dark:text-white/55 dark:hover:text-white" @click="custom = !custom" x-show="!custom">+ Custom slug</button>
@@ -46,7 +51,6 @@
                             class="min-w-0 flex-1 rounded-xl border-0 bg-slate-100 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400/50 dark:bg-white/[0.06] dark:text-white dark:placeholder-white/30">
                     </div>
                 </div>
-                <x-turnstile class="px-2 pt-2" />
                 @if (session('link_error') || $errors->any())
                     <div class="m-2 rounded-xl bg-rose-500/10 px-3 py-2 text-sm text-rose-700 dark:bg-rose-500/15 dark:text-rose-100">
                         {{ session('link_error') }}
@@ -70,13 +74,13 @@
                         </button>
                     </div>
                     <p class="mt-2 text-xs text-slate-600 dark:text-white/60">
-                        Guest links are removed {{ $idleDays }} days after their last click, and after {{ $maxDays }} days at most.
+                        Guest links are deleted after {{ $idleDays }} days in a row without a click, and after {{ $maxDays }} days at most.
                         <a href="{{ route('register') }}" class="font-semibold text-indigo-600 underline-offset-2 hover:underline dark:text-white">Create a free account</a> to keep links permanently.
                     </p>
                 </div>
             @else
                 <p class="px-3 pb-2 text-[11px] text-slate-500 dark:text-white/60">
-                    No account needed. Guest links expire after {{ $idleDays }} days without clicks ({{ $maxDays }} days max).
+                    No account needed. Guest links are deleted after {{ $idleDays }} days without a click, and after {{ $maxDays }} days at most.
                 </p>
             @endif
         </div>

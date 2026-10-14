@@ -137,7 +137,7 @@ test('guest links live at most 30 days even when the server env asks for more', 
     };
 
     $config = $load(['GUEST_LINK_IDLE_DAYS' => '3650', 'GUEST_LINK_MAX_DAYS' => '3650']);
-    expect($config['guest_max_days'])->toBe(30)->and($config['guest_idle_days'])->toBe(30);
+    expect($config['guest_max_days'])->toBe(30)->and($config['guest_idle_days'])->toBe(14);
 
     $config = $load(['GUEST_LINK_IDLE_DAYS' => '14', 'GUEST_LINK_MAX_DAYS' => '30']);
     expect($config['guest_max_days'])->toBe(30)->and($config['guest_idle_days'])->toBe(14);
