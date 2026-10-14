@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Link;
+use App\Models\RetiredSlug;
 use App\Services\LinkService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
@@ -11,7 +12,7 @@ class PruneGuestLinks extends Command
 {
     protected $signature = 'links:prune-guest {--dry-run : Only count what would be deleted}';
 
-    protected $description = 'Delete anonymous links idle for 14 days or older than 30 days (config/shortener.php)';
+    protected $description = 'Delete expired anonymous links and keep their slugs blocked for a while (config/shortener.php)';
 
     public function handle(LinkService $links): int
     {
@@ -26,9 +27,13 @@ class PruneGuestLinks extends Command
                 if ($link->qr_code_path) {
                     Storage::disk('public')->delete($link->qr_code_path);
                 }
+                RetiredSlug::retire($link->slug);
                 $link->delete();
             }
         });
+        if (! $this->option('dry-run')) {
+            RetiredSlug::where('reusable_after', '<=', now())->delete();
+        }
         $this->info(($this->option('dry-run') ? 'Would delete' : 'Deleted')." {$count} expired guest links.");
 
         return self::SUCCESS;

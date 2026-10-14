@@ -1,7 +1,9 @@
 <?php
 
 use App\Models\Link;
+use App\Models\RetiredSlug;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Cache;
 
 function guestLink(string $slug, array $attrs = []): Link
@@ -21,8 +23,67 @@ test('guest links stop redirecting after 14 idle days or 30 days total', functio
 
     $this->get('/fresh1')->assertRedirect('https://example.com/fresh1');
     $this->get('/clicked')->assertRedirect('https://example.com/clicked');
-    $this->get('/idle01')->assertNotFound();
-    $this->get('/old001')->assertNotFound();
+    $this->get('/idle01')->assertStatus(410);
+    $this->get('/old001')->assertStatus(410);
+});
+
+test('a guest link lives through day 30 and is gone at 00:00 after it, even if clicked on day 29', function () {
+    config(['shortener.guest_timezone' => 'Asia/Jakarta']);
+    $this->travelTo(CarbonImmutable::parse('2026-10-01 15:00', 'Asia/Jakarta'));
+    $link = guestLink('day30');
+
+    // clicked on day 29 (29 Oct), so the idle rule is not what removes it
+    $this->travelTo(CarbonImmutable::parse('2026-10-29 20:00', 'Asia/Jakarta'));
+    $link->forceFill(['last_clicked_at' => now()])->save();
+
+    $this->travelTo(CarbonImmutable::parse('2026-10-30 23:59:59', 'Asia/Jakarta'));
+    expect($link->fresh()->isGuestExpired())->toBeFalse();
+
+    $this->travelTo(CarbonImmutable::parse('2026-10-31 00:00', 'Asia/Jakarta'));
+    expect($link->fresh()->isGuestExpired())->toBeTrue();
+    $this->artisan('links:prune-guest')->assertSuccessful();
+    expect(Link::find($link->id))->toBeNull();
+});
+
+test('a guest link is gone at 00:00 after 14 full days in a row without a click', function () {
+    config(['shortener.guest_timezone' => 'Asia/Jakarta']);
+    $this->travelTo(CarbonImmutable::parse('2026-10-01 09:00', 'Asia/Jakarta'));
+    $link = guestLink('idle14');
+
+    // last click on 5 Oct; 6..19 Oct are the 14 days without a click
+    $this->travelTo(CarbonImmutable::parse('2026-10-05 22:00', 'Asia/Jakarta'));
+    $link->forceFill(['last_clicked_at' => now()])->save();
+
+    $this->travelTo(CarbonImmutable::parse('2026-10-19 23:59:59', 'Asia/Jakarta'));
+    expect($link->fresh()->isGuestExpired())->toBeFalse()
+        ->and(Link::guestExpired()->whereKey($link->id)->exists())->toBeFalse();
+
+    $this->travelTo(CarbonImmutable::parse('2026-10-20 00:00', 'Asia/Jakarta'));
+    expect($link->fresh()->isGuestExpired())->toBeTrue()
+        ->and(Link::guestExpired()->whereKey($link->id)->exists())->toBeTrue();
+});
+
+test('a deleted guest link shows an expired page and its slug stays blocked for a while', function () {
+    $old = guestLink('promo1', ['created_at' => now()->subDays(40)]);
+    Cache::flush();
+    $this->get('/promo1')->assertStatus(410)->assertSee('Link Expired');
+
+    $this->artisan('links:prune-guest')->assertSuccessful();
+    expect(Link::find($old->id))->toBeNull()
+        ->and(RetiredSlug::isBlocked('PROMO1'))->toBeTrue();
+    Cache::flush();
+    $this->get('/promo1')->assertStatus(410);
+
+    // nobody can take the slug over and catch its old visitors
+    $user = User::factory()->create();
+    $this->actingAs($user)->post('/links', ['target_url' => 'https://evil.example', 'slug' => 'promo1', 'status' => 'active'])
+        ->assertSessionHasErrors('slug');
+    expect(Link::where('slug', 'promo1')->exists())->toBeFalse();
+
+    // once the block has passed, the slug is free again and the record is cleaned up
+    $this->travel((int) config('shortener.retired_slug_days') + 1)->days();
+    $this->artisan('links:prune-guest')->assertSuccessful();
+    expect(RetiredSlug::where('slug', 'promo1')->exists())->toBeFalse();
 });
 
 test('links owned by a user never expire this way', function () {

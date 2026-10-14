@@ -47,7 +47,7 @@ Everything is included for every account. No premium tier, no locked features. A
 ## Features
 
 - **🔗 Short links.** Random or custom slugs, an optional password and expiry date, and a QR code (PNG, SVG or JPG) for every link.
-- **🙋 No account needed.** Anyone can shorten a link. Guest links stay up to 30 days; sign up to keep them and see their stats.
+- **🙋 No account needed.** Anyone can shorten a link. Guest links are deleted after 14 days without a click, and after 30 days at most; sign up to keep them and see their stats.
 - **🪪 Link in Bio.** Your own page at `hel.ink/b/you`, built from blocks: links, text, images, YouTube, Spotify, maps, countdowns, FAQ, vCard and code snippets.
 - **🎨 20 themes.** Galaxy, Neon, Cyberpunk, Aurora, Cherry Blossom, Midnight, Matrix, Ice, Lavender and more, or your own colors, fonts and custom CSS. The editor shows a live preview.
 - **✨ Animations.** Rain, snow, stars, hearts, leaves or confetti behind the page; buttons that fade, slide, pop, glow, pulse or wiggle.
@@ -154,7 +154,7 @@ curl -X POST https://hel.ink/api/shorten \
 Yes. There's no paid plan and no locked feature, and the code is MIT licensed, so you can run, change and share it.
 
 **Do I need an account?**
-Not to shorten a link. Guest links last up to 30 days. With an account you keep your links and get analytics, folders, the API and a bio page.
+Not to shorten a link. Guest links are deleted after 14 days without a click, and after 30 days at most. With an account you keep your links and get analytics, folders, the API and a bio page.
 
 **Where is my bio page?**
 At `hel.ink/b/` followed by the name you pick, for example [hel.ink/b/hel](https://hel.ink/b/hel).
