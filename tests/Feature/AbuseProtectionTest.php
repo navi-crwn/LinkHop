@@ -254,3 +254,28 @@ test('csam terms from the old url safety list are blocked and file hosts are fla
         ->and($safety->assess('https://www.gofile.io/d/abc')['signals'])->toContain('file_host')
         ->and($safety->assess('https://www.gofile.io/d/abc')['score'])->toBeLessThan(config('abuse.thresholds.disable'));
 });
+
+test('video embed hosts and subdomains of listed hosts are flagged for review', function () {
+    $safety = app(LinkSafety::class);
+
+    expect($safety->assess('https://voe.sx/e/yqxlodlk2tpt')['signals'])->toContain('file_host')
+        ->and($safety->assess('https://download2.mediafire.com/x/file.zip')['signals'])->toContain('file_host')
+        ->and($safety->assess('https://notmediafire.com/x')['signals'])->not->toContain('file_host');
+
+    $owner = User::factory()->create();
+    $link = Link::create(['slug' => 'alboss', 'target_url' => 'https://voe.sx/e/yqxlodlk2tpt', 'user_id' => $owner->id, 'status' => 'active']);
+    $this->artisan('abuse:scan', ['--full' => true])->assertSuccessful();
+
+    expect(AbuseFlag::where('subject_type', 'link')->where('subject_id', $link->id)->value('action'))->toBe(AbuseFlag::ACTION_FLAGGED)
+        ->and($link->fresh()->status)->toBe('active');
+});
+
+test('the abuse page shows when the scan last ran and admins can start one', function () {
+    $admin = User::factory()->create(['email' => config('auth.superadmin_email', 'admin@hel.ink')]);
+    $this->actingAs($admin)->get(route('admin.abuse.index'))->assertOk()->assertSee('has not run');
+
+    $this->artisan('abuse:scan', ['--full' => true])->assertSuccessful();
+    $this->actingAs($admin)->get(route('admin.abuse.index'))->assertOk()->assertDontSee('has not run');
+
+    $this->actingAs($admin)->post(route('admin.abuse.scan'))->assertRedirect()->assertSessionHas('status');
+});

@@ -21,7 +21,15 @@ class AdminAnalyticsController extends Controller
         $totalClicks = Link::sum('clicks');
         $activeLinks = Link::where('status', 'active')->count();
         $performanceData = $this->getPerformanceData($period);
+        // Ranking only lists links that still work; expired/disabled ones get their own list.
         $topLinks = Link::with('user')
+            ->live()
+            ->orderBy('clicks', 'desc')
+            ->limit(20)
+            ->get();
+        $endedLinks = Link::with('user')
+            ->ended()
+            ->where('clicks', '>', 0)
             ->orderBy('clicks', 'desc')
             ->limit(10)
             ->get();
@@ -86,6 +94,7 @@ class AdminAnalyticsController extends Controller
             'activeLinks',
             'performanceData',
             'topLinks',
+            'endedLinks',
             'topCountries',
             'topCities',
             'topIsps',

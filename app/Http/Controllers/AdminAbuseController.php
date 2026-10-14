@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Console\Commands\AbuseScan;
 use App\Models\AbuseFlag;
 use App\Models\AbuseReport;
 use App\Models\BioLink;
@@ -11,6 +12,9 @@ use App\Models\User;
 use App\Services\LinkService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class AdminAbuseController extends Controller
@@ -23,14 +27,33 @@ class AdminAbuseController extends Controller
             ->latest()
             ->paginate(25, ['*'], 'flags');
 
-        return view('admin-abuse', compact('reports', 'flags'));
+        $lastRun = Cache::get(AbuseScan::LAST_RUN_KEY);
+        $counts = [
+            'open_flags' => AbuseFlag::where('status', AbuseFlag::STATUS_OPEN)->count(),
+            'disabled' => AbuseFlag::where('action', AbuseFlag::ACTION_DISABLED)->where('status', '!=', AbuseFlag::STATUS_DISMISSED)->count(),
+            'open_reports' => AbuseReport::where('status', 'open')->count(),
+        ];
+
+        return view('admin-abuse', compact('reports', 'flags', 'lastRun', 'counts'));
+    }
+
+    /**
+     * Run abuse:scan over the last week right after this response is sent, for
+     * when the scheduler is not running or an admin wants fresh findings now.
+     */
+    public function scan(): RedirectResponse
+    {
+        dispatch(fn () => Artisan::call('abuse:scan', ['--since' => '7d']))->afterResponse();
+
+        return back()->with('status', 'Scan started for items from the last 7 days. Refresh in a minute to see new findings.');
     }
 
     public function update(Request $request, AbuseReport $report): RedirectResponse
     {
-        $report->update([
-            'status' => $request->input('status', 'open'),
+        $data = $request->validate([
+            'status' => ['required', Rule::in(['open', 'investigating', 'closed'])],
         ]);
+        $report->update(['status' => $data['status']]);
 
         return back()->with('status', 'Report updated.');
     }

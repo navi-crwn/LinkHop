@@ -67,6 +67,12 @@ return [
         'mega.nz', 'mega.io', 'mediafire.com', 'zippyshare.com', 'file.io', 'gofile.io', 'sendspace.com', 'ufile.io',
         'uploadfiles.io', 'filepost.com', 'drop.sc', 'dropapk.to', 'dood.to', 'dood.la', 'dood.so', 'dood.watch',
         'doodstream.com', 'streamtape.com', 'mixdrop.co', 'upstream.to', 'streamlare.com', 'uqload.com', 'vidoza.net',
+        // Video embed hosts common on pirated/adult re-uploads.
+        'voe.sx', 'voe.to', 'filemoon.sx', 'filemoon.to', 'filemoon.in', 'streamwish.to', 'streamwish.com', 'wishembed.pro',
+        'vidhide.com', 'vidhidepro.com', 'lulustream.com', 'luluvdo.com', 'd000d.com', 'd0000d.com', 'ds2play.com',
+        'doods.pro', 'dood.yt', 'dood.re', 'dood.wf', 'mixdrop.to', 'mixdrop.sx', 'streamtape.to', 'vidguard.to',
+        'mp4upload.com', 'vtube.to', 'streamvid.net', 'terabox.com', '1024terabox.com', 'teraboxapp.com',
+        'krakenfiles.com', 'pixeldrain.com', 'bunkr.si', 'bunkr.ru', 'bunkrr.su', 'cyberdrop.me', 'saint.to', 'saint2.su',
     ],
 
     'risky_tlds' => ['zip', 'mov', 'top', 'xyz', 'click', 'icu', 'cfd', 'sbs', 'rest', 'lol', 'buzz', 'cyou', 'monster'],

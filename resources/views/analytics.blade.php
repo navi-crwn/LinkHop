@@ -146,6 +146,7 @@
                     <div class="flex gap-0.5">
                         <button type="button" @click="tab = 'links'" class="{{ $tabBtn }}" :class="tab === 'links' ? '{{ $tabOn }}' : '{{ $tabOff }}'">Links</button>
                         <button type="button" @click="tab = 'dest'" class="{{ $tabBtn }}" :class="tab === 'dest' ? '{{ $tabOn }}' : '{{ $tabOff }}'">Destinations</button>
+                        <button type="button" @click="tab = 'ended'" class="{{ $tabBtn }}" :class="tab === 'ended' ? '{{ $tabOn }}' : '{{ $tabOff }}'">Expired</button>
                     </div>
                 </div>
                 <div x-show="tab === 'links'">
@@ -153,6 +154,10 @@
                 </div>
                 <div x-show="tab === 'dest'" x-cloak>
                     <x-analytics.rank-list :items="$rows($topDestinations)" empty="No destination data." />
+                </div>
+                <div x-show="tab === 'ended'" x-cloak>
+                    <p class="mb-2 text-xs text-muted">Expired or disabled links that still got clicks in this range.</p>
+                    <x-analytics.rank-list :items="collect($endedLinks)->filter(fn ($r) => $r->link)->map(fn ($r) => ['label' => '/'.$r->link->slug, 'sub' => $r->link->target_url, 'value' => (int) $r->total, 'href' => route('links.show', $r->link)])" color="bg-slate-400/60" empty="No clicks on expired links." />
                 </div>
             </section>
 
