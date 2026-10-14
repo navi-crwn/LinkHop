@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Link;
 use App\Models\LinkClick;
+use App\Services\UserAgentService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class AnalyticsController extends Controller
@@ -42,12 +45,12 @@ class AnalyticsController extends Controller
         }
         $timeline = $clicksQuery
             ->clone()
-            ->selectRaw('DATE_FORMAT(clicked_at, "%Y-%m-%d %H:00:00") as bucket, COUNT(*) as total')
+            ->selectRaw(sql_date_format('clicked_at', '%Y-%m-%d %H:00:00').' as bucket, COUNT(*) as total')
             ->groupBy('bucket')
             ->orderBy('bucket')
             ->get()
             ->mapWithKeys(fn ($row) => [
-                \Carbon\Carbon::parse($row->bucket)->format('H:i') => (int) $row->total,
+                Carbon::parse($row->bucket)->format('H:i') => (int) $row->total,
             ]);
         $topLinks = $clicksQuery
             ->clone()
@@ -122,7 +125,7 @@ class AnalyticsController extends Controller
             ->selectRaw('CASE WHEN user_agent LIKE "%Mobile%" THEN "Mobile" ELSE "Desktop" END as device, COUNT(*) as total')
             ->groupBy('device')
             ->pluck('total', 'device');
-        $userAgentService = app(\App\Services\UserAgentService::class);
+        $userAgentService = app(UserAgentService::class);
         $clicksForAgents = $clicksQuery->clone()->whereNotNull('user_agent')->take(1000)->get();
         $browserStats = [];
         $osStats = [];
@@ -183,7 +186,7 @@ class AnalyticsController extends Controller
             ->latest()
             ->limit(20)
             ->get(['ip_address', 'country', 'city', 'created_at']);
-        $userLinks = \App\Models\Link::where('user_id', $user->id)->orderBy('created_at', 'desc')->get(['id', 'slug', 'target_url']);
+        $userLinks = Link::where('user_id', $user->id)->orderBy('created_at', 'desc')->get(['id', 'slug', 'target_url']);
 
         return view('analytics', compact(
             'topLinks',

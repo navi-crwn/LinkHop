@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
+
 if (! function_exists('simple_icon_url')) {
     /** Get Simple Icons CDN URL for a platform/brand */
     function simple_icon_url(string $platform, ?string $color = null): ?string
@@ -222,5 +224,24 @@ if (! function_exists('country_name')) {
         ];
 
         return $countries[strtoupper($countryCode)] ?? $countryCode;
+    }
+}
+
+if (! function_exists('sql_date_format')) {
+    /**
+     * Portable DATE_FORMAT(column, format) for MySQL/MariaDB and SQLite.
+     * Supports the specifiers used in this app: %Y %m %d %H %i %s %u.
+     */
+    function sql_date_format(string $column, string $format): string
+    {
+        $driver = DB::connection()->getDriverName();
+        if ($driver === 'sqlite') {
+            // MySQL %u (week, Monday first) is %W in SQLite; %i (minutes) is %M.
+            $format = strtr($format, ['%u' => '%W', '%i' => '%M']);
+
+            return "strftime('".str_replace("'", "''", $format)."', {$column})";
+        }
+
+        return "DATE_FORMAT({$column}, '".str_replace("'", "''", $format)."')";
     }
 }

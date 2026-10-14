@@ -420,7 +420,6 @@
         </div>
     </div>
     @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         .leaflet-popup-content-wrapper { padding: 5px 7px; border-radius: 10px; }
         .leaflet-popup-content { margin: 0; width: 80px !important; }

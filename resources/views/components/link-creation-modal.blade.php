@@ -22,7 +22,7 @@
         x-transition:leave="transition ease-in duration-150"
         x-transition:leave-start="opacity-100 scale-100"
         x-transition:leave-end="opacity-0 scale-95"
-        class="relative z-10 w-full max-w-5xl max-h-[90vh] rounded-2xl bg-white shadow-2xl dark:bg-slate-900 flex flex-col"
+        class="relative z-10 w-full max-w-5xl max-h-[90vh] rounded-2xl glass-strong no-skin flex flex-col"
         role="dialog"
         aria-modal="true"
         @click.stop
@@ -916,6 +916,10 @@ function linkCreationModal() {
                 this.panel = true;
                 this.resetForm();
             };
+            // Pages without this modal send "New link" here with ?create=1
+            if (new URLSearchParams(window.location.search).get('create') === '1') {
+                this.$nextTick(() => window.openLinkPanel());
+            }
         },
         closePanel() {
             this.panel = false;
