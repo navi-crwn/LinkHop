@@ -261,3 +261,16 @@ test('the public bio page loads Alpine once and the QR library only when sharing
     expect($html)->not->toContain('alpinejs@')
         ->not->toMatch('/<script[^>]+qr-code-styling/');
 });
+
+test('bio page trackers wait for the visitor to allow them', function () {
+    $page = backendPage(['facebook_pixel_id' => '1234567890123', 'tiktok_pixel_id' => 'ABCDEFGHIJ1234567890', 'google_analytics_id' => 'G-ABC123']);
+    $html = $this->get("/b/{$page->slug}")->assertOk()->getContent();
+
+    expect($html)->toContain('id="tracker-consent"')
+        ->toContain('Google Analytics, Facebook, TikTok')
+        ->not->toMatch('/<script[^>]+src="https:\/\/www\.googletagmanager/')
+        ->not->toContain('facebook.com/tr?id=');
+
+    $plain = backendPage();
+    expect($this->get("/b/{$plain->slug}")->getContent())->not->toContain('tracker-consent');
+});
