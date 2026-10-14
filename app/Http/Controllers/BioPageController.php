@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\SocialUrlHelper;
+use App\Models\AbuseFlag;
 use App\Models\BioClick;
+use App\Models\BioLink;
 use App\Models\BioPage;
 use App\Services\LinkSafety;
 use Illuminate\Http\Request;
@@ -154,14 +157,47 @@ class BioPageController extends Controller
                 }
             }
         }
-        $oldImage = $oldSettings['image'] ?? $oldSettings['logo_url'] ?? null;
-        $newImage = $settings['image'] ?? $settings['logo_url'] ?? null;
-        if ($oldImage && $oldImage !== $newImage && str_starts_with($oldImage, '/storage/')) {
-            $path = str_replace('/storage/', '', $oldImage);
-            Storage::disk('public')->delete($path);
-        }
 
         return $settings;
+    }
+
+    /**
+     * Delete an uploaded bio file once nothing references it any more. Paths can
+     * come from user input or be shared by duplicated pages, so never delete a
+     * file another page or block still uses.
+     */
+    /**
+     * Every uploaded file a page and its blocks point at.
+     *
+     * @return array<int, string|null>
+     */
+    private function uploadedFiles(BioPage $bioPage): array
+    {
+        $files = [$bioPage->avatar_url, $bioPage->background_image, $bioPage->qr_settings['image'] ?? null, $bioPage->qr_settings['logo_url'] ?? null];
+        foreach ($bioPage->links()->get(['thumbnail_url', 'custom_icon', 'content']) as $link) {
+            array_push($files, $link->thumbnail_url, $link->custom_icon, $link->content);
+        }
+
+        return $files;
+    }
+
+    private function deleteUnusedUpload(?string $path): void
+    {
+        $path = preg_replace('#^/?storage/#', '', trim((string) $path));
+        if (! preg_match('#^(avatars|bio-images|bio-thumbnails|bio-icons|qr-logos)/[A-Za-z0-9._-]+$#', $path)) {
+            return;
+        }
+        $like = '%'.$path.'%';
+        $inUse = BioPage::where(fn ($q) => $q->where('avatar_url', 'like', $like)
+            ->orWhere('qr_settings', 'like', $like)
+            ->orWhere('background_value', 'like', $like)
+            ->orWhere('background_image', 'like', $like))->exists()
+            || BioLink::where(fn ($q) => $q->where('thumbnail_url', 'like', $like)
+                ->orWhere('custom_icon', 'like', $like)
+                ->orWhere('content', 'like', $like))->exists();
+        if (! $inUse) {
+            Storage::disk('public')->delete($path);
+        }
     }
 
     /**
@@ -177,11 +213,13 @@ class BioPageController extends Controller
         }
         foreach ((array) ($data['social_links'] ?? []) as $i => $social) {
             $value = trim((string) ($social['value'] ?? ''));
-            // Plain usernames/handles have no scheme and are expanded per platform.
-            if ($value === '' || $safety->scheme($value) === null) {
+            if ($value === '') {
                 continue;
             }
-            if ($reason = $safety->rejectionReason($value, '', LinkSafety::BIO_SCHEMES)) {
+            // Check the URL the page will actually link to: some platforms turn a bare
+            // "host.tld/path" handle into https://host.tld/path.
+            $url = SocialUrlHelper::buildUrl((string) ($social['platform'] ?? ''), $value);
+            if ($safety->scheme($url) !== null && ($reason = $safety->rejectionReason($url, '', LinkSafety::BIO_SCHEMES))) {
                 $errors["social_links.{$i}.value"] = $reason;
             }
         }
@@ -257,6 +295,9 @@ class BioPageController extends Controller
                 'max:20',
                 'regex:/^[a-zA-Z0-9]+$/',
                 Rule::unique('bio_pages')->ignore($bioPage->id),
+                // Same reserved list as store(); an existing slug is left alone.
+                fn ($attribute, $value, $fail) => $value !== $bioPage->slug && in_array($value, config('shortener.reserved_slugs', []), true)
+                    ? $fail('This slug is reserved.') : null,
             ],
             'title' => 'sometimes|required|string|max:45',
             'bio' => 'nullable|string|max:155',
@@ -304,6 +345,7 @@ class BioPageController extends Controller
             'hide_branding' => 'nullable|boolean',
             'google_analytics_id' => 'nullable|string|max:50',
             'facebook_pixel_id' => 'nullable|string|max:50',
+            'tiktok_pixel_id' => ['nullable', 'regex:/^[A-Z0-9]{20,30}$/'],
             'avatar' => 'nullable|image|max:2048',
             'avatar_url' => 'nullable|string',
             'password_enabled' => 'nullable|boolean',
@@ -314,12 +356,16 @@ class BioPageController extends Controller
             'background_animation' => 'nullable|string|max:50',
         ]);
         $this->assertSafeContent($validated);
+        if (! empty($validated['is_published']) && ! $bioPage->is_published && AbuseFlag::locks('bio_page', $bioPage->id)) {
+            throw ValidationException::withMessages(['is_published' => 'This page was disabled by moderation. Contact support to appeal.']);
+        }
+        // The avatar path is set by uploads only; clients may clear it but not point it elsewhere.
+        if (array_key_exists('avatar_url', $validated) && $validated['avatar_url'] !== null && $validated['avatar_url'] !== $bioPage->avatar_url) {
+            unset($validated['avatar_url']);
+        }
+        $oldFiles = [$bioPage->avatar_url, $bioPage->qr_settings['image'] ?? null, $bioPage->qr_settings['logo_url'] ?? null];
         if ($request->hasFile('avatar')) {
-            if ($bioPage->avatar_url) {
-                Storage::disk('public')->delete($bioPage->avatar_url);
-            }
-            $path = $request->file('avatar')->store('avatars', 'public');
-            $validated['avatar_url'] = $path;
+            $validated['avatar_url'] = $request->file('avatar')->store('avatars', 'public');
         }
         if (isset($validated['socials'])) {
             $validated['socials'] = json_encode($validated['socials']);
@@ -341,6 +387,7 @@ class BioPageController extends Controller
             }
         }
         $bioPage->update($validated);
+        array_map(fn ($file) => $this->deleteUnusedUpload($file), $oldFiles);
         // Return JSON for AJAX requests
         if ($request->expectsJson() || $request->wantsJson()) {
             return response()->json([
@@ -356,10 +403,9 @@ class BioPageController extends Controller
     public function destroy(BioPage $bioPage)
     {
         $this->authorize('delete', $bioPage);
-        if ($bioPage->avatar_url) {
-            Storage::disk('public')->delete($bioPage->avatar_url);
-        }
+        $files = $this->uploadedFiles($bioPage);
         $bioPage->delete();
+        array_map(fn ($file) => $this->deleteUnusedUpload($file), $files);
 
         return redirect()->route('bio.index')->with('success', 'Bio page deleted successfully!');
     }
@@ -464,11 +510,12 @@ class BioPageController extends Controller
             return back()->withErrors(['slug' => 'You have reached the maximum limit of '.self::MAX_PAGES.' bio pages.']);
         }
         // Slugs are alphanumeric only (max 20), so no "-copy" suffix.
-        $base = substr($bioPage->slug, 0, 16);
+        // Trim the base so the suffix always fits; truncating the suffix instead
+        // repeated the same slug forever for long slugs.
         $counter = 1;
         do {
-            $newSlug = $base.'copy'.($counter > 1 ? $counter : '');
-            $newSlug = substr($newSlug, 0, 20);
+            $suffix = 'copy'.($counter > 1 ? $counter : '');
+            $newSlug = substr($bioPage->slug, 0, 20 - strlen($suffix)).$suffix;
             $counter++;
         } while (BioPage::where('slug', $newSlug)->exists());
         $newBioPage = $bioPage->replicate(['view_count']);
@@ -520,12 +567,10 @@ class BioPageController extends Controller
             'avatar' => 'required|image|max:2048', // 2MB max
         ]);
         try {
-            // Delete old avatar if exists
-            if ($bioPage->avatar_url) {
-                Storage::disk('public')->delete($bioPage->avatar_url);
-            }
+            $oldAvatar = $bioPage->avatar_url;
             $path = $request->file('avatar')->store('avatars', 'public');
             $bioPage->update(['avatar_url' => $path]);
+            $this->deleteUnusedUpload($oldAvatar);
 
             return response()->json([
                 'success' => true,
@@ -598,16 +643,12 @@ class BioPageController extends Controller
             'logo' => 'required|image|max:1024', // 1MB max
         ]);
         try {
-            // Delete old logo if exists
-            if ($bioPage->qr_settings && isset($bioPage->qr_settings['logo_url'])) {
-                $oldPath = str_replace('/storage/', '', $bioPage->qr_settings['logo_url']);
-                Storage::disk('public')->delete($oldPath);
-            }
+            $oldLogo = $bioPage->qr_settings['logo_url'] ?? null;
             $path = $request->file('logo')->store('qr-logos', 'public');
-            // Update qr_settings with new logo URL
             $qrSettings = $bioPage->qr_settings ?? [];
             $qrSettings['logo_url'] = '/storage/'.$path;
             $bioPage->update(['qr_settings' => $qrSettings]);
+            $this->deleteUnusedUpload($oldLogo);
 
             return response()->json([
                 'success' => true,

@@ -45,6 +45,16 @@ class AbuseFlag extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * True while a takedown on this item stands (not dismissed by an admin):
+     * owners may not switch it back on.
+     */
+    public static function locks(string $type, int $id): bool
+    {
+        return static::where('subject_type', $type)->where('subject_id', $id)
+            ->where('action', self::ACTION_DISABLED)->where('status', '!=', self::STATUS_DISMISSED)->exists();
+    }
+
     public function isCsam(): bool
     {
         return in_array('csam', $this->signals ?? [], true);

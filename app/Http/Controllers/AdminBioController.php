@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AbuseFlag;
 use App\Models\BioClick;
 use App\Models\BioLink;
 use App\Models\BioPage;
@@ -239,6 +240,13 @@ class AdminBioController extends Controller
         $bioPage->update([
             'is_published' => ! $bioPage->is_published,
         ]);
+        // An admin takedown sticks until an admin publishes the page again.
+        if ($bioPage->is_published) {
+            AbuseFlag::where('subject_type', 'bio_page')->where('subject_id', $bioPage->id)->update(['status' => AbuseFlag::STATUS_DISMISSED]);
+        } else {
+            AbuseFlag::create(['subject_type' => 'bio_page', 'subject_id' => $bioPage->id, 'user_id' => $bioPage->user_id, 'score' => 0,
+                'signals' => ['admin'], 'action' => AbuseFlag::ACTION_DISABLED, 'status' => AbuseFlag::STATUS_CONFIRMED, 'summary' => 'Unpublished by an admin']);
+        }
 
         return back()->with('success', 'Bio page status updated');
     }
