@@ -20,7 +20,7 @@ class BioPageController extends Controller
 {
     private const ANALYTICS_RANGES = [7, 30];
 
-    private const MAX_PAGES = 3;
+    public const MAX_PAGES = 3;
 
     public function index()
     {

@@ -1,15 +1,11 @@
 <x-app-layout>
-    <x-slot name="pageTitle">Create Link in Bio Page</x-slot>
-    <x-slot name="header">
-        <x-page-header title="Create Your Bio Page" subtitle="Share all your important links in one place">
-            <x-slot name="actions">
-                <a href="{{ route('bio.index') }}" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
-                    Back to Bio Pages
-                </a>
-            </x-slot>
-        </x-page-header>
-    </x-slot>
-    <div class="py-10" x-data="{ notification: { show: false, message: '', type: 'success' } }" @notify="notification.show = true; notification.message = $event.detail.message; notification.type = $event.detail.type || 'success'; setTimeout(() => notification.show = false, 3000)">
+    <x-slot name="pageTitle">HEL.ink - New bio page</x-slot>
+    <x-page-header title="New bio page" subtitle="Share all your important links from one page.">
+        <x-slot name="actions">
+            <a href="{{ route('bio.index') }}" class="btn-ghost btn-sm">All bio pages</a>
+        </x-slot>
+    </x-page-header>
+    <div x-data="{ notification: { show: false, message: '', type: 'success' } }" @notify="notification.show = true; notification.message = $event.detail.message; notification.type = $event.detail.type || 'success'; setTimeout(() => notification.show = false, 3000)">
         <!-- Notification Toast -->
         <div x-show="notification.show" x-transition 
              x-cloak
@@ -21,9 +17,9 @@
                 <span x-text="notification.message" class="font-medium"></span>
             </div>
         </div>
-        <div class="mx-auto max-w-6xl sm:px-6 lg:px-8">
-            <div class="grid gap-8 lg:grid-cols-2">
-                <div class="rounded-2xl border border-slate-200 bg-white p-8 dark:border-slate-800 dark:bg-slate-900">
+        <div>
+            <div class="grid items-start gap-3 lg:grid-cols-2">
+                <div class="glass-card !p-6">
                     <form action="{{ route('bio.store') }}" method="POST" x-data="slugChecker()">
                         @csrf
                         <input type="hidden" name="qr_settings" id="qr_settings_input">
@@ -106,14 +102,14 @@
                             <button 
                                 type="submit" 
                                 :disabled="available === false"
-                                class="rounded-lg bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700 disabled:bg-slate-400 disabled:cursor-not-allowed transition-all"
+                                class="btn-primary disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 Create Bio Page
                             </button>
                         </div>
                     </form>
                 </div>
-                <div class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+                <div class="glass-card !p-6 lg:sticky lg:top-24">
                     <h2 class="mb-4 text-lg font-semibold text-slate-900 dark:text-white">QR Code Preview</h2>
                     <div x-data="qrGenerator()">
                         <div class="relative flex items-center justify-center rounded-lg bg-slate-50 p-4 dark:bg-slate-800 mb-4">

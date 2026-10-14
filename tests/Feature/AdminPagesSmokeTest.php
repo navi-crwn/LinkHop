@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\BioPage;
 use App\Models\Folder;
 use App\Models\Link;
 use App\Models\Tag;
@@ -58,4 +59,25 @@ test('global links filters do not render every user or tag and still filter', fu
 
     $this->actingAs($admin)->getJson(route('admin.users.lookup', ['q' => 'Someone']))
         ->assertOk()->assertJsonCount(1)->assertJsonPath('0.id', $other->id);
+});
+
+test('member link, folder, tag and create pages render', function () {
+    $member = smokeMember();
+    $link = $member->links()->first();
+    $this->actingAs($member);
+
+    $this->get(route('links.show', $link))->assertOk()->assertSee('/memberlink');
+    $this->get(route('links.edit', $link))->assertOk()->assertSee('#promo');
+    $this->get(route('links.create'))->assertOk();
+    $this->get(route('folders.manage', $member->folders()->first()))->assertOk()->assertSee('memberlink');
+    $this->get(route('tags.manage', $member->tags()->first()))->assertOk()->assertSee('memberlink');
+    $this->get('/folders')->assertOk()->assertSee('/memberlink');
+    $this->get('/tags')->assertOk()->assertSee('promo');
+});
+
+test('admin bio detail page renders', function () {
+    $member = smokeMember();
+    $page = BioPage::create(['user_id' => $member->id, 'slug' => 'memberbio', 'title' => 'Member bio', 'is_published' => true]);
+    $this->actingAs(smokeAdmin())->get(route('admin.bio.show', $page))->assertOk()->assertSee('Member bio');
+    $this->actingAs($member)->get(route('bio.analytics', $page))->assertOk();
 });
