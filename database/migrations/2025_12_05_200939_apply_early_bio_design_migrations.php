@@ -7,8 +7,7 @@ use Illuminate\Database\Migrations\Migration;
  * fresh install skips them, and later migrations that refer to their columns
  * (for example ->after('background_gradient')) fail on MySQL/MariaDB. Apply them
  * just before the first migration that needs them. Both are idempotent
- * (hasColumn guards), so
- * existing databases are unaffected.
+ * (hasColumn guards), so existing databases are unaffected.
  */
 return new class extends Migration
 {
