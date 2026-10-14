@@ -959,12 +959,12 @@
                                      class="block-icon" :alt="block.brand || 'icon'"
                                      :key="'icon-'+block.id+'-'+(block.brand||'custom')"
                                      :style="{ 
-                                         filter: block.btn_icon_invert 
-                                             ? 'brightness(0) invert(1)' 
-                                             : ( (!block.custom_icon && isLightColor(block.btn_bg_color || getEffectiveButtonBg())) 
-                                                 ? 'brightness(0)' 
-                                                 : 'brightness(0) invert(1)' 
-                                             ) 
+                                         /* Custom icons keep their colours, as on the public page. */
+                                         filter: block.custom_icon
+                                             ? 'none'
+                                             : block.btn_icon_invert
+                                                 ? 'brightness(0) invert(1)'
+                                                 : (isLightColor(block.btn_bg_color || getEffectiveButtonBg()) ? 'brightness(0)' : 'brightness(0) invert(1)')
                                      }">
                             </template>
                             <span class="block-title" x-text="block.title || 'Untitled Link'"></span>

@@ -150,7 +150,7 @@
     </div>
     <!-- Create Folder Modal -->
     <div x-data="{ open: false }" 
-         x-init="window.openFolderModal = () => { open = true }"
+         x-init="void (window.openFolderModal = () => { open = true })"
          @keydown.escape.window="open = false"
          x-cloak>
         <div x-show="open" class="fixed inset-0 z-50 overflow-y-auto">
