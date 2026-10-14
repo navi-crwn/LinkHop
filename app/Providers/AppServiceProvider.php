@@ -26,7 +26,11 @@ class AppServiceProvider extends ServiceProvider
             \URL::forceScheme('https');
         }
         if ($proxies = config('app.trusted_proxies')) {
-            TrustProxies::at($proxies === '*' ? '*' : array_map('trim', explode(',', $proxies)));
+            TrustProxies::at(match ($proxies) {
+                '*' => '*',
+                'cloudflare' => [...config('app.cloudflare_ips'), '127.0.0.1', '::1'],
+                default => array_map('trim', explode(',', $proxies)),
+            });
         }
         // Defined here (not in routes/web.php) so they exist when routes are cached.
         RateLimiter::for('shorten', function (Request $request) {

@@ -3,6 +3,10 @@
 use App\Models\ApiToken;
 use App\Models\Link;
 use App\Models\User;
+use App\Providers\AppServiceProvider;
+use Illuminate\Http\Middleware\TrustProxies;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 test('api tokens of suspended users are rejected', function () {
     $user = User::factory()->create(['status' => User::STATUS_SUSPENDED]);
@@ -28,4 +32,20 @@ test('links of suspended users stop resolving', function () {
 
 test('csv cells that look like formulas are neutralised', function () {
     expect(csv_safe(['=HYPERLINK("x")', '+1', 'plain', 5]))->toBe(["'=HYPERLINK(\"x\")", "'+1", 'plain', 5]);
+});
+
+test('client ip comes from cloudflare forwarded headers only when cloudflare proxies are trusted', function () {
+    config(['app.trusted_proxies' => 'cloudflare']);
+    (new AppServiceProvider(app()))->boot();
+    Route::get('/admin/__ip', fn (Request $r) => $r->ip());
+
+    $this->withServerVariables(['REMOTE_ADDR' => '172.70.1.1'])
+        ->withHeader('X-Forwarded-For', '203.0.113.9')
+        ->get('/admin/__ip')->assertSee('203.0.113.9');
+    // A spoofed header from a non-Cloudflare address is ignored.
+    $this->withServerVariables(['REMOTE_ADDR' => '198.51.100.4'])
+        ->withHeader('X-Forwarded-For', '203.0.113.9')
+        ->get('/admin/__ip')->assertSee('198.51.100.4');
+
+    TrustProxies::flushState();
 });
