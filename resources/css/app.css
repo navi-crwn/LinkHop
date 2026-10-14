@@ -196,3 +196,11 @@
 .auth-card :is(.rounded-md) { border-radius: 0.75rem; }
 .auth-card :is(.border-gray-300, .dark\:border-gray-600, .dark\:border-gray-700) { border-color: rgb(var(--muted) / 0.25) !important; }
 .auth-card input[type=checkbox] { @apply rounded border-slate-400/50 bg-transparent text-indigo-500; }
+
+/* Legacy solid blue buttons follow the neutral primary style. */
+.app-shell :is(button, a, input[type=submit]):is(.bg-blue-600, .bg-indigo-600):not(.no-skin) {
+    background-color: rgb(15 23 42) !important; color: #fff !important; box-shadow: none !important;
+}
+.dark .app-shell :is(button, a, input[type=submit]):is(.bg-blue-600, .bg-indigo-600):not(.no-skin) {
+    background-color: #fff !important; color: rgb(15 23 42) !important;
+}
