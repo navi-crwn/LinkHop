@@ -17,3 +17,4 @@ Schedule::job(new QueueHeartbeat)->everyTwoMinutes();
 // full sweep + purge of long-disabled items nightly.
 Schedule::command('abuse:scan --since=75m')->hourly()->withoutOverlapping();
 Schedule::command('abuse:scan --full --purge')->dailyAt('04:30')->withoutOverlapping();
+Schedule::command('links:prune-guest')->dailyAt('03:30')->withoutOverlapping();
