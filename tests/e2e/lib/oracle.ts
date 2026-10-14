@@ -55,6 +55,8 @@ export interface CheckInput {
   role: 'user' | 'admin';
   myToken: string;
   lockedSecret: string;
+  /** The visitor already unlocked the protected page in this session. */
+  unlocked?: boolean;
 }
 
 export async function checkStep(i: CheckInput): Promise<{ problems: Finding[]; warnings: Finding[] }> {
@@ -105,7 +107,7 @@ export async function checkStep(i: CheckInput): Promise<{ problems: Finding[]; w
     if (others.length) add(problems, 'data-leak', `page shows data of other users: ${others.join(', ')}`);
   }
   // A password-protected bio page must not ship its links before it is unlocked.
-  if (i.state === 'guest_bio_locked' && dom.html.includes(i.lockedSecret)) add(problems, 'locked-page-leak', 'locked bio page HTML contains a protected link');
+  if (i.state === 'guest_bio_locked' && !i.unlocked && dom.html.includes(i.lockedSecret)) add(problems, 'locked-page-leak', 'locked bio page HTML contains a protected link');
 
   return { problems, warnings };
 }

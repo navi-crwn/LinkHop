@@ -48,7 +48,11 @@ export const MODAL_STATES: StateId[] = ['user_link_modal', 'user_link_created', 
 async function nav(page: Page, path: string) {
   const link = page.locator(`a.nav-item[href$="${path}"], a.nav-sub[href$="${path}"]`).first();
   if (await link.isVisible().catch(() => false)) {
-    await Promise.all([page.waitForLoadState('domcontentloaded'), link.click()]);
+    await link.click();
+    // The bio editor asks before leaving with unsaved changes; a person confirms.
+    const discard = page.getByRole('button', { name: 'Discard Changes' });
+    if (await discard.isVisible({ timeout: 500 }).catch(() => false)) await discard.click();
+    await page.waitForURL(u => u.pathname.endsWith(path), { waitUntil: 'domcontentloaded' });
   } else {
     await page.goto(path);
   }
@@ -84,16 +88,19 @@ export const ACTIONS: Action[] = [
   { id: 'open_locked_bio', from: 'any', to: 'guest_bio_locked', run: async ({ page, me }) => { await page.goto(`/b/${me.locked}`); } },
   {
     id: 'unlock_wrong_password', from: ['guest_bio_locked'], to: 'guest_bio_locked',
-    run: async ({ page }) => {
+    run: async ({ page, memo }) => {
+      if (memo.unlocked) return; // the session already unlocked this page: no form any more
       await page.fill('input[name="password"]', 'wrong-pass');
       await Promise.all([page.waitForLoadState('domcontentloaded'), page.locator('button[type=submit]').first().click()]);
     },
   },
   {
     id: 'unlock_right_password', from: ['guest_bio_locked'], to: 'guest_bio_public',
-    run: async ({ page }) => {
+    run: async ({ page, memo }) => {
+      if (memo.unlocked) return;
       await page.fill('input[name="password"]', 'secret123');
       await Promise.all([page.waitForLoadState('domcontentloaded'), page.locator('button[type=submit]').first().click()]);
+      memo.unlocked = true;
     },
   },
   {
