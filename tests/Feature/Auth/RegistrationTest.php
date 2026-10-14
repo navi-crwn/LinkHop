@@ -16,7 +16,6 @@ test('new users can register', function () {
     ]);
     $this->assertAuthenticated();
     $response->assertRedirect(route('verification.notice'));
-    $this->assertNotEmpty(session('user_catchphrase'));
 });
 test('admin-looking email domains do not grant a role', function () {
     $this->post('/register', [

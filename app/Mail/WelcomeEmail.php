@@ -16,17 +16,14 @@ class WelcomeEmail extends Mailable
 
     public User $user;
 
-    public string $catchphrase;
-
     public bool $isGoogleUser;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(User $user, string $catchphrase, bool $isGoogleUser = false)
+    public function __construct(User $user, bool $isGoogleUser = false)
     {
         $this->user = $user;
-        $this->catchphrase = $catchphrase;
         $this->isGoogleUser = $isGoogleUser;
     }
 
