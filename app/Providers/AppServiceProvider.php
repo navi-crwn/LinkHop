@@ -38,6 +38,10 @@ class AppServiceProvider extends ServiceProvider
                 ? Limit::perMinute(30)->by('user:'.$request->user()->id)
                 : Limit::perMinute(10)->by($request->ip());
         });
+        // Flood guard only: bio click limits normally just stop counting (see PublicBioController::click).
+        RateLimiter::for('bio-click', function (Request $request) {
+            return Limit::perMinute(300)->by('bio-click:'.$request->ip());
+        });
         RateLimiter::for('register', function (Request $request) {
             return Limit::perHour((int) config('abuse.register_per_ip_per_hour', 3))->by($request->ip());
         });
