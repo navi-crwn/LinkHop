@@ -118,7 +118,7 @@
         <div class="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl dark:bg-slate-900">
             <div class="mb-4 flex items-center justify-between">
                 <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Add Domain to Blacklist</h3>
-                <button @click="open = false" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                <button aria-label="Close" @click="open = false" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>

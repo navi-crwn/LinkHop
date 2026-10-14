@@ -48,7 +48,7 @@
                                 </div>
                                 <form method="POST" action="{{ route('admin.queue.restart') }}" class="ml-2" @submit="restarting = true">
                                     @csrf
-                                    <button type="submit" 
+                                    <button aria-label="Restart queue worker" type="submit" 
                                             :disabled="restarting"
                                             class="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
                                             title="Restart queue worker">

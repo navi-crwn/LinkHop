@@ -261,6 +261,45 @@ export const ACTIONS: Action[] = [
     },
   },
   {
+    // Keyboard alternative to dragging: arrow keys on the focused drag handle.
+    id: 'editor_keyboard_move_block', from: ['user_bio_editor'], to: 'user_bio_editor',
+    run: async ({ page, memo }) => {
+      const handles = page.locator('#blocks-list .block-item .block-drag-handle');
+      if ((await handles.count()) < 2) return;
+      const before = await editorData(page);
+      await handles.first().focus();
+      await page.keyboard.press('ArrowDown');
+      await page.waitForTimeout(1500); // reorder autosave is debounced
+      const after = await editorData(page);
+      if (before && after && before[0] !== after[1]) throw new Error(`INVARIANT keyboard move did not move the first block: before=${before} after=${after}`);
+      const focused = await page.evaluate(() => document.activeElement?.classList.contains('block-drag-handle'));
+      if (!focused) throw new Error('INVARIANT focus left the drag handle after a keyboard move');
+      memo.orderBeforeReload = after;
+    },
+  },
+  {
+    // Block editor dialog: focus moves in, Tab stays in, Escape closes and returns focus.
+    id: 'editor_dialog_keyboard', from: ['user_bio_editor'], to: 'user_bio_editor',
+    run: async ({ page }) => {
+      const edit = page.locator('#blocks-list .block-item .block-action-btn:not(.delete)').first();
+      if (!(await edit.isVisible().catch(() => false))) return;
+      await edit.focus();
+      await page.keyboard.press('Enter');
+      const dialog = page.getByRole('dialog', { name: 'Edit Block' });
+      await dialog.waitFor();
+      await page.waitForTimeout(100);
+      const inside = () => page.evaluate(() => !!document.activeElement?.closest('[role="dialog"]'));
+      if (!(await inside())) throw new Error('INVARIANT focus did not move into the block editor dialog');
+      for (let i = 0; i < 30; i++) await page.keyboard.press('Tab');
+      if (!(await inside())) throw new Error('INVARIANT Tab moved focus out of the block editor dialog');
+      await page.keyboard.press('Escape');
+      await dialog.waitFor({ state: 'detached' });
+      await page.waitForTimeout(100);
+      const back = await page.evaluate(() => document.activeElement?.classList.contains('block-action-btn'));
+      if (!back) throw new Error('INVARIANT focus did not return to the edit button after Escape');
+    },
+  },
+  {
     id: 'editor_toggle_block', from: ['user_bio_editor'], to: 'user_bio_editor',
     run: async ({ page }) => { await page.locator('#blocks-list .block-item .toggle-switch').first().click(); },
   },

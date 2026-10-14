@@ -21,7 +21,7 @@
             <h1 class="mt-4 text-4xl font-semibold">Link not found</h1>
             <p class="mt-2 max-w-md text-white/70">The shortlink you opened doesn’t exist anymore, is disabled, or expired. Double-check the slug or head back home.</p>
             <div class="mt-6 flex flex-wrap items-center gap-4">
-                <a href="{{ url('/') }}" class="rounded-2xl bg-blue-500 px-6 py-3 font-semibold text-white shadow-lg shadow-blue-500/40">Back to homepage</a>
+                <a href="{{ url('/') }}" class="rounded-2xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-lg shadow-blue-500/40">Back to homepage</a>
             </div>
         </div>
     </body>

@@ -26,19 +26,19 @@
                 <input type="search" name="q" value="{{ $filters['q'] }}" placeholder="Search links…" class="input !border-transparent !bg-transparent pl-9">
             </div>
             <div class="flex flex-wrap gap-2 sm:flex-nowrap" :class="more ? '' : 'hidden sm:flex'">
-                <select name="folder" class="input sm:w-36">
+                <select name="folder" class="input sm:w-36" aria-label="Filter by folder">
                     <option value="">All folders</option>
                     @foreach ($folders as $folder)
                         <option value="{{ $folder->id }}" @selected($filters['folder'] == $folder->id)>{{ $folder->name }}</option>
                     @endforeach
                 </select>
-                <select name="tag" class="input sm:w-32">
+                <select name="tag" class="input sm:w-32" aria-label="Filter by tag">
                     <option value="">All tags</option>
                     @foreach ($tags as $tag)
                         <option value="{{ $tag->id }}" @selected($filters['tag'] == $tag->id)>{{ $tag->name }}</option>
                     @endforeach
                 </select>
-                <select name="sort" class="input sm:w-36">
+                <select name="sort" class="input sm:w-36" aria-label="Sort links">
                     <option value="created_desc" @selected($filters['sort'] == 'created_desc')>Newest</option>
                     <option value="created_asc" @selected($filters['sort'] == 'created_asc')>Oldest</option>
                     <option value="clicks_desc" @selected($filters['sort'] == 'clicks_desc')>Most clicks</option>
@@ -63,7 +63,7 @@
         <section class="glass overflow-hidden rounded-2xl">
             @if ($links->count())
                 <div class="hidden items-center gap-3 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted md:flex">
-                    <input type="checkbox" x-model="selectAll" @change="toggleSelectAll()" class="rounded border-slate-400/50 bg-transparent text-indigo-500">
+                    <input type="checkbox" aria-label="Select all links" x-model="selectAll" @change="toggleSelectAll()" class="rounded border-slate-400/50 bg-transparent text-indigo-500">
                     <span class="flex-1">Link</span>
                     <span class="w-20 text-right">Clicks</span>
                     <span class="w-24 text-right">Created</span>
@@ -73,7 +73,7 @@
             <div class="divide-glass">
                 @forelse ($links as $link)
                     <div class="list-row flex-wrap md:flex-nowrap" x-show="!deletedLinks.includes({{ $link->id }})">
-                        <input type="checkbox" value="{{ $link->id }}" x-model="selectedLinks" class="rounded border-slate-400/50 bg-transparent text-indigo-500">
+                        <input type="checkbox" aria-label="Select {{ $link->slug }}" value="{{ $link->id }}" x-model="selectedLinks" class="rounded border-slate-400/50 bg-transparent text-indigo-500">
                         <div class="min-w-0 flex-1">
                             <div class="flex flex-wrap items-center gap-1.5">
                                 <a href="{{ route('links.show', $link) }}" class="truncate text-sm font-semibold text-ink hover:text-indigo-600 dark:hover:text-indigo-300">/{{ $link->slug }}</a>

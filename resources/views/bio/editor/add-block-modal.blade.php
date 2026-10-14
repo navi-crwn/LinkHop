@@ -5,8 +5,8 @@
         <svg class="absolute left-3 w-4 h-4 pointer-events-none" style="color: var(--editor-text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
-        <input type="text" x-model="blockSearch" placeholder="Search blocks or platforms..." class="form-input pl-10 pr-10 py-2 w-full" autocomplete="off" data-lpignore="true" data-1p-ignore="true">
-        <button x-show="blockSearch" @click="blockSearch = ''" class="absolute right-3" style="color: var(--editor-text-muted);">
+        <input aria-label="Search blocks or platforms" type="text" x-model="blockSearch" placeholder="Search blocks or platforms..." class="form-input pl-10 pr-10 py-2 w-full" autocomplete="off" data-lpignore="true" data-1p-ignore="true">
+        <button aria-label="Clear search" x-show="blockSearch" @click="blockSearch = ''" class="absolute right-3" style="color: var(--editor-text-muted);">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
     </div>

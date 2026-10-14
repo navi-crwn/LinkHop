@@ -13,7 +13,7 @@
                 <p class="text-sm text-slate-500 dark:text-slate-400">Platform-wide statistics and performance</p>
             </div>
             <div class="flex items-center gap-2">
-                <select onchange="window.location.href='?period='+this.value" class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                <select aria-label="Period" onchange="window.location.href='?period='+this.value" class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
                     <option value="daily" {{ $period === 'daily' ? 'selected' : '' }}>Daily (30 days)</option>
                     <option value="weekly" {{ $period === 'weekly' ? 'selected' : '' }}>Weekly (12 weeks)</option>
                     <option value="monthly" {{ $period === 'monthly' ? 'selected' : '' }}>Monthly (12 months)</option>
@@ -97,11 +97,11 @@
                 </div>
                 @if($totalLinksPages > 1)
                 <div class="flex items-center justify-center gap-2 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
-                    <button @click="topLinksPage = Math.max(0, topLinksPage - 1)" :disabled="topLinksPage === 0" class="p-2 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <button aria-label="Previous page" @click="topLinksPage = Math.max(0, topLinksPage - 1)" :disabled="topLinksPage === 0" class="p-2 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     </button>
                     <span class="text-sm text-slate-600 dark:text-slate-400" x-text="`Page ${topLinksPage + 1} of {{ $totalLinksPages }}`"></span>
-                    <button @click="topLinksPage = Math.min({{ $totalLinksPages - 1 }}, topLinksPage + 1)" :disabled="topLinksPage === {{ $totalLinksPages - 1 }}" class="p-2 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <button aria-label="Next page" @click="topLinksPage = Math.min({{ $totalLinksPages - 1 }}, topLinksPage + 1)" :disabled="topLinksPage === {{ $totalLinksPages - 1 }}" class="p-2 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
@@ -161,11 +161,11 @@
                 </div>
                 @if($totalCountriesPages > 1)
                 <div class="flex items-center justify-center gap-2 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
-                    <button @click="topCountriesPage = Math.max(0, topCountriesPage - 1)" :disabled="topCountriesPage === 0" class="p-2 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <button aria-label="Previous page" @click="topCountriesPage = Math.max(0, topCountriesPage - 1)" :disabled="topCountriesPage === 0" class="p-2 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     </button>
                     <span class="text-sm text-slate-600 dark:text-slate-400" x-text="`Page ${topCountriesPage + 1} of {{ $totalCountriesPages }}`"></span>
-                    <button @click="topCountriesPage = Math.min({{ $totalCountriesPages - 1 }}, topCountriesPage + 1)" :disabled="topCountriesPage === {{ $totalCountriesPages - 1 }}" class="p-2 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <button aria-label="Next page" @click="topCountriesPage = Math.min({{ $totalCountriesPages - 1 }}, topCountriesPage + 1)" :disabled="topCountriesPage === {{ $totalCountriesPages - 1 }}" class="p-2 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
@@ -211,11 +211,11 @@
                 </div>
                 @if($totalActivityPages > 1)
                 <div class="flex items-center justify-center gap-2 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
-                    <button @click="recentActivityPage = Math.max(0, recentActivityPage - 1)" :disabled="recentActivityPage === 0" class="p-2 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <button aria-label="Previous page" @click="recentActivityPage = Math.max(0, recentActivityPage - 1)" :disabled="recentActivityPage === 0" class="p-2 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     </button>
                     <span class="text-sm text-slate-600 dark:text-slate-400" x-text="`Page ${recentActivityPage + 1} of {{ $totalActivityPages }}`"></span>
-                    <button @click="recentActivityPage = Math.min({{ $totalActivityPages - 1 }}, recentActivityPage + 1)" :disabled="recentActivityPage === {{ $totalActivityPages - 1 }}" class="p-2 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <button aria-label="Next page" @click="recentActivityPage = Math.min({{ $totalActivityPages - 1 }}, recentActivityPage + 1)" :disabled="recentActivityPage === {{ $totalActivityPages - 1 }}" class="p-2 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
@@ -258,11 +258,11 @@
                 </div>
                 @if($totalClicksPages > 1)
                 <div class="flex items-center justify-center gap-2 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
-                    <button @click="recentClicksPage = Math.max(0, recentClicksPage - 1)" :disabled="recentClicksPage === 0" class="p-2 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <button aria-label="Previous page" @click="recentClicksPage = Math.max(0, recentClicksPage - 1)" :disabled="recentClicksPage === 0" class="p-2 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     </button>
                     <span class="text-sm text-slate-600 dark:text-slate-400" x-text="`Page ${recentClicksPage + 1} of {{ $totalClicksPages }}`"></span>
-                    <button @click="recentClicksPage = Math.min({{ $totalClicksPages - 1 }}, recentClicksPage + 1)" :disabled="recentClicksPage === {{ $totalClicksPages - 1 }}" class="p-2 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <button aria-label="Next page" @click="recentClicksPage = Math.min({{ $totalClicksPages - 1 }}, recentClicksPage + 1)" :disabled="recentClicksPage === {{ $totalClicksPages - 1 }}" class="p-2 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>

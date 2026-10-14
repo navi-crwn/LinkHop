@@ -25,6 +25,7 @@
         class="relative z-10 w-full max-w-5xl max-h-[90vh] rounded-2xl glass-strong no-skin flex flex-col"
         role="dialog"
         aria-modal="true"
+        aria-label="Create short link"
     >
         <div x-show="createdLink" class="flex flex-col h-full">
             <div class="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-slate-800">
@@ -32,7 +33,7 @@
                     <h3 class="text-lg font-semibold text-emerald-600 dark:text-emerald-400">🎉 Link Created Successfully!</h3>
                     <p class="text-sm text-slate-500 dark:text-slate-400">Your shortlink is ready to use</p>
                 </div>
-                <button @click="closePanel()" class="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-white">
+                <button type="button" aria-label="Close" @click="closePanel()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-white">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -41,9 +42,9 @@
             <div class="flex-1 overflow-y-auto p-6">
                 <div class="max-w-2xl mx-auto space-y-4">
                     <div class="rounded-xl border-2 border-emerald-300 bg-emerald-50 p-5 dark:border-emerald-800 dark:bg-emerald-900/20">
-                        <label class="block text-sm font-medium text-emerald-800 dark:text-emerald-300 mb-2">Your Short URL</label>
+                        <label for="flinkcr-1" class="block text-sm font-medium text-emerald-800 dark:text-emerald-300 mb-2">Your Short URL</label>
                         <div class="flex items-center gap-3">
-                            <input 
+                            <input id="flinkcr-1" 
                                 type="text" 
                                 :value="createdLink?.short_url" 
                                 readonly 
@@ -97,7 +98,7 @@
                                         SVG
                                     </a>
                                 </div>
-                                <p class="text-xs text-slate-400 dark:text-slate-500">💡 SVG format is scalable for print quality</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">💡 SVG format is scalable for print quality</p>
                             </div>
                         </div>
                     </div>
@@ -124,7 +125,7 @@
                     <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Create New Link</h3>
                     <p class="text-sm text-slate-500 dark:text-slate-400">Shorten and customize your URL</p>
                 </div>
-                <button @click="closePanel()" class="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-white">
+                <button type="button" aria-label="Close" @click="closePanel()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-white">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -454,7 +455,7 @@
                                         Custom Preview
                                     </button>
                                 </div>
-                                <div class="flex gap-1 mb-3 p-1 bg-slate-700 dark:bg-slate-700 rounded-lg">
+                                <div class="flex gap-1 mb-3 p-1 bg-slate-100 dark:bg-slate-700 rounded-lg">
                                     <button 
                                         type="button"
                                         @click="previewPlatform = 'default'"
@@ -506,7 +507,7 @@
                                         <div class="p-4">
                                             <p class="text-sm font-semibold text-slate-900 dark:text-white line-clamp-2" x-text="ogData.title || 'Link Title'"></p>
                                             <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 line-clamp-3" x-text="ogData.description || 'Link description will appear here when you enter a URL or add custom text'"></p>
-                                            <p class="text-xs text-slate-400 dark:text-slate-500 mt-3">hel.ink</p>
+                                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">hel.ink</p>
                                         </div>
                                     </div>
                                 </div>
@@ -534,7 +535,7 @@
         >
             <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-4 bg-white dark:bg-slate-800">
                 <h4 class="text-lg font-semibold text-slate-900 dark:text-white">Custom Link Preview</h4>
-                <button @click="showOgEditor = false" class="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-white">
+                <button type="button" aria-label="Close" @click="showOgEditor = false" class="rounded-lg p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-white">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -555,7 +556,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                            Title <span class="text-slate-400 font-normal text-xs">(<span x-text="ogData.title.length"></span>/120)</span>
+                            Title <span class="text-slate-500 font-normal text-xs">(<span x-text="ogData.title.length"></span>/120)</span>
                         </label>
                         <input 
                             type="text" 
@@ -567,7 +568,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                            Description <span class="text-slate-400 font-normal text-xs">(<span x-text="ogData.description.length"></span>/240)</span>
+                            Description <span class="text-slate-500 font-normal text-xs">(<span x-text="ogData.description.length"></span>/240)</span>
                         </label>
                         <textarea 
                             x-model="ogData.description"
@@ -614,7 +615,7 @@
                         <div class="p-4 bg-white dark:bg-slate-800">
                             <p class="text-sm font-semibold text-slate-900 dark:text-white line-clamp-2 mb-2" x-text="ogData.title || 'Link Title'"></p>
                             <p class="text-xs text-slate-600 dark:text-slate-400 line-clamp-3" x-text="ogData.description || 'Link description will appear here'"></p>
-                            <p class="text-xs text-slate-400 dark:text-slate-500 mt-3">hel.ink</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">hel.ink</p>
                         </div>
                     </div>
                 </div>
@@ -718,7 +719,7 @@
                     <h4 class="text-lg font-semibold text-slate-900 dark:text-white">QR Code Design</h4>
                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Customize your QR code appearance</p>
                 </div>
-                <button @click="showQrEditor = false" class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-white transition-colors">
+                <button aria-label="Close" @click="showQrEditor = false" class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-white transition-colors">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -736,7 +737,7 @@
                                     class="w-full h-full object-contain"
                                     x-show="formData.slug"
                                 >
-                                <div x-show="!formData.slug" class="text-slate-400 dark:text-slate-500 text-sm">
+                                <div x-show="!formData.slug" class="text-slate-500 dark:text-slate-400 text-sm">
                                     Enter slug first
                                 </div>
                                 <div x-show="qrSettings.showLogo && qrSettings.logo" class="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -754,7 +755,7 @@
                     </label>
                     <div class="flex items-center gap-2 mb-3 flex-wrap">
                         <template x-for="color in qrColorPresets" :key="color">
-                            <button
+                            <button :aria-label="'QR color ' + color"
                                 type="button"
                                 @click="qrSettings.fgColor = color"
                                 :class="qrSettings.fgColor === color ? 'ring-2 ring-offset-2 ring-blue-500 dark:ring-offset-slate-800' : ''"
@@ -762,7 +763,7 @@
                                 :style="'background-color: ' + color"
                             ></button>
                         </template>
-                        <button
+                        <button aria-label="Custom QR color"
                             type="button"
                             @click="showColorPicker = !showColorPicker"
                             class="w-10 h-10 rounded-lg border-2 border-slate-300 dark:border-slate-600 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"

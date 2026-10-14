@@ -23,8 +23,8 @@
                             </template>
                         </div>
                         <!-- Camera button overlay -->
-                        <input type="file" accept="image/*" class="hidden" x-ref="avatarInput" @change="uploadAvatar($event)">
-                        <button @click="$refs.avatarInput.click()" 
+                        <input aria-label="Upload avatar" type="file" accept="image/*" class="hidden" x-ref="avatarInput" @change="uploadAvatar($event)">
+                        <button aria-label="Change avatar" @click="$refs.avatarInput.click()" 
                                 class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/3 w-8 h-8 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center shadow-lg border-2 border-slate-900 transition-colors z-10" style="aspect-ratio: 1/1;">
                             <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
@@ -36,21 +36,21 @@
                     <div class="flex flex-col items-center gap-1 mt-1">
                         <span class="text-xs editor-text-muted">Shape</span>
                         <div class="flex items-center gap-2">
-                            <button @click="bioPage.avatar_shape = 'circle'" 
+                            <button aria-label="Circle avatar" @click="bioPage.avatar_shape = 'circle'" 
                                 :class="bioPage.avatar_shape === 'circle' || !bioPage.avatar_shape ? 'ring-2 ring-blue-500 active' : ''"
                                 class="option-btn w-8 h-8 rounded-lg transition-all flex items-center justify-center" title="Circle">
                                 <svg class="w-4 h-4 editor-icon" viewBox="0 0 24 24" fill="currentColor">
                                     <circle cx="12" cy="12" r="10"/>
                                 </svg>
                             </button>
-                            <button @click="bioPage.avatar_shape = 'rounded'" 
+                            <button aria-label="Rounded avatar" @click="bioPage.avatar_shape = 'rounded'" 
                                     :class="bioPage.avatar_shape === 'rounded' ? 'ring-2 ring-blue-500 active' : ''"
                                     class="option-btn w-8 h-8 rounded-lg transition-all flex items-center justify-center" title="Rounded">
                                 <svg class="w-4 h-4 editor-icon" viewBox="0 0 24 24" fill="currentColor">
                                     <rect x="2" y="2" width="20" height="20" rx="6"/>
                                 </svg>
                             </button>
-                            <button @click="bioPage.avatar_shape = 'square'" 
+                            <button aria-label="Square avatar" @click="bioPage.avatar_shape = 'square'" 
                                     :class="bioPage.avatar_shape === 'square' ? 'ring-2 ring-blue-500 active' : ''"
                                     class="option-btn w-8 h-8 rounded-lg transition-all flex items-center justify-center" title="Square">
                                 <svg class="w-4 h-4 editor-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -63,12 +63,12 @@
                 <!-- Form fields -->
                 <div class="flex-1 min-w-0 space-y-3">
                     <div class="form-group mb-0">
-                        <label class="form-label">Display Name <span class="text-xs editor-text-muted" x-text="'(' + (bioPage.title?.length || 0) + '/25)'"></span></label>
-                        <input type="text" x-model="bioPage.title" @input="bioPage.title = $event.target.value.slice(0, 25)" class="form-input" placeholder="Your name" maxlength="25" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
+                        <label for="bfprofil-1" class="form-label">Display Name <span class="text-xs editor-text-muted" x-text="'(' + (bioPage.title?.length || 0) + '/25)'"></span></label>
+                        <input id="bfprofil-1" type="text" x-model="bioPage.title" @input="bioPage.title = $event.target.value.slice(0, 25)" class="form-input" placeholder="Your name" maxlength="25" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
                     </div>
                     <div class="form-group mb-0">
-                        <label class="form-label">Bio <span class="text-xs editor-text-muted" x-text="'(' + (bioPage.bio?.length || 0) + '/80)'"></span></label>
-                        <textarea x-model="bioPage.bio" @input="bioPage.bio = $event.target.value.slice(0, 80)" class="form-input form-textarea" placeholder="Tell visitors about yourself..." rows="2" maxlength="80"></textarea>
+                        <label for="bfprofil-2" class="form-label">Bio <span class="text-xs editor-text-muted" x-text="'(' + (bioPage.bio?.length || 0) + '/80)'"></span></label>
+                        <textarea id="bfprofil-2" x-model="bioPage.bio" @input="bioPage.bio = $event.target.value.slice(0, 80)" class="form-input form-textarea" placeholder="Tell visitors about yourself..." rows="2" maxlength="80"></textarea>
                     </div>
                     <!-- Badge Feature -->
                     <div class="form-group mb-0">
@@ -76,28 +76,28 @@
                         <div class="flex items-center gap-3 flex-wrap">
                             <!-- Badge Type Selection -->
                             <div class="flex items-center gap-2">
-                                <button @click="bioPage.badge = null" 
+                                <button aria-label="No badge" @click="bioPage.badge = null" 
                                         :class="!bioPage.badge ? 'ring-2 ring-blue-500 active' : ''"
                                         class="option-btn w-8 h-8 rounded-lg transition-all flex items-center justify-center" title="No Badge">
                                     <svg class="w-4 h-4 editor-text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
                                     </svg>
                                 </button>
-                                <button @click="bioPage.badge = 'verified'" 
+                                <button aria-label="Verified badge" @click="bioPage.badge = 'verified'" 
                                         :class="bioPage.badge === 'verified' ? 'ring-2 ring-blue-500 active' : ''"
                                         class="option-btn w-8 h-8 rounded-lg transition-all flex items-center justify-center" title="Verified">
                                     <svg class="w-4 h-4" :style="{ color: bioPage.badge_color || '#3b82f6' }" viewBox="0 0 24 24" fill="currentColor">
                                         <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd"/>
                                     </svg>
                                 </button>
-                                <button @click="bioPage.badge = 'star'" 
+                                <button aria-label="Star badge" @click="bioPage.badge = 'star'" 
                                         :class="bioPage.badge === 'star' ? 'ring-2 ring-blue-500 active' : ''"
                                         class="option-btn w-8 h-8 rounded-lg transition-all flex items-center justify-center" title="Star">
                                     <svg class="w-4 h-4" :style="{ color: bioPage.badge_color || '#eab308' }" viewBox="0 0 24 24" fill="currentColor">
                                         <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd"/>
                                     </svg>
                                 </button>
-                                <button @click="bioPage.badge = 'crown'" 
+                                <button aria-label="Crown badge" @click="bioPage.badge = 'crown'" 
                                         :class="bioPage.badge === 'crown' ? 'ring-2 ring-blue-500 active' : ''"
                                         class="option-btn w-8 h-8 rounded-lg transition-all flex items-center justify-center" title="Crown">
                                     <svg class="w-4 h-4" :style="{ color: bioPage.badge_color || '#f59e0b' }" viewBox="0 0 24 24" fill="currentColor">
@@ -105,7 +105,7 @@
                                         <rect x="3" y="18" width="18" height="3" rx="1"/>
                                     </svg>
                                 </button>
-                                <button @click="bioPage.badge = 'fire'" 
+                                <button aria-label="Fire badge" @click="bioPage.badge = 'fire'" 
                                         :class="bioPage.badge === 'fire' ? 'ring-2 ring-blue-500 active' : ''"
                                         class="option-btn w-8 h-8 rounded-lg transition-all flex items-center justify-center" title="Fire">
                                     <svg class="w-4 h-4" :style="{ color: bioPage.badge_color || '#ef4444' }" viewBox="0 0 24 24" fill="currentColor">
@@ -118,27 +118,27 @@
                                 <div class="flex items-center gap-1 ml-2">
                                     <span class="text-xs editor-text-muted mr-1">Color:</span>
                                     <!-- Rainbow order: Green, Blue, Black, Red, White, Yellow -->
-                                    <button @click="bioPage.badge_color = '#22c55e'" 
+                                    <button aria-label="Green badge" @click="bioPage.badge_color = '#22c55e'" 
                                             :class="bioPage.badge_color === '#22c55e' ? 'ring-2 ring-offset-1 ring-offset-slate-900 ring-white' : ''"
                                             class="w-5 h-5 rounded-full transition-all border border-slate-500/50" style="background-color: #22c55e" title="Green"></button>
-                                    <button @click="bioPage.badge_color = '#3b82f6'" 
+                                    <button aria-label="Blue badge" @click="bioPage.badge_color = '#3b82f6'" 
                                             :class="bioPage.badge_color === '#3b82f6' || !bioPage.badge_color ? 'ring-2 ring-offset-1 ring-offset-slate-900 ring-white' : ''"
                                             class="w-5 h-5 rounded-full transition-all border border-slate-500/50" style="background-color: #3b82f6" title="Blue"></button>
-                                    <button @click="bioPage.badge_color = '#000000'" 
+                                    <button aria-label="Black badge" @click="bioPage.badge_color = '#000000'" 
                                             :class="bioPage.badge_color === '#000000' ? 'ring-2 ring-offset-1 ring-offset-slate-900 ring-white' : ''"
                                             class="w-5 h-5 rounded-full transition-all border border-slate-500/50" style="background-color: #000000" title="Black"></button>
-                                    <button @click="bioPage.badge_color = '#ef4444'" 
+                                    <button aria-label="Red badge" @click="bioPage.badge_color = '#ef4444'" 
                                             :class="bioPage.badge_color === '#ef4444' ? 'ring-2 ring-offset-1 ring-offset-slate-900 ring-white' : ''"
                                             class="w-5 h-5 rounded-full transition-all border border-slate-500/50" style="background-color: #ef4444" title="Red"></button>
-                                    <button @click="bioPage.badge_color = '#ffffff'" 
+                                    <button aria-label="White badge" @click="bioPage.badge_color = '#ffffff'" 
                                             :class="bioPage.badge_color === '#ffffff' ? 'ring-2 ring-offset-1 ring-offset-slate-900 ring-blue-500' : ''"
                                             class="w-5 h-5 rounded-full bg-white transition-all border border-slate-400" title="White"></button>
-                                    <button @click="bioPage.badge_color = '#eab308'" 
+                                    <button aria-label="Yellow badge" @click="bioPage.badge_color = '#eab308'" 
                                             :class="bioPage.badge_color === '#eab308' ? 'ring-2 ring-offset-1 ring-offset-slate-900 ring-white' : ''"
                                             class="w-5 h-5 rounded-full transition-all border border-slate-500/50" style="background-color: #eab308" title="Yellow"></button>
                                     <!-- Color Picker -->
                                     <div class="relative">
-                                        <input type="color" x-model="bioPage.badge_color" 
+                                        <input aria-label="Badge color" type="color" x-model="bioPage.badge_color" 
                                                class="w-5 h-5 rounded-full cursor-pointer opacity-0 absolute inset-0 z-10">
                                         <div class="w-5 h-5 rounded-full flex items-center justify-center cursor-pointer" 
                                              style="background: linear-gradient(135deg, #ef4444, #22c55e, #3b82f6); border: 1px solid rgba(255,255,255,0.3);" 
@@ -183,9 +183,9 @@
                         <div class="grid grid-cols-3 gap-2">
                             <!-- Dot Style Dropdown -->
                             <div class="form-group">
-                                <label class="form-label text-xs">Dot Style</label>
+                                <label for="bfprofil-3" class="form-label text-xs">Dot Style</label>
                                 <div class="relative">
-                                    <select x-model="dotStyle" @change="updateQR(); saveSettings()" 
+                                    <select id="bfprofil-3" x-model="dotStyle" @change="updateQR(); saveSettings()" 
                                             class="w-full form-input text-xs appearance-none cursor-pointer focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                         <option value="dots">◉ Dots</option>
                                         <option value="rounded">● Rounded</option>
@@ -200,9 +200,9 @@
                             </div>
                             <!-- Corner Square Dropdown -->
                             <div class="form-group">
-                                <label class="form-label text-xs">Corner Sqr</label>
+                                <label for="bfprofil-4" class="form-label text-xs">Corner Sqr</label>
                                 <div class="relative">
-                                    <select x-model="cornerSquareStyle" @change="updateQR(); saveSettings()" 
+                                    <select id="bfprofil-4" x-model="cornerSquareStyle" @change="updateQR(); saveSettings()" 
                                             class="w-full form-input text-xs appearance-none cursor-pointer focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                         <option value="dot">● Dot</option>
                                         <option value="extra-rounded">⬤ Rnd</option>
@@ -215,9 +215,9 @@
                             </div>
                             <!-- Corner Dot Dropdown -->
                             <div class="form-group">
-                                <label class="form-label text-xs">Corner Dot</label>
+                                <label for="bfprofil-5" class="form-label text-xs">Corner Dot</label>
                                 <div class="relative">
-                                    <select x-model="cornerDotStyle" @change="updateQR(); saveSettings()" 
+                                    <select id="bfprofil-5" x-model="cornerDotStyle" @change="updateQR(); saveSettings()" 
                                             class="w-full form-input text-xs appearance-none cursor-pointer focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                         <option value="dot">● Dot</option>
                                         <option value="square">▢ Sqr</option>
@@ -232,7 +232,7 @@
                         <div class="form-group">
                             <label class="form-label text-xs">Logo (optional)</label>
                             <div class="flex items-center gap-2">
-                                <input type="file" accept="image/*" @change="uploadLogo($event)" class="flex-1 text-xs editor-text-muted file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white file:font-medium hover:file:bg-blue-700">
+                                <input aria-label="Upload QR logo" type="file" accept="image/*" @change="uploadLogo($event)" class="flex-1 text-xs editor-text-muted file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white file:font-medium hover:file:bg-blue-700">
                                 <button x-show="logoUrl" @click="removeLogo()" class="px-2 py-1 text-xs bg-red-600 hover:bg-red-700 text-white rounded-lg">×</button>
                             </div>
                             <template x-if="logoUrl">
@@ -248,13 +248,13 @@
                                 <label class="form-label text-xs">QR Color</label>
                                 <div class="flex gap-1 flex-wrap items-center">
                                     <template x-for="color in ['#000000', '#1E40AF', '#EF4444', '#10B981', '#8B5CF6']" :key="color">
-                                        <button @click="setColor(color)" 
+                                        <button :aria-label="'QR color ' + color" @click="setColor(color)" 
                                                 :class="{ 'ring-2 ring-blue-500': qrColor === color }"
                                                 :style="{ backgroundColor: color }"
                                                 class="w-5 h-5 rounded "></button>
                                     </template>
                                     <div class="relative">
-                                        <input type="color" x-model="qrColor" @input="debouncedUpdateQR()" 
+                                        <input aria-label="QR code color" type="color" x-model="qrColor" @input="debouncedUpdateQR()" 
                                                class="w-5 h-5 rounded cursor-pointer opacity-0 absolute inset-0 z-10">
                                         <div class="w-5 h-5 rounded flex items-center justify-center cursor-pointer" style="background: linear-gradient(135deg, #ef4444, #22c55e, #3b82f6); border: 1px solid rgba(255,255,255,0.3);">
                                             <span style="font-size: 12px; color: white; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">+</span>
@@ -266,13 +266,13 @@
                                 <label class="form-label text-xs">Background</label>
                                 <div class="flex gap-1 flex-wrap items-center">
                                     <template x-for="color in ['#ffffff', '#F3F4F6', '#FEF3C7', '#DBEAFE', '#FEE2E2']" :key="color">
-                                        <button @click="setBgColor(color)" 
+                                        <button :aria-label="'QR background ' + color" @click="setBgColor(color)" 
                                                 :class="{ 'ring-2 ring-blue-500': bgColor === color }"
                                                 :style="{ backgroundColor: color }"
                                                 class="w-5 h-5 rounded "></button>
                                     </template>
                                     <div class="relative">
-                                        <input type="color" x-model="bgColor" @input="debouncedUpdateQR()" 
+                                        <input aria-label="QR background color" type="color" x-model="bgColor" @input="debouncedUpdateQR()" 
                                                class="w-5 h-5 rounded cursor-pointer opacity-0 absolute inset-0 z-10">
                                         <div class="w-5 h-5 rounded flex items-center justify-center cursor-pointer" style="background: linear-gradient(135deg, #eab308, #ec4899, #06b6d4); border: 1px solid rgba(255,255,255,0.3);">
                                             <span style="font-size: 12px; color: white; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">+</span>
