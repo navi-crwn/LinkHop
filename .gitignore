@@ -27,3 +27,9 @@ docs/AI_BRIEFING.md
 /playwright-report/
 /tests/e2e/reports/runs/
 .env.e2e
+
+# AI/handoff notes and reports: keep local, never commit
+/CLOUD-*.md
+/PROD-*.md
+/*HANDOFF*.md
+/*-handoff/
