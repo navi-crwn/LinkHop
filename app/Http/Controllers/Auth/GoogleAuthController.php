@@ -80,10 +80,6 @@ class GoogleAuthController extends Controller
 
                 return redirect()->intended('dashboard')->with('success', 'Welcome back, '.$user->name.'!');
             } else {
-                $words = ['Swift', 'Bright', 'Noble', 'Calm', 'Bold', 'Wise', 'Quick', 'Brave', 'Sharp', 'Clear',
-                    'River', 'Mountain', 'Ocean', 'Forest', 'Desert', 'Valley', 'Storm', 'Dawn', 'Sunset', 'Star',
-                    'Tiger', 'Eagle', 'Wolf', 'Bear', 'Hawk', 'Lion', 'Fox', 'Owl', 'Dragon', 'Phoenix'];
-                $catchphrase = $words[array_rand($words)].' '.$words[array_rand($words)].' '.$words[array_rand($words)];
                 $user = User::create([
                     'name' => $googleUser->name,
                     'email' => $googleUser->email,
@@ -91,7 +87,6 @@ class GoogleAuthController extends Controller
                     'avatar' => $googleUser->avatar,
                     'password' => Hash::make('TEMPORARY_GOOGLE_OAUTH_NO_PASSWORD_'.Str::random(32)), // Temporary password
                     'email_verified_at' => now(), // Google already verified email
-                    'catchphrase' => $catchphrase,
                 ]);
                 try {
                     $this->notificationService->notifyNewUser([
@@ -107,7 +102,7 @@ class GoogleAuthController extends Controller
                     ]);
                 }
                 try {
-                    \Mail::to($user->email)->send(new WelcomeEmail($user, $catchphrase, true));
+                    \Mail::to($user->email)->send(new WelcomeEmail($user, true));
                 } catch (Exception $e) {
                     \Log::error('Failed to send welcome email', [
                         'error' => $e->getMessage(),
@@ -120,7 +115,6 @@ class GoogleAuthController extends Controller
                     'is_default' => true,
                 ]);
                 Auth::login($user, true);
-                session(['user_catchphrase' => $catchphrase]);
 
                 return redirect()->route('onboarding')->with('success', 'Welcome to '.config('app.name').', '.$user->name.'!');
             }

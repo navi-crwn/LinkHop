@@ -16,30 +16,6 @@
             </div>
         </div>
         @endif
-        @if(session('user_catchphrase'))
-        <div class="mt-6 rounded-lg border border-amber-500/50 bg-amber-50 p-4 dark:border-amber-500/30 dark:bg-amber-900/20" x-data="{ copied: false }">
-            <div class="flex items-start gap-2">
-                <div class="flex-shrink-0 text-xl">🔐</div>
-                <div class="flex-1">
-                    <h2 class="text-base font-bold text-amber-900 dark:text-amber-100">Save Your Catchphrase</h2>
-                    <p class="mt-1 text-xs text-amber-800 dark:text-amber-200">
-                        This is your <strong>recovery catchphrase</strong>. You'll need it to <strong>reset your password</strong> if you forget it. 
-                        Write it down and keep it safe! This message appears only once.
-                    </p>
-                    <div class="mt-3 rounded-lg bg-slate-900 p-3 shadow-inner">
-                        <div class="flex items-center justify-between gap-3">
-                            <code class="flex-1 text-center font-mono text-base font-bold text-emerald-400">{{ session('user_catchphrase') }}</code>
-                            <button 
-                                @click="navigator.clipboard.writeText('{{ session('user_catchphrase') }}'); copied = true; setTimeout(() => copied = false, 2000)"
-                                class="flex-shrink-0 rounded-lg bg-slate-700 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-slate-600"
-                                x-text="copied ? 'Copied!' : 'Copy'"
-                            ></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
         @if(auth()->user()->google_id && session('google_user_needs_password'))
         <div class="mt-6 rounded-lg border border-blue-500/50 bg-blue-50 p-4 dark:border-blue-500/30 dark:bg-blue-900/20">
             <div class="flex items-start gap-2">

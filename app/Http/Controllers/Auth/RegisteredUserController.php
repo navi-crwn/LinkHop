@@ -43,15 +43,10 @@ class RegisteredUserController extends Controller
                 ->withErrors(['turnstile' => 'Security verification failed, please try again.'])
                 ->withInput($request->only('name', 'email'));
         }
-        $words = ['Swift', 'Bright', 'Noble', 'Calm', 'Bold', 'Wise', 'Quick', 'Brave', 'Sharp', 'Clear',
-            'River', 'Mountain', 'Ocean', 'Forest', 'Desert', 'Valley', 'Storm', 'Dawn', 'Sunset', 'Star',
-            'Tiger', 'Eagle', 'Wolf', 'Bear', 'Hawk', 'Lion', 'Fox', 'Owl', 'Dragon', 'Phoenix'];
-        $catchphrase = $words[array_rand($words)].' '.$words[array_rand($words)].' '.$words[array_rand($words)];
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'catchphrase' => $catchphrase,
             'role' => User::ROLE_USER,
         ]);
         Folder::create([
@@ -61,9 +56,8 @@ class RegisteredUserController extends Controller
         ]);
         event(new Registered($user));
         Auth::login($user);
-        session(['user_catchphrase' => $catchphrase]);
         try {
-            \Mail::to($user->email)->send(new WelcomeEmail($user, $catchphrase, false));
+            \Mail::to($user->email)->send(new WelcomeEmail($user, false));
         } catch (\Exception $e) {
             \Log::error('Failed to send welcome email', [
                 'error' => $e->getMessage(),

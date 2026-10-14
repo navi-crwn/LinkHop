@@ -42,17 +42,6 @@
             border-radius: 8px;
             margin: 20px 0;
         }
-        .catchphrase-box {
-            background: #FEF3C7;
-            border-left: 4px solid #F59E0B;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
-        }
-        .catchphrase-box strong {
-            color: #92400E;
-            font-size: 18px;
-        }
         .tutorial-section {
             background: #EFF6FF;
             border-radius: 8px;
@@ -149,14 +138,9 @@
         <p><strong>📧 You signed up with Google Account</strong></p>
         <p>For added security, we recommend setting up a password for your account. This allows you to login even when Google OAuth is unavailable.</p>
         @endif
-        <div class="catchphrase-box">
-            <p style="margin: 0 0 10px 0;"><strong>🔐 Your Security Catchphrase:</strong></p>
-            <p style="font-size: 20px; font-weight: bold; margin: 0; color: #92400E; font-family: monospace;">{{ $catchphrase }}</p>
-        </div>
         <div class="security-reminder">
             <h3>🛡️ Important Security Reminders</h3>
             <ul style="margin: 10px 0; padding-left: 20px;">
-                <li><strong>Save your catchphrase</strong> - You'll need it for password recovery</li>
                 <li><strong>Keep your password secure</strong> - Never share it with anyone</li>
                 <li><strong>Enable 2FA</strong> - Add an extra layer of security to your account</li>
                 <li><strong>Review login history</strong> - Check for any suspicious activity regularly</li>
