@@ -54,3 +54,14 @@ test('unverified users cannot create links or bio content', function () {
     // They can still sign in and see their dashboard.
     $this->actingAs($user)->get('/dashboard')->assertOk();
 });
+
+test('bot visits are not counted as clicks', function () {
+    $link = guestLink('botcheck');
+    Cache::flush();
+
+    $this->withHeader('User-Agent', 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)')->get('/botcheck');
+    expect($link->fresh()->clicks)->toBe(0)->and($link->fresh()->last_clicked_at)->toBeNull();
+
+    $this->withHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36')->get('/botcheck');
+    expect($link->fresh()->clicks)->toBe(1);
+});

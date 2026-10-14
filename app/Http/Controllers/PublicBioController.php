@@ -90,7 +90,9 @@ class PublicBioController extends Controller
             'referrer' => request()->header('referer'),
             'country' => $this->getCountryFromIp($ipAddress),
         ];
-        $bioLink->recordClick($clickData);
+        if (! $ua['bot']) {
+            $bioLink->recordClick($clickData);
+        }
 
         return redirect()->away($target);
     }

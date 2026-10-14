@@ -6,6 +6,7 @@ use App\Models\Link;
 use App\Models\LinkClick;
 use App\Services\GeoIpService;
 use App\Services\ProxyDetectionService;
+use App\Services\UserAgentService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -28,7 +29,9 @@ class LogLinkClick implements ShouldQueue
     public function handle(GeoIpService $geoIp): void
     {
         $link = Link::find($this->linkId);
-        if (! $link) {
+        // Crawlers and link-preview bots don't count as clicks (and must not keep
+        // idle guest links alive).
+        if (! $link || app(UserAgentService::class)->parse($this->userAgent)['bot']) {
             return;
         }
         try {
