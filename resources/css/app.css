@@ -115,6 +115,8 @@
         border-color: rgb(var(--muted) / 0.25);
     }
     .input:focus { border-color: rgb(var(--accent) / 0.6); }
+    /* Keep room for the select chevron that @tailwindcss/forms draws. */
+    select.input { padding-right: 2.25rem; }
     .label { @apply mb-1.5 block text-xs font-medium; color: rgb(var(--muted)); }
 
     /* Chips / badges */
@@ -181,6 +183,9 @@
 .app-shell :is(input[type=text], input[type=email], input[type=url], input[type=password], input[type=search], input[type=number], input[type=date], input[type=datetime-local], select, textarea):not(.no-skin):is(.bg-white, .dark\:bg-slate-800, .dark\:bg-gray-800, .dark\:bg-slate-900) {
     background-color: rgb(var(--glass) / 0.6) !important;
 }
+
+/* Legacy selects set px-* utilities that would hide the chevron under the text. */
+.app-shell select:not([multiple]) { padding-right: 2.25rem; }
 
 [x-cloak] { display: none !important; }
 
