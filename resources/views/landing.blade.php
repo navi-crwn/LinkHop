@@ -20,18 +20,8 @@
 
         <div class="{{ $card }} mx-auto mt-8 p-2 text-left shadow-2xl shadow-indigo-950/40">
             <form
-                x-data="Object.assign({ custom: {{ old('slug') ? 'true' : 'false' }} }, window.turnstileForm ? window.turnstileForm('{{ config('services.turnstile.site_key') }}', {{ $errors->has('turnstile') ? 'true' : 'false' }}) : {})"
-                x-init="
-                    if (!window.turnstileForm) {
-                        let interval = setInterval(() => {
-                            if (window.turnstileForm) {
-                                Object.assign($data, window.turnstileForm('{{ config('services.turnstile.site_key') }}', {{ $errors->has('turnstile') ? 'true' : 'false' }}));
-                                clearInterval(interval);
-                            }
-                        }, 50);
-                    }
-                "
-                x-on:submit="handleSubmit && handleSubmit($event)"
+                x-data="Object.assign({ custom: {{ old('slug') ? 'true' : 'false' }} }, turnstileForm(@js(config('services.turnstile.site_key'))))"
+                x-on:submit="handleSubmit($event)"
                 method="POST"
                 action="{{ route('shorten.store') }}"
             >
@@ -41,9 +31,9 @@
                     <input id="target_url" type="url" name="target_url" value="{{ old('target_url') }}" required
                         placeholder="Paste a long link…"
                         class="min-w-0 flex-1 rounded-2xl border-0 bg-white/[0.06] px-4 py-3.5 text-[15px] text-white placeholder-white/35 focus:bg-white/[0.09] focus:outline-none focus:ring-2 focus:ring-indigo-400/50">
-                    <button type="submit" x-bind:disabled="typeof showCaptcha !== 'undefined' && showCaptcha && !token"
+                    <button type="submit"
                         class="rounded-2xl bg-white px-6 py-3.5 font-semibold text-slate-900 transition hover:bg-white/90 active:scale-[0.98] disabled:opacity-50">
-                        Shorten
+                        <span x-show="!waiting">Shorten</span><span x-cloak x-show="waiting">Verifying…</span>
                     </button>
                 </div>
                 <div class="px-2 pb-1 pt-2">
@@ -54,10 +44,7 @@
                             class="min-w-0 flex-1 rounded-xl border-0 bg-white/[0.06] px-3 py-2 text-sm text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-indigo-400/50">
                     </div>
                 </div>
-                @if (config('services.turnstile.site_key'))
-                    <div x-cloak x-show="showCaptcha" class="px-2 pt-2"><div x-ref="captcha"></div></div>
-                    <input type="hidden" name="cf-turnstile-response" :value="token">
-                @endif
+                <x-turnstile class="px-2 pt-2" />
                 @if (session('link_error') || $errors->any())
                     <div class="m-2 rounded-xl bg-rose-500/15 px-3 py-2 text-sm text-rose-100">
                         {{ session('link_error') }}

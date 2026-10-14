@@ -21,12 +21,10 @@ class AbuseReportController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        if (! app()->runningUnitTests() && env('APP_ENV') !== 'testing') {
-            if (! $this->turnstile->verify($request->input('cf-turnstile-response'), $request->ip())) {
-                return back()
-                    ->withErrors(['turnstile' => 'Security verification failed, please try again.'])
-                    ->withInput();
-            }
+        if (! $this->turnstile->verify($request->input('cf-turnstile-response'), $request->ip())) {
+            return back()
+                ->withErrors(['turnstile' => 'Security verification failed, please try again.'])
+                ->withInput();
         }
         $data = $request->validate([
             'slug' => ['nullable', 'string', 'max:120'],
