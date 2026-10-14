@@ -9,10 +9,10 @@ import type { Page } from '@playwright/test';
 
 export type StateId =
   | 'guest_home' | 'guest_login' | 'guest_register' | 'guest_check' | 'guest_bio_public' | 'guest_bio_locked'
-  | 'user_dashboard' | 'user_links' | 'user_link_modal' | 'user_link_show' | 'user_link_edit'
+  | 'user_dashboard' | 'user_links' | 'user_link_modal' | 'user_link_created' | 'user_link_show' | 'user_link_edit'
   | 'user_bio_index' | 'user_bio_editor' | 'user_bio_block_editor' | 'user_analytics' | 'user_settings'
   | 'user_folders' | 'user_folder_modal' | 'user_tags' | 'user_tag_modal'
-  | 'admin_dashboard' | 'admin_links' | 'admin_abuse' | 'admin_bio';
+  | 'admin_analytics' | 'admin_links' | 'admin_abuse' | 'admin_bio';
 
 export interface Persona {
   token: string; email: string; password: string; admin: boolean;
@@ -40,9 +40,9 @@ export interface Action {
 }
 
 const USER_STATES: StateId[] = ['user_dashboard', 'user_links', 'user_link_show', 'user_link_edit', 'user_bio_index', 'user_bio_editor',
-  'user_analytics', 'user_settings', 'user_folders', 'user_tags', 'admin_dashboard', 'admin_links', 'admin_abuse', 'admin_bio'];
+  'user_analytics', 'user_settings', 'user_folders', 'user_tags', 'admin_analytics', 'admin_links', 'admin_abuse', 'admin_bio'];
 export const GUEST_STATES: StateId[] = ['guest_home', 'guest_login', 'guest_register', 'guest_check', 'guest_bio_public', 'guest_bio_locked'];
-export const MODAL_STATES: StateId[] = ['user_link_modal', 'user_bio_block_editor', 'user_folder_modal', 'user_tag_modal'];
+export const MODAL_STATES: StateId[] = ['user_link_modal', 'user_link_created', 'user_bio_block_editor', 'user_folder_modal', 'user_tag_modal'];
 
 /** Click a sidebar link when it is visible (desktop), otherwise navigate like the mobile drawer would. */
 async function nav(page: Page, path: string) {
@@ -70,14 +70,14 @@ export const ACTIONS: Action[] = [
     id: 'check_own_link', from: ['guest_check'], to: 'guest_check',
     run: async ({ page, me }) => {
       await page.fill('input[name="url"]', `${new URL(page.url()).origin}/${me.links[0]}`);
-      await Promise.all([page.waitForLoadState('domcontentloaded'), page.locator('form button[type=submit]').first().click()]);
+      await Promise.all([page.waitForLoadState('domcontentloaded'), page.locator('form[action$="/check"] button').first().click()]);
     },
   },
   {
     id: 'check_weird_input', from: ['guest_check'], to: 'guest_check', expectsClientError: true,
     run: async ({ page }) => {
       await page.fill('input[name="url"]', 'javascript:alert(1)//' + 'x'.repeat(300));
-      await Promise.all([page.waitForLoadState('domcontentloaded'), page.locator('form button[type=submit]').first().click()]);
+      await Promise.all([page.waitForLoadState('domcontentloaded'), page.locator('form[action$="/check"] button').first().click()]);
     },
   },
   { id: 'open_public_bio', from: 'any', to: 'guest_bio_public', run: async ({ page, me }) => { await page.goto(`/b/${me.bio}`); } },
@@ -101,7 +101,7 @@ export const ACTIONS: Action[] = [
     run: async ({ page, me }) => {
       await page.fill('input[name=email]', me.email);
       await page.fill('input[name=password]', me.password);
-      await Promise.all([page.waitForURL(u => !u.pathname.startsWith('/login'), { timeout: 15000 }), page.locator('form[action$="/login"] button[type=submit]').click()]);
+      await Promise.all([page.waitForURL(u => !u.pathname.startsWith('/login'), { waitUntil: 'domcontentloaded' }), page.locator('form[action$="/login"] button[type=submit]').click()]);
     },
   },
   {
@@ -125,7 +125,16 @@ export const ACTIONS: Action[] = [
   {
     id: 'logout', from: 'any-user', to: 'guest_home',
     run: async ({ page }) => {
-      const btn = page.locator('button[aria-label="Log out"]').first();
+      // The cookie banner sits on top of the sidebar's log out button; a person dismisses it first.
+      const decline = page.locator('button:has-text("Decline")').first();
+      if (await decline.isVisible().catch(() => false)) await decline.click();
+      let btn = page.locator('button[aria-label="Log out"]').first();
+      if (!(await btn.isVisible().catch(() => false))) {
+        // Public pages and the mobile layout have no visible log out button: use the dashboard's.
+        await page.goto('/dashboard');
+        if (await decline.isVisible().catch(() => false)) await decline.click();
+        btn = page.locator('button[aria-label="Log out"]').first();
+      }
       if (await btn.isVisible().catch(() => false)) {
         await Promise.all([page.waitForLoadState('domcontentloaded'), btn.click()]);
       } else {
@@ -153,7 +162,7 @@ export const ACTIONS: Action[] = [
     },
   },
   {
-    id: 'modal_create_link', from: ['user_link_modal'], to: 'same',
+    id: 'modal_create_link', from: ['user_link_modal'], to: 'user_link_created',
     run: async ({ page, me, memo }) => {
       const url = `https://example.com/${me.token}/new-${Date.now()}`;
       memo.createdUrl = url;
@@ -174,7 +183,7 @@ export const ACTIONS: Action[] = [
     },
   },
   {
-    id: 'modal_close', from: ['user_link_modal'], to: 'same',
+    id: 'modal_close', from: ['user_link_modal', 'user_link_created'], to: 'same',
     run: async ({ page }) => { await page.keyboard.press('Escape'); await page.waitForTimeout(300); },
   },
   {
@@ -193,12 +202,15 @@ export const ACTIONS: Action[] = [
   },
   {
     id: 'idor_other_users_link', from: 'any-user', to: 'same', expectsClientError: true,
-    run: async ({ page }) => {
-      // Sequential ids: try the neighbours of a link I do not own (must be 403/404, never a page).
-      const res = await page.request.get('/links/1/edit');
-      if (res.status() === 200 && !(await res.text()).includes('admin')) {
+    run: async ({ page, me }) => {
+      // Ids are sequential: probe a few low ids. A link that is not mine must be 403/404 for a normal user.
+      if (me.admin) return;
+      for (const id of [1, 2, 3]) {
+        const res = await page.request.get(`/links/${id}/edit`);
         const body = await res.text();
-        (page as any).__idorBody = body;
+        if (res.status() === 200 && !body.includes(me.token) && /name="target_url"|name="slug"/.test(body)) {
+          throw new Error(`INVARIANT /links/${id}/edit of another user is readable (200)`);
+        }
       }
     },
   },
@@ -271,18 +283,17 @@ export const ACTIONS: Action[] = [
   },
 
   // ---- admin ----
+  { id: 'admin_global_analytics', from: 'any-user', to: 'admin_analytics', adminOnly: true, run: async ({ page }) => nav(page, '/admin/analytics/global') },
   { id: 'admin_all_links', from: 'any-user', to: 'admin_links', adminOnly: true, run: async ({ page }) => nav(page, '/admin/links') },
   { id: 'admin_abuse', from: 'any-user', to: 'admin_abuse', adminOnly: true, run: async ({ page }) => nav(page, '/admin/abuse') },
   { id: 'admin_bio_pages', from: 'any-user', to: 'admin_bio', adminOnly: true, run: async ({ page }) => nav(page, '/admin/bio') },
 ];
 
 async function linkId(page: Page, slug: string): Promise<string> {
-  const href = await page.request.get('/links').then(r => r.text()).then(html => {
-    const m = html.match(new RegExp(`href="[^"]*/links/(\\d+)"[^>]*>[^<]*${slug}`)) || html.match(new RegExp(`/links/(\\d+)[^"]*"[\\s\\S]{0,400}${slug}`));
-    return m ? m[1] : null;
-  });
-  if (!href) throw new Error(`could not find my link ${slug} on /links`);
-  return href;
+  const html = await page.request.get('/links').then(r => r.text());
+  const m = html.match(new RegExp(`href="[^"]*/links/([^"/]+)"[^>]*>\\s*/${slug}\\s*<`));
+  if (!m) throw new Error(`could not find my link ${slug} on /links`);
+  return m[1];
 }
 
 export const ACTION_BY_ID = Object.fromEntries(ACTIONS.map(a => [a.id, a]));
@@ -292,12 +303,6 @@ export function allowedFrom(action: Action, state: StateId, isAdmin: boolean): b
   if (action.from === 'any') return true;
   if (action.from === 'any-user') return USER_STATES.includes(state);
   return action.from.includes(state);
-}
-
-export function nextState(action: Action, state: StateId): StateId {
-  if (action.to !== 'same') return action.to;
-  // Closing the link modal / creating a link leaves you on the page that opened it.
-  return MODAL_STATES.includes(state) && action.id !== 'modal_weird_url' ? 'user_links' : state;
 }
 
 export const ALL_STATES: StateId[] = [...GUEST_STATES, ...USER_STATES, ...MODAL_STATES];

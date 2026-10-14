@@ -1,0 +1,118 @@
+name: synthetic-users
+
+# PRs: every action of the app graph at least once + a few seeded random walks.
+# Nightly: also every action pair, 40 random walks (desktop and mobile) and the k6 load test.
+on:
+  pull_request:
+  schedule:
+    - cron: '0 19 * * *' # 02:00 WIB
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: pr or nightly
+        default: nightly
+      seed:
+        description: seed for random walks (rerun a nightly with its seed to reproduce it)
+        default: ''
+      walks:
+        description: number of random walks
+        default: ''
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  E2E_MODE: ${{ github.event_name == 'pull_request' && 'pr' || inputs.mode || 'nightly' }}
+  E2E_DB: mysql
+  DB_HOST: 127.0.0.1
+  DB_PORT: 3306
+  DB_DATABASE: helink_e2e
+  DB_USERNAME: root
+  DB_PASSWORD: root
+
+jobs:
+  journeys:
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ github.event_name == 'pull_request' && 30 || 120 }}
+    services:
+      mariadb:
+        image: mariadb:11
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: helink_e2e
+        ports: ['3306:3306']
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=5s --health-timeout=5s --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: gd, pdo_mysql, intl, imagick
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: npm ci && npm run build
+      - run: cp .env.example .env && php artisan key:generate
+      - run: npx playwright install --with-deps chromium
+      - name: Seed for random walks
+        run: echo "E2E_SEED=${{ inputs.seed || github.run_id }}" >> "$GITHUB_ENV"
+      - name: Run synthetic users
+        run: npx playwright test -c tests/e2e
+        env:
+          E2E_WALKS: ${{ inputs.walks }}
+          E2E_WORKERS: 4
+      - name: Server log
+        if: failure()
+        run: tail -n 200 storage/logs/laravel*.log || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: synthetic-users-${{ env.E2E_MODE }}-${{ github.run_id }}
+          path: tests/e2e/reports/runs/
+          retention-days: 14
+
+  load:
+    if: github.event_name != 'pull_request'
+    needs: journeys
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      mariadb:
+        image: mariadb:11
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: helink_e2e
+        ports: ['3306:3306']
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=5s --health-timeout=5s --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: gd, pdo_mysql, intl, imagick
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: npm ci && npm run build
+      - run: cp .env.example .env && php artisan key:generate
+      - name: Start app
+        run: |
+          PHP_CLI_SERVER_WORKERS=16 nohup bash tests/e2e/serve.sh > serve.log 2>&1 &
+          for i in $(seq 1 60); do curl -sf http://127.0.0.1:8130/up && break; sleep 1; done
+      - uses: grafana/setup-k6-action@v1
+      - name: k6
+        run: k6 run --summary-export=k6-summary.json tests/load/k6.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: k6-${{ github.run_id }}
+          path: |
+            k6-summary.json
+            serve.log
