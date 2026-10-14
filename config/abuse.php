@@ -16,7 +16,7 @@ return [
 
     // Keyword patterns matched against URL + title/description text.
     'patterns' => [
-        'csam' => '/\b(pthc|preteen|jailbait|lolicon|child\s*porn|underage\s*(sex|porn|nude)|cp\s*(link|video|vid)s?)\b/i',
+        'csam' => '/\b(pthc|preteen|jailbait|lolicon|shotacon|pedophil\w*|hussyfan|babyj|opva|(child|kid)[\s_-]*porn|underage[\s_-]*(sex|porn|nude)|cp[\s_-]*(link|video|vid)s?)\b/i',
         'gambling' => '/(gacor|maxwin|togel|judi\s*online|sbobet|slot[\s_-]*(online|gacor|88|thailand|deposit|demo)|rtp[\s_-]*(live|slot)|toto[\s_-]*(macau|slot)|agen[\s_-]*(slot|togel|judi)|scatter[\s_-]*hitam|mahjong[\s_-]*ways)/i',
         'phishing' => '/(verify[-_\s]*account|account[-_\s]*verif|secure[-_\s]*login|wallet[-_\s]*connect|seed[-_\s]*phrase|claim[-_\s]*airdrop|airdrop[-_\s]*claim|dana[-_\s]*kaget|klaim[-_\s]*hadiah|verifikasi[-_\s]*(akun|rekening)|update[-_\s]*rekening)/i',
         'scam' => '/(double\s*your\s*(btc|crypto|money)|giveaway\s*(btc|eth|usdt)|investasi\s*(bodong|pasti\s*untung))/i',
@@ -38,6 +38,7 @@ return [
         'executable_download' => 40,
         'adult' => 10,
         'chained_shortener' => 10,
+        'file_host' => 20,
         'punycode' => 10,
         'ip_host' => 10,
         'risky_tld' => 5,
@@ -56,6 +57,17 @@ return [
     'purge_after_days' => 30,
 
     'shorteners' => ['bit.ly', 'tinyurl.com', 's.id', 'cutt.ly', 'shorturl.at', 'is.gd', 't.co', 'rebrand.ly', 'ow.ly', 'rb.gy', 'tiny.cc'],
+
+    // Paste, anonymous file and video hosts often used to pass on abusive
+    // material. A weak signal on its own; it adds up with other signals.
+    'file_hosts' => [
+        'justpaste.it', 'pastebin.com', 'paste.ee', 'ghostbin.com', 'rentry.co', 'rentry.org', 'privatebin.net',
+        'zerobin.net', 'hastebin.com', 'dpaste.org', 'controlc.com', 'paste2.org', 'cl1p.net', '0bin.net', 'textbin.net',
+        'telegra.ph', 'teletype.in', 'catbox.moe', 'litterbox.catbox.moe', 'anonfiles.com', 'anonfile.com', 'bayfiles.com',
+        'mega.nz', 'mega.io', 'mediafire.com', 'zippyshare.com', 'file.io', 'gofile.io', 'sendspace.com', 'ufile.io',
+        'uploadfiles.io', 'filepost.com', 'drop.sc', 'dropapk.to', 'dood.to', 'dood.la', 'dood.so', 'dood.watch',
+        'doodstream.com', 'streamtape.com', 'mixdrop.co', 'upstream.to', 'streamlare.com', 'uqload.com', 'vidoza.net',
+    ],
 
     'risky_tlds' => ['zip', 'mov', 'top', 'xyz', 'click', 'icu', 'cfd', 'sbs', 'rest', 'lol', 'buzz', 'cyou', 'monster'],
 

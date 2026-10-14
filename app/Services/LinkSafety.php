@@ -85,6 +85,9 @@ class LinkSafety
                 if (in_array($host, config('abuse.shorteners', []), true)) {
                     $signals[] = 'chained_shortener';
                 }
+                if (in_array($host, config('abuse.file_hosts', []), true)) {
+                    $signals[] = 'file_host';
+                }
                 $tld = substr((string) strrchr($host, '.'), 1);
                 if (in_array($tld, config('abuse.risky_tlds', []), true)) {
                     $signals[] = 'risky_tld';

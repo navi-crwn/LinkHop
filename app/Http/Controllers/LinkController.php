@@ -242,8 +242,8 @@ class LinkController extends Controller
     public function create()
     {
         return view('link-create', [
-            'folders' => auth()->user()->folders()->orderBy('name')->get(),
-            'tags' => auth()->user()->tags()->orderBy('name')->get(),
+            'folders' => $link->user->folders()->orderBy('name')->get(),
+            'tags' => $link->user->tags()->orderBy('name')->get(),
         ]);
     }
 
@@ -281,7 +281,7 @@ class LinkController extends Controller
                     'target_url' => $link->target_url,
                     'slug' => $link->slug,
                     'id' => $link->id,
-                    'qr_code_url' => $link->qr_code_path ? Storage::url($link->qr_code_path).'?t='.time() : null,
+                    'qr_code_url' => $link->qr_code_path ? Storage::disk('public')->url($link->qr_code_path).'?t='.time() : null,
                 ],
                 'message' => 'Link created successfully!',
             ]);
@@ -299,8 +299,8 @@ class LinkController extends Controller
 
         return view('link-edit', [
             'link' => $link->load('tags'),
-            'folders' => auth()->user()->folders()->orderBy('name')->get(),
-            'tags' => auth()->user()->tags()->orderBy('name')->get(),
+            'folders' => $link->user->folders()->orderBy('name')->get(),
+            'tags' => $link->user->tags()->orderBy('name')->get(),
         ]);
     }
 
@@ -448,7 +448,8 @@ class LinkController extends Controller
 
     protected function authorizeLink(Link $link): void
     {
-        abort_unless(auth()->id() === $link->user_id, 403);
+        // Admins may fix or neutralise any user's link (abuse that slipped past the scanners).
+        abort_unless(auth()->id() === $link->user_id || auth()->user()?->isAdmin(), 403);
     }
 
     public function downloadQr(Link $link, string $format = 'png')
@@ -511,7 +512,7 @@ class LinkController extends Controller
 
             return response()->json([
                 'success' => true,
-                'path' => Storage::url($path),
+                'path' => Storage::disk('public')->url($path),
                 'message' => 'QR code saved successfully',
             ]);
         } catch (\Exception $e) {
