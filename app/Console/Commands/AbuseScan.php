@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Helpers\SocialUrlHelper;
 use App\Models\AbuseFlag;
 use App\Models\BioLink;
 use App\Models\BioPage;
@@ -104,8 +105,9 @@ class AbuseScan extends Command
                 $result = $this->safety->assess(null, $text);
                 foreach ((array) $page->social_links as $social) {
                     $value = trim((string) ($social['value'] ?? ''));
-                    if ($value !== '' && $this->safety->scheme($value) !== null) {
-                        $result = $this->merge($result, $this->safety->assess($value, '', $this->remote));
+                    $url = $value === '' ? '' : SocialUrlHelper::buildUrl((string) ($social['platform'] ?? ''), $value);
+                    if ($url !== '' && $this->safety->scheme($url) !== null) {
+                        $result = $this->merge($result, $this->safety->assess($url, '', $this->remote));
                     }
                 }
                 $this->judge('bio_page', $page->id, $page->user_id, $result, '/b/'.$page->slug, function () use ($page) {
