@@ -58,6 +58,6 @@
                 </div>
             @endforeach
         </div>
-        <p class="mt-8 border-t border-white/10 pt-5 text-xs text-white/40">© {{ date('Y') }} HEL.ink</p>
+        <p class="mt-8 border-t border-white/10 pt-5 text-xs text-white/40">© {{ date('Y') }} HEL.ink · <a href="https://db-ip.com" target="_blank" rel="noopener" class="hover:text-white">IP Geolocation by DB-IP</a></p>
     </div>
 </footer>

@@ -8,6 +8,7 @@ use App\Services\GeoIP\Providers\GeoIpProviderInterface;
 use App\Services\GeoIP\Providers\IpApiCoProvider;
 use App\Services\GeoIP\Providers\IpApiProvider;
 use App\Services\GeoIP\Providers\IpInfoProvider;
+use App\Services\GeoIP\Providers\LocalMmdbProvider;
 use App\Services\GeoIP\QuotaManager;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -22,6 +23,7 @@ class GeoIpService
     {
         $this->quotaManager = new QuotaManager;
         $this->providers = [
+            new LocalMmdbProvider,
             new FreeIpApiProvider,
             new IpApiProvider,
             new IpApiCoProvider,
