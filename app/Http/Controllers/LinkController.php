@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ManageLinkRequest;
+use App\Console\Commands\AbuseScan;
+use App\Models\AbuseFlag;
 use App\Models\AbuseReport;
 use App\Models\ActivityLog;
 use App\Models\Folder;
+use App\Models\DomainBlacklist;
 use App\Models\IpBan;
+use App\Models\IpWatchlist;
 use App\Models\Link;
 use App\Models\LinkClick;
 use App\Models\User;
@@ -97,28 +101,48 @@ class LinkController extends Controller
         if ($user->isAdmin()) {
             $adminStats = [
                 'total_users' => User::count(),
+                'new_users_week' => User::where('created_at', '>=', now()->subDays(7))->count(),
                 'total_platform_links' => Link::count(),
+                'live_links' => Link::live()->count(),
                 'total_platform_clicks' => LinkClick::count(),
-                'today_platform_clicks' => LinkClick::whereDate('clicked_at', today())->count(),
+                'today_platform_clicks' => LinkClick::where('clicked_at', '>=', today())->count(),
+                'yesterday_platform_clicks' => LinkClick::whereBetween('clicked_at', [today()->subDay(), today()])->count(),
                 'suspended_users' => User::where('status', 'suspended')->count(),
                 'inactive_links' => Link::where('status', Link::STATUS_INACTIVE)->count(),
                 'ip_bans' => IpBan::count(),
+                'ip_watchlist' => IpWatchlist::count(),
+                'domain_blacklist' => DomainBlacklist::count(),
+                'open_reports' => AbuseReport::where('status', 'open')->count(),
+                'open_flags' => AbuseFlag::where('status', AbuseFlag::STATUS_OPEN)->count(),
                 'queue_heartbeat' => Cache::get('queue:heartbeat'),
+                'abuse_last_scan' => Cache::get(AbuseScan::LAST_RUN_KEY)['at'] ?? null,
             ];
-            $recentUsers = User::latest()->limit(5)->get();
-            $recentPlatformLinks = Link::with('user')->latest()->limit(5)->get();
-            $openReports = AbuseReport::orderByDesc('created_at')->limit(5)->get();
+            // Clicks per day for the last 14 days, zero-filled.
+            $from = today()->subDays(13);
+            $perDay = LinkClick::where('clicked_at', '>=', $from)
+                ->selectRaw(sql_date_format('clicked_at', '%Y-%m-%d').' as day, COUNT(*) as total')
+                ->groupBy('day')
+                ->pluck('total', 'day');
+            $clickTrend = collect(range(0, 13))->mapWithKeys(function ($i) use ($from, $perDay) {
+                $day = $from->copy()->addDays($i)->toDateString();
+
+                return [$day => (int) ($perDay[$day] ?? 0)];
+            });
+            $recentUsers = User::withCount('links')->latest('id')->limit(6)->get();
+            $recentPlatformLinks = Link::with('user:id,name')->latest('id')->limit(6)->get();
+            $openReports = AbuseReport::where('status', '!=', 'closed')->latest()->limit(4)->get();
             $topPlatformCountries = LinkClick::select('country', DB::raw('COUNT(*) as total'))
                 ->whereNotNull('country')
                 ->groupBy('country')
                 ->orderByDesc('total')
-                ->limit(5)
+                ->limit(8)
                 ->get();
             $folders = $user->folders;
             $tags = $user->tags;
 
             return view('admin-control-panel', compact(
                 'adminStats',
+                'clickTrend',
                 'recentUsers',
                 'recentPlatformLinks',
                 'openReports',
