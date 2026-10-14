@@ -46,7 +46,7 @@ return [
         'health', 'status', 'test', 'demo',
         'assets', 'static', 'public', 'storage',
         'upload', 'download', 'export', 'import',
-        'report', 'abuse', 'flag', 'spam',
+        'report', 'abuse', 'flag', 'spam', 'check',
         // Security & Scam Prevention
         'official', 'verified', 'security', 'secure', 'auth', 'authentication',
         'update', 'upgrade', 'billing', 'payment', 'invoice', 'receipt',

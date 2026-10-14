@@ -2,6 +2,7 @@
     $marketingLinks = [
         ['label' => 'Features', 'href' => route('home').'#features'],
         ['label' => 'Link in Bio', 'href' => route('home').'#bio'],
+        ['label' => 'Check a link', 'href' => route('link.check')],
         ['label' => 'Products', 'href' => route('products')],
         ['label' => 'Help', 'href' => route('help')],
         ['label' => 'FAQ', 'href' => route('faq')],

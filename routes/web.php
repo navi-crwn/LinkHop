@@ -18,6 +18,7 @@ use App\Http\Controllers\BioPageController;
 use App\Http\Controllers\BrandAssetController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\GeoIpMonitorController;
+use App\Http\Controllers\LinkCheckController;
 use App\Http\Controllers\LinkCommentController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\MarketingPageController;
@@ -184,6 +185,7 @@ Route::middleware('ip.ban')->group(function () {
             Route::post('/bio/{bioPage}/toggle', [AdminBioController::class, 'togglePublish'])->name('bio.toggle');
             Route::post('/bio/bulk-delete', [AdminBioController::class, 'bulkDelete'])->name('bio.bulk-delete');
         });
+    Route::get('/check', LinkCheckController::class)->middleware('throttle:30,1')->name('link.check');
     Route::get('/report-abuse', [AbuseReportController::class, 'create'])->name('report.create');
     Route::post('/report-abuse', [AbuseReportController::class, 'store'])->middleware('throttle:5,10')->name('report.store');
     Route::prefix('b')->name('bio.public.')->group(function () {

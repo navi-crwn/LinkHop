@@ -22,6 +22,7 @@
             'title' => 'Explore',
             'items' => [
                 ['label' => 'Products', 'route' => route('products')],
+                ['label' => 'Check a link', 'route' => route('link.check')],
                 ['label' => 'Report abuse', 'route' => route('report.create')],
                 ['label' => 'Features', 'route' => route('home').'#features'],
                 ['label' => 'Analytics', 'route' => route('products').'#analytics-feature'],
