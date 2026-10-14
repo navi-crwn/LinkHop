@@ -120,3 +120,25 @@ test('csp reports never log tokens, query strings or emails', function () {
         ->and($clean['blocked-uri'])->toBe('inline')
         ->and($clean)->not->toHaveKey('original-policy');
 });
+
+test('guest links live at most 30 days even when the server env asks for more', function () {
+    $load = function (array $env) {
+        foreach ($env as $key => $value) {
+            putenv("{$key}={$value}");
+            $_ENV[$key] = $_SERVER[$key] = $value;
+        }
+        $config = require config_path('shortener.php');
+        foreach (array_keys($env) as $key) {
+            putenv($key);
+            unset($_ENV[$key], $_SERVER[$key]);
+        }
+
+        return $config;
+    };
+
+    $config = $load(['GUEST_LINK_IDLE_DAYS' => '3650', 'GUEST_LINK_MAX_DAYS' => '3650']);
+    expect($config['guest_max_days'])->toBe(30)->and($config['guest_idle_days'])->toBe(30);
+
+    $config = $load(['GUEST_LINK_IDLE_DAYS' => '14', 'GUEST_LINK_MAX_DAYS' => '30']);
+    expect($config['guest_max_days'])->toBe(30)->and($config['guest_idle_days'])->toBe(14);
+});
