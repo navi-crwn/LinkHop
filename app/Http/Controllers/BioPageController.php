@@ -145,8 +145,9 @@ class BioPageController extends Controller
             if (preg_match('/^data:image\/(\w+);base64,/', $base64Image, $type)) {
                 $data = substr($base64Image, strpos($base64Image, ',') + 1);
                 $extension = strtolower($type[1]);
-                if (in_array($extension, ['jpg', 'jpeg', 'gif', 'png'])) {
-                    $data = base64_decode($data);
+                $data = base64_decode($data, true);
+                // Only store real images up to 1 MB.
+                if (in_array($extension, ['jpg', 'jpeg', 'gif', 'png']) && $data !== false && strlen($data) <= 1048576 && @getimagesizefromstring($data)) {
                     $filename = 'qr-logos/'.uniqid().'.'.$extension;
                     Storage::disk('public')->put($filename, $data);
                     $settings['image'] = '/storage/'.$filename;

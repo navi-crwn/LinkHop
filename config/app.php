@@ -1,6 +1,14 @@
 <?php
 
 return [
+    /*
+    | Comma-separated proxy IPs/CIDRs in front of the app (e.g. Cloudflare ranges or
+    | 127.0.0.1 for a local nginx), or "*" when the origin is only reachable through
+    | the proxy. Without this, request()->ip() is the proxy's IP and every per-IP
+    | limit, ban and quota applies to all visitors at once.
+    */
+    'trusted_proxies' => env('TRUSTED_PROXIES'),
+
     'name' => env('APP_NAME', 'HEL.ink'),
     'env' => env('APP_ENV', 'production'),
     'debug' => (bool) env('APP_DEBUG', false),

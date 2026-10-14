@@ -62,13 +62,13 @@ Route::middleware('ip.ban')->group(function () {
     Route::get('/faq', [MarketingPageController::class, 'faq'])->name('faq');
     Route::get('/products', [MarketingPageController::class, 'products'])->name('products');
     Route::get('/feature-requests', [MarketingPageController::class, 'featureRequests'])->name('feature.requests');
-    Route::get('/api/qr-generate', [BioPageController::class, 'generateQR'])->name('api.qr.generate');
+    Route::get('/api/qr-generate', [BioPageController::class, 'generateQR'])->name('api.qr.generate')->middleware('throttle:60,1');
     Route::post('/shorten', [PublicLinkController::class, 'store'])
         ->middleware(['throttle:shorten', 'quota'])
         ->name('shorten.store');
     Route::middleware(['auth'])->group(function () {
         Route::get('/two-factor-challenge', [TwoFactorController::class, 'show'])->name('two-factor.show');
-        Route::post('/two-factor-challenge', [TwoFactorController::class, 'verify'])->name('two-factor.verify');
+        Route::post('/two-factor-challenge', [TwoFactorController::class, 'verify'])->middleware('throttle:5,1')->name('two-factor.verify');
     });
     Route::middleware(['auth', '2fa'])->group(function () {
         Route::get('/dashboard', [LinkController::class, 'index'])->name('dashboard');

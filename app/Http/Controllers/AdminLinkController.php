@@ -123,13 +123,14 @@ class AdminLinkController extends Controller
             'ids' => ['required', 'array'],
             'action' => ['required', 'in:disable,delete'],
         ]);
-        $ids = $request->input('ids');
+        // Per-model so the redirect cache is cleared (model events), not a mass query.
+        $links = Link::whereIn('id', $request->input('ids'))->get();
         if ($request->action === 'delete') {
-            Link::whereIn('id', $ids)->delete();
-            $message = 'Link deleted successfully.';
+            $links->each->delete();
+            $message = 'Links deleted.';
         } else {
-            Link::whereIn('id', $ids)->update(['status' => Link::STATUS_INACTIVE]);
-            $message = 'Link dinonaktifkan.';
+            $links->each(fn (Link $link) => $link->update(['status' => Link::STATUS_INACTIVE]));
+            $message = 'Links disabled.';
         }
 
         return back()->with('status', $message);

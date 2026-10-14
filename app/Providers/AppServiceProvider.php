@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\SeoSetting;
 use App\Services\LinkSafety;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
@@ -23,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
         \URL::forceRootUrl(config('app.url'));
         if (config('app.env') === 'production') {
             \URL::forceScheme('https');
+        }
+        if ($proxies = config('app.trusted_proxies')) {
+            TrustProxies::at($proxies === '*' ? '*' : array_map('trim', explode(',', $proxies)));
         }
         // Defined here (not in routes/web.php) so they exist when routes are cached.
         RateLimiter::for('shorten', function (Request $request) {

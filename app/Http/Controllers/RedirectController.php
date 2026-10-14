@@ -25,7 +25,7 @@ class RedirectController extends Controller
         $link = Cache::remember($this->links->cacheKey($slug), 300, function () use ($slug) {
             return Link::with(['user'])->where('slug', $slug)->first();
         });
-        if (! $link || $link->status !== Link::STATUS_ACTIVE || $link->isExpired()) {
+        if (! $link || $link->status !== Link::STATUS_ACTIVE || $link->isExpired() || $link->user?->isSuspended()) {
             return $this->notFound($slug);
         }
         if ($link->requiresPassword()) {

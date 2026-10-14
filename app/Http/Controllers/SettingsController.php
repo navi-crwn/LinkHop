@@ -107,20 +107,20 @@ class SettingsController extends Controller
                 $lastClicked = $link->clicks()
                     ->latest('clicked_at')
                     ->first();
-                fputcsv($file, [
+                fputcsv($file, csv_safe([
                     $link->short_url,
                     $link->target_url,
                     $link->redirect_type ?? '302',
                     $link->folder->name ?? 'Default',
                     $link->tags->pluck('name')->join(', '),
-                    $link->password ? 'Yes' : 'No',
+                    $link->requiresPassword() ? 'Yes' : 'No',
                     ucfirst($link->status),
                     $link->clicks_count,
                     $uniqueVisitors,
                     $link->created_at->format('Y-m-d H:i:s'),
                     $link->expires_at ? $link->expires_at->format('Y-m-d H:i:s') : 'Never',
                     $lastClicked ? $lastClicked->clicked_at->format('Y-m-d H:i:s') : 'Never',
-                ]);
+                ]));
             }
             fclose($file);
         };

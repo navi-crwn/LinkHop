@@ -13,7 +13,7 @@ class ApiAuthenticate
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -44,6 +44,13 @@ class ApiAuthenticate
                 'error' => 'Unauthorized',
                 'message' => 'API token has expired',
             ], 401);
+        }
+        if (! $apiToken->user || $apiToken->user->isSuspended()) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Forbidden',
+                'message' => 'Account suspended',
+            ], 403);
         }
         // Check rate limiting (requests per hour)
         $cacheKey = 'api_rate_limit:'.$apiToken->id;

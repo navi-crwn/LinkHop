@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\LinkService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -75,6 +76,20 @@ class Link extends Model
     public function getShortUrlAttribute(): string
     {
         return str_replace('www.', '', url($this->slug));
+    }
+
+    protected static function booted(): void
+    {
+        // RedirectController caches links by slug: drop the cache on every change so
+        // disabled/deleted/edited links stop resolving immediately, whatever the caller.
+        $forget = function (Link $link) {
+            app(LinkService::class)->forgetCacheBySlug($link->slug);
+            if ($link->isDirty('slug') || $link->wasChanged('slug')) {
+                app(LinkService::class)->forgetCacheBySlug((string) $link->getOriginal('slug'));
+            }
+        };
+        static::saved($forget);
+        static::deleted($forget);
     }
 
     public function isExpired(): bool
