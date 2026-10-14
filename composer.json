@@ -12,6 +12,7 @@
         "laravel/socialite": "^5.23",
         "laravel/tinker": "^2.10.1",
         "pragmarx/google2fa-laravel": "^2.3",
+        "propaganistas/laravel-disposable-email": "^2.5",
         "sentry/sentry-laravel": "^4.19",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "symfony/html-sanitizer": "^7.4"

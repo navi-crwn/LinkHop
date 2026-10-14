@@ -18,3 +18,5 @@ Schedule::job(new QueueHeartbeat)->everyTwoMinutes();
 Schedule::command('abuse:scan --since=75m')->hourly()->withoutOverlapping();
 Schedule::command('abuse:scan --full --purge')->dailyAt('04:30')->withoutOverlapping();
 Schedule::command('links:prune-guest')->dailyAt('03:30')->withoutOverlapping();
+Schedule::command('disposable:update')->weeklyOn(1, '03:00');
+Schedule::command('abuse:feeds')->dailyAt('03:45')->withoutOverlapping();
