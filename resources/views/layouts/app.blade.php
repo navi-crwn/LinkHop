@@ -96,12 +96,12 @@
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
                                     <span class="hidden sm:inline">New bio</span>
                                 </a>
-                            @elseif (request()->routeIs('folders.*'))
+                            @elseif (request()->routeIs('folders.index'))
                                 <button type="button" data-call="openFolderModal" class="btn-primary btn-sm sm:btn">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
                                     <span class="hidden sm:inline">New folder</span>
                                 </button>
-                            @elseif (request()->routeIs('tags.*'))
+                            @elseif (request()->routeIs('tags.index'))
                                 <button type="button" data-call="openTagModal" class="btn-primary btn-sm sm:btn">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
                                     <span class="hidden sm:inline">New tag</span>

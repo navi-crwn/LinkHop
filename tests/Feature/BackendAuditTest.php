@@ -95,7 +95,7 @@ test('bio analytics accepts only the offered ranges and ranks top links by click
     $this->actingAs($page->user)->get("/bio/{$page->slug}/analytics?days=7")
         ->assertOk()
         ->assertSeeInOrder(['Most clicked', 'First position'])
-        ->assertSee('Clicks Over Time');
+        ->assertSee('Clicks over time');
 });
 
 test('reordering and toggling blocks need a verified email like other edits', function () {

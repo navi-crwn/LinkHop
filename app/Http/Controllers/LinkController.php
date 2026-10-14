@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ManageLinkRequest;
 use App\Console\Commands\AbuseScan;
+use App\Http\Requests\ManageLinkRequest;
 use App\Models\AbuseFlag;
 use App\Models\AbuseReport;
 use App\Models\ActivityLog;
-use App\Models\Folder;
 use App\Models\DomainBlacklist;
+use App\Models\Folder;
 use App\Models\IpBan;
 use App\Models\IpWatchlist;
 use App\Models\Link;
@@ -263,11 +263,11 @@ class LinkController extends Controller
         return view('dashboard', $data);
     }
 
-    public function create()
+    public function create(Request $request)
     {
         return view('link-create', [
-            'folders' => $link->user->folders()->orderBy('name')->get(),
-            'tags' => $link->user->tags()->orderBy('name')->get(),
+            'folders' => $request->user()->folders()->orderBy('name')->get(),
+            'tags' => $request->user()->tags()->orderBy('name')->get(),
         ]);
     }
 

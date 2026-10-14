@@ -1,146 +1,147 @@
 @php use Illuminate\Support\Str; use Illuminate\Support\Facades\Storage; @endphp
 <x-app-layout>
-    <x-slot name="header">
-        <x-page-header title="Link Analytics" subtitle="Performance metrics for this link">
-            <x-slot name="actions">
-                <a href="{{ route('dashboard') }}" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">Dashboard</a>
-                <a href="{{ route('links.edit', $link) }}" class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">Edit Link</a>
-            </x-slot>
-        </x-page-header>
-    </x-slot>
-    <div class="py-6">
-        <div class="mx-auto max-w-7xl space-y-4 sm:px-6 lg:px-8">
-            <div class="grid gap-4 md:grid-cols-3">
-                <div class="md:col-span-2 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Shortlink</p>
-                    <p class="mt-1 text-lg font-semibold text-blue-600 dark:text-blue-400 break-all">{{ $link->short_url }}</p>
-                    <p class="mt-1 text-sm text-slate-600 dark:text-slate-400 truncate" title="{{ $link->target_url }}">→ {{ Str::limit($link->target_url, 80) }}</p>
-                </div>
-                <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-gradient-to-br from-blue-50 to-blue-100 p-4 dark:border-slate-800 dark:from-blue-900/20 dark:to-blue-800/20">
-                    <div>
-                        <p class="text-xs font-medium uppercase tracking-wider text-blue-600 dark:text-blue-400">Total Clicks</p>
-                        <p class="mt-1 text-3xl font-bold text-blue-900 dark:text-blue-100">{{ number_format($link->clicks) }}</p>
-                    </div>
-                    @if ($link->qr_code_path)
-                        <img src="{{ Storage::disk('public')->url($link->qr_code_path) }}" alt="QR" class="h-16 w-16 rounded-lg border-2 border-blue-200 dark:border-blue-700">
+    <x-slot name="pageTitle">HEL.ink - /{{ $link->slug }} analytics</x-slot>
+    <x-page-header title="/{{ $link->slug }}" subtitle="Analytics for the last {{ $rangeInDays }} days">
+        <x-slot name="actions">
+            <a href="{{ route('links.index') }}" class="btn-ghost btn-sm">My links</a>
+            <a href="{{ route('links.edit', $link) }}" class="btn-primary btn-sm">Edit link</a>
+        </x-slot>
+    </x-page-header>
+
+    <x-flash />
+
+    <div class="grid gap-3 lg:grid-cols-4">
+        <section class="glass-card flex items-center gap-4 lg:col-span-3">
+            <div class="min-w-0 flex-1">
+                <p class="eyebrow">Short link</p>
+                <p class="mt-0.5 break-all text-base font-semibold text-ink">{{ $link->short_url }}</p>
+                <p class="mt-0.5 truncate text-sm text-muted" title="{{ $link->target_url }}">→ {{ $link->target_url }}</p>
+                <div class="mt-2 flex flex-wrap gap-1.5">
+                    @if ($link->isExpired())
+                        <span class="chip-red">Expired</span>
+                    @else
+                        <span class="{{ $link->status === 'active' ? 'chip-green' : 'chip-gray' }}">{{ ucfirst($link->status) }}</span>
+                    @endif
+                    @if ($link->requiresPassword())
+                        <span class="chip-blue">Password</span>
+                    @endif
+                    @if ($link->expires_at && ! $link->isExpired())
+                        <span class="chip-amber">Expires {{ $link->expires_at->diffForHumans() }}</span>
                     @endif
                 </div>
             </div>
-            <div class="grid gap-4 lg:grid-cols-2">
-                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <h3 class="text-sm font-semibold text-slate-900 dark:text-white mb-3">Daily Clicks (Last {{ $rangeInDays }} days)</h3>
-                    <div class="relative" style="height: 200px;">
-                        <canvas id="clickChart"></canvas>
-                    </div>
-                </div>
-                <div class="grid grid-rows-2 gap-4">
-                    <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                        <h3 class="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-2">Top Locations</h3>
-                        <div class="space-y-1">
-                            @forelse($countries->take(3) as $item)
-                                <div class="flex items-center justify-between text-xs">
-                                    <span>{!! country_flag($item->country) !!} {{ country_name($item->country) }}</span>
-                                    <span class="text-slate-500">{{ $item->total }}</span>
-                                </div>
-                            @empty
-                                <p class="text-xs text-slate-400">No data</p>
-                            @endforelse
-                        </div>
-                    </div>
-                    <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                        <h3 class="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-2">Technology</h3>
-                        <div class="grid grid-cols-2 gap-2 text-xs">
-                            @foreach($devices as $device => $count)
-                                @php $pct = $totalClicks > 0 ? round(($count / $totalClicks) * 100) : 0; @endphp
-                                <div>
-                                    <span class="text-slate-600 dark:text-slate-300">{{ $device }}</span>
-                                    <span class="text-slate-400">{{ $pct }}%</span>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900" x-data="clickLog()">
-                <div class="border-b border-slate-200 p-4 dark:border-slate-700">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-sm font-semibold text-slate-900 dark:text-white">Click Log</h3>
-                        <span class="text-xs text-slate-500">{{ $recentClicks->count() }} clicks (last {{ $rangeInDays }} days)</span>
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        <input x-model="searchQuery" @input="filterClicks" type="text" placeholder="Search country, device, referrer..." class="text-xs rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 px-3 py-1.5 w-64">
-                        <select aria-label="Filter by device" x-model="deviceFilter" @change="filterClicks" class="text-xs rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 px-3 py-1.5">
-                            <option value="">All Devices</option>
-                            <option value="Mobile">Mobile</option>
-                            <option value="Desktop">Desktop</option>
-                        </select>
-                        <select aria-label="Filter by connection type" x-model="proxyFilter" @change="filterClicks" class="text-xs rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 px-3 py-1.5">
-                            <option value="">All Traffic</option>
-                            <option value="clean">Clean IPs</option>
-                            <option value="proxy">Proxy/VPN</option>
-                        </select>
-                        <button @click="resetFilters" class="text-xs rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-800">Reset</button>
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full text-xs">
-                        <thead class="text-left text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 sticky top-0">
-                            <tr class="border-b border-slate-200 dark:border-slate-700">
-                                <th class="py-2 px-3 font-medium">Time</th>
-                                <th class="py-2 px-3 font-medium">Location</th>
-                                <th class="py-2 px-3 font-medium">Device</th>
-                                <th class="py-2 px-3 font-medium">Referrer</th>
-                                <th class="py-2 px-3 font-medium text-center">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                            <template x-for="click in paginatedClicks" :key="click.id">
-                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30">
-                                    <td class="py-2 px-3 whitespace-nowrap" x-text="click.time"></td>
-                                    <td class="py-2 px-3" x-html="click.location"></td>
-                                    <td class="py-2 px-3" x-text="click.device"></td>
-                                    <td class="py-2 px-3 truncate max-w-[150px]" :title="click.referrer" x-text="click.referrer"></td>
-                                    <td class="py-2 px-3 text-center" x-html="click.proxy_badge"></td>
-                                </tr>
-                            </template>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="border-t border-slate-200 dark:border-slate-700 p-3 flex items-center justify-between">
-                    <div class="text-xs text-slate-500">
-                        Showing <span x-text="(currentPage - 1) * perPage + 1"></span> to <span x-text="Math.min(currentPage * perPage, filteredClicks.length)"></span> of <span x-text="filteredClicks.length"></span>
-                    </div>
-                    <div class="flex gap-1">
-                        <button @click="currentPage--" :disabled="currentPage === 1" class="px-3 py-1 text-xs rounded border border-slate-200 dark:border-slate-700 disabled:opacity-50">Prev</button>
-                        <button @click="currentPage++" :disabled="currentPage * perPage >= filteredClicks.length" class="px-3 py-1 text-xs rounded border border-slate-200 dark:border-slate-700 disabled:opacity-50">Next</button>
-                    </div>
-                </div>
-            </div>
-            <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <div class="flex items-center justify-between mb-3">
-                    <h3 class="text-sm font-semibold text-slate-900 dark:text-white">Notes</h3>
-                    <span class="text-xs text-slate-500">{{ $comments->count() }} notes</span>
-                </div>
-                @auth
-                    <form method="POST" action="{{ route('links.comments.store', $link) }}" class="mb-3">
-                        @csrf
-                        <textarea name="body" rows="2" class="w-full rounded-lg border-slate-200 text-sm dark:border-slate-700 dark:bg-slate-800" placeholder="Add note..." required></textarea>
-                        <button class="mt-2 rounded-lg bg-blue-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-blue-700">Add Note</button>
-                    </form>
-                @endauth
-                <div class="space-y-2 max-h-48 overflow-y-auto">
-                    @forelse ($comments as $comment)
-                        <div class="rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-700">
-                            <p class="text-xs text-slate-700 dark:text-slate-300">{{ $comment->body }}</p>
-                            <p class="text-xs text-slate-400 mt-1">{{ $comment->user->name ?? 'You' }} · {{ $comment->created_at->diffForHumans() }}</p>
-                        </div>
-                    @empty
-                        <p class="text-xs text-slate-400">No notes yet.</p>
-                    @endforelse
-                </div>
-            </div>
+            @if ($link->qr_code_path)
+                <img src="{{ Storage::disk('public')->url($link->qr_code_path) }}" alt="QR code" class="hidden h-20 w-20 shrink-0 rounded-xl bg-white p-1 sm:block">
+            @endif
+        </section>
+        <div class="stat">
+            <p class="stat-label">Total clicks</p>
+            <p class="stat-value">{{ number_format($link->clicks) }}</p>
+            <p class="text-xs text-muted">{{ number_format($totalClicks) }} in {{ $rangeInDays }} days</p>
         </div>
     </div>
+
+    <div class="grid gap-3 lg:grid-cols-3">
+        <section class="glass-card lg:col-span-2">
+            <h2 class="section-title">Daily clicks</h2>
+            <div class="relative mt-3 h-52"><canvas id="clickChart"></canvas></div>
+        </section>
+        <div class="grid gap-3">
+            <section class="glass-card">
+                <h2 class="section-title">Top locations</h2>
+                <x-analytics.rank-list class="mt-3" :limit="4" :items="$countries->map(fn ($c) => ['label' => country_name($c->country), 'value' => (int) $c->total, 'flag' => $c->country])" />
+            </section>
+            <section class="glass-card">
+                <h2 class="section-title">Devices</h2>
+                <x-analytics.rank-list class="mt-3" :limit="4" color="bg-sky-500/70" :items="collect($devices)->map(fn ($count, $device) => ['label' => $device, 'value' => (int) $count])->values()" />
+            </section>
+        </div>
+    </div>
+
+    <section class="glass overflow-hidden rounded-2xl" x-data="clickLog()">
+        <div class="flex flex-col gap-2 px-4 pb-2 pt-4 md:flex-row md:items-center">
+            <div class="flex-1">
+                <h2 class="section-title">Click log</h2>
+                <p class="text-xs text-muted">Latest {{ $recentClicks->count() }} clicks</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <input x-model="searchQuery" @input="filterClicks" type="search" placeholder="Country, device, referrer" aria-label="Search clicks" class="input !w-52 !py-1.5 text-xs">
+                <select aria-label="Filter by device" x-model="deviceFilter" @change="filterClicks" class="input !w-auto !py-1.5 text-xs">
+                    <option value="">All devices</option>
+                    <option value="Mobile">Mobile</option>
+                    <option value="Desktop">Desktop</option>
+                </select>
+                <select aria-label="Filter by connection type" x-model="proxyFilter" @change="filterClicks" class="input !w-auto !py-1.5 text-xs">
+                    <option value="">All traffic</option>
+                    <option value="clean">Clean IPs</option>
+                    <option value="proxy">Proxy / VPN</option>
+                </select>
+                <button type="button" @click="resetFilters" class="btn-ghost btn-sm">Reset</button>
+            </div>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="table-glass">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Location</th>
+                        <th class="hidden sm:table-cell">Device</th>
+                        <th class="hidden md:table-cell">Referrer</th>
+                        <th class="text-right">Traffic</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template x-for="click in paginatedClicks" :key="click.id">
+                        <tr>
+                            <td class="whitespace-nowrap text-xs text-ink" x-text="click.time"></td>
+                            <td class="text-xs text-ink [&_img]:inline [&_img]:rounded-sm" x-html="click.location"></td>
+                            <td class="hidden text-xs text-muted sm:table-cell" x-text="click.device"></td>
+                            <td class="hidden max-w-[12rem] truncate text-xs text-muted md:table-cell" :title="click.referrer" x-text="click.referrer"></td>
+                            <td class="text-right" x-html="click.proxy_badge"></td>
+                        </tr>
+                    </template>
+                    <tr x-show="filteredClicks.length === 0">
+                        <td colspan="5" class="py-8 text-center text-sm text-muted">No clicks match.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="flex items-center justify-between border-t border-slate-500/10 px-4 py-2.5" x-show="filteredClicks.length > perPage">
+            <p class="text-xs text-muted">
+                <span x-text="(currentPage - 1) * perPage + 1"></span>–<span x-text="Math.min(currentPage * perPage, filteredClicks.length)"></span> of <span x-text="filteredClicks.length"></span>
+            </p>
+            <div class="flex gap-1">
+                <button type="button" @click="currentPage--" :disabled="currentPage === 1" class="btn-ghost btn-sm disabled:opacity-40">Prev</button>
+                <button type="button" @click="currentPage++" :disabled="currentPage * perPage >= filteredClicks.length" class="btn-ghost btn-sm disabled:opacity-40">Next</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="glass-card space-y-3">
+        <div class="flex items-center justify-between">
+            <h2 class="section-title">Notes</h2>
+            <span class="text-xs text-muted">{{ $comments->count() }}</span>
+        </div>
+        @auth
+            <form method="POST" action="{{ route('links.comments.store', $link) }}" class="flex flex-col gap-2 sm:flex-row sm:items-start">
+                @csrf
+                <label for="note-body" class="sr-only">Note</label>
+                <textarea id="note-body" name="body" rows="1" class="input flex-1" placeholder="Add a note" required></textarea>
+                <button class="btn-primary btn-sm shrink-0">Add note</button>
+            </form>
+        @endauth
+        <ul class="max-h-56 space-y-1.5 overflow-y-auto">
+            @forelse ($comments as $comment)
+                <li class="glass-inset rounded-xl px-3 py-2">
+                    <p class="text-sm text-ink">{{ $comment->body }}</p>
+                    <p class="mt-0.5 text-[11px] text-muted">{{ $comment->user->name ?? 'You' }} · {{ $comment->created_at->diffForHumans() }}</p>
+                </li>
+            @empty
+                <li class="text-xs text-muted">No notes yet.</li>
+            @endforelse
+        </ul>
+    </section>
+
     @push('scripts')
         <script nonce="{{ Vite::cspNonce() }}">
             // Chart
@@ -150,8 +151,9 @@
                     labels: {!! json_encode(array_keys($dailyClicks)) !!},
                     datasets: [{
                         data: {!! json_encode(array_values($dailyClicks)) !!},
-                        borderColor: '#3b82f6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.12)',
+                        pointRadius: 0,
                         tension: 0.4,
                         fill: true,
                         borderWidth: 2,
@@ -172,7 +174,7 @@
                     allClicks: {!! json_encode($recentClicks->map(function($click) {
                         $ua = $click->user_agent ? app(\App\Services\UserAgentService::class)->parse($click->user_agent) : null;
                         $location = $click->country ? (country_flag($click->country) . ' ' . e(country_name($click->country))) : '-';
-                        $proxyBadge = $click->is_proxy ? '<span class="inline-flex px-2 py-0.5 rounded text-xs bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">⚠</span>' : '<span class="text-green-500">✓</span>';
+                        $proxyBadge = $click->is_proxy ? '<span class="chip-red">Proxy</span>' : '<span class="chip-green">Clean</span>';
                         return [
                             'id' => $click->id,
                             'time' => $click->clicked_at ? $click->clicked_at->format('M d H:i') : $click->created_at->format('M d H:i'),
