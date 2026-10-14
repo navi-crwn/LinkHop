@@ -996,16 +996,16 @@
                                         Rich Editor
                                     </button>
                                 </label>
-                                <textarea x-model="editingBlock.content" class="form-input form-textarea" rows="3" placeholder="Enter content..."></textarea>
+                                <textarea :value="editingBlock?.content ?? ''" @input="editingBlock && (editingBlock.content = $event.target.value)" class="form-input form-textarea" rows="3" placeholder="Enter content..."></textarea>
                             </div>
                         </template>
                         <template x-if="editingBlock?.type === 'image'">
                             <div class="space-y-4">
-                                <div class="form-group" x-show="editingBlock?.image_url">
+                                <div class="form-group" x-show="editingBlock?.content">
                                     <label class="form-label">Current Image</label>
                                     <div class="relative w-full h-40 rounded-lg overflow-hidden" style="background: var(--editor-input-bg);">
-                                        <img :src="editingBlock?.image_url" class="w-full h-full object-contain">
-                                        <button type="button" @click="editingBlock.image_url = ''" 
+                                        <img :src="editingBlock?.content" class="w-full h-full object-contain">
+                                        <button type="button" @click="editingBlock.content = ''; editingBlock.thumbnail_url = ''" 
                                                 class="absolute top-2 right-2 p-1.5 bg-red-600 hover:bg-red-700 rounded-full text-white">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -1017,7 +1017,7 @@
                                     <label class="form-label">Image Source</label>
                                     <div class="space-y-3">
                                         <div class="flex gap-2">
-                                            <input type="url" x-model="editingBlock.image_url" class="form-input flex-1" placeholder="https://example.com/image.jpg">
+                                            <input type="url" :value="editingBlock?.content ?? ''" @input="editingBlock && (editingBlock.content = editingBlock.thumbnail_url = $event.target.value)" class="form-input flex-1" placeholder="https://example.com/image.jpg">
                                         </div>
                                         <div class="text-center editor-text-muted text-sm">or</div>
                                         <label class="block p-4 border-2 border-dashed [border-color:var(--editor-border)] hover:border-indigo-500 rounded-lg cursor-pointer transition-colors text-center">
@@ -1083,11 +1083,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Code</label>
-                                    <textarea x-model="editingBlock.html_content" class="form-input form-textarea font-mono text-sm" rows="8" placeholder="// Your code here..." style="min-height: 150px;"></textarea>
+                                    <textarea :value="editingBlock?.html_content ?? ''" @input="editingBlock && (editingBlock.html_content = $event.target.value)" class="form-input form-textarea font-mono text-sm" rows="8" placeholder="// Your code here..." style="min-height: 150px;"></textarea>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Language</label>
-                                    <select x-model="editingBlock.content" class="form-input">
+                                    <select :value="editingBlock?.content ?? ''" @change="editingBlock && (editingBlock.content = $event.target.value)" class="form-input">
                                         <option value="javascript">JavaScript</option>
                                         <option value="python">Python</option>
                                         <option value="php">PHP</option>
@@ -1164,7 +1164,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">HTML Code</label>
-                                    <textarea x-model="editingBlock.html_content" class="form-input form-textarea font-mono text-sm" rows="8" placeholder="<div>Your HTML here...</div>" style="min-height: 150px;"></textarea>
+                                    <textarea :value="editingBlock?.html_content ?? ''" @input="editingBlock && (editingBlock.html_content = $event.target.value)" class="form-input form-textarea font-mono text-sm" rows="8" placeholder="<div>Your HTML here...</div>" style="min-height: 150px;"></textarea>
                                     <p class="text-xs editor-text-muted mt-1">⚠️ Be careful with custom HTML - ensure it's safe and valid</p>
                                 </div>
                             </div>
@@ -1643,7 +1643,8 @@ window.bioEditorV2 = function() {
             this.originalDataHash = this.getDataHash();
             // Listen for preview ready
             window.addEventListener('message', (event) => {
-                if (event.data.type === 'preview-ready') {
+                if (event.origin !== window.location.origin) return;
+                if (event.data?.type === 'preview-ready') {
                     this.previewReady = true;
                     this.sendPreviewUpdate();
                 }
@@ -1888,7 +1889,7 @@ window.bioEditorV2 = function() {
                     frame.contentWindow.postMessage({
                         type: 'preview-update',
                         data: previewData
-                    }, '*');
+                    }, window.location.origin);
                 } catch (e) {
                     console.warn('Preview update failed:', e);
                 }
@@ -2296,19 +2297,19 @@ window.bioEditorV2 = function() {
                 this.bioPage.button_bg_color = theme.link_bg;
                 this.bioPage.link_text_color = theme.link_text || theme.text;
                 this.bioPage.button_text_color = theme.link_text || theme.text;
-                // Reset all block custom colors when applying theme
-                this.bioPage.links.forEach(block => {
-                    if (block.type === 'link') {
-                        block.btn_bg_color = null;
-                        block.btn_text_color = null;
-                        block.btn_border_color = null;
-                    }
-                });
-                // Mark all blocks as dirty for save
-                this.bioPage.links.forEach(block => {
-                    this.markBlockDirty(block.id);
-                });
+                this.resetBlockColors();
             }
+        },
+        // Clear per-block button colours so the theme applies (live blocks, not the stale page copy).
+        resetBlockColors() {
+            this.blocks.forEach(block => {
+                if (block.type === 'link' && (block.btn_bg_color || block.btn_text_color || block.btn_border_color)) {
+                    block.btn_bg_color = null;
+                    block.btn_text_color = null;
+                    block.btn_border_color = null;
+                    this.markBlockDirty(block.id);
+                }
+            });
         },
         /**
          * Copy style from a theme to the Default theme (custom mode)
@@ -2332,17 +2333,7 @@ window.bioEditorV2 = function() {
                 // Also copy text colors for consistency
                 this.bioPage.title_color = theme.text;
                 this.bioPage.bio_color = theme.bio;
-                // Reset block custom colors to use the copied theme colors
-                this.bioPage.links.forEach(block => {
-                    if (block.type === 'link') {
-                        block.btn_bg_color = null;
-                        block.btn_text_color = null;
-                        block.btn_border_color = null;
-                    }
-                });
-                this.bioPage.links.forEach(block => {
-                    this.markBlockDirty(block.id);
-                });
+                this.resetBlockColors();
             }
             if (what === 'background' || what === 'all') {
                 // Copy background
@@ -2731,7 +2722,7 @@ window.bioEditorV2 = function() {
             this.showTextEditor = true;
             this.$nextTick(() => {
                 if (this.$refs.richTextEditor) {
-                    this.$refs.richTextEditor.innerHTML = this.textEditorBlock.content || '';
+                    this.$refs.richTextEditor.innerHTML = this.textEditorBlock?.content || '';
                 }
             });
         },
@@ -2757,6 +2748,7 @@ window.bioEditorV2 = function() {
                 if (this.editingBlock && this.editingBlock.id === this.textEditorBlock.id) {
                     this.editingBlock.content = this.textEditorBlock.content;
                 }
+                this.markBlockDirty(this.textEditorBlock.id);
             }
             this.showTextEditor = false;
             this.textEditorBlock = null;
@@ -2783,7 +2775,8 @@ window.bioEditorV2 = function() {
                 });
                 const data = await response.json();
                 if (data.image_url) {
-                    block.image_url = data.image_url.startsWith('http') || data.image_url.startsWith('/') ? data.image_url : '/storage/' + data.image_url;
+                    block.content = block.thumbnail_url = data.image_url.startsWith('http') || data.image_url.startsWith('/') ? data.image_url : '/storage/' + data.image_url;
+                    this.markBlockDirty(block.id);
                     this.showNotification('Image uploaded!', 'success');
                 } else {
                     throw new Error(data.message || 'Upload failed');
