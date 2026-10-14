@@ -202,3 +202,16 @@ test('urls listed in the local threat feeds are rejected and scanned', function 
     unlink("{$dir}/phishing.txt");
     unlink("{$dir}/malware.txt");
 });
+
+test('vcard values cannot break out of the inline handler', function () {
+    $user = User::factory()->create();
+    $page = bioPageFor($user, 'vcardpage');
+    blockOn($page, ['type' => 'vcard', 'url' => '', 'vcard_name' => "x');alert(document.domain);//"]);
+
+    $html = $this->get('/b/vcardpage')->assertOk()->getContent();
+
+    // The quote stays inside the JS string (\u0027) instead of closing it.
+    expect($html)->not->toContain("downloadVCard('x');alert")
+        ->not->toContain('downloadVCard(&#039;x&#039;);alert')
+        ->toContain('downloadVCard(\'x\u0027);alert');
+});
