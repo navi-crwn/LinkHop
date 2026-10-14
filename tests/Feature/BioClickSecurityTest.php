@@ -92,16 +92,56 @@ test('repeated clicks from one visitor count once and bots are not counted', fun
     expect($link->fresh()->click_count)->toBe(1);
 });
 
-test('click redirects send a restrained referrer policy and are throttled per ip', function () {
+test('click redirects send a restrained referrer policy and only floods get a 429', function () {
     $link = clickBlock(clickPage());
 
     $this->get("/b/click/{$link->public_id}")
         ->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
 
-    foreach (range(1, 59) as $i) {
-        $this->get("/b/click/{$link->public_id}");
+    foreach (range(1, 299) as $i) {
+        $this->get("/b/click/{$link->public_id}")->assertRedirect();
     }
-    $this->get("/b/click/{$link->public_id}")->assertStatus(429);
+    $this->get("/b/click/{$link->public_id}")
+        ->assertStatus(429)
+        ->assertHeader('Retry-After')
+        ->assertSee('Too many requests or attempts came from your connection')
+        ->assertSee('refresh this page or open it again')
+        ->assertDontSee('creating shortlinks');
+});
+
+test('people sharing one ip are counted separately by their visitor cookie', function () {
+    $link = clickBlock(clickPage());
+
+    $this->withCookie('hel_vid', str_repeat('a', 32))->get("/b/click/{$link->public_id}")->assertRedirect();
+    $this->withCookie('hel_vid', str_repeat('b', 32))->get("/b/click/{$link->public_id}")->assertRedirect();
+    $this->withCookie('hel_vid', str_repeat('b', 32))->get("/b/click/{$link->public_id}")->assertRedirect();
+
+    expect($link->fresh()->click_count)->toBe(2);
+});
+
+test('a first-time visitor gets a cookie and is not counted twice once it is set', function () {
+    $link = clickBlock(clickPage());
+
+    $first = $this->get("/b/click/{$link->public_id}")->assertCookie('hel_vid');
+    $visitorId = $first->getCookie('hel_vid')->getValue();
+
+    $this->withCookie('hel_vid', $visitorId)->get("/b/click/{$link->public_id}")
+        ->assertRedirect()
+        ->assertCookieMissing('hel_vid');
+
+    expect($link->fresh()->click_count)->toBe(1);
+});
+
+test('over the per-ip cap visitors still reach the destination but are not counted', function () {
+    $link = clickBlock(clickPage());
+
+    foreach (range(1, 25) as $i) {
+        $this->withCookie('hel_vid', str_pad((string) $i, 32, 'x'))
+            ->get("/b/click/{$link->public_id}")
+            ->assertRedirect('https://example.com/secret-destination');
+    }
+
+    expect($link->fresh()->click_count)->toBe(20);
 });
 
 test('unsafe destinations are never redirected to', function () {

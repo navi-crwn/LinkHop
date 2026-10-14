@@ -16,6 +16,10 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PublicBioController extends Controller
 {
+    private const VISITOR_COOKIE = 'hel_vid';
+
+    private const COUNTED_CLICKS_PER_IP = 20;
+
     public function show(Request $request, string $slug)
     {
         $bioPage = BioPage::with(['links' => function ($query) {
@@ -83,19 +87,43 @@ class PublicBioController extends Controller
         }
         $ipAddress = request()->ip();
         $ua = app(UserAgentService::class)->parse(request()->userAgent());
-        $clickData = [
-            'ip_address' => $ipAddress,
-            'device' => strtolower($ua['device']),
-            'browser' => $ua['browser'],
-            'referrer' => request()->header('referer'),
-            'country' => $this->getCountryFromIp($ipAddress),
-        ];
-        // One click per visitor per block per 10 minutes; bots never count.
-        if (! $ua['bot'] && Cache::add("bio_click:{$bioLink->id}:{$ipAddress}", true, now()->addMinutes(10))) {
-            $bioLink->recordClick($clickData);
+        $visitorId = $this->visitorId();
+        $newVisitorId = $visitorId === null && ! $ua['bot'] ? Str::random(32) : null;
+        // Visitors always reach the destination; limits only decide whether the click is counted.
+        // Dedup by visitor cookie (people sharing one IP still count separately), falling back to IP + User-Agent.
+        // At most 20 counted clicks per IP per block per 10 minutes, so clearing cookies cannot inflate counts.
+        $dedupKey = 'bio_click:'.$bioLink->id.':'.($visitorId ?? sha1($ipAddress.'|'.request()->userAgent()));
+        $ipKey = "bio_click_ip:{$bioLink->id}:{$ipAddress}";
+        if (! $ua['bot']
+            && ! RateLimiter::tooManyAttempts($ipKey, self::COUNTED_CLICKS_PER_IP)
+            && Cache::add($dedupKey, true, now()->addMinutes(10))) {
+            RateLimiter::hit($ipKey, 600);
+            $bioLink->recordClick([
+                'ip_address' => $ipAddress,
+                'device' => strtolower($ua['device']),
+                'browser' => $ua['browser'],
+                'referrer' => request()->header('referer'),
+                'country' => $this->getCountryFromIp($ipAddress),
+            ]);
+        }
+        $response = redirect()->away($target)->header('Referrer-Policy', 'strict-origin-when-cross-origin');
+        if ($newVisitorId !== null) {
+            // The click just made under IP + User-Agent also covers the new cookie, so it is not counted twice.
+            Cache::put("bio_click:{$bioLink->id}:{$newVisitorId}", true, now()->addMinutes(10));
+            $response->withCookie(cookie(self::VISITOR_COOKIE, $newVisitorId, 60 * 24 * 365, null, null, null, true, false, 'lax'));
         }
 
-        return redirect()->away($target)->header('Referrer-Policy', 'strict-origin-when-cross-origin');
+        return $response;
+    }
+
+    /**
+     * Anonymous random id used only to de-duplicate clicks; null when the visitor has none yet.
+     */
+    protected function visitorId(): ?string
+    {
+        $id = request()->cookie(self::VISITOR_COOKIE);
+
+        return is_string($id) && preg_match('/^[A-Za-z0-9]{32}$/', $id) ? $id : null;
     }
 
     public function qr(string $slug)
