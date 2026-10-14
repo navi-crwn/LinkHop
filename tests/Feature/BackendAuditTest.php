@@ -104,3 +104,47 @@ test('reordering and toggling blocks need a verified email like other edits', fu
     $this->actingAs($page->user)->postJson("/bio/{$page->slug}/links/reorder", ['links' => [['id' => $block->id, 'order' => 0]]])->assertForbidden();
     $this->actingAs($page->user)->postJson("/bio/{$page->slug}/links/{$block->id}/toggle")->assertForbidden();
 });
+
+test('design fields only accept colours, gradients and images, not arbitrary css', function () {
+    $page = backendPage();
+    $put = fn (array $data) => $this->actingAs($page->user)->putJson("/bio/{$page->slug}", $data);
+
+    $put(['title_color' => 'red;}body{display:none'])->assertUnprocessable()->assertJsonValidationErrors('title_color');
+    $put(['background_value' => "x') ; } * { background: url(https://evil.test/t.gif"])->assertUnprocessable();
+    $put(['font_family' => 'inter;color:red'])->assertUnprocessable();
+    $put(['btn_bg_color' => '#fff'])->assertOk(); // unknown on pages, ignored
+
+    $put([
+        'title_color' => '#112233',
+        'link_bg_color' => 'rgba(99, 102, 241, 0.2)',
+        'background_type' => 'gradient',
+        'background_value' => 'linear-gradient(135deg, #667eea 0%, rgba(118,75,162,0.8) 100%)',
+        'font_family' => 'plus-jakarta-sans',
+    ])->assertOk();
+    $put(['background_type' => 'image', 'background_value' => '/storage/bio-images/abc123.png'])->assertOk();
+    expect($page->fresh()->title_color)->toBe('#112233');
+});
+
+test('text longer than its database column is rejected instead of failing on save', function () {
+    $page = backendPage();
+    $this->actingAs($page->user)->putJson("/bio/{$page->slug}", ['title_color' => '#'.str_repeat('a', 30)])->assertUnprocessable();
+    $this->actingAs($page->user)->postJson("/bio/{$page->slug}/links", ['type' => 'link', 'title' => 'x', 'url' => 'https://example.com/'.str_repeat('a', 600)])
+        ->assertUnprocessable()->assertJsonValidationErrors('url');
+});
+
+test('the slug checker agrees with saving', function () {
+    $page = backendPage(['slug' => 'mypage']);
+    $check = fn (array $q) => $this->actingAs($page->user)->getJson('/bio/check-slug?'.http_build_query($q))->json('available');
+
+    expect($check(['slug' => 'freeslug1']))->toBeTrue()
+        ->and($check(['slug' => str_repeat('a', 21)]))->toBeFalse() // too long for save
+        ->and($check(['slug' => 'mypage']))->toBeFalse()
+        ->and($check(['slug' => 'mypage', 'current' => 'mypage']))->toBeTrue()
+        ->and($check(['slug' => 'MyPage', 'current' => 'mypage']))->toBeTrue();
+});
+
+test('socials are stored as a json array, not a json string', function () {
+    $page = backendPage();
+    $this->actingAs($page->user)->putJson("/bio/{$page->slug}", ['socials' => ['position' => 'top']])->assertOk();
+    expect($page->fresh()->socials)->toBe(['position' => 'top']);
+});
