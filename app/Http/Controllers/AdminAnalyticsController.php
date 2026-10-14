@@ -82,9 +82,20 @@ class AdminAnalyticsController extends Controller
                 'priority' => $detector['priority'] ?? 50,
             ];
         });
-        $recentClicks = LinkClick::with(['link.user'])
+        $recentClicks = LinkClick::with(['link:id,slug'])
             ->latest()
-            ->limit(20)
+            ->limit(12)
+            ->get();
+        $devices = LinkClick::selectRaw("
+                CASE
+                    WHEN user_agent LIKE '%Tablet%' OR user_agent LIKE '%iPad%' THEN 'Tablet'
+                    WHEN user_agent LIKE '%Mobile%' OR user_agent LIKE '%Android%' OR user_agent LIKE '%iPhone%' THEN 'Mobile'
+                    ELSE 'Desktop'
+                END as device_type,
+                COUNT(*) as total
+            ")
+            ->groupBy('device_type')
+            ->orderByDesc('total')
             ->get();
 
         return view('admin-analytics-global', compact(
@@ -105,6 +116,8 @@ class AdminAnalyticsController extends Controller
             'geoipProviders',
             'proxyDetectors',
             'recentClicks',
+            'devices',
+            'totalClicksCount',
             'period'
         ));
     }
