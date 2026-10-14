@@ -28,8 +28,8 @@
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 md:p-12">
                 <div class="text-center mb-8">
                     <a href="{{ url('/') }}" class="inline-flex items-center justify-center mb-6">
-                        <img x-show="theme === 'dark'" src="{{ asset('images/Logo.png') }}" alt="Logo" class="h-12">
-                        <img x-show="theme === 'light'" src="{{ asset('images/Logo-dark.png') }}" alt="Logo" class="h-12">
+                        <img x-show="theme === 'dark'" src="{{ route('brand.logo') }}" alt="Logo" class="h-12">
+                        <img x-show="theme === 'light'" src="{{ route('brand.logo.dark') }}" alt="Logo" class="h-12">
                     </a>
                     <div class="mb-6">
                         <svg class="w-16 h-16 mx-auto text-blue-500 dark:text-blue-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
