@@ -35,6 +35,9 @@ return [
     | Includes single/double characters and common system routes.
     |
     */
+    // Link-in-bio slugs (hel.ink/b/{slug}) for members; admin accounts may go down to 3.
+    'bio_slug_min_length' => (int) env('BIO_SLUG_MIN_LENGTH', 5),
+
     'reserved_slugs' => [
         // Single characters (reserved for future use)
         'a', 'b', 'i', 'x', 'v',

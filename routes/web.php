@@ -151,6 +151,7 @@ Route::middleware('ip.ban')->group(function () {
             Route::get('/analytics/global', [AdminAnalyticsController::class, 'global'])->name('analytics.global');
             Route::post('/users', [AdminUserController::class, 'storeAdmin'])->name('users.store');
             Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+            Route::get('/users/lookup', [AdminUserController::class, 'lookup'])->name('users.lookup');
             Route::get('/users/{user}/inspect', [AdminUserController::class, 'inspect'])->name('users.inspect');
             Route::patch('/users/{user}/status', [AdminUserController::class, 'updateStatus'])->name('users.status');
             Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
