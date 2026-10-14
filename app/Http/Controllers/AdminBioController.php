@@ -220,7 +220,7 @@ class AdminBioController extends Controller
     public function show(BioPage $bioPage)
     {
         $bioPage->load(['user', 'links', 'clicks' => function ($query) {
-            $query->latest()->limit(50);
+            $query->with('bioLink')->latest('bio_clicks.created_at')->limit(50);
         }]);
         $recentClicks = $bioPage->clicks;
 

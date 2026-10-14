@@ -7,9 +7,14 @@ use Illuminate\Http\Request;
 
 class AdminDomainBlacklistController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $domains = DomainBlacklist::orderBy('created_at', 'desc')->paginate(20);
+        $search = $request->string('q')->trim()->toString();
+        $domains = DomainBlacklist::query()
+            ->when($search !== '', fn ($q) => $q->where('domain', 'like', "%{$search}%"))
+            ->orderBy('created_at', 'desc')
+            ->paginate(20)
+            ->withQueryString();
         $categories = [
             'phishing' => 'Phishing',
             'porn' => 'Pornography',
@@ -22,7 +27,7 @@ class AdminDomainBlacklistController extends Controller
             'other' => 'Other',
         ];
 
-        return view('admin-domain-blacklist', compact('domains', 'categories'));
+        return view('admin-domain-blacklist', compact('domains', 'categories', 'search'));
     }
 
     public function store(Request $request)
