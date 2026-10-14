@@ -626,7 +626,7 @@
             </div>
         </div>
     </div>
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
     function apiSettings() {
         return {
             newTokenName: '',

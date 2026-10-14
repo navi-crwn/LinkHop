@@ -104,7 +104,7 @@
             </div>
         </div>
     </div>
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
         document.getElementById('testForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const ip = document.getElementById('testIp').value;

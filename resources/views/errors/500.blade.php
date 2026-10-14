@@ -6,8 +6,8 @@
     <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png" sizes="32x32">
     <link rel="apple-touch-icon" href="{{ route('brand.favicon') }}">
     <title>Something Went Wrong - {{ config('app.name') }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}" src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script nonce="{{ Vite::cspNonce() }}">
         tailwind.config = {
             darkMode: 'media'
         }

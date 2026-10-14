@@ -4,12 +4,15 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Vite;
 use Symfony\Component\HttpFoundation\Response;
 
 class ContentSecurityPolicyMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
+        // Per-request nonce: added to every <script> tag (Vite::cspNonce()) and @vite output.
+        $nonce = Vite::useCspNonce();
         $response = $next($request);
         // Allow framing for preview routes (both admin and regular bio preview)
         $isPreviewRoute = $request->routeIs('admin.bio.preview') || $request->routeIs('bio.preview');
@@ -28,6 +31,16 @@ class ContentSecurityPolicyMiddleware
             'upgrade-insecure-requests',
         ];
         $response->headers->set('Content-Security-Policy', implode('; ', $csp));
+        // Strict nonce-based policy in report-only mode: browsers report what it would
+        // block (inline on* handlers, injected scripts) to /csp-report without breaking
+        // pages. Switch to enforcing once the reports are clean.
+        $response->headers->set('Content-Security-Policy-Report-Only', implode('; ', [
+            "script-src 'nonce-{$nonce}' 'strict-dynamic' 'unsafe-eval' https: 'unsafe-inline'",
+            "script-src-attr 'none'",
+            "object-src 'none'",
+            "base-uri 'self'",
+            'report-uri '.route('csp.report', [], false),
+        ]));
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('X-Frame-Options', $isPreviewRoute ? 'SAMEORIGIN' : 'DENY');
         $response->headers->set('X-XSS-Protection', '1; mode=block');

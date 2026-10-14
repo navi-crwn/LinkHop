@@ -161,7 +161,7 @@
         </div>
     </div>
     @push('scripts')
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
         function proxyTester() {
             return {
                 testIp: '',

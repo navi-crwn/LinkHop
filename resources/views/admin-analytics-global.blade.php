@@ -425,7 +425,7 @@
         .leaflet-popup-content { margin: 0; width: 80px !important; }
         .leaflet-popup-tip { width: 10px; height: 10px; }
     </style>
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
         document.addEventListener('DOMContentLoaded', function() {
             const mapData = @json($mapData);
             const maxClicks = Math.max(...Object.values(mapData), 1);

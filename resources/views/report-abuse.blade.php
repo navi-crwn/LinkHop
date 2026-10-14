@@ -7,7 +7,7 @@
         <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png">
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=inter:400,500,600&display=swap" rel="stylesheet" />
-        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+        <script nonce="{{ Vite::cspNonce() }}" src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
         @vite(['resources/css/app.css'])
     </head>
     <body class="min-h-full bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 font-['Inter']">

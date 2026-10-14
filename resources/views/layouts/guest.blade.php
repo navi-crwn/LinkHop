@@ -7,7 +7,7 @@
         <title>{{ $title ?? config('app.name', 'HEL.ink') }}</title>
         <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png" sizes="32x32">
         <link rel="apple-touch-icon" href="{{ route('brand.favicon') }}">
-        <script>
+        <script nonce="{{ Vite::cspNonce() }}">
             (function () {
                 try {
                     var t = localStorage.getItem('helink-theme');

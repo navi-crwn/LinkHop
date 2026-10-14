@@ -155,7 +155,7 @@
         </div>
     </div>
     @push('scripts')
-        <script>
+        <script nonce="{{ Vite::cspNonce() }}">
             const adminCtx = document.getElementById('adminTrendChart').getContext('2d');
             new Chart(adminCtx, {
                 type: 'line',

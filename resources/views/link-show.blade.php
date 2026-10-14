@@ -144,7 +144,7 @@
         </div>
     </div>
     @push('scripts')
-        <script>
+        <script nonce="{{ Vite::cspNonce() }}">
             // Chart
             new Chart(document.getElementById('clickChart'), {
                 type: 'line',

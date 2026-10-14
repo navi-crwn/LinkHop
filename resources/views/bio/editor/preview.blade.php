@@ -1162,8 +1162,8 @@
             </div>
         </template>
     </div>
-    <script src="https://unpkg.com/alpinejs@3.15.2/dist/cdn.min.js" defer></script>
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}" src="https://unpkg.com/alpinejs@3.15.2/dist/cdn.min.js" defer></script>
+    <script nonce="{{ Vite::cspNonce() }}">
         // Brand colors from config
         const brandColors = @json(collect(config('brands.platforms', []))->mapWithKeys(fn($b, $k) => [$k => $b['color'] ?? '#000000']));
         function previewApp() {
@@ -1954,7 +1954,7 @@ END:VCARD`;
         }
     </script>
     <!-- Alpine Collapse Plugin for FAQ -->
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
         document.addEventListener('alpine:init', () => {
             Alpine.directive('collapse', (el, { expression }, { effect, evaluateLater }) => {
                 let show = evaluateLater(expression || 'true');

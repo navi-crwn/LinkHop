@@ -31,6 +31,8 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TwoFactorController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('ip.ban')->group(function () {
@@ -194,6 +196,14 @@ Route::middleware('ip.ban')->group(function () {
         Route::get('/click/{bioLink}', [PublicBioController::class, 'click'])->name('click');
     });
 });
+// CSP violation reports (report-only policy). Logged to storage/logs/csp-*.log.
+Route::post('/csp-report', function (Request $request) {
+    $report = json_decode($request->getContent(), true)['csp-report'] ?? [];
+    Log::build(['driver' => 'daily', 'path' => storage_path('logs/csp.log'), 'days' => 14])
+        ->warning('csp', array_intersect_key($report, array_flip(['document-uri', 'violated-directive', 'blocked-uri', 'source-file', 'line-number', 'script-sample'])));
+
+    return response()->noContent();
+})->middleware('throttle:60,1')->name('csp.report');
 require __DIR__.'/auth.php';
 Route::middleware('ip.ban')->match(['GET', 'POST'], '/{slug}', RedirectController::class)
     ->where('slug', '^(?!login$|logout$|register$|password.*|verify-email.*|email/.*|confirm-password.*|admin.*|dashboard$|settings$|links/|folders|tags|shorten$|about$|contact$|privacy$|terms$|plans$|help$|faq$|products$|feature-requests$|report-abuse$|b/).*[A-Za-z0-9-]+$');
