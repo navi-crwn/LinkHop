@@ -1,3 +1,189 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+|--------------------------------------------------------------------------
+| HEL.ink design system — glass UI
+|--------------------------------------------------------------------------
+| Translucent surfaces over a soft gradient backdrop, in light and dark.
+| Use the component classes below for new markup; the "skin" section at the
+| bottom converts legacy card markup inside the app shell automatically.
+*/
+
+@layer base {
+    :root {
+        --bg: 241 245 249;            /* slate-100 */
+        --glass: 255 255 255;
+        --glass-alpha: 0.62;
+        --glass-border: 255 255 255;
+        --glass-border-alpha: 0.7;
+        --ink: 15 23 42;              /* slate-900 */
+        --muted: 100 116 139;         /* slate-500 */
+        --accent: 99 102 241;         /* indigo-500 */
+        --accent-2: 139 92 246;       /* violet-500 */
+        --shadow: 15 23 42;
+    }
+    .dark {
+        --bg: 8 11 24;
+        --glass: 22 27 48;
+        --glass-alpha: 0.55;
+        --glass-border: 255 255 255;
+        --glass-border-alpha: 0.08;
+        --ink: 241 245 249;
+        --muted: 148 163 184;
+        --shadow: 0 0 0;
+    }
+
+    html { -webkit-tap-highlight-color: transparent; }
+    body { @apply font-sans antialiased; color: rgb(var(--ink)); }
+
+    /* Soft gradient backdrop that the glass surfaces blur. */
+    .app-bg {
+        background-color: rgb(var(--bg));
+        background-image:
+            radial-gradient(40rem 28rem at 8% -6%, rgb(129 140 248 / 0.28), transparent 60%),
+            radial-gradient(36rem 26rem at 100% 0%, rgb(56 189 248 / 0.20), transparent 60%),
+            radial-gradient(42rem 30rem at 85% 105%, rgb(236 72 153 / 0.14), transparent 60%);
+        background-attachment: fixed;
+    }
+    .dark .app-bg {
+        background-image:
+            radial-gradient(40rem 28rem at 8% -6%, rgb(99 102 241 / 0.25), transparent 60%),
+            radial-gradient(36rem 26rem at 100% 0%, rgb(14 165 233 / 0.14), transparent 60%),
+            radial-gradient(42rem 30rem at 85% 105%, rgb(168 85 247 / 0.16), transparent 60%);
+    }
+
+    ::selection { background: rgb(var(--accent) / 0.25); }
+    * { scrollbar-width: thin; scrollbar-color: rgb(var(--muted) / 0.35) transparent; }
+}
+
+@layer components {
+    /* Surfaces */
+    .glass {
+        background-color: rgb(var(--glass) / var(--glass-alpha));
+        border: 1px solid rgb(var(--glass-border) / var(--glass-border-alpha));
+        box-shadow: 0 1px 0 rgb(255 255 255 / 0.35) inset, 0 8px 32px -12px rgb(var(--shadow) / 0.18);
+        -webkit-backdrop-filter: blur(18px) saturate(160%);
+        backdrop-filter: blur(18px) saturate(160%);
+    }
+    .dark .glass { box-shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 8px 32px -12px rgb(0 0 0 / 0.6); }
+    .glass-card { @apply glass rounded-2xl p-4 sm:p-5; }
+    .glass-strong { @apply glass; background-color: rgb(var(--glass) / 0.85); }
+    .glass-inset {
+        background-color: rgb(var(--glass) / 0.45);
+        border: 1px solid rgb(var(--glass-border) / calc(var(--glass-border-alpha) * 0.8));
+        @apply rounded-xl;
+    }
+
+    /* Typography helpers */
+    .text-ink { color: rgb(var(--ink)); }
+    .text-muted { color: rgb(var(--muted)); }
+    .eyebrow { @apply text-[11px] font-semibold uppercase tracking-[0.14em]; color: rgb(var(--muted)); }
+    .page-title { @apply text-xl font-semibold tracking-tight sm:text-2xl; color: rgb(var(--ink)); }
+    .section-title { @apply text-sm font-semibold; color: rgb(var(--ink)); }
+
+    /* Buttons */
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold
+               transition duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60
+               disabled:cursor-not-allowed disabled:opacity-50;
+    }
+    .btn-sm { @apply rounded-lg px-3 py-1.5 text-xs; }
+    .btn-primary {
+        @apply btn text-white;
+        background-image: linear-gradient(135deg, rgb(var(--accent)), rgb(var(--accent-2)));
+        box-shadow: 0 6px 20px -6px rgb(var(--accent) / 0.6);
+    }
+    .btn-primary:hover { filter: brightness(1.08); }
+    .btn-ghost { @apply btn hover:bg-slate-900/5 dark:hover:bg-white/10; color: rgb(var(--ink)); }
+    .btn-soft { @apply btn glass; color: rgb(var(--ink)); }
+    .btn-soft:hover { background-color: rgb(var(--glass) / 0.9); }
+    .btn-danger { @apply btn bg-rose-500/90 text-white hover:bg-rose-500; }
+    .icon-btn {
+        @apply inline-flex h-9 w-9 items-center justify-center rounded-xl transition hover:bg-slate-900/5 dark:hover:bg-white/10;
+        color: rgb(var(--muted));
+    }
+    .icon-btn:hover { color: rgb(var(--ink)); }
+
+    /* Form controls */
+    .input {
+        @apply block w-full rounded-xl border px-3.5 py-2.5 text-sm shadow-none outline-none transition
+               placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-400/40;
+        color: rgb(var(--ink));
+        background-color: rgb(var(--glass) / 0.6);
+        border-color: rgb(var(--muted) / 0.25);
+    }
+    .input:focus { border-color: rgb(var(--accent) / 0.6); }
+    .label { @apply mb-1.5 block text-xs font-medium; color: rgb(var(--muted)); }
+
+    /* Chips / badges */
+    .chip { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold; }
+    .chip-green { @apply chip bg-emerald-500/15 text-emerald-700 dark:text-emerald-300; }
+    .chip-gray { @apply chip bg-slate-500/15 text-slate-600 dark:text-slate-300; }
+    .chip-red { @apply chip bg-rose-500/15 text-rose-700 dark:text-rose-300; }
+    .chip-blue { @apply chip bg-indigo-500/15 text-indigo-700 dark:text-indigo-300; }
+    .chip-amber { @apply chip bg-amber-500/15 text-amber-700 dark:text-amber-300; }
+
+    /* Navigation */
+    .nav-item {
+        @apply flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition;
+        color: rgb(var(--muted));
+    }
+    .nav-item:hover { color: rgb(var(--ink)); background-color: rgb(var(--glass) / 0.6); }
+    .nav-item-active {
+        color: rgb(var(--ink));
+        background-color: rgb(var(--glass) / 0.9);
+        box-shadow: 0 4px 14px -8px rgb(var(--shadow) / 0.35), inset 0 0 0 1px rgb(var(--glass-border) / var(--glass-border-alpha));
+    }
+    .nav-item-active svg { color: rgb(var(--accent)); }
+    .nav-sub { @apply block rounded-lg px-3 py-1.5 text-[13px] transition; color: rgb(var(--muted)); }
+    .nav-sub:hover, .nav-sub-active { color: rgb(var(--ink)); }
+    .nav-sub-active { @apply font-semibold; }
+
+    /* Compact metric tiles */
+    .stat { @apply glass rounded-2xl px-4 py-3; }
+    .stat-label { @apply text-[11px] font-medium uppercase tracking-wider; color: rgb(var(--muted)); }
+    .stat-value { @apply mt-0.5 text-xl font-semibold tabular-nums tracking-tight sm:text-2xl; color: rgb(var(--ink)); }
+
+    /* Lists & tables */
+    .list-row { @apply flex items-center gap-3 px-4 py-3 transition; }
+    .list-row:hover { background-color: rgb(var(--glass) / 0.5); }
+    .divide-glass > * + * { border-top: 1px solid rgb(var(--muted) / 0.14); }
+    .table-glass { @apply min-w-full text-sm; }
+    .table-glass thead th { @apply px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider; color: rgb(var(--muted)); }
+    .table-glass tbody tr { border-top: 1px solid rgb(var(--muted) / 0.14); }
+    .table-glass tbody td { @apply px-4 py-3; }
+    .table-glass tbody tr:hover { background-color: rgb(var(--glass) / 0.45); }
+
+    .progress { @apply h-1.5 overflow-hidden rounded-full bg-slate-900/10 dark:bg-white/10; }
+    .progress > span { @apply block h-full rounded-full; }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Legacy skin
+|--------------------------------------------------------------------------
+| Older pages build cards from utilities (bg-white + rounded-* + border).
+| Inside the app shell, render those as glass so every page matches without
+| rewriting each one. New markup should use .glass / .glass-card directly.
+*/
+.app-shell :is(.rounded-xl, .rounded-2xl, .rounded-3xl):is(.bg-white, .bg-slate-50, .bg-gray-50):not(.no-skin, input, select, textarea, button) {
+    background-color: rgb(var(--glass) / var(--glass-alpha)) !important;
+    border-color: rgb(var(--glass-border) / var(--glass-border-alpha)) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    backdrop-filter: blur(16px) saturate(150%);
+}
+.dark .app-shell :is(.rounded-xl, .rounded-2xl, .rounded-3xl):is(.dark\:bg-slate-900, .dark\:bg-gray-900, .dark\:bg-slate-800, .dark\:bg-gray-800, .dark\:bg-slate-900\/50, .dark\:bg-slate-800\/50):not(.no-skin, input, select, textarea, button) {
+    background-color: rgb(var(--glass) / var(--glass-alpha)) !important;
+    border-color: rgb(var(--glass-border) / var(--glass-border-alpha)) !important;
+}
+.app-shell :is(input[type=text], input[type=email], input[type=url], input[type=password], input[type=search], input[type=number], input[type=date], input[type=datetime-local], select, textarea):not(.no-skin):is(.bg-white, .dark\:bg-slate-800, .dark\:bg-gray-800, .dark\:bg-slate-900) {
+    background-color: rgb(var(--glass) / 0.6) !important;
+}
+
+[x-cloak] { display: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

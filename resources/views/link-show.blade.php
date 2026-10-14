@@ -144,7 +144,6 @@
         </div>
     </div>
     @push('scripts')
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             // Chart
             new Chart(document.getElementById('clickChart'), {

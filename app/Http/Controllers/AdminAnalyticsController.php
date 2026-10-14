@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Link;
 use App\Models\LinkClick;
 use App\Models\User;
+use App\Services\GeoIpService;
+use App\Services\ProxyDetectionService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -56,7 +58,7 @@ class AdminAnalyticsController extends Controller
             ->selectRaw('proxy_type, COUNT(*) as total')
             ->groupBy('proxy_type')
             ->pluck('total', 'proxy_type');
-        $geoipService = app(\App\Services\GeoIpService::class);
+        $geoipService = app(GeoIpService::class);
         $geoipProviders = collect($geoipService->getProviders())->map(function ($provider, $name) {
             return [
                 'name' => $name,
@@ -64,7 +66,7 @@ class AdminAnalyticsController extends Controller
                 'priority' => $provider['priority'] ?? 50,
             ];
         });
-        $proxyService = app(\App\Services\ProxyDetectionService::class);
+        $proxyService = app(ProxyDetectionService::class);
         $proxyDetectors = collect($proxyService->getDetectors())->map(function ($detector, $name) {
             return [
                 'name' => $name,
@@ -121,17 +123,17 @@ class AdminAnalyticsController extends Controller
                 $periods = 30;
                 break;
         }
-        $clicks = LinkClick::selectRaw('DATE_FORMAT(created_at, ?) as period, COUNT(*) as count', [$dateFormat])
+        $clicks = LinkClick::selectRaw(sql_date_format('created_at', $dateFormat).' as period, COUNT(*) as count')
             ->where('created_at', '>=', $startDate)
             ->groupBy('period')
             ->orderBy('period')
             ->pluck('count', 'period');
-        $links = Link::selectRaw('DATE_FORMAT(created_at, ?) as period, COUNT(*) as count', [$dateFormat])
+        $links = Link::selectRaw(sql_date_format('created_at', $dateFormat).' as period, COUNT(*) as count')
             ->where('created_at', '>=', $startDate)
             ->groupBy('period')
             ->orderBy('period')
             ->pluck('count', 'period');
-        $users = User::selectRaw('DATE_FORMAT(created_at, ?) as period, COUNT(*) as count', [$dateFormat])
+        $users = User::selectRaw(sql_date_format('created_at', $dateFormat).' as period, COUNT(*) as count')
             ->where('created_at', '>=', $startDate)
             ->groupBy('period')
             ->orderBy('period')

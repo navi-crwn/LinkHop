@@ -155,7 +155,6 @@
         </div>
     </div>
     @push('scripts')
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             const adminCtx = document.getElementById('adminTrendChart').getContext('2d');
             new Chart(adminCtx, {

@@ -1,162 +1,128 @@
 <x-app-layout>
     <x-slot name="pageTitle">HEL.ink - My Links</x-slot>
-    <div class="mb-6">
-        <h1 class="text-3xl font-bold text-slate-900 dark:text-white">My Links</h1>
-        <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Manage all your short links</p>
-    </div>
-    <div class="py-10" x-data="linksManager()">
-        <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-            @if (session('status'))
-                <div class="rounded-2xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-emerald-900 dark:border-emerald-900/30 dark:bg-emerald-900/20 dark:text-emerald-200">
-                    {{ session('status') }}
+    <div x-data="linksManager()" class="space-y-4">
+        <x-page-header title="My links" subtitle="{{ number_format($links->total()) }} short links" />
+
+        @if (session('status'))
+            <div class="glass rounded-2xl px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">{{ session('status') }}</div>
+        @endif
+        @if (session('shortlink'))
+            @php $newLink = session('shortlink'); @endphp
+            <div class="glass-card flex flex-col gap-3 sm:flex-row sm:items-center" x-data="{ copied: false }">
+                <div class="min-w-0 flex-1">
+                    <p class="eyebrow">Link created</p>
+                    <a href="{{ $newLink->short_url }}" target="_blank" class="block truncate font-mono text-base font-semibold text-indigo-600 dark:text-indigo-300">{{ $newLink->short_url }}</a>
                 </div>
-            @endif
-            @if (session('shortlink'))
-                @php
-                    $newLink = session('shortlink');
-                @endphp
-                <div class="rounded-2xl border border-blue-300 bg-blue-50 p-6 dark:border-blue-900/30 dark:bg-blue-900/20">
-                    <div class="flex items-start gap-4">
-                        <div class="rounded-full bg-blue-600 p-3 text-white">
-                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-100">Link created successfully! 🎉</h3>
-                            <p class="mt-1 text-sm text-blue-800 dark:text-blue-200">Your new shortlink is ready to use:</p>
-                            <div class="mt-3 flex items-center gap-3 rounded-xl bg-white p-4 dark:bg-slate-900">
-                                <a href="{{ $newLink->short_url }}" target="_blank" class="flex-1 font-mono text-lg font-semibold text-blue-600 hover:underline dark:text-blue-400">
-                                    {{ $newLink->short_url }}
-                                </a>
-                                <button onclick="navigator.clipboard.writeText('{{ $newLink->short_url }}'); this.innerHTML='✓ Copied!'; setTimeout(() => this.innerHTML='Copy', 2000)" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">
-                                    Copy
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endif
-            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white">All Links</h3>
-                    <button type="button" onclick="window.openLinkPanel && window.openLinkPanel()" class="create-link-trigger rounded-full bg-blue-600 px-5 md:px-8 py-2 text-sm md:text-base font-semibold text-white shadow-lg shadow-blue-500/30 hover:bg-blue-500 transition-all">
-                        <span class="hidden md:inline">+ Create Link</span>
-                        <span class="md:hidden">+</span>
-                    </button>
-                </div>
-                <form method="GET" class="mt-4 flex flex-wrap gap-3">
-                    <input type="text" name="q" value="{{ $filters['q'] }}" placeholder="Search shortlinks..." class="flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-                    <select name="folder" class="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 pr-12 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-                        <option value="">All folders</option>
-                        @foreach ($folders as $folder)
-                            <option value="{{ $folder->id }}" @selected($filters['folder'] == $folder->id)>{{ $folder->name }}</option>
-                        @endforeach
-                    </select>
-                    <select name="tag" class="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 pr-12 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-                        <option value="">All tags</option>
-                        @foreach ($tags as $tag)
-                            <option value="{{ $tag->id }}" @selected($filters['tag'] == $tag->id)>{{ $tag->name }}</option>
-                        @endforeach
-                    </select>
-                    <select name="sort" class="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 pr-12 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-                        <option value="created_desc" @selected($filters['sort'] == 'created_desc')>Newest first</option>
-                        <option value="created_asc" @selected($filters['sort'] == 'created_asc')>Oldest first</option>
-                        <option value="clicks_desc" @selected($filters['sort'] == 'clicks_desc')>Most clicks</option>
-                        <option value="clicks_asc" @selected($filters['sort'] == 'clicks_asc')>Least clicks</option>
-                        <option value="slug_asc" @selected($filters['sort'] == 'slug_asc')>A-Z</option>
-                        <option value="slug_desc" @selected($filters['sort'] == 'slug_desc')>Z-A</option>
-                    </select>
-                    <button class="rounded-full bg-slate-100 px-4 py-2 text-sm text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200">Apply</button>
-                </form>
-                <div class="mt-4 overflow-x-auto">
-                    <!-- Bulk Actions Bar -->
-                    <div x-show="selectedLinks.length > 0" x-cloak class="mb-4 flex items-center gap-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 p-3 border border-blue-200 dark:border-blue-800">
-                        <span class="text-sm font-medium text-blue-700 dark:text-blue-300" x-text="selectedLinks.length + ' selected'"></span>
-                        <button @click="bulkDelete()" class="rounded-full bg-rose-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-rose-500">Delete Selected</button>
-                        <button @click="selectedLinks = []; selectAll = false" class="text-xs text-slate-600 dark:text-slate-400 hover:underline">Clear</button>
-                    </div>
-                    <table class="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
-                        <thead class="text-left text-slate-500 dark:text-slate-300">
-                            <tr>
-                                <th class="py-3 pr-2 w-10">
-                                    <input type="checkbox" x-model="selectAll" @change="toggleSelectAll()" class="rounded border-slate-300 dark:border-slate-600">
-                                </th>
-                                <th class="py-3">Shortlink</th>
-                                <th class="py-3">Destination</th>
-                                <th class="py-3">Clicks</th>
-                                <th class="py-3">Created</th>
-                                <th class="py-3">Status</th>
-                                <th class="py-3 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                            @forelse ($links as $link)
-                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/40" x-show="!deletedLinks.includes({{ $link->id }})">
-                                    <td class="py-3 pr-2">
-                                        <input type="checkbox" value="{{ $link->id }}" x-model="selectedLinks" class="rounded border-slate-300 dark:border-slate-600">
-                                    </td>
-                                    <td class="py-3">
-                                        <div class="font-semibold text-blue-600 dark:text-blue-400">{{ $link->short_url }}</div>
-                                        <div class="text-xs text-slate-500 dark:text-slate-400">
-                                            {{ $link->folder->name ?? 'No folder' }}
-                                            @if ($link->tags->count())
-                                                <span class="mx-1">•</span>
-                                                @foreach ($link->tags as $tag)
-                                                    <span class="inline-block rounded-full bg-slate-100 px-2 py-0.5 dark:bg-slate-800">{{ $tag->name }}</span>
-                                                @endforeach
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td class="py-3 max-w-md">
-                                        <div class="truncate text-slate-600 dark:text-slate-300">{{ $link->target_url }}</div>
-                                        @if ($link->title)
-                                            <div class="text-xs text-slate-500 dark:text-slate-400 truncate">{{ $link->title }}</div>
-                                        @endif
-                                    </td>
-                                    <td class="py-3 font-semibold">{{ number_format($link->clicks) }}</td>
-                                    <td class="py-3 text-slate-500 dark:text-slate-400">
-                                        <div class="text-xs">{{ $link->created_at->format('M d, Y') }}</div>
-                                        <div class="text-xs">{{ $link->created_at->format('H:i') }}</div>
-                                    </td>
-                                    <td class="py-3 space-y-1">
-                                        <span class="rounded-full px-3 py-1 text-xs font-semibold {{ $link->status === 'active' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400' : 'bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300' }}">{{ ucfirst($link->status) }}</span>
-                                        @if ($link->isExpired())
-                                            <span class="block rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700 dark:bg-rose-900/20 dark:text-rose-400">Expired</span>
-                                        @endif
-                                        @if ($link->requiresPassword())
-                                            <span class="block rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-400">🔒</span>
-                                        @endif
-                                    </td>
-                                    <td class="py-3 text-right">
-                                        <div class="flex items-center justify-end gap-2 text-xs">
-                                            <a href="{{ route('links.show', $link) }}" class="rounded-full border border-slate-200 px-3 py-1 text-slate-500 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">Analytics</a>
-                                            <a href="{{ route('links.edit', $link) }}" class="rounded-full border border-slate-200 px-3 py-1 text-slate-500 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">Edit</a>
-                                            <button @click="deleteLink({{ $link->id }})" class="rounded-full border border-rose-200 px-3 py-1 text-rose-600 hover:bg-rose-50 dark:border-rose-900/30 dark:text-rose-200 dark:hover:bg-rose-900/20">Delete</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="py-12 text-center">
-                                        <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                                        </svg>
-                                        <p class="mt-2 text-slate-500 dark:text-slate-400">No links available yet.</p>
-                                        <button type="button" onclick="window.openLinkPanel && window.openLinkPanel()" class="mt-4 rounded-full bg-blue-600 px-6 py-2 text-sm font-semibold text-white hover:bg-blue-500">
-                                            Create your first link
-                                        </button>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-4">
-                    {{ $links->links() }}
-                </div>
+                <button type="button" class="btn-primary btn-sm" @click="navigator.clipboard.writeText(@js($newLink->short_url)); copied = true; setTimeout(() => copied = false, 2000)">
+                    <span x-text="copied ? 'Copied' : 'Copy'">Copy</span>
+                </button>
             </div>
+        @endif
+
+        {{-- Filters --}}
+        <form method="GET" class="glass flex flex-col gap-2 rounded-2xl p-2 sm:flex-row sm:items-center" x-data="{ more: {{ ($filters['folder'] || $filters['tag'] || $filters['sort'] !== 'created_desc') ? 'true' : 'false' }} }">
+            <div class="relative flex-1">
+                <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="m20 20-3.5-3.5"/></svg>
+                <input type="search" name="q" value="{{ $filters['q'] }}" placeholder="Search links…" class="input !border-transparent !bg-transparent pl-9">
+            </div>
+            <div class="flex flex-wrap gap-2 sm:flex-nowrap" :class="more ? '' : 'hidden sm:flex'">
+                <select name="folder" class="input sm:w-36">
+                    <option value="">All folders</option>
+                    @foreach ($folders as $folder)
+                        <option value="{{ $folder->id }}" @selected($filters['folder'] == $folder->id)>{{ $folder->name }}</option>
+                    @endforeach
+                </select>
+                <select name="tag" class="input sm:w-32">
+                    <option value="">All tags</option>
+                    @foreach ($tags as $tag)
+                        <option value="{{ $tag->id }}" @selected($filters['tag'] == $tag->id)>{{ $tag->name }}</option>
+                    @endforeach
+                </select>
+                <select name="sort" class="input sm:w-36">
+                    <option value="created_desc" @selected($filters['sort'] == 'created_desc')>Newest</option>
+                    <option value="created_asc" @selected($filters['sort'] == 'created_asc')>Oldest</option>
+                    <option value="clicks_desc" @selected($filters['sort'] == 'clicks_desc')>Most clicks</option>
+                    <option value="clicks_asc" @selected($filters['sort'] == 'clicks_asc')>Least clicks</option>
+                    <option value="slug_asc" @selected($filters['sort'] == 'slug_asc')>A–Z</option>
+                    <option value="slug_desc" @selected($filters['sort'] == 'slug_desc')>Z–A</option>
+                </select>
+            </div>
+            <div class="flex gap-2">
+                <button type="button" class="btn-ghost btn-sm sm:hidden" @click="more = !more">Filters</button>
+                <button class="btn-soft btn-sm flex-1 sm:flex-none">Apply</button>
+            </div>
+        </form>
+
+        {{-- Bulk actions --}}
+        <div x-show="selectedLinks.length > 0" x-cloak x-transition class="glass sticky top-20 z-20 flex items-center gap-3 rounded-2xl px-4 py-2.5">
+            <span class="text-sm font-medium text-ink" x-text="selectedLinks.length + ' selected'"></span>
+            <button @click="bulkDelete()" class="btn-danger btn-sm ml-auto">Delete</button>
+            <button @click="selectedLinks = []; selectAll = false" class="btn-ghost btn-sm">Clear</button>
         </div>
+
+        <section class="glass overflow-hidden rounded-2xl">
+            @if ($links->count())
+                <div class="hidden items-center gap-3 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted md:flex">
+                    <input type="checkbox" x-model="selectAll" @change="toggleSelectAll()" class="rounded border-slate-400/50 bg-transparent text-indigo-500">
+                    <span class="flex-1">Link</span>
+                    <span class="w-20 text-right">Clicks</span>
+                    <span class="w-24 text-right">Created</span>
+                    <span class="w-28"></span>
+                </div>
+            @endif
+            <div class="divide-glass">
+                @forelse ($links as $link)
+                    <div class="list-row flex-wrap md:flex-nowrap" x-show="!deletedLinks.includes({{ $link->id }})">
+                        <input type="checkbox" value="{{ $link->id }}" x-model="selectedLinks" class="rounded border-slate-400/50 bg-transparent text-indigo-500">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex flex-wrap items-center gap-1.5">
+                                <a href="{{ route('links.show', $link) }}" class="truncate text-sm font-semibold text-ink hover:text-indigo-600 dark:hover:text-indigo-300">/{{ $link->slug }}</a>
+                                @if ($link->isExpired())
+                                    <span class="chip-red">Expired</span>
+                                @elseif ($link->status !== 'active')
+                                    <span class="chip-gray">{{ ucfirst($link->status) }}</span>
+                                @endif
+                                @if ($link->requiresPassword())
+                                    <span class="chip-blue" title="Password protected">🔒</span>
+                                @endif
+                                @foreach ($link->tags as $tag)
+                                    <span class="chip-gray">{{ $tag->name }}</span>
+                                @endforeach
+                            </div>
+                            <p class="truncate text-xs text-muted">{{ $link->target_url }}</p>
+                            @if ($link->folder)
+                                <p class="mt-0.5 text-[11px] text-muted">📁 {{ $link->folder->name }}</p>
+                            @endif
+                        </div>
+                        <div class="w-20 text-right">
+                            <p class="text-sm font-semibold tabular-nums text-ink">{{ number_format($link->clicks) }}</p>
+                            <p class="text-[11px] text-muted md:hidden">clicks</p>
+                        </div>
+                        <p class="hidden w-24 text-right text-xs text-muted md:block" title="{{ $link->created_at }}">{{ $link->created_at->format('M d, Y') }}</p>
+                        <div class="flex w-full justify-end md:w-28">
+                            <button type="button" class="icon-btn" title="Copy" x-data @click="navigator.clipboard.writeText(@js($link->short_url)); $el.classList.add('!text-emerald-500'); setTimeout(() => $el.classList.remove('!text-emerald-500'), 1200)">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+                            </button>
+                            <a href="{{ route('links.show', $link) }}" class="icon-btn" title="Analytics">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 20V10m6 10V4m6 16v-7"/></svg>
+                            </a>
+                            <a href="{{ route('links.edit', $link) }}" class="icon-btn" title="Edit">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m15 5 4 4L8 20H4v-4L15 5Z"/></svg>
+                            </a>
+                            <button @click="deleteLink({{ $link->id }})" class="icon-btn hover:!text-rose-500" title="Delete">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                @empty
+                    <div class="px-4 py-14 text-center">
+                        <p class="text-sm text-muted">{{ $filters['q'] ? 'No links match your search.' : 'No links yet.' }}</p>
+                        <button type="button" onclick="window.openLinkPanel && window.openLinkPanel()" class="btn-primary btn-sm mt-3">Create a link</button>
+                    </div>
+                @endforelse
+            </div>
+        </section>
+        <div>{{ $links->links() }}</div>
     </div>
     <script>
         function linksManager() {
