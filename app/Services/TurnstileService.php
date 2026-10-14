@@ -19,10 +19,6 @@ class TurnstileService
             'response' => $token,
             'remoteip' => $ip,
         ]);
-        \Log::info('Turnstile API response', [
-            'status' => $response->status(),
-            'body' => $response->json(),
-        ]);
         if (! $response->ok()) {
             return false;
         }
