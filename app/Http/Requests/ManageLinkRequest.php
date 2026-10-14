@@ -30,7 +30,8 @@ class ManageLinkRequest extends FormRequest
             ],
             'status' => ['required', Rule::in([Link::STATUS_ACTIVE, Link::STATUS_INACTIVE])],
             'password' => ['nullable', 'string', 'min:6'],
-            'expires_at' => ['nullable', 'date', 'after:now'],
+            // Editing must not fail just because a link already expired.
+            'expires_at' => $linkId ? ['nullable', 'date'] : ['nullable', 'date', 'after:now'],
             'redirect_type' => ['nullable', Rule::in(['301', '302', '307'])],
             'custom_title' => ['nullable', 'string', 'max:255'],
             'custom_description' => ['nullable', 'string', 'max:1000'],

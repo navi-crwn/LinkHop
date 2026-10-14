@@ -162,3 +162,27 @@ test('admin can review and restore automated findings', function () {
     expect($link->fresh()->status)->toBe('active')
         ->and($flag->fresh()->status)->toBe('dismissed');
 });
+
+test('link password attempts are rate limited', function () {
+    $user = User::factory()->create();
+    Link::create(['user_id' => $user->id, 'slug' => 'locked1', 'target_url' => 'https://example.com', 'status' => 'active', 'password_hash' => bcrypt('right-pass')]);
+
+    foreach (range(1, 10) as $i) {
+        $this->post('/locked1', ['password' => 'wrong'.$i])->assertSessionHasErrors('password');
+    }
+    $this->post('/locked1', ['password' => 'right-pass'])->assertSessionHasErrors('password');
+});
+
+test('an expired link can still be edited', function () {
+    $user = User::factory()->create();
+    $link = Link::create(['user_id' => $user->id, 'slug' => 'oldone', 'target_url' => 'https://example.com', 'status' => 'active']);
+    $link->forceFill(['expires_at' => now()->subDay()])->save();
+
+    $this->actingAs($user)->put("/links/{$link->id}", [
+        'target_url' => 'https://example.com/new',
+        'slug' => 'oldone',
+        'status' => 'active',
+        'expires_at' => now()->subDay()->format('Y-m-d\TH:i'),
+    ])->assertSessionHasNoErrors();
+    expect($link->fresh()->target_url)->toBe('https://example.com/new');
+});

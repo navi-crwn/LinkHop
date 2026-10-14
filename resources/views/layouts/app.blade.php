@@ -64,7 +64,7 @@
                         </nav>
                         <div class="border-t border-slate-500/10 p-3">
                             <div class="flex items-center gap-3 rounded-2xl px-2 py-1.5">
-                                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 text-sm font-semibold text-white">
+                                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-sm font-semibold text-white dark:bg-white dark:text-slate-900">
                                     {{ strtoupper(mb_substr($user->name ?? 'U', 0, 1)) }}
                                 </div>
                                 <div class="min-w-0 flex-1">

@@ -4,10 +4,11 @@
 @push('styles')
 <style>
     :root {
-        --editor-bg: #f8fafc;
-        --editor-panel-bg: #ffffff;
-        --editor-border: #e2e8f0;
-        --editor-card-bg: #f1f5f9;
+        /* Glass surfaces from the app design tokens (resources/css/app.css) */
+        --editor-bg: transparent;
+        --editor-panel-bg: rgb(var(--glass) / var(--glass-alpha));
+        --editor-border: rgb(var(--muted) / 0.2);
+        --editor-card-bg: rgb(var(--glass) / 0.55);
         --editor-text: #1e293b;
         --editor-text-muted: #64748b;
         --editor-input-bg: #ffffff;
@@ -15,10 +16,10 @@
         --editor-hover-bg: #f1f5f9;
     }
     .dark {
-        --editor-bg: #0f172a;
-        --editor-panel-bg: #0f172a;
-        --editor-border: #334155;
-        --editor-card-bg: #1e293b;
+        --editor-bg: transparent;
+        --editor-panel-bg: rgb(var(--glass) / var(--glass-alpha));
+        --editor-border: rgb(255 255 255 / 0.08);
+        --editor-card-bg: rgb(var(--glass) / 0.55);
         --editor-text: #f1f5f9;
         --editor-text-muted: #94a3b8;
         --editor-input-bg: #1e293b;
@@ -503,30 +504,6 @@
     .social-dropdown-name {
         font-size: 14px;
         color: var(--editor-text);
-    }
-    /* Theme-aware icon buttons */
-    .icon-btn {
-        width: 2rem;
-        height: 2rem;
-        border-radius: 0.5rem;
-        transition: all 0.2s;
-        border: 1px solid var(--editor-border);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--editor-input-bg);
-        color: var(--editor-text-muted);
-    }
-    .icon-btn:hover {
-        background: var(--editor-hover-bg);
-        color: var(--editor-text);
-    }
-    .icon-btn.active {
-        background: rgba(59, 130, 246, 0.2);
-        border-color: #3b82f6;
-        color: #3b82f6;
-        ring: 2px;
-        ring-color: #3b82f6;
     }
     .editor-text { color: var(--editor-text); }
     .editor-text-muted { color: var(--editor-text-muted); }

@@ -3,17 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ManageLinkRequest;
+use App\Models\AbuseReport;
 use App\Models\ActivityLog;
 use App\Models\Folder;
+use App\Models\IpBan;
 use App\Models\Link;
 use App\Models\LinkClick;
+use App\Models\User;
 use App\Services\LinkService;
 use App\Services\QuotaService;
+use App\Services\UrlGuard;
+use App\Services\UserAgentService;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class LinkController extends Controller
 {
@@ -88,18 +96,18 @@ class LinkController extends Controller
         $user = $request->user();
         if ($user->isAdmin()) {
             $adminStats = [
-                'total_users' => \App\Models\User::count(),
+                'total_users' => User::count(),
                 'total_platform_links' => Link::count(),
                 'total_platform_clicks' => LinkClick::count(),
                 'today_platform_clicks' => LinkClick::whereDate('clicked_at', today())->count(),
-                'suspended_users' => \App\Models\User::where('status', 'suspended')->count(),
+                'suspended_users' => User::where('status', 'suspended')->count(),
                 'inactive_links' => Link::where('status', Link::STATUS_INACTIVE)->count(),
-                'ip_bans' => \App\Models\IpBan::count(),
-                'queue_heartbeat' => \Illuminate\Support\Facades\Cache::get('queue:heartbeat'),
+                'ip_bans' => IpBan::count(),
+                'queue_heartbeat' => Cache::get('queue:heartbeat'),
             ];
-            $recentUsers = \App\Models\User::latest()->limit(5)->get();
+            $recentUsers = User::latest()->limit(5)->get();
             $recentPlatformLinks = Link::with('user')->latest()->limit(5)->get();
-            $openReports = \App\Models\AbuseReport::orderByDesc('created_at')->limit(5)->get();
+            $openReports = AbuseReport::orderByDesc('created_at')->limit(5)->get();
             $topPlatformCountries = LinkClick::select('country', DB::raw('COUNT(*) as total'))
                 ->whereNotNull('country')
                 ->groupBy('country')
@@ -208,18 +216,18 @@ class LinkController extends Controller
         ];
         if ($user->isSuperAdmin()) {
             $data['adminStats'] = [
-                'total_users' => \App\Models\User::count(),
+                'total_users' => User::count(),
                 'total_platform_links' => Link::count(),
                 'total_platform_clicks' => LinkClick::count(),
                 'today_platform_clicks' => LinkClick::whereDate('clicked_at', today())->count(),
-                'suspended_users' => \App\Models\User::where('status', 'suspended')->count(),
+                'suspended_users' => User::where('status', 'suspended')->count(),
                 'inactive_links' => Link::where('status', Link::STATUS_INACTIVE)->count(),
-                'ip_bans' => \App\Models\IpBan::count(),
-                'queue_heartbeat' => \Illuminate\Support\Facades\Cache::get('queue:heartbeat'),
+                'ip_bans' => IpBan::count(),
+                'queue_heartbeat' => Cache::get('queue:heartbeat'),
             ];
-            $data['recentUsers'] = \App\Models\User::latest()->limit(5)->get();
+            $data['recentUsers'] = User::latest()->limit(5)->get();
             $data['recentPlatformLinks'] = Link::with('user')->latest()->limit(5)->get();
-            $data['openReports'] = \App\Models\AbuseReport::orderByDesc('created_at')->limit(5)->get();
+            $data['openReports'] = AbuseReport::orderByDesc('created_at')->limit(5)->get();
             $data['topPlatformCountries'] = LinkClick::select('country', DB::raw('COUNT(*) as total'))
                 ->whereNotNull('country')
                 ->groupBy('country')
@@ -323,7 +331,7 @@ class LinkController extends Controller
             ActivityLog::log('updated', 'Link', $link->id, "Updated link {$link->slug}: ".implode(', ', $changes));
         }
 
-        return redirect()->route('dashboard')->with('status', 'Link diperbarui.');
+        return redirect()->route('links.show', $link)->with('status', 'Link updated.');
     }
 
     public function destroy(Link $link)
@@ -341,10 +349,10 @@ class LinkController extends Controller
         ActivityLog::log('deleted', 'Link', $linkId, "Deleted link: {$slug}");
         // Handle AJAX requests
         if (request()->ajax() || request()->wantsJson()) {
-            return response()->json(['success' => true, 'message' => 'Link dihapus.']);
+            return response()->json(['success' => true, 'message' => 'Link deleted.']);
         }
 
-        return redirect()->back()->with('status', 'Link dihapus.');
+        return redirect()->back()->with('status', 'Link deleted.');
     }
 
     public function show(Link $link)
@@ -390,7 +398,7 @@ class LinkController extends Controller
             ->groupBy('device')
             ->pluck('total', 'device')
             ->toArray();
-        $userAgentService = app(\App\Services\UserAgentService::class);
+        $userAgentService = app(UserAgentService::class);
         $clicksForAgents = $clicksQuery->clone()->whereNotNull('user_agent')->take(500)->get();
         $browserStats = [];
         $osStats = [];
@@ -451,7 +459,7 @@ class LinkController extends Controller
         }
         $fgColor = $this->hexToRgb($link->qr_fg_color ?? '#000000');
         $bgColor = $this->hexToRgb($link->qr_bg_color ?? '#ffffff');
-        $qrCode = \SimpleSoftwareIO\QrCode\Facades\QrCode::format($format)
+        $qrCode = QrCode::format($format)
             ->size(512)
             ->margin(2)
             ->errorCorrection('H')
@@ -575,14 +583,14 @@ class LinkController extends Controller
         $request->validate([
             'url' => 'required|url',
         ]);
-        if (! app(\App\Services\UrlGuard::class)->isSafe($request->url)) {
+        if (! app(UrlGuard::class)->isSafe($request->url)) {
             return response()->json([
                 'success' => false,
                 'error' => 'URL is not allowed',
             ], 422);
         }
         try {
-            $client = new \GuzzleHttp\Client([
+            $client = new Client([
                 'timeout' => 10,
                 'verify' => true,
                 'allow_redirects' => false,

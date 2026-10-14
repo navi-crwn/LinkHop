@@ -145,7 +145,7 @@
                                 <input 
                                     type="url" 
                                     x-model="formData.target_url"
-                                    @input="debouncedFetchOg(); if(!formData.slug) { debouncedGenerateSlug(); }"
+                                    @input="error = ''; debouncedFetchOg(); if(!formData.slug) { debouncedGenerateSlug(); }"
                                     placeholder="https://example.com"
                                     required
                                     class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:ring-blue-500"
@@ -301,11 +301,12 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="pt-4">
+                            <div class="pt-4 space-y-2">
+                                <p x-show="error" x-cloak x-text="error" role="alert" class="rounded-xl bg-rose-500/10 px-3 py-2 text-sm text-rose-700 dark:text-rose-300"></p>
                                 <button 
                                     type="submit"
                                     :disabled="isLoading || !formData.target_url"
-                                    class="w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    class="btn-primary w-full py-3"
                                 >
                                     <span x-show="!isLoading">Create Link</span>
                                     <span x-show="isLoading" class="flex items-center justify-center gap-2">
@@ -487,14 +488,14 @@
                                     </button>
                                 </div>
                                 <div class="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-white dark:bg-slate-800">
-                                    <div x-show="isLoading && !ogData.title" class="p-8 text-center">
+                                    <div x-show="ogLoading && !ogData.title" class="p-8 text-center">
                                         <svg class="animate-spin h-8 w-8 mx-auto text-blue-600" fill="none" viewBox="0 0 24 24">
                                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                         </svg>
                                         <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Fetching preview...</p>
                                     </div>
-                                    <div x-show="!isLoading || ogData.title">
+                                    <div x-show="!ogLoading || ogData.title">
                                         <div class="px-3 py-2 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
                                             <p class="text-xs text-slate-600 dark:text-slate-400" x-text="getPreviewSize(previewPlatform).label"></p>
                                         </div>
@@ -870,6 +871,8 @@ function linkCreationModal() {
         showTagModal: false,
         createdLink: null,
         isLoading: false,
+        ogLoading: false,
+        error: '',
         previewPlatform: 'default',
         qrPreviewUrl: null,
         newFolderName: '',
@@ -950,11 +953,18 @@ function linkCreationModal() {
             this.qrPreviewUrl = null;
             this.showAdvanced = false;
         },
+        normalizedUrl() {
+            const url = (this.formData.target_url || '').trim();
+            return url && !/^https?:\/\//i.test(url) ? 'https://' + url : url;
+        },
         async submitForm() {
-            if (!this.formData.target_url) {
-                alert('Please enter a destination URL');
+            if (this.isLoading) return;
+            this.error = '';
+            if (!this.formData.target_url.trim()) {
+                this.error = 'Enter a destination URL.';
                 return;
             }
+            this.formData.target_url = this.normalizedUrl();
             this.isLoading = true;
             const payload = {
                 target_url: this.formData.target_url,
@@ -985,43 +995,26 @@ function linkCreationModal() {
                     },
                     body: JSON.stringify(payload)
                 });
-                if (!response.ok) {
-                    const errorData = await response.json().catch(async () => {
-                        const errorText = await response.text();
-                        console.error('Server error (text):', errorText);
-                        return { error: errorText };
-                    });
-                    console.error('Server error (JSON):', errorData);
-                    const errorMsg = errorData.message || errorData.error || `Server error: ${response.status}`;
-                    alert(errorMsg);
-                    this.isLoading = false;
-                    this.isLoading = false;
+                // Read the body once: some errors (quota, CSRF) are plain text, not JSON.
+                const text = await response.text();
+                let data = {};
+                try { data = JSON.parse(text); } catch (e) { data = { message: text }; }
+                if (response.ok && data.success) {
+                    this.createdLink = data.link;
                     return;
                 }
-                const result = await response.json();
-                if (result.success) {
-                    this.createdLink = result.link;
-                } else {
-                    const errorMsg = result.error || result.message || 'Failed to create link';
-                    console.error('Creation failed:', errorMsg);
-                    alert(errorMsg);
-                }
-            } catch (error) {
-                console.error('Error creating link:', error);
-                alert('An error occurred while creating the link. Check console for details.');
+                const fieldErrors = data.errors ? Object.values(data.errors).flat() : [];
+                this.error = fieldErrors[0] || data.error || data.message
+                    || (response.status === 419 ? 'Session expired. Reload the page and try again.' : `Could not create link (${response.status}).`);
+            } catch (e) {
+                this.error = 'Network error. Check your connection and try again.';
             } finally {
                 this.isLoading = false;
             }
         },
         debouncedFetchOg() {
             clearTimeout(this.ogFetchTimeout);
-            this.ogFetchTimeout = setTimeout(() => {
-                // Auto-add https if missing
-                if (this.formData.target_url && !this.formData.target_url.match(/^https?:\/\//)) {
-                    this.formData.target_url = 'https://' + this.formData.target_url;
-                }
-                this.fetchOgData();
-            }, 1000);
+            this.ogFetchTimeout = setTimeout(() => this.fetchOgData(), 1000);
         },
         debouncedGenerateSlug() {
             clearTimeout(this.slugGenerateTimeout);
@@ -1052,7 +1045,7 @@ function linkCreationModal() {
         },
         async fetchOgData() {
             if (!this.formData.target_url || this.formData.target_url.length < 10) return;
-            this.isLoading = true;
+            this.ogLoading = true;
             try {
                 const response = await fetch('{{ route('links.fetch-og') }}', {
                     method: 'POST',
@@ -1061,7 +1054,7 @@ function linkCreationModal() {
                         'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
                         'Accept': 'application/json'
                     },
-                    body: JSON.stringify({ url: this.formData.target_url })
+                    body: JSON.stringify({ url: this.normalizedUrl() })
                 });
                 const result = await response.json();
                 if (result.success && result.data) {
@@ -1071,7 +1064,7 @@ function linkCreationModal() {
                 }
             } catch (error) {
             } finally {
-                this.isLoading = false;
+                this.ogLoading = false;
             }
         },
         generateRandomSlug() {
