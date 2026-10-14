@@ -88,7 +88,23 @@
                             <li><strong>Service Abuse:</strong> Attempt to gain unauthorized access to our systems or interfere with the Service</li>
                             <li><strong>URL Manipulation:</strong> Use misleading short URLs that disguise the actual destination</li>
                         </ul>
-                        <h3 class="text-xl font-medium mb-2 text-gray-800 dark:text-gray-200">4.3 Rate Limits and Quotas</h3>
+                        <div class="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 p-4">
+                            <h4 class="mb-2 text-lg font-semibold text-red-600 dark:text-red-400">Zero Tolerance Policy</h4>
+                            <p class="mb-2">We maintain an absolute <strong>zero tolerance</strong> policy for:</p>
+                            <ul class="mb-2 ml-4 list-inside list-disc space-y-1">
+                                <li><strong>Child Sexual Abuse Material (CSAM)</strong> - Any content depicting minors in sexual situations</li>
+                                <li><strong>Child Exploitation</strong> - Any content that sexualizes, exploits, or endangers children</li>
+                                <li><strong>Non-Consensual Intimate Images</strong> - Revenge porn or intimate images shared without consent</li>
+                            </ul>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Violations result in immediate account termination, content removal, and reporting to law enforcement and child-protection agencies, including NCMEC.</p>
+                        </div>
+                        <h3 class="text-xl font-medium mb-2 text-gray-800 dark:text-gray-200">4.3 Automated Content Moderation</h3>
+                        <ul class="list-disc list-inside space-y-2 ml-4 mb-3">
+                            <li><strong>Checked on creation:</strong> Destinations are checked against our blocklist, public threat-intelligence feeds (such as URLhaus, OpenPhish and Spamhaus) and prohibited-content rules before a link goes live.</li>
+                            <li><strong>Continuous monitoring:</strong> Existing links and bio pages are re-scanned regularly. Violating content is disabled and repeat offenders are suspended.</li>
+                            <li><strong>Appeals:</strong> If your link was disabled by mistake, contact <a href="mailto:abuse@hel.ink" class="underline">abuse@hel.ink</a> with the link details.</li>
+                        </ul>
+                        <h3 class="text-xl font-medium mb-2 text-gray-800 dark:text-gray-200">4.4 Rate Limits and Quotas</h3>
                         <p class="mb-3">We impose reasonable rate limits and usage quotas to ensure fair use of the Service. Exceeding these limits may result in temporary or permanent suspension of your account.</p>
                     </section>
                     <section>
