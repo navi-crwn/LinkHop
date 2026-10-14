@@ -6,12 +6,14 @@ Tanggal: 14 Oktober 2026. Repo: `navi-crwn/hel.ink`.
 
 | PR | Isi | Status |
 | --- | --- | --- |
-| #6 (PR-B) | Keamanan klik bio: ID publik acak, tujuan tidak bocor di halaman ber-password atau 18+, batas klik per IP, open redirect `/\evil.com`, halaman 429 yang jelas | Draft, CI hijau |
-| #7 (PR-C) | Hasil audit bio (XSS lewat preview editor, hapus file milik user lain, duplikasi berulang, edit yang tidak tersimpan, font berlebih, takedown yang bisa diaktifkan lagi) | Draft, CI hijau |
+| #6 (PR-B) | Keamanan klik bio: ID publik acak, tujuan tidak bocor di halaman ber-password atau 18+, batas klik per IP, open redirect `/\evil.com`, halaman 429 yang jelas | Sudah di-merge |
+| #7 (PR-C) | Hasil audit bio (XSS lewat preview editor, hapus file milik user lain, duplikasi berulang, edit yang tidak tersimpan, font berlebih, takedown yang bisa diaktifkan lagi) | Sudah di-merge |
+| #10 (PR-D) | Homepage arah B | Sudah di-merge |
+| #11 | Privasi IP pengunjung (IP klik disimpan sebagai hash, migrasi tidak bisa dibatalkan) | Sudah di-merge |
 | #8 (PR-A) | Turnstile langsung siap saat halaman dibuka, `/health/queue` | Draft, CI hijau |
-| #12 (PR-E) | Suite manusia sintetis, CI per PR dan nightly, uji beban k6, empat perbaikan bug dari suite | Draft, menggantikan #9 |
+| #12 (PR-E) | Suite manusia sintetis, CI per PR dan nightly, uji beban k6, lima perbaikan bug dari suite | Draft, sudah digabung dengan `main` terbaru, menggantikan #9 |
 
-Privasi IP (sembunyikan IP dari pemilik link, simpan sebagai hash) dikerjakan di thread "Tindak lanjut audit bio". Homepage arah B dikerjakan di thread terpisah.
+Suite di #12 sudah dijalankan di atas `main` yang berisi #6, #7, #10 dan #11: tidak ada konflik, 98 test PHP lulus, dan semua perjalanan lulus.
 
 ## 2. Apa itu suite manusia sintetis
 
@@ -43,14 +45,15 @@ Diperbaiki di PR #12:
 2. **Banner cookie menutupi tombol "Create Link".** Banner (z-50) berada di atas modal buat link (z-40), jadi pengguna baru tidak bisa menekan tombol itu sebelum menutup banner. Sekarang banner selalu berada di bawah dialog.
 3. **Install baru di MySQL/MariaDB gagal di tengah migrasi.** Dua migrasi lama memakai `->after('background_gradient')` sebelum kolom itu dibuat oleh migrasi berikutnya. SQLite mengabaikan `after()`, MySQL tidak. Migrasi baru `2025_12_05_200939_apply_early_bio_design_migrations` menjalankan keduanya lebih awal; ke-60 migrasi sekarang jalan dan rollback bersih di MariaDB. Server yang sudah berjalan tidak terpengaruh.
 4. **Ambil judul otomatis (fetch-og) error 500** kalau situs tujuan membalas 404, timeout atau TLS gagal. Sekarang membalas 422 dan form tetap bisa dipakai.
+5. **Validasi slug di browser tidak pernah jalan.** Pola `[a-zA-Z0-9_-]+` (modal buat link) dan `[A-Za-z0-9-]+` (homepage) tidak sah untuk Chrome versi baru, yang membaca atribut `pattern` dengan flag `v`. Browser mencatat error di console dan mengabaikan pola itu, jadi slug dengan spasi atau simbol baru ditolak oleh server. Tanda `-` sekarang di-escape.
 
 Belum diperbaiki (dicatat untuk keputusan berikutnya):
 
-5. **Preview QR error 500 tanpa ekstensi PHP `imagick`.** `/api/qr-generate` memakai backend PNG yang butuh imagick. Pastikan `php-imagick` terpasang di server (lihat bagian deploy).
-6. **Atribut `onclick` dan sejenisnya masih banyak.** Ada sekitar 10 pelanggaran `script-src-attr` per putaran PR di CSP report-only. Ini harus dibersihkan sebelum CSP ketat bisa diterapkan.
-7. **Aksesibilitas (axe, serious/critical):** input dan select tanpa label di halaman Links, Settings dan admin; tombol ikon tanpa nama di modal link dan halaman bio publik; kontras warna di homepage, `/check` dan modal; struktur `<dl>` yang salah di dashboard.
-8. **GeoIP untuk IP baru bisa lambat.** Setiap IP yang belum ada di cache dicoba ke lima penyedia eksternal secara berurutan. Di uji beban, request pertama dari IP baru kadang butuh 2 sampai 4 detik. File `.mmdb` lokal (`geolite:update`) sebaiknya selalu tersedia di server.
-9. **Satu permintaan rusak di halaman bio:** `GET /b/url('https://fonts.googleapis.com/css2…` mendapat 404. Kemungkinan ini berasal dari pemuatan font, yang sedang diubah di PR #7. Perlu dicek ulang setelah #7 di-merge.
+6. **Preview QR error 500 tanpa ekstensi PHP `imagick`.** `/api/qr-generate` memakai backend PNG yang butuh imagick. Pastikan `php-imagick` terpasang di server (lihat bagian deploy).
+7. **Atribut `onclick` dan sejenisnya masih banyak.** Ada sekitar 10 pelanggaran `script-src-attr` per putaran PR di CSP report-only. Ini harus dibersihkan sebelum CSP ketat bisa diterapkan.
+8. **Aksesibilitas (axe, serious/critical):** input dan select tanpa label di halaman Links, Settings dan admin; tombol ikon tanpa nama di modal link dan halaman bio publik; kontras warna di homepage, `/check` dan modal; struktur `<dl>` yang salah di dashboard.
+9. **GeoIP untuk IP baru bisa lambat.** Setiap IP yang belum ada di cache dicoba ke lima penyedia eksternal secara berurutan. Di uji beban, request pertama dari IP baru kadang butuh 2 sampai 4 detik. File `.mmdb` lokal (`geolite:update`) sebaiknya selalu tersedia di server.
+10. **Satu permintaan rusak di halaman bio:** `GET /b/url('https://fonts.googleapis.com/css2…` mendapat 404. Ini berasal dari pemuatan font lama; setelah #7 di-merge, suite tidak lagi melihatnya.
 
 Mode nightly yang dijalankan lokal menemukan tiga celah di model uji, bukan di aplikasi: editor bio yang meminta konfirmasi "Discard Changes?" saat keluar tanpa simpan (perilaku yang benar), halaman bio yang tetap terbuka setelah password benar, dan batas 5 login per menit. Model sudah disesuaikan.
 
@@ -62,13 +65,13 @@ Skrip: `tests/load/k6.js`. Skenarionya meliputi redirect shortlink (naik sampai 
 
 Hasil lokal terhadap server uji (`php artisan serve` dengan 16 worker, SQLite; ini bukan server produksi, jadi angkanya dipakai untuk membandingkan antar-commit, bukan kapasitas sebenarnya):
 
-| Skenario | Median | p95 | Ambang p95 |
+| Skenario | p95 sebelum #6/#7 | p95 di `main` terbaru | Ambang p95 |
 | --- | --- | --- | --- |
-| Redirect shortlink | 27 ms | 149 ms | 800 ms |
-| Halaman bio | 390 ms | 729 ms | 1500 ms |
-| Dashboard | 19 ms | 1.6 s | 2.5 s |
+| Redirect shortlink | 149 ms | 44 ms | 800 ms |
+| Halaman bio | 729 ms | 44 ms | 1500 ms |
+| Dashboard | 1.6 s | 2.1 s | 2.5 s |
 
-Total 5.324 request, 0 gagal, semua pemeriksaan lulus. Halaman bio sekitar 15 kali lebih lambat dari redirect, dan perbaikan font di PR #7 seharusnya membantu.
+Total 5.360 request, 0 gagal, semua pemeriksaan lulus. Halaman bio sekarang sama cepatnya dengan redirect, karena #7 hanya memuat font yang dipilih. Dashboard masih paling lambat; lonjakannya berasal dari GeoIP untuk IP baru (temuan 9).
 
 Uji beban tidak boleh diarahkan ke produksi. Untuk staging, isi `BASE_URL`, `BIO_SLUG` dan `LINK_SLUG`.
 
@@ -76,12 +79,14 @@ Uji beban tidak boleh diarahkan ke produksi. Untuk staging, isi `BASE_URL`, `BIO
 
 ### Urutan merge
 
-1. #6 (keamanan klik bio, ada migrasi `public_id`)
-2. #7 (audit bio). Kalau muncul konflik di `BioPageController` setelah #6, selesaikan dulu.
-3. #8 (Turnstile)
-4. #12 (suite dan empat perbaikan). Konflik kecil di `routes/web.php` dengan #8 mungkin terjadi; isi kedua sisi dipertahankan.
+#6, #7, #10 dan #11 sudah di-merge. Sisanya:
+
+1. #8 (Turnstile). Konflik kecil di `routes/web.php` dengan #12 mungkin terjadi; isi kedua sisi dipertahankan.
+2. #12 (suite dan lima perbaikan).
 
 Tutup #9 setelah #12 di-merge, karena #12 sudah berisi commit #9.
+
+Karena #11 meng-hash IP lama secara permanen, backup database **wajib** dibuat sebelum `migrate` di produksi.
 
 ### Sebelum deploy
 
@@ -130,3 +135,5 @@ php artisan queue:restart && php artisan up
 ```
 
 Migrasi `public_id` aman untuk dijalankan ulang. Rollback-nya menghapus kolom, sehingga link klik bio yang sudah dibagikan dengan ID baru akan berhenti bekerja.
+
+Migrasi hash IP dari #11 tidak bisa dibatalkan: rollback membiarkan IP tetap dalam bentuk hash. IP asli hanya bisa kembali dengan memulihkan backup database yang dibuat sebelum deploy.
