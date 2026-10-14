@@ -1,24 +1,26 @@
-<x-marketing-layout title="HEL.ink - Modern URL Shortener">
+<x-marketing-layout title="HEL.ink - Modern URL Shortener" :themed="true">
     @php
         $idleDays = config('shortener.guest_idle_days', 14);
         $maxDays = config('shortener.guest_max_days', 30);
-        $card = 'rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-xl';
+        $card = 'rounded-3xl border border-slate-200/80 bg-white/80 shadow-sm shadow-slate-900/5 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.05] dark:shadow-none';
+        $btnPrimary = 'rounded-xl bg-gradient-to-r from-indigo-500 via-sky-500 to-fuchsia-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition hover:brightness-110 active:scale-[0.98]';
+        $btnSecondary = 'rounded-xl border border-slate-300 px-4 py-2.5 text-sm text-slate-700 transition hover:bg-slate-900/5 dark:border-white/15 dark:text-white/80 dark:hover:bg-white/10';
     @endphp
 
     {{-- Hero + shortener --}}
     <section class="mx-auto max-w-3xl px-4 pb-10 pt-14 text-center sm:pt-20">
-        <span class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70">
-            <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span> Free · open source · no tracking ads
+        <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-3 py-1 text-xs text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-white/70">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400"></span> Free · open source · no tracking ads
         </span>
         <h1 class="mt-5 text-4xl font-semibold leading-[1.1] tracking-tight sm:text-6xl">
             Short links,<br class="sm:hidden">
-            <span class="bg-gradient-to-r from-indigo-300 via-sky-300 to-fuchsia-300 bg-clip-text text-transparent">one hop away.</span>
+            <span class="bg-gradient-to-r from-indigo-500 via-sky-500 to-fuchsia-500 bg-clip-text dark:from-indigo-300 dark:via-sky-300 dark:to-fuchsia-300 text-transparent">one hop away.</span>
         </h1>
-        <p class="mx-auto mt-4 max-w-xl text-base text-white/65 sm:text-lg">
+        <p class="mx-auto mt-4 max-w-xl text-base text-slate-600 sm:text-lg dark:text-white/65">
             Shorten a link in seconds, or sign up for analytics, QR codes, folders and a Link in Bio page.
         </p>
 
-        <div class="{{ $card }} mx-auto mt-8 p-2 text-left shadow-2xl shadow-indigo-950/40">
+        <div class="{{ $card }} mx-auto mt-8 p-2 text-left shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500/10 dark:shadow-2xl dark:shadow-black/30 dark:ring-0">
             <form
                 x-data="Object.assign({ custom: {{ old('slug') ? 'true' : 'false' }} }, window.turnstileForm ? window.turnstileForm('{{ config('services.turnstile.site_key') }}', {{ $errors->has('turnstile') ? 'true' : 'false' }}) : {})"
                 x-init="
@@ -40,18 +42,18 @@
                     <label for="target_url" class="sr-only">Long URL</label>
                     <input id="target_url" type="url" name="target_url" value="{{ old('target_url') }}" required
                         placeholder="Paste a long link…"
-                        class="min-w-0 flex-1 rounded-2xl border-0 bg-white/[0.06] px-4 py-3.5 text-[15px] text-white placeholder-white/35 focus:bg-white/[0.09] focus:outline-none focus:ring-2 focus:ring-indigo-400/50">
+                        class="min-w-0 flex-1 rounded-2xl border-0 bg-slate-100 px-4 py-3.5 text-[15px] text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400/50 dark:bg-white/[0.06] dark:text-white dark:placeholder-white/35 dark:focus:bg-white/[0.09]">
                     <button type="submit" x-bind:disabled="typeof showCaptcha !== 'undefined' && showCaptcha && !token"
-                        class="rounded-2xl bg-white px-6 py-3.5 font-semibold text-slate-900 transition hover:bg-white/90 active:scale-[0.98] disabled:opacity-50">
+                        class="rounded-2xl bg-gradient-to-r from-indigo-500 via-sky-500 to-fuchsia-500 px-6 py-3.5 font-semibold text-white shadow-md shadow-indigo-500/25 transition hover:brightness-110 active:scale-[0.98] disabled:opacity-50">
                         Shorten
                     </button>
                 </div>
                 <div class="px-2 pb-1 pt-2">
-                    <button type="button" class="text-xs text-white/55 hover:text-white" @click="custom = !custom" x-show="!custom">+ Custom slug</button>
+                    <button type="button" class="text-xs text-slate-500 hover:text-slate-900 dark:text-white/55 dark:hover:text-white" @click="custom = !custom" x-show="!custom">+ Custom slug</button>
                     <div x-show="custom" x-cloak class="flex items-center gap-2">
-                        <span class="text-sm text-white/45">{{ parse_url(config('app.url'), PHP_URL_HOST) }}/</span>
+                        <span class="text-sm text-slate-400 dark:text-white/45">{{ parse_url(config('app.url'), PHP_URL_HOST) }}/</span>
                         <input id="slug" type="text" name="slug" value="{{ old('slug') }}" placeholder="my-link" pattern="[A-Za-z0-9-]+"
-                            class="min-w-0 flex-1 rounded-xl border-0 bg-white/[0.06] px-3 py-2 text-sm text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-indigo-400/50">
+                            class="min-w-0 flex-1 rounded-xl border-0 bg-slate-100 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400/50 dark:bg-white/[0.06] dark:text-white dark:placeholder-white/30">
                     </div>
                 </div>
                 @if (config('services.turnstile.site_key'))
@@ -59,7 +61,7 @@
                     <input type="hidden" name="cf-turnstile-response" :value="token">
                 @endif
                 @if (session('link_error') || $errors->any())
-                    <div class="m-2 rounded-xl bg-rose-500/15 px-3 py-2 text-sm text-rose-100">
+                    <div class="m-2 rounded-xl bg-rose-500/10 px-3 py-2 text-sm text-rose-700 dark:bg-rose-500/15 dark:text-rose-100">
                         {{ session('link_error') }}
                         @foreach ($errors->all() as $error)
                             <p>{{ $error }}</p>
@@ -69,24 +71,24 @@
             </form>
 
             @if ($shortened = session('shortened_link'))
-                <div class="m-2 mt-1 rounded-2xl bg-emerald-400/10 p-3 ring-1 ring-emerald-400/30" x-data="{ copied: false }">
+                <div class="m-2 mt-1 rounded-2xl bg-emerald-500/10 p-3 ring-1 ring-emerald-500/30 dark:bg-emerald-400/10 dark:ring-emerald-400/30" x-data="{ copied: false }">
                     <div class="flex items-center gap-3">
                         <div class="min-w-0 flex-1">
-                            <p class="truncate font-mono text-[15px] font-semibold text-white">{{ $shortened->short_url }}</p>
-                            <p class="truncate text-xs text-white/55">→ {{ $shortened->target_url }}</p>
+                            <p class="truncate font-mono text-[15px] font-semibold text-slate-900 dark:text-white">{{ $shortened->short_url }}</p>
+                            <p class="truncate text-xs text-slate-500 dark:text-white/55">→ {{ $shortened->target_url }}</p>
                         </div>
-                        <button type="button" class="rounded-xl bg-white px-3.5 py-2 text-sm font-semibold text-slate-900"
+                        <button type="button" class="rounded-xl bg-slate-900 px-3.5 py-2 text-sm font-semibold text-white dark:bg-white dark:text-slate-900"
                             x-on:click="navigator.clipboard.writeText(@js($shortened->short_url)); copied = true; setTimeout(() => copied = false, 2000)">
                             <span x-text="copied ? 'Copied' : 'Copy'">Copy</span>
                         </button>
                     </div>
-                    <p class="mt-2 text-xs text-white/60">
+                    <p class="mt-2 text-xs text-slate-600 dark:text-white/60">
                         Guest links are removed {{ $idleDays }} days after their last click, and after {{ $maxDays }} days at most.
-                        <a href="{{ route('register') }}" class="font-semibold text-white underline-offset-2 hover:underline">Create a free account</a> to keep links permanently.
+                        <a href="{{ route('register') }}" class="font-semibold text-indigo-600 underline-offset-2 hover:underline dark:text-white">Create a free account</a> to keep links permanently.
                     </p>
                 </div>
             @else
-                <p class="px-3 pb-2 text-[11px] text-white/40">
+                <p class="px-3 pb-2 text-[11px] text-slate-400 dark:text-white/40">
                     No account needed. Guest links expire after {{ $idleDays }} days without clicks ({{ $maxDays }} days max).
                 </p>
             @endif
@@ -106,11 +108,11 @@
         <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
             @foreach ($features as $f)
                 <article class="{{ $card }} p-4 sm:p-5">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10">
-                        <svg class="h-[18px] w-[18px] text-indigo-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ $f['icon'] }}"/></svg>
+                    <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500/15 to-fuchsia-500/15 dark:from-indigo-400/20 dark:to-fuchsia-400/15">
+                        <svg class="h-[18px] w-[18px] text-indigo-600 dark:text-indigo-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ $f['icon'] }}"/></svg>
                     </div>
                     <h3 class="mt-4 font-semibold">{{ $f['title'] }}</h3>
-                    <p class="mt-1 text-[13px] leading-relaxed text-white/60 sm:text-sm">{{ $f['body'] }}</p>
+                    <p class="mt-1 text-[13px] leading-relaxed text-slate-600 sm:text-sm dark:text-white/60">{{ $f['body'] }}</p>
                 </article>
             @endforeach
         </div>
@@ -120,16 +122,16 @@
     <section id="bio" class="mx-auto max-w-6xl scroll-mt-24 px-4 py-10">
         <div class="{{ $card }} grid items-center gap-8 overflow-hidden p-6 sm:p-10 md:grid-cols-2">
             <div>
-                <p class="text-xs font-semibold uppercase tracking-wider text-indigo-200/80">Link in Bio</p>
+                <p class="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-200/80">Link in Bio</p>
                 <h2 class="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">All your links on one page.</h2>
-                <p class="mt-3 text-white/60">20+ themes, social icons, music and video embeds, countdowns, FAQ blocks and per-link click stats. Drag to reorder, publish instantly.</p>
+                <p class="mt-3 text-slate-600 dark:text-white/60">20+ themes, social icons, music and video embeds, countdowns, FAQ blocks and per-link click stats. Drag to reorder, publish instantly.</p>
                 <div class="mt-6 flex flex-wrap gap-2">
-                    <a href="{{ route('register') }}" class="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 hover:bg-white/90">Create yours</a>
-                    <a href="/b/hel" class="rounded-xl border border-white/15 px-4 py-2.5 text-sm text-white/80 hover:bg-white/10">See an example</a>
+                    <a href="{{ route('register') }}" class="{{ $btnPrimary }}">Create yours</a>
+                    <a href="/b/hel" class="{{ $btnSecondary }}">See an example</a>
                 </div>
             </div>
             <div class="mx-auto w-full max-w-[260px]">
-                <div class="rounded-[2rem] border border-white/15 bg-gradient-to-b from-indigo-500/30 to-fuchsia-500/20 p-5 shadow-2xl">
+                <div class="rounded-[2rem] border border-white/40 bg-gradient-to-b from-indigo-500 via-sky-500 to-fuchsia-500 p-5 shadow-2xl shadow-indigo-500/25 dark:border-white/15 dark:from-indigo-500/40 dark:via-sky-500/25 dark:to-fuchsia-500/30 dark:shadow-black/30">
                     <div class="mx-auto h-14 w-14 rounded-full bg-white/20 ring-2 ring-white/30"></div>
                     <div class="mx-auto mt-3 h-2.5 w-24 rounded-full bg-white/60"></div>
                     <div class="mx-auto mt-2 h-2 w-32 rounded-full bg-white/25"></div>
@@ -147,17 +149,17 @@
     <section class="mx-auto grid max-w-6xl gap-3 px-4 pb-6 md:grid-cols-3">
         <div class="{{ $card }} p-6 md:col-span-2">
             <h2 class="text-xl font-semibold">Open source, free forever</h2>
-            <p class="mt-2 text-sm text-white/60">Built with Laravel, Tailwind and Alpine.js. Use hel.ink or host it yourself.</p>
+            <p class="mt-2 text-sm text-slate-600 dark:text-white/60">Built with Laravel, Tailwind and Alpine.js. Use hel.ink or host it yourself.</p>
             <div class="mt-5 flex flex-wrap gap-2">
-                <a href="{{ route('register') }}" class="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 hover:bg-white/90">Create free account</a>
-                <a href="https://github.com/navi-crwn/hel.ink" target="_blank" rel="noopener" class="rounded-xl border border-white/15 px-4 py-2.5 text-sm text-white/80 hover:bg-white/10">GitHub</a>
+                <a href="{{ route('register') }}" class="{{ $btnPrimary }}">Create free account</a>
+                <a href="https://github.com/navi-crwn/hel.ink" target="_blank" rel="noopener" class="{{ $btnSecondary }}">GitHub</a>
             </div>
         </div>
-        <a href="https://p.hel.ink" target="_blank" rel="noopener" class="{{ $card }} group block p-6 transition hover:bg-white/[0.07]">
-            <p class="text-xs font-semibold uppercase tracking-wider text-cyan-200/80">HEL.ink family</p>
+        <a href="https://p.hel.ink" target="_blank" rel="noopener" class="{{ $card }} group block p-6 transition hover:bg-white dark:hover:bg-white/[0.08]">
+            <p class="text-xs font-semibold uppercase tracking-wider text-cyan-600 dark:text-cyan-200/80">HEL.ink family</p>
             <h2 class="mt-2 text-xl font-semibold">PixelHop</h2>
-            <p class="mt-2 text-sm text-white/60">Free image hosting with compress, resize, convert, OCR and background removal.</p>
-            <p class="mt-4 text-sm font-medium text-cyan-200 group-hover:underline">p.hel.ink →</p>
+            <p class="mt-2 text-sm text-slate-600 dark:text-white/60">Free image hosting with compress, resize, convert, OCR and background removal.</p>
+            <p class="mt-4 text-sm font-medium text-cyan-600 group-hover:underline dark:text-cyan-200">p.hel.ink →</p>
         </a>
     </section>
 </x-marketing-layout>
