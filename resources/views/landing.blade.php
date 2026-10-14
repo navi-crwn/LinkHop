@@ -42,7 +42,7 @@
                         placeholder="Paste a long link…"
                         class="min-w-0 flex-1 rounded-2xl border-0 bg-white/[0.06] px-4 py-3.5 text-[15px] text-white placeholder-white/35 focus:bg-white/[0.09] focus:outline-none focus:ring-2 focus:ring-indigo-400/50">
                     <button type="submit" x-bind:disabled="typeof showCaptcha !== 'undefined' && showCaptcha && !token"
-                        class="rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-3.5 font-semibold text-white shadow-lg shadow-indigo-900/40 transition hover:brightness-110 disabled:opacity-50">
+                        class="rounded-2xl bg-white px-6 py-3.5 font-semibold text-slate-900 transition hover:bg-white/90 active:scale-[0.98] disabled:opacity-50">
                         Shorten
                     </button>
                 </div>
@@ -149,7 +149,7 @@
             <h2 class="text-xl font-semibold">Open source, free forever</h2>
             <p class="mt-2 text-sm text-white/60">Built with Laravel, Tailwind and Alpine.js. Use hel.ink or host it yourself.</p>
             <div class="mt-5 flex flex-wrap gap-2">
-                <a href="{{ route('register') }}" class="rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 px-4 py-2.5 text-sm font-semibold text-white">Create free account</a>
+                <a href="{{ route('register') }}" class="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 hover:bg-white/90">Create free account</a>
                 <a href="https://github.com/navi-crwn/hel.ink" target="_blank" rel="noopener" class="rounded-xl border border-white/15 px-4 py-2.5 text-sm text-white/80 hover:bg-white/10">GitHub</a>
             </div>
         </div>

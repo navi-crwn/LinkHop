@@ -1,17 +1,7 @@
 <x-app-layout>
     <x-slot name="pageTitle">Link in Bio - HEL.ink</x-slot>
     <x-slot name="header">
-        <x-page-header title="Link in Bio" subtitle="Create beautiful landing pages for your social media">
-            <x-slot name="actions">
-                <a href="{{ route('bio.create') }}" class="group relative overflow-hidden rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:shadow-xl hover:shadow-blue-500/40 hover:scale-105">
-                    <span class="relative z-10 flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                        Create Bio Page
-                    </span>
-                    <div class="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0 transition-opacity group-hover:opacity-100"></div>
-                </a>
-            </x-slot>
-        </x-page-header>
+        <x-page-header title="Link in Bio" subtitle="Your bio pages ({{ $bioPages->count() }}/3)" />
     </x-slot>
     @push('styles')
     <style>
@@ -157,7 +147,7 @@
                                     <a href="{{ route('bio.analytics', $bioPage) }}" class="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-center text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700">
                                         Analytics
                                     </a>
-                                    <a href="{{ url('/b/' . $bioPage->slug) }}" target="_blank" class="flex-1 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-3 py-2.5 text-center text-sm font-semibold text-white hover:from-blue-500 hover:to-indigo-500 transition-all shadow-sm hover:shadow-md">
+                                    <a href="{{ url('/b/' . $bioPage->slug) }}" target="_blank" class="btn-primary flex-1">
                                         View
                                     </a>
                                 </div>

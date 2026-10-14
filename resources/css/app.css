@@ -35,23 +35,24 @@
         --shadow: 0 0 0;
     }
 
-    html { -webkit-tap-highlight-color: transparent; }
+    html { -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
+    h1, h2, h3 { text-wrap: balance; }
     body { @apply font-sans antialiased; color: rgb(var(--ink)); }
 
     /* Soft gradient backdrop that the glass surfaces blur. */
     .app-bg {
         background-color: rgb(var(--bg));
         background-image:
-            radial-gradient(40rem 28rem at 8% -6%, rgb(129 140 248 / 0.28), transparent 60%),
-            radial-gradient(36rem 26rem at 100% 0%, rgb(56 189 248 / 0.20), transparent 60%),
-            radial-gradient(42rem 30rem at 85% 105%, rgb(236 72 153 / 0.14), transparent 60%);
+            radial-gradient(40rem 28rem at 8% -6%, rgb(129 140 248 / 0.18), transparent 60%),
+            radial-gradient(36rem 26rem at 100% 0%, rgb(125 211 252 / 0.14), transparent 60%),
+            radial-gradient(42rem 30rem at 85% 105%, rgb(148 163 184 / 0.16), transparent 60%);
         background-attachment: fixed;
     }
     .dark .app-bg {
         background-image:
-            radial-gradient(40rem 28rem at 8% -6%, rgb(99 102 241 / 0.25), transparent 60%),
-            radial-gradient(36rem 26rem at 100% 0%, rgb(14 165 233 / 0.14), transparent 60%),
-            radial-gradient(42rem 30rem at 85% 105%, rgb(168 85 247 / 0.16), transparent 60%);
+            radial-gradient(40rem 28rem at 8% -6%, rgb(99 102 241 / 0.18), transparent 60%),
+            radial-gradient(36rem 26rem at 100% 0%, rgb(14 165 233 / 0.10), transparent 60%),
+            radial-gradient(42rem 30rem at 85% 105%, rgb(71 85 105 / 0.18), transparent 60%);
     }
 
     ::selection { background: rgb(var(--accent) / 0.25); }
@@ -90,12 +91,11 @@
                disabled:cursor-not-allowed disabled:opacity-50;
     }
     .btn-sm { @apply rounded-lg px-3 py-1.5 text-xs; }
+    /* Neutral solid primary (ink on light, white on dark); the accent is kept for links/active states. */
     .btn-primary {
-        @apply btn text-white;
-        background-image: linear-gradient(135deg, rgb(var(--accent)), rgb(var(--accent-2)));
-        box-shadow: 0 6px 20px -6px rgb(var(--accent) / 0.6);
+        @apply btn bg-slate-900 text-white shadow-sm hover:bg-slate-800 active:scale-[0.98]
+               dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100;
     }
-    .btn-primary:hover { filter: brightness(1.08); }
     .btn-ghost { @apply btn hover:bg-slate-900/5 dark:hover:bg-white/10; color: rgb(var(--ink)); }
     .btn-soft { @apply btn glass; color: rgb(var(--ink)); }
     .btn-soft:hover { background-color: rgb(var(--glass) / 0.9); }

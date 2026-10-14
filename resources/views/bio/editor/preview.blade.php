@@ -832,7 +832,8 @@
             0%, 100% { transform: translateY(0) rotate(0deg); }
             50% { transform: translateY(-20px) rotate(180deg); }
         }
-    </style>
+        [x-cloak] { display: none !important; }
+</style>
 </head>
 <body :class="[
     bodyClasses,
@@ -867,9 +868,9 @@
         </svg>
     </button>
     <!-- Share Tooltip -->
-    <div x-show="showShareTooltip" @click.away="showShareTooltip = false" class="share-tooltip">
+    <div x-show="showShareTooltip" x-cloak @click.away="showShareTooltip = false" class="share-tooltip">
         <div class="share-tooltip-content">
-            <svg class="w-5 h-5 text-blue-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg width="20" height="20" class="w-5 h-5 text-blue-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
             <p class="text-sm font-medium text-slate-700">Preview Only</p>
@@ -1161,7 +1162,7 @@
             </div>
         </template>
     </div>
-    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://unpkg.com/alpinejs@3.15.2/dist/cdn.min.js" defer></script>
     <script>
         // Brand colors from config
         const brandColors = @json(collect(config('brands.platforms', []))->mapWithKeys(fn($b, $k) => [$k => $b['color'] ?? '#000000']));

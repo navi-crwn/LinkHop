@@ -9,6 +9,7 @@ use App\Services\LinkService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 
 class RedirectController extends Controller
 {
@@ -30,9 +31,16 @@ class RedirectController extends Controller
         if ($link->requiresPassword()) {
             if ($request->isMethod('post')) {
                 $request->validate(['password' => ['required', 'string']]);
+                $key = 'link-password:'.$link->id.':'.$request->ip();
+                if (RateLimiter::tooManyAttempts($key, 10)) {
+                    return back()->withErrors(['password' => 'Too many attempts. Try again in '.ceil(RateLimiter::availableIn($key) / 60).' min.']);
+                }
                 if (! Hash::check($request->input('password'), $link->password_hash)) {
+                    RateLimiter::hit($key, 600);
+
                     return back()->withErrors(['password' => 'Incorrect password.']);
                 }
+                RateLimiter::clear($key);
             } else {
                 return response()->view('link-password', compact('link'));
             }

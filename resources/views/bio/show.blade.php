@@ -1165,8 +1165,8 @@ END:VCARD`;
             URL.revokeObjectURL(url);
         }
     </script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.15.2/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
     <script>
         const qrSettings = @json($bioPage->qr_settings ?? []);
         const qrColor = qrSettings.dotsOptions?.color || qrSettings.color || '#000000';

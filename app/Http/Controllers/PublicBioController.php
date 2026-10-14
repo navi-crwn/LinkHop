@@ -10,6 +10,7 @@ use App\Support\SafeContent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -34,7 +35,13 @@ class PublicBioController extends Controller
             $sessionKey = "bio_unlocked_{$bioPage->id}";
             if (! session($sessionKey)) {
                 if ($request->isMethod('post') && $request->has('password')) {
+                    $key = 'bio-password:'.$bioPage->id.':'.$request->ip();
+                    if (RateLimiter::tooManyAttempts($key, 10)) {
+                        return view('bio.password', compact('bioPage'))->withErrors(['password' => 'Too many attempts. Try again later.']);
+                    }
+                    RateLimiter::hit($key, 600);
                     if ($this->passwordMatches($request->input('password'), $bioPage->password)) {
+                        RateLimiter::clear($key);
                         session([$sessionKey => true]);
 
                         // Use 303 redirect (See Other) to convert POST to GET - prevents browser resubmit warning
