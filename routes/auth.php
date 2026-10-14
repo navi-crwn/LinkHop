@@ -19,8 +19,9 @@ Route::middleware('guest')->group(function () {
         ->middleware('throttle:register');
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
+    // Unnamed throttles share one counter per IP unless they get their own prefix (3rd argument).
     Route::post('login', [AuthenticatedSessionController::class, 'store'])
-        ->middleware('throttle:5,1');
+        ->middleware('throttle:5,1,login');
     // Google OAuth Routes
     Route::get('auth/google', [GoogleAuthController::class, 'redirectToGoogle'])
         ->name('auth.google');
@@ -32,7 +33,7 @@ Route::middleware('guest')->group(function () {
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request');
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
-        ->middleware('throttle:5,1')
+        ->middleware('throttle:5,1,forgot-password')
         ->name('password.email');
     Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
         ->name('password.reset');
@@ -43,10 +44,10 @@ Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
-        ->middleware(['signed', 'throttle:6,1'])
+        ->middleware(['signed', 'throttle:6,1,verify-email'])
         ->name('verification.verify');
     Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-        ->middleware('throttle:6,1')
+        ->middleware('throttle:6,1,verification-send')
         ->name('verification.send');
     Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
         ->name('password.confirm');

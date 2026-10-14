@@ -635,10 +635,11 @@ class LinkController extends Controller
 
             return response()->json(['success' => true, 'data' => $ogData]);
         } catch (\Exception $e) {
+            // The other site failed (404, timeout, TLS...): a problem with that URL, not a server error.
             return response()->json([
                 'success' => false,
                 'error' => 'Could not fetch Open Graph data',
-            ], 500);
+            ], 422);
         }
     }
 }
