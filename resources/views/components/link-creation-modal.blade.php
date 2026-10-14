@@ -161,7 +161,7 @@
                                         x-model="formData.slug"
                                         @input="generateQrPreview()"
                                         placeholder="custom-slug"
-                                        pattern="[a-zA-Z0-9_-]+"
+                                        pattern="[a-zA-Z0-9_\-]+"
                                         class="flex-1 rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:ring-blue-500"
                                     >
                                     <button 
