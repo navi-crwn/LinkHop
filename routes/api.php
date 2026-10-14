@@ -18,7 +18,7 @@ Route::middleware(['api.auth'])->group(function () {
     Route::post('/shorten', [ShortenController::class, 'store']);
 });
 // Shortlink creation and user library search - supports both Sanctum (API token) and web session auth
-Route::middleware(['web', 'auth'])->group(function () {
+Route::middleware(['web', 'auth', '2fa'])->group(function () {
     Route::get('/links', [LinkController::class, 'index']);
     Route::post('/shorten-web', [LinkController::class, 'shorten'])->middleware(['verified', 'throttle:shorten', 'quota']);
     // Bio-specific shortlink creation (same safety checks and quota as other links)

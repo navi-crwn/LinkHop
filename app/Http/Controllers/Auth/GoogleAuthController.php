@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\WelcomeEmail;
+use App\Models\Folder;
 use App\Models\User;
 use App\Services\NotificationService;
 use Exception;
@@ -44,6 +46,11 @@ class GoogleAuthController extends Controller
                 'session_id' => session()->getId(),
             ]);
             session()->forget('google_oauth_from');
+            // Accounts are matched by email, so only trust addresses Google has verified.
+            $raw = (array) ($googleUser->user ?? []);
+            if (! ($raw['email_verified'] ?? $raw['verified_email'] ?? false)) {
+                return redirect()->route('login')->with('error', 'Your Google email address is not verified.');
+            }
             $user = User::where('email', $googleUser->email)
                 ->orWhere('google_id', $googleUser->id)
                 ->first();
@@ -100,14 +107,14 @@ class GoogleAuthController extends Controller
                     ]);
                 }
                 try {
-                    \Mail::to($user->email)->send(new \App\Mail\WelcomeEmail($user, $catchphrase, true));
+                    \Mail::to($user->email)->send(new WelcomeEmail($user, $catchphrase, true));
                 } catch (Exception $e) {
                     \Log::error('Failed to send welcome email', [
                         'error' => $e->getMessage(),
                         'user_id' => $user->id,
                     ]);
                 }
-                \App\Models\Folder::create([
+                Folder::create([
                     'name' => 'Default',
                     'user_id' => $user->id,
                     'is_default' => true,

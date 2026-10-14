@@ -27,7 +27,7 @@ class PublicBioController extends Controller
         if (! $bioPage) {
             return response()->view('bio.not-found', ['slug' => $slug], 404);
         }
-        if (! $bioPage->is_published) {
+        if (! $bioPage->is_published || $bioPage->user?->isSuspended()) {
             return response()->view('bio.not-found', ['slug' => $slug, 'unpublished' => true], 404);
         }
         // Password protection check
@@ -78,7 +78,7 @@ class PublicBioController extends Controller
         // Disabled blocks / unpublished pages must not keep redirecting.
         $bioLink->loadMissing('bioPage');
         $target = SafeContent::url($bioLink->url);
-        if (! $bioLink->is_active || ! $bioLink->bioPage?->is_published || $target === '#') {
+        if (! $bioLink->is_active || ! $bioLink->bioPage?->is_published || $bioLink->bioPage->user?->isSuspended() || $target === '#') {
             abort(404);
         }
         $ipAddress = request()->ip();

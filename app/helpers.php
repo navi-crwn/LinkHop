@@ -245,3 +245,13 @@ if (! function_exists('sql_date_format')) {
         return "DATE_FORMAT({$column}, '".str_replace("'", "''", $format)."')";
     }
 }
+
+if (! function_exists('csv_safe')) {
+    /**
+     * Prefix values that spreadsheets would evaluate as formulas (CSV injection).
+     */
+    function csv_safe(array $row): array
+    {
+        return array_map(fn ($v) => is_string($v) && preg_match('/^[=+\-@\t\r]/', $v) ? "'".$v : $v, $row);
+    }
+}

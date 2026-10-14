@@ -144,7 +144,7 @@ class AdminBioController extends Controller
                 $file = fopen('php://output', 'w');
                 fputcsv($file, ['ID', 'Slug', 'Title', 'User', 'Email', 'Views', 'Links Count', 'Published', 'Created At']);
                 foreach ($data as $bio) {
-                    fputcsv($file, [
+                    fputcsv($file, csv_safe([
                         $bio->id,
                         $bio->slug,
                         $bio->title,
@@ -154,7 +154,7 @@ class AdminBioController extends Controller
                         $bio->links()->count(),
                         $bio->is_published ? 'Yes' : 'No',
                         $bio->created_at->format('Y-m-d H:i:s'),
-                    ]);
+                    ]));
                 }
                 fclose($file);
             };
@@ -164,7 +164,7 @@ class AdminBioController extends Controller
                 $file = fopen('php://output', 'w');
                 fputcsv($file, ['ID', 'Bio Page', 'Link Title', 'Country', 'Device', 'Browser', 'Referrer', 'Clicked At']);
                 foreach ($data as $click) {
-                    fputcsv($file, [
+                    fputcsv($file, csv_safe([
                         $click->id,
                         $click->bioLink->bioPage->title ?? 'N/A',
                         $click->bioLink->title ?? 'N/A',
@@ -173,7 +173,7 @@ class AdminBioController extends Controller
                         $click->browser,
                         $click->referrer,
                         $click->created_at->format('Y-m-d H:i:s'),
-                    ]);
+                    ]));
                 }
                 fclose($file);
             };

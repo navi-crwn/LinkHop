@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 test('reset password link screen can be rendered', function () {
     $response = $this->get('/forgot-password');
@@ -17,13 +18,13 @@ test('reset password link can be requested', function () {
 });
 test('reset password screen can be rendered', function () {
     $user = User::factory()->create();
-    $this->withSession(['password_reset_email' => $user->email]);
+    $this->withSession(['password_reset_email' => $user->email, 'password_reset_at' => now()->timestamp]);
     $response = $this->get(route('password.reset.form'));
     $response->assertStatus(200);
 });
 test('password can be reset with valid token', function () {
     $user = User::factory()->create();
-    $this->withSession(['password_reset_email' => $user->email]);
+    $this->withSession(['password_reset_email' => $user->email, 'password_reset_at' => now()->timestamp]);
     $response = $this->post(route('password.reset.update'), [
         'password' => 'password',
         'password_confirmation' => 'password',
@@ -31,5 +32,5 @@ test('password can be reset with valid token', function () {
     $response
         ->assertSessionHasNoErrors()
         ->assertRedirect(route('login'));
-    $this->assertTrue(\Illuminate\Support\Facades\Hash::check('password', $user->fresh()->password));
+    $this->assertTrue(Hash::check('password', $user->fresh()->password));
 });
