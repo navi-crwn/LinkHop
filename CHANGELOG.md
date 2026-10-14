@@ -5,6 +5,34 @@ All notable changes to HEL.ink will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Security
+- Bio shortlink endpoints (`/api/bio/shorten`, `/api/shorten-web`) now enforce the domain blacklist, quota and rate limits
+- Bio blocks reject `javascript:`/`data:` URLs and blocked domains; public bio pages sanitize HTML/text blocks, custom CSS and background styles
+- Users can no longer edit or delete bio blocks that belong to another page (scoped route bindings)
+- Registration no longer derives a role from the email domain, rejects disposable emails and is rate limited per IP
+- Dependencies updated within their constraints (Laravel 12.70); `composer audit` is clean
+
+### Added
+- `abuse:scan` command, scheduled hourly (new/edited items) and nightly (full sweep + purge): blacklist, keyword categories (CSAM, gambling, phishing, scam, adult), risky URL traits and optional Google Safe Browsing / URLhaus lookups (`SAFE_BROWSING_KEY`, `URLHAUS_AUTH_KEY`)
+- Automated findings on the admin Abuse page with Confirm / Restore
+- `config/abuse.php` for patterns, weights and thresholds
+
+### Fixed
+- Bio editor: the URL field disappeared after once choosing "Select existing link"
+- Bio editor: the URL field was rewritten while typing
+- Bio editor: smooth drag & drop (no re-render or Sortable re-init per drop; SortableJS bundled instead of loaded twice from CDN)
+- Bio editor: visibility toggles in the block list were not saved
+- Bio editor: requests broke after renaming the page slug
+- Bio link clicks were never recorded (public links bypassed the click tracker); disabled blocks no longer redirect
+- Bio click tracking crashed (missing `jenssegers/agent` dependency)
+- Fresh installs failed on the early `2024_12_05` bio migrations
+- Login of `@superadmin.com` accounts errored on a non-existent route
+
+### Removed
+- Unused legacy bio editor views and the `/test-modal` debug route
+
 ## [2.0.0] - 2025-12-12
 
 ### Added

@@ -40,7 +40,7 @@
                             <div class="block-actions">
                                 <!-- Visibility Toggle -->
                                 <label class="toggle-switch">
-                                    <input type="checkbox" x-model="item.is_active">
+                                    <input type="checkbox" :checked="item.is_active" @change="toggleBlock(idx)">
                                     <span class="toggle-slider"></span>
                                 </label>
                                 <!-- Edit Button -->

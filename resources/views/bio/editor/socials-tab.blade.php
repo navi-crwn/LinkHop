@@ -35,7 +35,7 @@
         <div class="p-4">
             <!-- Social Links List -->
             <div id="socials-list" class="space-y-2 mb-4" x-show="bioPage.social_links && bioPage.social_links.length > 0">
-                <template x-for="(item, idx) in (bioPage.social_links || [])" :key="item.platform + '-' + idx">
+                <template x-for="(item, idx) in (bioPage.social_links || [])" :key="item._uid || (item.platform + '-' + idx)">
                     <div class="block-item" x-show="item">
                         <!-- Drag Handle -->
                         <div class="social-drag-handle block-drag-handle">

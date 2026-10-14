@@ -1,8 +1,10 @@
 import './bootstrap';
 import Alpine from 'alpinejs';
 import collapse from '@alpinejs/collapse';
+import Sortable from 'sortablejs';
 Alpine.plugin(collapse);
 window.Alpine = Alpine;
+window.Sortable = Sortable;
 // Use requestAnimationFrame to ensure inline scripts in blade templates have executed
 // This handles the race condition with module script execution
 requestAnimationFrame(() => {

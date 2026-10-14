@@ -259,14 +259,20 @@
         border: 1px solid var(--editor-border);
         border-radius: 10px;
         margin-bottom: 8px;
-        transition: all 0.2s;
+        /* Only colors: animating transform would fight SortableJS's own animation */
+        transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
     }
     .block-item:hover { border-color: var(--editor-text-muted); }
     .block-drag-handle {
         cursor: grab;
         color: var(--editor-text-muted);
-        padding: 4px;
+        padding: 8px 4px;
+        touch-action: none;
     }
+    .block-drag-handle:active { cursor: grabbing; }
+    .block-ghost { opacity: 0.35; border-style: dashed; }
+    .block-chosen { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18); }
+    .sortable-fallback { opacity: 0.95 !important; }
     .block-drag-handle:hover { color: var(--editor-text); }
     .block-icon {
         width: 40px;
@@ -732,29 +738,29 @@
                     <div class="space-y-4">
                         <div class="flex items-center gap-3 p-3 rounded-lg" style="background: var(--editor-card-bg)">
                             <div class="w-10 h-10 rounded-lg flex items-center justify-center" 
-                                 :style="{ backgroundColor: editingBlock.brand ? getPlatformColor(editingBlock.brand) : '#6366f1' }">
-                                <template x-if="editingBlock.brand">
-                                    <img :src="getPlatformIcon(editingBlock.brand)" class="w-5 h-5" style="filter: brightness(0) invert(1);">
+                                 :style="{ backgroundColor: editingBlock?.brand ? getPlatformColor(editingBlock?.brand) : '#6366f1' }">
+                                <template x-if="editingBlock?.brand">
+                                    <img :src="getPlatformIcon(editingBlock?.brand)" class="w-5 h-5" style="filter: brightness(0) invert(1);">
                                 </template>
-                                <template x-if="!editingBlock.brand">
+                                <template x-if="!editingBlock?.brand">
                                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
                                     </svg>
                                 </template>
                             </div>
                             <div>
-                                <div class="text-sm font-medium editor-text" x-text="editingBlock.brand ? brands[editingBlock.brand]?.name : 'Custom Link'"></div>
-                                <div class="text-xs editor-text-muted" x-text="editingBlock.type"></div>
+                                <div class="text-sm font-medium editor-text" x-text="editingBlock?.brand ? brands[editingBlock?.brand]?.name : 'Custom Link'"></div>
+                                <div class="text-xs editor-text-muted" x-text="editingBlock?.type"></div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Title</label>
                             <input type="text" x-model="editingBlock.title" class="form-input" placeholder="Button title" autocomplete="off" data-lpignore="true" data-form-type="other">
                         </div>
-                        <template x-if="editingBlock && editingBlock.type === 'link'">
+                        <template x-if="editingBlock && editingBlock?.type === 'link'">
                             <div class="space-y-4">
                                 <!-- Link Mode Selection (Only for Custom Links) -->
-                                <template x-if="!editingBlock.brand">
+                                <template x-if="!editingBlock?.brand">
                                     <div class="form-group mb-4">
                                         <div class="flex gap-6">
                                             <label class="flex items-center gap-2 cursor-pointer">
@@ -770,37 +776,38 @@
                                 </template>
                                 <div class="form-group">
                                     <!-- Create New Mode -->
-                                    <template x-if="editingBlock.brand || linkInputMode === 'create'">
+                                    <template x-if="editingBlock?.brand || linkInputMode === 'create'">
                                         <div>
-                                            <label class="form-label" x-text="editingBlock.brand ? 'URL' : 'Destination URL'"></label>
-                                            <input type="text" x-model="editingBlock.url" 
-                                                @input="processUrl(editingBlock); validatePlatformUrl(editingBlock)"
+                                            <label class="form-label" x-text="editingBlock?.brand ? 'URL' : 'Destination URL'"></label>
+                                            <input type="text" :value="editingBlock?.url ?? ''"
+                                                @input="if (editingBlock) { editingBlock.url = $event.target.value; validatePlatformUrl(editingBlock) }"
+                                                @blur="processUrl(editingBlock, true); validatePlatformUrl(editingBlock)"
                                                 @input.debounce.1000ms="fetchUrlTitle(editingBlock)"
                                                 class="form-input" 
-                                                :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': editingBlock._urlError }"
-                                                :placeholder="editingBlock.brand ? brands[editingBlock.brand]?.placeholder : 'ex. https://longurl.com'"
+                                                :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': editingBlock?._urlError }"
+                                                :placeholder="editingBlock?.brand ? brands[editingBlock?.brand]?.placeholder : 'ex. https://longurl.com'"
                                                 autocomplete="off" data-lpignore="true" data-form-type="other">
-                                            <p class="text-xs mt-1" :class="editingBlock._urlError ? 'text-red-400' : 'editor-text-muted'">
-                                                <template x-if="editingBlock._urlError">
-                                                    <span x-text="editingBlock._urlError"></span>
+                                            <p class="text-xs mt-1" :class="editingBlock?._urlError ? 'text-red-400' : 'editor-text-muted'">
+                                                <template x-if="editingBlock?._urlError">
+                                                    <span x-text="editingBlock?._urlError"></span>
                                                 </template>
-                                                <template x-if="!editingBlock._urlError && !editingBlock.brand">
+                                                <template x-if="!editingBlock?._urlError && !editingBlock?.brand">
                                                     <span>Enter a long URL to automatically shorten it</span>
                                                 </template>
                                             </p>
                                         </div>
                                     </template>
                                     <!-- Select Existing Mode -->
-                                    <template x-if="!editingBlock.brand && linkInputMode === 'existing'">
+                                    <template x-if="!editingBlock?.brand && linkInputMode === 'existing'">
                                         <div class="relative" @click.outside="libraryLinks = []; librarySearch = ''">
                                             <label class="form-label">Select a link</label>
                                             <!-- Selected Link Display -->
-                                            <template x-if="editingBlock.url && !librarySearch">
+                                            <template x-if="editingBlock?.url && !librarySearch">
                                                 <div class="mb-3 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg flex items-center justify-between group">
                                                     <div class="overflow-hidden">
                                                         <div class="text-xs text-blue-600 dark:text-blue-400 font-medium mb-0.5">Selected Link</div>
-                                                        <div class="text-sm font-medium truncate" x-text="editingBlock.title || 'Untitled'"></div>
-                                                        <div class="text-xs text-slate-500 truncate" x-text="editingBlock.url"></div>
+                                                        <div class="text-sm font-medium truncate" x-text="editingBlock?.title || 'Untitled'"></div>
+                                                        <div class="text-xs text-slate-500 truncate" x-text="editingBlock?.url"></div>
                                                     </div>
                                                     <button @click="editingBlock.url = ''; editingBlock.title = '';" class="p-1 hover:bg-blue-100 dark:hover:bg-blue-800 rounded text-blue-600 dark:text-blue-400">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -809,7 +816,7 @@
                                                     </button>
                                                 </div>
                                             </template>
-                                            <div class="relative" x-show="!editingBlock.url || librarySearch">
+                                            <div class="relative" x-show="!editingBlock?.url || librarySearch">
                                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                                     <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -823,7 +830,7 @@
                                                     placeholder="Type to search existing URL...">
                                             </div>
                                             <!-- Inline Results Dropdown -->
-                                            <div x-show="librarySearch.length > 0 || (libraryLinks.length > 0 && !editingBlock.url)" 
+                                            <div x-show="librarySearch.length > 0 || (libraryLinks.length > 0 && !editingBlock?.url)" 
                                                  class="absolute z-[60] w-full mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 max-h-60 overflow-y-auto custom-scrollbar">
                                                 <template x-if="libraryLoading">
                                                     <div class="p-4 text-center text-sm text-slate-500">Loading...</div>
@@ -846,7 +853,7 @@
                                     </template>
                                 </div>
                                 <!-- Icon Picker - Only for Custom Links (no brand) -->
-                                <template x-if="!editingBlock.brand">
+                                <template x-if="!editingBlock?.brand">
                                     <div class="form-group">
                                         <label class="form-label">Icon</label>
                                         <button type="button" 
@@ -855,17 +862,17 @@
                                                 style="cursor: pointer; pointer-events: auto;">
                                             <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-colors" 
                                                  :style="{ backgroundColor: '#6366f1' }">
-                                                <template x-if="editingBlock.custom_icon">
-                                                    <img :src="editingBlock.custom_icon" class="w-5 h-5 object-contain">
+                                                <template x-if="editingBlock?.custom_icon">
+                                                    <img :src="editingBlock?.custom_icon" class="w-5 h-5 object-contain">
                                                 </template>
-                                                <template x-if="!editingBlock.custom_icon">
+                                                <template x-if="!editingBlock?.custom_icon">
                                                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
                                                     </svg>
                                                 </template>
                                             </div>
                                             <div class="flex-1 min-w-0">
-                                                <div class="text-sm font-medium editor-text truncate" x-text="editingBlock.custom_icon ? 'Custom icon' : 'No icon selected'"></div>
+                                                <div class="text-sm font-medium editor-text truncate" x-text="editingBlock?.custom_icon ? 'Custom icon' : 'No icon selected'"></div>
                                                 <div class="text-xs editor-text-muted">Click to change icon</div>
                                             </div>
                                             <svg class="w-5 h-5 editor-text-muted shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -880,10 +887,10 @@
                                         <div class="flex items-center gap-3">
                                             <div class="w-10 h-10 rounded-lg flex items-center justify-center border-2"
                                                  :style="{
-                                                     backgroundColor: isBlockAutoStyle(editingBlock) ? getEffectiveButtonBg() : (editingBlock.btn_bg_color || getEffectiveButtonBg()),
-                                                     borderColor: editingBlock.btn_border_color || 'transparent'
+                                                     backgroundColor: isBlockAutoStyle(editingBlock) ? getEffectiveButtonBg() : (editingBlock?.btn_bg_color || getEffectiveButtonBg()),
+                                                     borderColor: editingBlock?.btn_border_color || 'transparent'
                                                  }">
-                                                <svg class="w-5 h-5" :style="{ color: isBlockAutoStyle(editingBlock) ? getEffectiveButtonText() : (editingBlock.btn_text_color || getEffectiveButtonText()) }" fill="currentColor" viewBox="0 0 24 24">
+                                                <svg class="w-5 h-5" :style="{ color: isBlockAutoStyle(editingBlock) ? getEffectiveButtonText() : (editingBlock?.btn_text_color || getEffectiveButtonText()) }" fill="currentColor" viewBox="0 0 24 24">
                                                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                                                 </svg>
                                             </div>
@@ -902,16 +909,16 @@
                                             <div class="flex justify-center p-4 rounded-lg" style="background: var(--editor-bg);">
                                                 <div class="px-6 py-3 rounded-lg font-semibold text-center min-w-[200px] flex items-center justify-center gap-2 transition-all"
                                                      :style="{
-                                                         backgroundColor: isBlockAutoStyle(editingBlock) ? getEffectiveButtonBg() : (editingBlock.btn_bg_color || getEffectiveButtonBg()),
-                                                         color: isBlockAutoStyle(editingBlock) ? getEffectiveButtonText() : (editingBlock.btn_text_color || getEffectiveButtonText()),
-                                                         border: isBlockAutoStyle(editingBlock) ? 'none' : (editingBlock.btn_border_color ? '1px solid ' + editingBlock.btn_border_color : 'none')
+                                                         backgroundColor: isBlockAutoStyle(editingBlock) ? getEffectiveButtonBg() : (editingBlock?.btn_bg_color || getEffectiveButtonBg()),
+                                                         color: isBlockAutoStyle(editingBlock) ? getEffectiveButtonText() : (editingBlock?.btn_text_color || getEffectiveButtonText()),
+                                                         border: isBlockAutoStyle(editingBlock) ? 'none' : (editingBlock?.btn_border_color ? '1px solid ' + editingBlock?.btn_border_color : 'none')
                                                      }">
-                                                    <template x-if="editingBlock.brand || editingBlock.custom_icon">
-                                                        <img :src="editingBlock.custom_icon || getPlatformIcon(editingBlock.brand)" 
+                                                    <template x-if="editingBlock?.brand || editingBlock?.custom_icon">
+                                                        <img :src="editingBlock?.custom_icon || getPlatformIcon(editingBlock?.brand)" 
                                                              class="w-5 h-5" 
-                                                             :style="{ filter: isBlockAutoStyle(editingBlock) ? getAutoIconFilter() : (editingBlock.btn_icon_invert == true ? 'brightness(0) invert(1)' : 'none') }">
+                                                             :style="{ filter: isBlockAutoStyle(editingBlock) ? getAutoIconFilter() : (editingBlock?.btn_icon_invert == true ? 'brightness(0) invert(1)' : 'none') }">
                                                     </template>
-                                                    <span x-text="editingBlock.title || 'Button Preview'"></span>
+                                                    <span x-text="editingBlock?.title || 'Button Preview'"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -1000,7 +1007,7 @@
                                 </div>
                             </div>
                         </template>
-                        <template x-if="editingBlock.type === 'text'">
+                        <template x-if="editingBlock?.type === 'text'">
                             <div class="form-group">
                                 <label class="form-label flex items-center justify-between">
                                     <span>Content</span>
@@ -1015,12 +1022,12 @@
                                 <textarea x-model="editingBlock.content" class="form-input form-textarea" rows="3" placeholder="Enter content..."></textarea>
                             </div>
                         </template>
-                        <template x-if="editingBlock.type === 'image'">
+                        <template x-if="editingBlock?.type === 'image'">
                             <div class="space-y-4">
-                                <div class="form-group" x-show="editingBlock.image_url">
+                                <div class="form-group" x-show="editingBlock?.image_url">
                                     <label class="form-label">Current Image</label>
                                     <div class="relative w-full h-40 rounded-lg overflow-hidden" style="background: var(--editor-input-bg);">
-                                        <img :src="editingBlock.image_url" class="w-full h-full object-contain">
+                                        <img :src="editingBlock?.image_url" class="w-full h-full object-contain">
                                         <button type="button" @click="editingBlock.image_url = ''" 
                                                 class="absolute top-2 right-2 p-1.5 bg-red-600 hover:bg-red-700 rounded-full text-white">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1052,7 +1059,7 @@
                                 </div>
                             </div>
                         </template>
-                        <template x-if="editingBlock.type === 'youtube'">
+                        <template x-if="editingBlock?.type === 'youtube'">
                             <div class="space-y-4">
                                 <div class="form-group">
                                     <label class="form-label">YouTube Video URL</label>
@@ -1065,7 +1072,7 @@
                                 </div>
                             </div>
                         </template>
-                        <template x-if="editingBlock.type === 'spotify'">
+                        <template x-if="editingBlock?.type === 'spotify'">
                             <div class="space-y-4">
                                 <div class="form-group">
                                     <label class="form-label">Spotify URL</label>
@@ -1078,7 +1085,7 @@
                                 </div>
                             </div>
                         </template>
-                        <template x-if="editingBlock.type === 'soundcloud'">
+                        <template x-if="editingBlock?.type === 'soundcloud'">
                             <div class="space-y-4">
                                 <div class="form-group">
                                     <label class="form-label">SoundCloud URL</label>
@@ -1091,7 +1098,7 @@
                                 </div>
                             </div>
                         </template>
-                        <template x-if="editingBlock.type === 'code'">
+                        <template x-if="editingBlock?.type === 'code'">
                             <div class="space-y-4">
                                 <div class="form-group">
                                     <label class="form-label">Block Title</label>
@@ -1115,7 +1122,7 @@
                                 </div>
                             </div>
                         </template>
-                        <template x-if="editingBlock.type === 'map'">
+                        <template x-if="editingBlock?.type === 'map'">
                             <div class="space-y-4">
                                 <div class="form-group">
                                     <label class="form-label">Location Title</label>
@@ -1128,11 +1135,11 @@
                                 <div class="form-group">
                                     <label class="form-label">Zoom Level</label>
                                     <input type="range" x-model="editingBlock.map_zoom" min="10" max="18" class="w-full">
-                                    <p class="text-sm editor-text-muted text-center" x-text="'Zoom: ' + (editingBlock.map_zoom || 15)"></p>
+                                    <p class="text-sm editor-text-muted text-center" x-text="'Zoom: ' + (editingBlock?.map_zoom || 15)"></p>
                                 </div>
                             </div>
                         </template>
-                        <template x-if="editingBlock.type === 'countdown'">
+                        <template x-if="editingBlock?.type === 'countdown'">
                             <div class="space-y-4">
                                 <div class="form-group">
                                     <label class="form-label">Countdown Label</label>
@@ -1144,7 +1151,7 @@
                                 </div>
                             </div>
                         </template>
-                        <template x-if="editingBlock.type === 'header'">
+                        <template x-if="editingBlock?.type === 'header'">
                             <div class="space-y-4">
                                 <div class="form-group">
                                     <label class="form-label">Header Text</label>
@@ -1152,7 +1159,7 @@
                                 </div>
                             </div>
                         </template>
-                        <template x-if="editingBlock.type === 'vcard'">
+                        <template x-if="editingBlock?.type === 'vcard'">
                             <div class="space-y-4">
                                 <div class="form-group">
                                     <label class="form-label">Full Name</label>
@@ -1172,7 +1179,7 @@
                                 </div>
                             </div>
                         </template>
-                        <template x-if="editingBlock.type === 'html'">
+                        <template x-if="editingBlock?.type === 'html'">
                             <div class="space-y-4">
                                 <div class="form-group">
                                     <label class="form-label">Block Title (Optional)</label>
@@ -1186,7 +1193,7 @@
                             </div>
                         </template>
                         <!-- Animation Settings - Only for link type blocks -->
-                        <template x-if="editingBlock.type === 'link'">
+                        <template x-if="editingBlock?.type === 'link'">
                             <div class="p-3 rounded-lg space-y-4" style="background: var(--editor-card-bg)">
                                 <div class="flex items-center gap-2 mb-2">
                                     <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1541,6 +1548,9 @@
 @endsection
 @push('scripts-head')
 <script>
+// Editor API URLs follow the *saved* slug, so renaming the page doesn't break later requests.
+window.bioEditorSlug = @json($bioPage->slug);
+window.bioEditorUrl = (path = '') => '/bio/' + encodeURIComponent(window.bioEditorSlug) + path;
 // Define bioEditorV2 before Alpine initializes
 window.bioEditorV2 = function() {
     return {
@@ -1650,6 +1660,8 @@ window.bioEditorV2 = function() {
             if (!this.bioPage.social_links) {
                 this.bioPage.social_links = [];
             }
+            // Stable client-side keys for x-for / drag sorting (stripped before saving)
+            this.bioPage.social_links.forEach(s => { s._uid ??= this.uid(); });
             // Store original data hash for change detection
             this.originalDataHash = this.getDataHash();
             // Listen for preview ready
@@ -1726,12 +1738,9 @@ window.bioEditorV2 = function() {
             });
             // Push initial state to enable popstate handling
             history.pushState(null, '', window.location.href);
-            // Reinitialize sortable when tab changes
-            this.$watch('activeTab', () => {
-                if (this.activeTab === 'links' || this.activeTab === 'socials') {
-                    this.reinitSortable();
-                }
-            });
+        },
+        uid() {
+            return Math.random().toString(36).slice(2, 10);
         },
         getDataHash() {
             return JSON.stringify({ bioPage: this.bioPage, blocks: this.blocks });
@@ -1769,103 +1778,60 @@ window.bioEditorV2 = function() {
             this.pendingNavigation = null;
         },
         initSortable() {
+            // Tabs use x-show, so the list containers exist for the editor's lifetime:
+            // create each Sortable once and never destroy/re-create it after a drop.
             this.$nextTick(() => {
-                const blocksContainer = document.getElementById('blocks-list');
-                if (blocksContainer && !this.blocksSortable) {
-                    const self = this;
-                    this.blocksSortable = Sortable.create(blocksContainer, {
-                        draggable: '.block-item',
-                        handle: '.block-drag-handle',
-                        animation: 150,
-                        ghostClass: 'opacity-50',
-                        // Don't use forceFallback to avoid DOM issues with Alpine
-                        onStart: (evt) => {
-                            // Store the original DOM order
-                            self._sortableChildren = Array.from(blocksContainer.children);
-                        },
-                        onEnd: (evt) => {
-                            const oldIndex = evt.oldIndex;
-                            const newIndex = evt.newIndex;
-                            // Restore DOM to original order immediately
-                            // This prevents Alpine from losing bindings
-                            if (self._sortableChildren) {
-                                self._sortableChildren.forEach(child => {
-                                    blocksContainer.appendChild(child);
-                                });
-                            }
-                            if (oldIndex === newIndex) return;
-                            // Now update the data - Alpine will re-render correctly
-                            const currentBlocks = JSON.parse(JSON.stringify(Alpine.raw(self.blocks)));
-                            const movedBlock = currentBlocks.splice(oldIndex, 1)[0];
-                            currentBlocks.splice(newIndex, 0, movedBlock);
-                            currentBlocks.forEach((block, idx) => block.order = idx);
-                            // Update Alpine state
-                            self.blocks = currentBlocks;
-                            // Re-init sortable after Alpine re-renders
-                            self.$nextTick(() => {
-                                self.saveBlocksOrder();
-                                self.sendPreviewUpdate();
-                                // Reinit sortable to rebind to new DOM
-                                if (self.blocksSortable) {
-                                    self.blocksSortable.destroy();
-                                    self.blocksSortable = null;
-                                }
-                                self.$nextTick(() => self.initSortable());
-                            });
-                        }
+                const blocksEl = document.getElementById('blocks-list');
+                if (blocksEl && !this.blocksSortable) {
+                    this.blocksSortable = this.makeSortable(blocksEl, '.block-drag-handle', (from, to) => {
+                        const [moved] = this.blocks.splice(from, 1);
+                        this.blocks.splice(to, 0, moved);
+                        this.blocks.forEach((b, i) => b.order = i);
+                        this.debouncedSaveOrder();
                     });
                 }
-                const socialsContainer = document.getElementById('socials-list');
-                if (socialsContainer && !this.socialsSortable) {
-                    const self = this;
-                    this.socialsSortable = Sortable.create(socialsContainer, {
-                        draggable: '.block-item',
-                        handle: '.social-drag-handle',
-                        animation: 150,
-                        ghostClass: 'opacity-50',
-                        onStart: (evt) => {
-                            self._socialChildren = Array.from(socialsContainer.children);
-                        },
-                        onEnd: (evt) => {
-                            const oldIndex = evt.oldIndex;
-                            const newIndex = evt.newIndex;
-                            // Restore DOM to original order
-                            if (self._socialChildren) {
-                                self._socialChildren.forEach(child => {
-                                    socialsContainer.appendChild(child);
-                                });
-                            }
-                            if (oldIndex === newIndex) return;
-                            // Update data
-                            const socialLinks = JSON.parse(JSON.stringify(Alpine.raw(self.bioPage.social_links)));
-                            const movedSocial = socialLinks.splice(oldIndex, 1)[0];
-                            socialLinks.splice(newIndex, 0, movedSocial);
-                            self.bioPage.social_links = socialLinks;
-                            self.$nextTick(() => {
-                                self.sendPreviewUpdate();
-                                // Reinit sortable
-                                if (self.socialsSortable) {
-                                    self.socialsSortable.destroy();
-                                    self.socialsSortable = null;
-                                }
-                                self.$nextTick(() => self.initSortable());
-                            });
-                        }
+                const socialsEl = document.getElementById('socials-list');
+                if (socialsEl && !this.socialsSortable) {
+                    this.socialsSortable = this.makeSortable(socialsEl, '.social-drag-handle', (from, to) => {
+                        const list = this.bioPage.social_links;
+                        const [moved] = list.splice(from, 1);
+                        list.splice(to, 0, moved);
                     });
                 }
             });
         },
-        // Re-initialize sortable when tab changes
-        reinitSortable() {
-            if (this.blocksSortable) {
-                this.blocksSortable.destroy();
-                this.blocksSortable = null;
-            }
-            if (this.socialsSortable) {
-                this.socialsSortable.destroy();
-                this.socialsSortable = null;
-            }
-            this.$nextTick(() => this.initSortable());
+        makeSortable(el, handle, onMove) {
+            return Sortable.create(el, {
+                draggable: '.block-item',
+                handle,
+                animation: 150,
+                ghostClass: 'block-ghost',
+                chosenClass: 'block-chosen',
+                // Pointer-based dragging behaves the same with mouse and touch and
+                // avoids the browser's native drag image flicker.
+                forceFallback: true,
+                fallbackTolerance: 4,
+                scroll: true,
+                bubbleScroll: true,
+                fallbackOnBody: true,
+                // The drag ghost is a clone of the item appended to <body>; keep Alpine
+                // from initialising it outside its x-for scope ("item is not defined").
+                onStart: () => { document.body._x_ignoreMutationObserver = true; },
+                onEnd: (evt) => {
+                    delete document.body._x_ignoreMutationObserver;
+                    const { item, from, oldIndex, newIndex } = evt;
+                    if (oldIndex === undefined || newIndex === undefined || oldIndex === newIndex) return;
+                    // Put the node back where it was: Alpine's keyed x-for moves it
+                    // once the array changes, so DOM and data never disagree.
+                    const siblings = Array.from(from.children).filter(c => c !== item && c.tagName !== 'TEMPLATE');
+                    from.insertBefore(item, siblings[oldIndex] ?? null);
+                    onMove(oldIndex, newIndex);
+                }
+            });
+        },
+        debouncedSaveOrder() {
+            clearTimeout(this._orderTimeout);
+            this._orderTimeout = setTimeout(() => this.saveBlocksOrder(), 400);
         },
         // Preview
         sendPreviewUpdate() {
@@ -1959,6 +1925,7 @@ window.bioEditorV2 = function() {
         },
         // Block Management
         addBlock(type) {
+            this.linkInputMode = 'create';
             const newBlock = {
                 id: Date.now(),
                 type: type,
@@ -2004,6 +1971,7 @@ window.bioEditorV2 = function() {
             return titles[type] || '';
         },
         addBrandBlock(brandId) {
+            this.linkInputMode = 'create';
             const brand = this.brands[brandId];
             const newBlock = {
                 id: Date.now(),
@@ -2087,50 +2055,51 @@ window.bioEditorV2 = function() {
                     this.showNotification('Title is required', 'error');
                     return;
                 }
-                if (!this.editingBlock.url || !String(this.editingBlock.url).trim()) {
+                this.processUrl(this.editingBlock, true);
+                let urlToCheck = String(this.editingBlock.url || '').trim();
+                if (!urlToCheck) {
                     this.showNotification('URL is required', 'error');
                     return;
                 }
-                try {
-                    let urlToCheck = String(this.editingBlock.url).trim();
-                    if (!urlToCheck.match(/^(https?:\/\/|mailto:)/i)) {
-                        urlToCheck = 'https://' + urlToCheck;
-                        this.editingBlock.url = urlToCheck;
-                    }
-                    // Auto-shorten for Custom Links (no brand)
-                    if (!this.editingBlock.brand) {
-                        const currentHost = window.location.host;
-                        // Check if it's already a shortlink from this domain
-                        if (!urlToCheck.includes(currentHost)) {
-                            this.saving = true;
-                            try {
-                                const response = await fetch('/api/bio/shorten', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                        'Accept': 'application/json'
-                                    },
-                                    body: JSON.stringify({
-                                        url: urlToCheck,
-                                        title: this.editingBlock.title
-                                    })
-                                });
-                                if (response.ok) {
-                                    const data = await response.json();
-                                    if (data.short_url) {
-                                        this.editingBlock.url = data.short_url;
-                                        this.showNotification('Link shortened automatically!', 'success');
-                                    }
-                                }
-                            } catch (e) {
-                                console.error('Auto-shorten failed:', e);
-                            } finally {
-                                this.saving = false;
-                            }
+                if (!/^[a-z][a-z0-9+.\-]*:/i.test(urlToCheck)) {
+                    urlToCheck = 'https://' + urlToCheck;
+                }
+                this.editingBlock.url = urlToCheck;
+                // Auto-shorten custom web links (not brand/mailto/tel links, not our own short links)
+                const isWeb = /^https?:\/\//i.test(urlToCheck);
+                if (isWeb && !this.editingBlock.brand && !urlToCheck.includes(window.location.host)) {
+                    this.saving = true;
+                    try {
+                        const response = await fetch('/api/bio/shorten', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                url: urlToCheck,
+                                title: this.editingBlock.title
+                            })
+                        });
+                        const data = await response.json().catch(() => ({}));
+                        if (response.ok && data.short_url) {
+                            this.editingBlock.url = data.short_url;
+                        } else if (response.status === 422) {
+                            this.editingBlock._urlError = data.message || 'This URL is not allowed.';
+                            this.showNotification(this.editingBlock._urlError, 'error');
+                            return;
+                        } else if (response.status === 429) {
+                            this.showNotification('Too many links created. Please wait a moment.', 'error');
+                            return;
                         }
+                        // Other failures: keep the long URL, the block still saves.
+                    } catch (e) {
+                        console.error('Auto-shorten failed:', e);
+                    } finally {
+                        this.saving = false;
                     }
-                } catch (e) {}
+                }
                 if (this.editingBlock.brand && !this.validateBrandUrl(this.editingBlock)) {
                     const brandName = this.brands[this.editingBlock.brand]?.name || this.editingBlock.brand;
                     this.showNotification(`URL doesn't match ${brandName}. Please enter a valid ${brandName} URL.`, 'error');
@@ -2193,14 +2162,6 @@ window.bioEditorV2 = function() {
             }
             this.editingBlock = null;
         },
-        deleteBlock(index) {
-            const block = this.blocks[index];
-            this.blocks.splice(index, 1);
-            this.blocks.forEach((b, i) => b.order = i);
-            if (block.id && block.id < 1000000000) {
-                this.deleteBlockFromServer(block.id);
-            }
-        },
         toggleBlock(index) {
             this.blocks[index].is_active = !this.blocks[index].is_active;
             this.markBlockDirty(this.blocks[index].id);
@@ -2234,6 +2195,7 @@ window.bioEditorV2 = function() {
                 this.bioPage.social_links = [];
             }
             this.bioPage.social_links.push({
+                _uid: this.uid(),
                 platform: this.editingSocial.platform,
                 value: this.editingSocial.value.trim(),
                 enabled: true
@@ -2282,7 +2244,7 @@ window.bioEditorV2 = function() {
             const formData = new FormData();
             formData.append('avatar', file);
             this.showNotification('Uploading avatar...', 'info');
-            fetch('{{ route("bio.upload-avatar", $bioPage) }}', {
+            fetch(bioEditorUrl('/upload-avatar'), {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -2322,7 +2284,7 @@ window.bioEditorV2 = function() {
             const formData = new FormData();
             formData.append('image', file);
             formData.append('_token', '{{ csrf_token() }}');
-            fetch('{{ route("bio.upload-image", $bioPage) }}', {
+            fetch(bioEditorUrl('/upload-image'), {
                 method: 'POST',
                 body: formData
             })
@@ -2433,15 +2395,13 @@ window.bioEditorV2 = function() {
             this.saving = true;
             try {
                 const { links, user, created_at, updated_at, ...bioData } = this.bioPage;
-                if (!bioData.social_links) {
-                    bioData.social_links = [];
-                }
+                bioData.social_links = (bioData.social_links || []).map(({ _uid, ...social }) => social);
                 if (bioData.socials && !Array.isArray(bioData.socials)) {
                     delete bioData.socials;
                 }
                 // Process deletions first
                 await this.processDeletions();
-                const response = await fetch('{{ route("bio.update", $bioPage) }}', {
+                const response = await fetch(bioEditorUrl(''), {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2454,6 +2414,11 @@ window.bioEditorV2 = function() {
                     const errorData = await response.json();
                     console.error('Save error:', errorData);
                     throw new Error(errorData.message || 'Failed to save');
+                }
+                const saved = await response.json().catch(() => ({}));
+                if (saved.bioPage?.slug && saved.bioPage.slug !== window.bioEditorSlug) {
+                    window.bioEditorSlug = saved.bioPage.slug;
+                    this.previewUrl = bioEditorUrl('/preview');
                 }
                 await this.saveBlocks();
                 this.showNotification('Saved successfully!', 'success');
@@ -2478,9 +2443,14 @@ window.bioEditorV2 = function() {
                     savePromises.push(this.updateBlock(block));
                 }
             }
+            const created = this.blocks.some(b => b.id >= 1000000000);
             // Execute all saves in parallel
             if (savePromises.length > 0) {
                 await Promise.all(savePromises);
+            }
+            // New blocks got real ids: persist the full order once.
+            if (created) {
+                await this.saveBlocksOrder();
             }
             // Clear dirty tracking after save
             this.dirtyBlockIds = new Set();
@@ -2491,7 +2461,7 @@ window.bioEditorV2 = function() {
             }
         },
         async createBlock(block) {
-            const response = await fetch('{{ route("bio.links.store", $bioPage) }}', {
+            const response = await fetch(bioEditorUrl('/links'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -2508,7 +2478,7 @@ window.bioEditorV2 = function() {
             }
         },
         async updateBlock(block) {
-            const response = await fetch(`/bio/{{ $bioPage->slug }}/links/${block.id}`, {
+            const response = await fetch(bioEditorUrl(`/links/${block.id}`), {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -2523,7 +2493,7 @@ window.bioEditorV2 = function() {
             }
         },
         async deleteBlockFromServer(blockId) {
-            const response = await fetch(`/bio/{{ $bioPage->slug }}/links/${blockId}`, {
+            const response = await fetch(bioEditorUrl(`/links/${blockId}`), {
                 method: 'DELETE',
                 headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
             });
@@ -2536,7 +2506,7 @@ window.bioEditorV2 = function() {
                 .filter(b => b.id < 1000000000)
                 .map((b, idx) => ({ id: b.id, order: idx }));
             if (linksData.length === 0) return;
-            await fetch('{{ route("bio.links.reorder", $bioPage) }}', {
+            await fetch(bioEditorUrl('/links/reorder'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -2766,6 +2736,7 @@ window.bioEditorV2 = function() {
                     }
                 });
             } else {
+                this.linkInputMode = 'create';
                 this.editingBlock = JSON.parse(JSON.stringify(block));
             }
         },
@@ -2829,7 +2800,7 @@ window.bioEditorV2 = function() {
             formData.append('_token', '{{ csrf_token() }}');
             this.saving = true;
             try {
-                const response = await fetch('{{ route("bio.upload-image", $bioPage) }}', {
+                const response = await fetch(bioEditorUrl('/upload-image'), {
                     method: 'POST',
                     body: formData
                 });
@@ -2855,7 +2826,7 @@ window.bioEditorV2 = function() {
             formData.append('image', file);
             formData.append('_token', '{{ csrf_token() }}');
             try {
-                const response = await fetch('{{ route("bio.upload-image", $bioPage) }}', {
+                const response = await fetch(bioEditorUrl('/upload-image'), {
                     method: 'POST',
                     body: formData
                 });
@@ -2952,7 +2923,7 @@ window.bioEditorV2 = function() {
             const formData = new FormData();
             formData.append('icon', file);
             try {
-                const response = await fetch('{{ route("bio.upload-icon", $bioPage) }}', {
+                const response = await fetch(bioEditorUrl('/upload-icon'), {
                     method: 'POST',
                     headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
                     body: formData
@@ -2984,7 +2955,8 @@ window.bioEditorV2 = function() {
             event.target.value = '';
         },
         async fetchUrlTitle(block) {
-            if (!block.url || (block.title && block.title.trim() !== '')) return;
+            // Debounced: the editor may already be closed (block is null)
+            if (!block || !block.url || (block.title && block.title.trim() !== '')) return;
             let url = block.url.trim();
             // Basic URL validation/normalization
             if (!url.match(/^https?:\/\//i)) {
@@ -3011,9 +2983,12 @@ window.bioEditorV2 = function() {
                 console.error('Error fetching title:', e);
             }
         },
-        processUrl(block) {
+        // Expands handles/phone numbers into full URLs. Runs on blur and before
+        // saving - never while typing, so the field doesn't change under the cursor.
+        processUrl(block, immediate = false) {
             if (this.urlInputTimeout) clearTimeout(this.urlInputTimeout);
-            this.urlInputTimeout = setTimeout(() => {
+            const run = () => {
+                if (!block) return;
                 let url = (block.url || '').trim();
                 if (!url) return;
                 // EARLY CHECK: Detect email pattern first - before any other processing
@@ -3151,7 +3126,12 @@ window.bioEditorV2 = function() {
                 if (url.includes('.')) {
                     block.url = 'https://' + url;
                 }
-            }, 1000);
+            };
+            if (immediate) {
+                run();
+            } else {
+                this.urlInputTimeout = setTimeout(run, 1000);
+            }
         },
         validateBrandUrl(block) {
             if (!block.brand || !block.url) return true;
@@ -3268,6 +3248,7 @@ window.bioEditorV2 = function() {
             }
         },
         validatePlatformUrl(block) {
+            if (!block) return true;
             if (!block.brand || !block.url) {
                 block._urlError = null;
                 return true;
@@ -3886,7 +3867,7 @@ window.bioEditorV2 = function() {
             if (confirm('Delete this page permanently?')) {
                 const form = document.createElement('form');
                 form.method = 'POST';
-                form.action = '{{ route("bio.destroy", $bioPage) }}';
+                form.action = bioEditorUrl('');
                 form.innerHTML = '<input type="hidden" name="_token" value="{{ csrf_token() }}"><input type="hidden" name="_method" value="DELETE">';
                 document.body.appendChild(form);
                 form.submit();
@@ -3896,6 +3877,4 @@ window.bioEditorV2 = function() {
 }
 </script>
 @endpush
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-@endpush
+
