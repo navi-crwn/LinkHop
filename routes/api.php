@@ -20,9 +20,9 @@ Route::middleware(['api.auth'])->group(function () {
 // Shortlink creation and user library search - supports both Sanctum (API token) and web session auth
 Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/links', [LinkController::class, 'index']);
-    Route::post('/shorten-web', [LinkController::class, 'shorten'])->middleware(['throttle:shorten', 'quota']);
+    Route::post('/shorten-web', [LinkController::class, 'shorten'])->middleware(['verified', 'throttle:shorten', 'quota']);
     // Bio-specific shortlink creation (same safety checks and quota as other links)
-    Route::post('/bio/shorten', [LinkController::class, 'shortenForBio'])->middleware(['throttle:shorten', 'quota']);
+    Route::post('/bio/shorten', [LinkController::class, 'shortenForBio'])->middleware(['verified', 'throttle:shorten', 'quota']);
     // Utility to fetch title from URL
     Route::post('/utils/fetch-title', [LinkController::class, 'fetchTitle']);
 });

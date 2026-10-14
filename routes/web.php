@@ -79,7 +79,8 @@ Route::middleware('ip.ban')->group(function () {
             ->where('format', 'png|svg|jpg')
             ->name('links.qr.download');
         Route::post('links/{link}/qr/save', [LinkController::class, 'saveCustomQr'])->name('links.qr.save');
-        Route::resource('links', LinkController::class)->except(['index']);
+        Route::resource('links', LinkController::class)->except(['index'])
+            ->middlewareFor(['store', 'update'], 'verified');
         Route::post('links/{link}/comments', [LinkCommentController::class, 'store'])->name('links.comments.store');
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -91,7 +92,7 @@ Route::middleware('ip.ban')->group(function () {
         Route::post('/settings/2fa/confirm', [TwoFactorController::class, 'confirm'])->name('settings.2fa.confirm');
         Route::delete('/settings/2fa/disable', [TwoFactorController::class, 'disable'])->name('settings.2fa.disable');
         Route::post('/settings/2fa/recovery-codes', [TwoFactorController::class, 'regenerateRecoveryCodes'])->name('settings.2fa.recovery-codes');
-        Route::post('/api-tokens', [ApiTokenController::class, 'store'])->name('api-tokens.store');
+        Route::post('/api-tokens', [ApiTokenController::class, 'store'])->middleware('verified')->name('api-tokens.store');
         Route::delete('/api-tokens/{apiToken}', [ApiTokenController::class, 'destroy'])->name('api-tokens.destroy');
         Route::get('/api-docs', [ApiTokenController::class, 'docs'])->name('api-docs');
         Route::post('/api/sharex-config', [ApiTokenController::class, 'sharexConfig'])->name('api.sharex-config');
@@ -109,12 +110,12 @@ Route::middleware('ip.ban')->group(function () {
             Route::get('/', [BioPageController::class, 'index'])->name('index');
             Route::get('/create', [BioPageController::class, 'create'])->name('create');
             Route::get('/check-slug', [BioPageController::class, 'checkSlug'])->name('check-slug');
-            Route::post('/', [BioPageController::class, 'store'])->name('store');
+            Route::post('/', [BioPageController::class, 'store'])->middleware('verified')->name('store');
             Route::get('/{bioPage}/edit', [BioPageController::class, 'edit'])->name('edit');
-            Route::put('/{bioPage}', [BioPageController::class, 'update'])->name('update');
+            Route::put('/{bioPage}', [BioPageController::class, 'update'])->middleware('verified')->name('update');
             Route::delete('/{bioPage}', [BioPageController::class, 'destroy'])->name('destroy');
             Route::get('/{bioPage}/analytics', [BioPageController::class, 'analytics'])->name('analytics');
-            Route::post('/{bioPage}/duplicate', [BioPageController::class, 'duplicate'])->name('duplicate');
+            Route::post('/{bioPage}/duplicate', [BioPageController::class, 'duplicate'])->middleware('verified')->name('duplicate');
             Route::post('/{bioPage}/upload-image', [BioPageController::class, 'uploadImage'])->name('upload-image');
             Route::post('/{bioPage}/upload-avatar', [BioPageController::class, 'uploadAvatar'])->name('upload-avatar');
             Route::post('/{bioPage}/upload-thumbnail', [BioPageController::class, 'uploadThumbnail'])->name('upload-thumbnail');
@@ -123,12 +124,12 @@ Route::middleware('ip.ban')->group(function () {
             Route::get('/{bioPage}/preview', [BioPageController::class, 'preview'])->name('preview');
             Route::get('/links/search', [App\Http\Controllers\Api\LinkController::class, 'index'])->name('links.search');
             Route::post('/shorten', [App\Http\Controllers\Api\LinkController::class, 'shortenForBio'])
-                ->middleware(['throttle:shorten', 'quota'])
+                ->middleware(['verified', 'throttle:shorten', 'quota'])
                 ->name('shorten');
             // scopeBindings: {bioLink} must belong to {bioPage}, otherwise 404
             Route::prefix('{bioPage}/links')->name('links.')->scopeBindings()->group(function () {
-                Route::post('/', [BioLinkController::class, 'store'])->name('store');
-                Route::put('/{bioLink}', [BioLinkController::class, 'update'])->name('update');
+                Route::post('/', [BioLinkController::class, 'store'])->middleware('verified')->name('store');
+                Route::put('/{bioLink}', [BioLinkController::class, 'update'])->middleware('verified')->name('update');
                 Route::delete('/{bioLink}', [BioLinkController::class, 'destroy'])->name('destroy');
                 Route::post('/reorder', [BioLinkController::class, 'reorder'])->name('reorder');
                 Route::post('/{bioLink}/toggle', [BioLinkController::class, 'toggle'])->name('toggle');

@@ -48,6 +48,13 @@ class ShortenController extends Controller
             ], 422);
         }
         $user = $request->get('api_user');
+        if (! $user->hasVerifiedEmail()) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Email Not Verified',
+                'message' => 'Verify your email address before creating links.',
+            ], 403);
+        }
         $targetUrl = $request->input('url');
         // Add https:// if missing
         if (! preg_match('/^https?:\/\//i', $targetUrl)) {

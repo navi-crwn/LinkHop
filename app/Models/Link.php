@@ -79,7 +79,34 @@ class Link extends Model
 
     public function isExpired(): bool
     {
-        return $this->expires_at !== null && now()->greaterThan($this->expires_at);
+        return ($this->expires_at !== null && now()->greaterThan($this->expires_at))
+            || $this->isGuestExpired();
+    }
+
+    /**
+     * Anonymous links live until `guest_idle_days` without a click, and never
+     * longer than `guest_max_days` after creation.
+     */
+    public function isGuestExpired(): bool
+    {
+        if ($this->user_id !== null || ! $this->created_at) {
+            return false;
+        }
+        $lastActivity = $this->last_clicked_at ?? $this->created_at;
+
+        return $this->created_at->lt(now()->subDays((int) config('shortener.guest_max_days', 30)))
+            || $lastActivity->lt(now()->subDays((int) config('shortener.guest_idle_days', 14)));
+    }
+
+    /**
+     * Guest links past either limit (see isGuestExpired()).
+     */
+    public function scopeGuestExpired($query)
+    {
+        return $query->whereNull('user_id')->where(function ($q) {
+            $q->where('created_at', '<', now()->subDays((int) config('shortener.guest_max_days', 30)))
+                ->orWhereRaw('COALESCE(last_clicked_at, created_at) < ?', [now()->subDays((int) config('shortener.guest_idle_days', 14))]);
+        });
     }
 
     public function requiresPassword(): bool

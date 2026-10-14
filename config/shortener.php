@@ -3,6 +3,19 @@
 return [
     /*
     |--------------------------------------------------------------------------
+    | Guest (anonymous) links
+    |--------------------------------------------------------------------------
+    |
+    | Links created without an account stop working after `guest_idle_days`
+    | without a click and, at the latest, `guest_max_days` after creation.
+    | `links:prune-guest` deletes them daily.
+    |
+    */
+    'guest_idle_days' => (int) env('GUEST_LINK_IDLE_DAYS', 14),
+    'guest_max_days' => (int) env('GUEST_LINK_MAX_DAYS', 30),
+
+    /*
+    |--------------------------------------------------------------------------
     | Reserved Slugs
     |--------------------------------------------------------------------------
     |
