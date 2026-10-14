@@ -476,7 +476,7 @@ class BioPageController extends Controller
         $newBioPage->title = $bioPage->title.' (Copy)';
         $newBioPage->save();
         foreach ($bioPage->links as $link) {
-            $newLink = $link->replicate(['click_count']);
+            $newLink = $link->replicate(['click_count', 'public_id']);
             $newLink->bio_page_id = $newBioPage->id;
             $newLink->save();
         }

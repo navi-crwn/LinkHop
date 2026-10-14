@@ -27,45 +27,41 @@ class PublicBioController extends Controller
         if (! $bioPage) {
             return response()->view('bio.not-found', ['slug' => $slug], 404);
         }
-        if (! $bioPage->is_published || $bioPage->user?->isSuspended()) {
+        if (! $this->isVisible($bioPage)) {
             return response()->view('bio.not-found', ['slug' => $slug, 'unpublished' => true], 404);
         }
         // Password protection check
-        if ($bioPage->password_enabled && $bioPage->password) {
+        if ($this->needsPassword($bioPage)) {
             $sessionKey = "bio_unlocked_{$bioPage->id}";
-            if (! session($sessionKey)) {
-                if ($request->isMethod('post') && $request->has('password')) {
-                    $key = 'bio-password:'.$bioPage->id.':'.$request->ip();
-                    if (RateLimiter::tooManyAttempts($key, 10)) {
-                        return view('bio.password', compact('bioPage'))->withErrors(['password' => 'Too many attempts. Try again later.']);
-                    }
-                    RateLimiter::hit($key, 600);
-                    if ($this->passwordMatches($request->input('password'), $bioPage->password)) {
-                        RateLimiter::clear($key);
-                        session([$sessionKey => true]);
-
-                        // Use 303 redirect (See Other) to convert POST to GET - prevents browser resubmit warning
-                        return redirect()->to(url()->current(), 303);
-                    } else {
-                        return view('bio.password', compact('bioPage'))->withErrors(['password' => 'Incorrect password']);
-                    }
-                } else {
-                    return view('bio.password', compact('bioPage'));
+            if ($request->isMethod('post') && $request->has('password')) {
+                $key = 'bio-password:'.$bioPage->id.':'.$request->ip();
+                if (RateLimiter::tooManyAttempts($key, 10)) {
+                    return view('bio.password', compact('bioPage'))->withErrors(['password' => 'Too many attempts. Try again later.']);
                 }
-            }
-        }
-        // 18+ Age verification check
-        if ($bioPage->is_adult_content) {
-            $sessionKey = "bio_age_verified_{$bioPage->id}";
-            if (! session($sessionKey)) {
-                if ($request->isMethod('post') && $request->input('age_confirm') === 'yes') {
+                RateLimiter::hit($key, 600);
+                if ($this->passwordMatches($request->input('password'), $bioPage->password)) {
+                    RateLimiter::clear($key);
                     session([$sessionKey => true]);
 
                     // Use 303 redirect (See Other) to convert POST to GET - prevents browser resubmit warning
                     return redirect()->to(url()->current(), 303);
                 } else {
-                    return view('bio.age-verify', compact('bioPage'));
+                    return view('bio.password', compact('bioPage'))->withErrors(['password' => 'Incorrect password']);
                 }
+            } else {
+                return view('bio.password', compact('bioPage'));
+            }
+        }
+        // 18+ Age verification check
+        if ($this->needsAgeCheck($bioPage)) {
+            $sessionKey = "bio_age_verified_{$bioPage->id}";
+            if ($request->isMethod('post') && $request->input('age_confirm') === 'yes') {
+                session([$sessionKey => true]);
+
+                // Use 303 redirect (See Other) to convert POST to GET - prevents browser resubmit warning
+                return redirect()->to(url()->current(), 303);
+            } else {
+                return view('bio.age-verify', compact('bioPage'));
             }
         }
         $this->trackView($bioPage);
@@ -75,11 +71,15 @@ class PublicBioController extends Controller
 
     public function click(BioLink $bioLink)
     {
-        // Disabled blocks / unpublished pages must not keep redirecting.
-        $bioLink->loadMissing('bioPage');
+        // Disabled blocks / hidden pages must not keep redirecting.
+        $bioPage = $bioLink->bioPage;
         $target = SafeContent::url($bioLink->url);
-        if (! $bioLink->is_active || ! $bioLink->bioPage?->is_published || $bioLink->bioPage->user?->isSuspended() || $target === '#') {
+        if (! $bioLink->is_active || ! $this->isVisible($bioPage) || $target === '#') {
             abort(404);
+        }
+        // Same gates as show(): never reveal a destination behind a password or age check.
+        if ($this->needsPassword($bioPage) || $this->needsAgeCheck($bioPage)) {
+            return redirect()->route('bio.public.show', $bioPage->slug);
         }
         $ipAddress = request()->ip();
         $ua = app(UserAgentService::class)->parse(request()->userAgent());
@@ -90,18 +90,18 @@ class PublicBioController extends Controller
             'referrer' => request()->header('referer'),
             'country' => $this->getCountryFromIp($ipAddress),
         ];
-        if (! $ua['bot']) {
+        // One click per visitor per block per 10 minutes; bots never count.
+        if (! $ua['bot'] && Cache::add("bio_click:{$bioLink->id}:{$ipAddress}", true, now()->addMinutes(10))) {
             $bioLink->recordClick($clickData);
         }
 
-        return redirect()->away($target);
+        return redirect()->away($target)->header('Referrer-Policy', 'strict-origin-when-cross-origin');
     }
 
     public function qr(string $slug)
     {
-        $bioPage = BioPage::where('slug', $slug)
-            ->where('is_published', true)
-            ->firstOrFail();
+        $bioPage = BioPage::where('slug', $slug)->first();
+        abort_unless($this->isVisible($bioPage), 404);
         $url = url('/b/'.$bioPage->slug);
         $qrCode = QrCode::format('png')
             ->size(512)
@@ -112,6 +112,21 @@ class PublicBioController extends Controller
         return response($qrCode)
             ->header('Content-Type', 'image/png')
             ->header('Content-Disposition', "attachment; filename=\"{$bioPage->slug}-qr.png\"");
+    }
+
+    protected function isVisible(?BioPage $bioPage): bool
+    {
+        return $bioPage && $bioPage->is_published && ! $bioPage->user?->isSuspended();
+    }
+
+    protected function needsPassword(BioPage $bioPage): bool
+    {
+        return $bioPage->password_enabled && $bioPage->password && ! session("bio_unlocked_{$bioPage->id}");
+    }
+
+    protected function needsAgeCheck(BioPage $bioPage): bool
+    {
+        return $bioPage->is_adult_content && ! session("bio_age_verified_{$bioPage->id}");
     }
 
     protected function trackView(BioPage $bioPage): void
