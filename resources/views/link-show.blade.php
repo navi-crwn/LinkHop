@@ -68,7 +68,7 @@
                         <span class="text-xs text-slate-500">{{ $recentClicks->count() }} clicks (last {{ $rangeInDays }} days)</span>
                     </div>
                     <div class="flex flex-wrap gap-2">
-                        <input x-model="searchQuery" @input="filterClicks" type="text" placeholder="Search IP, location, ISP..." class="text-xs rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 px-3 py-1.5 w-64">
+                        <input x-model="searchQuery" @input="filterClicks" type="text" placeholder="Search country, device, referrer..." class="text-xs rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 px-3 py-1.5 w-64">
                         <select x-model="deviceFilter" @change="filterClicks" class="text-xs rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 px-3 py-1.5">
                             <option value="">All Devices</option>
                             <option value="Mobile">Mobile</option>
@@ -88,7 +88,6 @@
                             <tr class="border-b border-slate-200 dark:border-slate-700">
                                 <th class="py-2 px-3 font-medium">Time</th>
                                 <th class="py-2 px-3 font-medium">Location</th>
-                                <th class="py-2 px-3 font-medium">ISP</th>
                                 <th class="py-2 px-3 font-medium">Device</th>
                                 <th class="py-2 px-3 font-medium">Referrer</th>
                                 <th class="py-2 px-3 font-medium text-center">Status</th>
@@ -99,7 +98,6 @@
                                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30">
                                     <td class="py-2 px-3 whitespace-nowrap" x-text="click.time"></td>
                                     <td class="py-2 px-3" x-html="click.location"></td>
-                                    <td class="py-2 px-3 truncate max-w-[120px]" :title="click.isp" x-text="click.isp"></td>
                                     <td class="py-2 px-3" x-text="click.device"></td>
                                     <td class="py-2 px-3 truncate max-w-[150px]" :title="click.referrer" x-text="click.referrer"></td>
                                     <td class="py-2 px-3 text-center" x-html="click.proxy_badge"></td>
@@ -173,19 +171,18 @@
                 return {
                     allClicks: {!! json_encode($recentClicks->map(function($click) {
                         $ua = $click->user_agent ? app(\App\Services\UserAgentService::class)->parse($click->user_agent) : null;
-                        $location = $click->country ? (country_flag($click->country) . ' ' . e($click->city ?? country_name($click->country))) : '-';
+                        $location = $click->country ? (country_flag($click->country) . ' ' . e(country_name($click->country))) : '-';
                         $proxyBadge = $click->is_proxy ? '<span class="inline-flex px-2 py-0.5 rounded text-xs bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">⚠</span>' : '<span class="text-green-500">✓</span>';
                         return [
                             'id' => $click->id,
                             'time' => $click->clicked_at ? $click->clicked_at->format('M d H:i') : $click->created_at->format('M d H:i'),
                             'location' => $location,
-                            'isp' => Str::limit($click->isp ?? '-', 20),
                             'device' => $ua['device'] ?? '-',
                             'referrer' => Str::limit($click->referer ?? '(direct)', 25),
                             'proxy_badge' => $proxyBadge,
                             'device_raw' => $ua['device'] ?? '',
                             'is_proxy' => $click->is_proxy,
-                            'search_text' => ($click->ip_address ?? '') . ' ' . ($click->city ?? '') . ' ' . ($click->isp ?? ''),
+                            'search_text' => country_name($click->country) . ' ' . ($ua['device'] ?? '') . ' ' . ($click->referer ?? ''),
                         ];
                     })) !!},
                     filteredClicks: [],

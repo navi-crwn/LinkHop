@@ -989,7 +989,7 @@
                                 </div>
                                 <span class="text-block-expand" :style="{ color: getEffectiveBioColor() }" x-text="expanded ? '−' : '+'"></span>
                             </div>
-                            <div class="text-block-content" :class="{ 'truncated': !expanded }" x-html="(block.content || 'Text content').replace(/\n/g, '<br>')"></div>
+                            <div class="text-block-content" :class="{ 'truncated': !expanded }" x-html="sanitizeHtml((block.content || 'Text content').replace(/\n/g, '<br>'))"></div>
                         </div>
                     </template>
                     <!-- Header Block -->
@@ -1225,7 +1225,9 @@
                 init() {
                     // Listen for messages from parent window
                     window.addEventListener('message', (event) => {
-                        if (event.data.type === 'preview-update') {
+                        // Only the editor that embeds this frame may drive it (blocks cross-origin XSS).
+                        if (event.origin !== window.location.origin || window.parent === window || event.source !== window.parent) return;
+                        if (event.data?.type === 'preview-update') {
                             this.updatePreview(event.data.data);
                             this.isLoaded = true;
                             // Update theme-aware hover colors
@@ -1233,7 +1235,7 @@
                         }
                     });
                     // Signal ready
-                    window.parent.postMessage({ type: 'preview-ready' }, '*');
+                    window.parent.postMessage({ type: 'preview-ready' }, window.location.origin);
                 },
                 // Update CSS custom properties for theme-aware hover effects
                 updateHoverColors() {
@@ -1553,13 +1555,34 @@
                     };
                 },
                 // Sanitize HTML (basic)
+                // Allowlist sanitizer (parsed inertly, rebuilt from safe nodes only),
+                // close to SafeContent::html() used on the public page.
                 sanitizeHtml(html) {
                     if (!html) return '';
-                    // Remove script tags and event handlers
-                    return html
-                        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-                        .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '')
-                        .replace(/on\w+\s*=\s*[^\s>]+/gi, '');
+                    const tags = ['p','br','b','strong','i','em','u','s','small','sub','sup','span','div','a','ul','ol','li','h1','h2','h3','h4','h5','h6','blockquote','code','pre','hr','img'];
+                    const okUrl = (v, schemes) => /^\/(?![\/\\])/.test(v) || schemes.includes((v.match(/^([a-z][a-z0-9+.-]*):/i) || [])[1]?.toLowerCase());
+                    const clean = (src, out) => {
+                        for (const node of src.childNodes) {
+                            if (node.nodeType === Node.TEXT_NODE) { out.appendChild(document.createTextNode(node.textContent)); continue; }
+                            if (node.nodeType !== Node.ELEMENT_NODE) continue;
+                            const tag = node.tagName.toLowerCase();
+                            if (['script','style','iframe','object','embed','form','template','svg','math'].includes(tag)) continue;
+                            if (!tags.includes(tag)) { clean(node, out); continue; }
+                            const el = document.createElement(tag);
+                            const href = (node.getAttribute('href') || '').replace(/[\x00-\x20]/g, '');
+                            const srcAttr = (node.getAttribute('src') || '').replace(/[\x00-\x20]/g, '');
+                            if (tag === 'a' && href && okUrl(href, ['http','https','mailto','tel'])) { el.setAttribute('href', href); el.setAttribute('target', '_blank'); el.setAttribute('rel', 'nofollow noreferrer noopener'); }
+                            if (tag === 'img') { if (!srcAttr || !okUrl(srcAttr, ['http','https'])) continue; el.setAttribute('src', srcAttr); el.setAttribute('alt', node.getAttribute('alt') || ''); }
+                            if (node.getAttribute('title')) el.setAttribute('title', node.getAttribute('title'));
+                            out.appendChild(el);
+                            clean(node, el);
+                        }
+                        return out;
+                    };
+                    const doc = new DOMParser().parseFromString(String(html), 'text/html');
+                    const wrap = document.createElement('div');
+                    clean(doc.body, wrap);
+                    return wrap.innerHTML;
                 },
                 // Decode HTML entities
                 decodeHtmlEntities(text) {

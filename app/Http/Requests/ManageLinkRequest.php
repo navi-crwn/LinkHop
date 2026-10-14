@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\AbuseFlag;
 use App\Models\Link;
 use App\Services\LinkSafety;
 use Illuminate\Foundation\Http\FormRequest;
@@ -30,7 +31,12 @@ class ManageLinkRequest extends FormRequest
                 Rule::unique('links', 'slug')->ignore($linkId),
                 Rule::notIn(config('shortener.reserved_slugs', [])),
             ],
-            'status' => ['required', Rule::in([Link::STATUS_ACTIVE, Link::STATUS_INACTIVE])],
+            'status' => ['required', Rule::in([Link::STATUS_ACTIVE, Link::STATUS_INACTIVE]), function ($attribute, $value, $fail) use ($linkId) {
+                $link = $this->route('link');
+                if ($value === Link::STATUS_ACTIVE && $link?->status !== Link::STATUS_ACTIVE && $linkId && AbuseFlag::locks('link', $linkId)) {
+                    $fail('This link was disabled by moderation. Contact support to appeal.');
+                }
+            }],
             'password' => ['nullable', 'string', 'min:6'],
             // Editing must not fail just because a link already expired.
             'expires_at' => $linkId ? ['nullable', 'date'] : ['nullable', 'date', 'after:now'],

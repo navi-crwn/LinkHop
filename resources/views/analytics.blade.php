@@ -205,16 +205,15 @@
             </summary>
             <div class="overflow-x-auto pb-2">
                 <table class="table-glass">
-                    <thead><tr><th>IP address</th><th>Location</th><th class="text-right">When</th></tr></thead>
+                    <thead><tr><th>Country</th><th class="text-right">When</th></tr></thead>
                     <tbody>
                         @forelse ($recentIps as $hit)
                             <tr>
-                                <td class="font-mono text-xs text-ink">{{ $hit->ip_address }}</td>
-                                <td class="text-ink"><span class="inline-flex items-center gap-2 [&_img]:rounded-sm">{!! country_flag($hit->country) !!} {{ $hit->city ? $hit->city.', ' : '' }}{{ country_name($hit->country) }}</span></td>
+                                <td class="text-ink"><span class="inline-flex items-center gap-2 [&_img]:rounded-sm">{!! country_flag($hit->country) !!} {{ country_name($hit->country) }}</span></td>
                                 <td class="text-right text-xs text-muted">{{ \Carbon\Carbon::parse($hit->created_at)->diffForHumans() }}</td>
                             </tr>
                         @empty
-                            <tr><td colspan="3" class="text-center text-sm text-muted">No visitors for this filter.</td></tr>
+                            <tr><td colspan="2" class="text-center text-sm text-muted">No visitors for this filter.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
