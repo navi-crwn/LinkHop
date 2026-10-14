@@ -1,18 +1,19 @@
-# 🔗 HEL.ink v2.0
+<p align="center"><b>English</b> · <a href="README.id.md">Bahasa Indonesia</a></p>
+
+<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/hero-en-light.webp"><img src="docs/readme/hero-en-dark.webp" alt="HEL.ink: short links, beautiful bio pages" width="100%"></picture></p>
 
 <p align="center">
-  <img src="https://hel.ink/brand/logo-dark.png" alt="HEL.ink Logo" width="180"/>
+  <b>Shorten links, count every click, and get a link in bio page.<br>Free, open source, and yours to host.</b>
 </p>
 
 <p align="center">
-  <strong>Open-source URL shortener & Link in Bio platform</strong><br>
-  Built with Laravel 12 • Self-hostable • Free forever
-</p>
-
-<p align="center">
-  <a href="https://hel.ink">Live Demo</a> •
-  <a href="https://hel.ink/b/hel">Bio Example</a> •
-  <a href="#-quick-start">Quick Start</a> •
+  <a href="https://hel.ink"><b>🔗 Try hel.ink</b></a> ·
+  <a href="https://navi-crwn.github.io/hel.ink/">Website</a> ·
+  <a href="https://hel.ink/b/hel">Bio example</a> ·
+  <a href="#install">Install</a> ·
+  <a href="#api">API</a> ·
+  <a href="#faq">FAQ</a> ·
+  <a href="CHANGELOG.md">Changelog</a> ·
   <a href="CREDITS.md">Credits</a>
 </p>
 
@@ -21,161 +22,72 @@
   <img src="https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat-square&logo=php&logoColor=white" alt="PHP 8.2+"/>
   <img src="https://img.shields.io/badge/Tailwind-3.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS"/>
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="MIT License"/>
-</p>
-
-<p align="center">
   <img src="https://img.shields.io/github/stars/navi-crwn/hel.ink?style=flat-square&color=yellow" alt="Stars"/>
-  <img src="https://img.shields.io/github/forks/navi-crwn/hel.ink?style=flat-square" alt="Forks"/>
-  <img src="https://img.shields.io/github/issues/navi-crwn/hel.ink?style=flat-square" alt="Issues"/>
-  <img src="https://img.shields.io/github/last-commit/navi-crwn/hel.ink?style=flat-square" alt="Last Commit"/>
-  <img src="https://komarev.com/ghpvc/?username=navi-crwn&label=views&color=brightgreen&style=flat-square" alt="Profile Views"/>
 </p>
 
 ---
 
-## What's HEL.ink?
+## What is HEL.ink?
 
-HEL.ink is a modern link shortener with Link in Bio pages, built for creators and teams who want control over their links. Shorten URLs, track clicks, organize with folders, generate QR codes, and create beautiful bio pages. All features included, no premium tiers.
+Long links are hard to share and you never know who clicks them. HEL.ink makes them **short** (with your own slug if you like), **counts every click** by country, device and referrer, and gives you one **link in bio page** at `hel.ink/b/you` for everything you want people to find.
 
-### Highlights
+Everything is included for every account. No premium tier, no locked features. And because it's open source, you can also run the whole thing on your own server and your own domain.
 
-- **URL Shortener** — Custom slugs, passwords, expiration, QR codes
-- **Link in Bio** — 20+ themes, animations, embeds (YouTube, Spotify, Maps)
-- **Analytics** — Clicks, locations, devices, referrers, real-time stats
-- **Organization** — Folders, tags, bulk actions, search
-- **API Ready** — REST API for ShareX, automation, custom tools
-- **Self-hostable** — Deploy on your own server with full control
+**Good for you if you:**
+- share links on social media and want to see what works,
+- need one tidy page for all your links, shop, music and videos,
+- want a link shortener you control, on your own server.
 
----
+<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/features-en-light.webp"><img src="docs/readme/features-en-dark.webp" alt="Everything HEL.ink can do" width="100%"></picture></p>
 
-## 🆕 v2.0 Updates
+<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/bio-en-light.webp"><img src="docs/readme/bio-en-dark.webp" alt="Link in Bio: one page, every link" width="100%"></picture></p>
 
-<details>
-<summary><strong>Link in Bio Upgrades</strong></summary>
+📖 **The full tour, the self-host guide and the FAQ:** [navi-crwn.github.io/hel.ink](https://navi-crwn.github.io/hel.ink/)
 
-- 20+ themes: Galaxy, Neon, Cyberpunk, Aurora, Cherry, Midnight, Matrix, Ice, Lavender
-- Background animations: Rain, Snow, Stars, Hearts, Leaves, Confetti, Particles
-- Entrance animations: Fade, Slide, Pop, Bounce, Flip with stagger
-- Attention animations: Pulse, Shake, Glow, Wiggle, Heartbeat, Rainbow
-- Hover effects: Scale, Glow, Lift, Glossy, Color-shift
-- New blocks: FAQ, vCard, Countdown, Maps, Code snippets
-- 150+ brand icons from Simple Icons
-- Share modal with QR generator
+## Features
 
-</details>
+- **🔗 Short links.** Random or custom slugs, an optional password and expiry date, and a QR code (PNG, SVG or JPG) for every link.
+- **🙋 No account needed.** Anyone can shorten a link. Guest links stay up to 30 days; sign up to keep them and see their stats.
+- **🪪 Link in Bio.** Your own page at `hel.ink/b/you`, built from blocks: links, text, images, YouTube, Spotify, maps, countdowns, FAQ, vCard and code snippets.
+- **🎨 20 themes.** Galaxy, Neon, Cyberpunk, Aurora, Cherry Blossom, Midnight, Matrix, Ice, Lavender and more, or your own colors, fonts and custom CSS. The editor shows a live preview.
+- **✨ Animations.** Rain, snow, stars, hearts, leaves or confetti behind the page; buttons that fade, slide, pop, glow, pulse or wiggle.
+- **🏷️ 150+ brand icons.** Social icons from Simple Icons, placed where you want them.
+- **📊 Analytics.** Clicks, unique visitors, countries and cities, devices, browsers and referrers, in real time, with CSV export. Bio pages get their own views and clicks per block.
+- **🗂️ Folders & tags.** Sort, tag and search your links, act on many at once, and leave comments on a link.
+- **🔒 Private bio pages.** Lock a page with a password or an age check. Google Analytics, Facebook Pixel and TikTok Pixel only load after the visitor agrees.
+- **🔌 API & ShareX.** A REST API with Bearer tokens, plus a ready-made ShareX config in Settings → API.
+- **🔐 Safe sign-in.** Email and password or Google login, two-factor codes (TOTP) and a login history.
+- **🛡️ Abuse protection.** Rate limits and quotas, a domain blacklist, proxy/VPN checks, a report form, and an hourly scan for phishing, scams and other harmful links, with optional Google Safe Browsing and URLhaus lookups.
+- **🧰 Admin panel.** Users, links, bio pages, IP bans, the domain blacklist, abuse reports and the job queue in one place.
+- **🏠 Self-hostable.** Laravel 12 on your own server with MySQL, PostgreSQL or SQLite.
 
-<details>
-<summary><strong>Technical Updates</strong></summary>
+## Install
 
-- Upgraded to Laravel 12
-- Canvas-based particle animations
-- Better mobile responsiveness
-- Improved SEO controls and meta tags
-- Theme-aware styling system
-
-</details>
-
----
-
-## ✨ Features
-
-<details>
-<summary><strong>🔗 Link in Bio</strong></summary>
-
-- 20+ professionally designed themes
-- Background & entrance animations
-- Rich blocks: links, text, images, videos, music, FAQ, vCard, countdown, maps
-- 150+ social icons (powered by Simple Icons)
-- Custom CSS support
-- SEO controls, Google Analytics, Facebook Pixel, TikTok Pixel
-- Password protection & age verification
-
-</details>
-
-<details>
-<summary><strong>🎯 Link Management</strong></summary>
-
-- Custom or random short URLs
-- Password protection & expiration dates
-- QR code generation (PNG, SVG, JPG)
-- Folders & tags for organization
-- Bulk operations & CSV export
-- Link comments for collaboration
-
-</details>
-
-<details>
-<summary><strong>📊 Analytics</strong></summary>
-
-- Real-time click tracking
-- Geographic data (city, country)
-- Device & browser detection
-- Referrer tracking
-- Unique visitor counts
-- Export to CSV
-
-</details>
-
-<details>
-<summary><strong>🔐 Security</strong></summary>
-
-- Email/password + Google OAuth
-- Two-factor authentication (TOTP)
-- Rate limiting & IP blocking
-- Proxy/VPN detection
-- Abuse reporting system
-
-</details>
-
-<details>
-<summary><strong>🔌 API & Integrations</strong></summary>
-
-- REST API with Bearer auth
-- ShareX integration
-- 100 requests/hour rate limit
-- CLI compatible
-- Webhook ready
-
-</details>
-
----
-
-## 🚀 Quick Start
+**You need:** PHP 8.2+, Composer, Node.js 18+ and a database (MySQL 8.0+, PostgreSQL 13+ or SQLite). Redis is optional, for caching.
 
 ```bash
-# Clone
+# 1. Get the code
 git clone https://github.com/navi-crwn/hel.ink.git
 cd hel.ink
-
-# Install
 composer install && npm install
 
-# Setup
+# 2. Set it up
 cp .env.example .env
 php artisan key:generate
 php artisan migrate
 php artisan storage:link
 
-# Build & Run
+# 3. Build and run
 npm run build
 php artisan serve
 ```
 
-Visit `http://localhost:8000`
+Then open `http://localhost:8000`.
 
 <details>
-<summary><strong>Full Installation Guide</strong></summary>
+<summary><b>Settings in <code>.env</code></b></summary>
 
-### Requirements
-- PHP 8.2+
-- Composer
-- Node.js 18+
-- MySQL 8.0+ / PostgreSQL 13+ / SQLite
-- Redis (optional, for caching)
-
-### Database Setup
-
-Edit `.env`:
+**Database**
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -184,14 +96,7 @@ DB_USERNAME=your_user
 DB_PASSWORD=your_pass
 ```
 
-### Queue Worker (Production)
-
-```bash
-php artisan queue:work
-```
-
-### Email Setup
-
+**Email**
 ```env
 MAIL_MAILER=smtp
 MAIL_HOST=smtp.gmail.com
@@ -200,102 +105,99 @@ MAIL_USERNAME=your@email.com
 MAIL_PASSWORD=your-app-password
 ```
 
-### Google OAuth
-
+**Google login** (optional)
 ```env
 GOOGLE_CLIENT_ID=xxx
 GOOGLE_CLIENT_SECRET=xxx
 GOOGLE_REDIRECT_URI=https://yourdomain.com/auth/google/callback
 ```
 
+**Your own domain:** set `APP_URL` to it, and every short link and bio page uses it.
+
+**Production:** keep a queue worker running.
+```bash
+php artisan queue:work
+```
+
 </details>
 
----
+## How to use it
 
-## 📖 Usage
+**Shorten a link**
+1. Paste your long URL.
+2. Optional: pick a custom slug, a password or an expiry date.
+3. Press **Shorten** and copy your link.
 
-### Shortening URLs
+**Make a bio page**
+1. Go to **Dashboard → Link in Bio**.
+2. Create a page with your name.
+3. Add blocks: links, text, images, videos, music.
+4. Pick a theme and your colors.
+5. Share it: `hel.ink/b/yourname`.
 
-1. Paste your long URL
-2. (Optional) Set custom slug, password, expiration
-3. Click "Shorten" and get your link
+## API
 
-### Link in Bio
-
-1. Go to Dashboard → Link in Bio
-2. Create a new bio page with your username
-3. Add blocks: links, text, images, videos, music
-4. Choose a theme and customize colors
-5. Share your page: `hel.ink/b/yourname`
-
-### API Usage
+Make a token in **Settings → API**, then:
 
 ```bash
-# Generate token in Settings → API
-
 curl -X POST https://hel.ink/api/shorten \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"url": "https://example.com", "alias": "my-link"}'
 ```
 
-ShareX config available in Settings → API.
+`alias` is optional. The reply holds the short `url` and its `slug`. A ShareX config is ready to download in **Settings → API**.
 
----
+## FAQ
 
-## 🏗️ Tech Stack
+**Is it really free?**
+Yes. There's no paid plan and no locked feature, and the code is MIT licensed, so you can run, change and share it.
+
+**Do I need an account?**
+Not to shorten a link. Guest links last up to 30 days. With an account you keep your links and get analytics, folders, the API and a bio page.
+
+**Where is my bio page?**
+At `hel.ink/b/` followed by the name you pick, for example [hel.ink/b/hel](https://hel.ink/b/hel).
+
+**Can I use my own domain?**
+Yes, by hosting your own copy: set `APP_URL` in `.env` to your domain.
+
+**What does a click record?**
+The time, country and city, device, browser and referrer. Tracking pixels on bio pages only load after the visitor agrees.
+
+**How do I report a bad link?**
+Use the report form on hel.ink. Reports land on the admin Abuse page, next to the findings of the automatic scan.
+
+## Under the hood
 
 | Layer | Technologies |
-|-------|-------------|
-| **Backend** | Laravel 12, PHP 8.2+, MySQL/PostgreSQL |
+|---|---|
+| **Backend** | Laravel 12, PHP 8.2+, MySQL / PostgreSQL / SQLite |
 | **Frontend** | Tailwind CSS 3, Alpine.js 3, Vite 7 |
-| **Charts** | Chart.js 4.4, Leaflet.js 1.9 |
+| **Charts & maps** | Chart.js 4, Leaflet 1.9 |
 | **Icons** | Heroicons, Simple Icons (150+ brands) |
 | **Auth** | Laravel Breeze, Socialite, Google2FA |
 | **Services** | Cloudflare Turnstile, IP-API, FlagCDN |
 
-Full dependency list: [CREDITS.md](CREDITS.md)
+| Folder | What's in it |
+|---|---|
+| `app/`, `routes/`, `resources/` | The Laravel app: controllers, models, Blade views and the bio editor. |
+| `config/bio-themes.php` | The bio page themes. |
+| `config/abuse.php`, `config/limits.php` | Abuse scan patterns and thresholds, and link quotas. |
+| `tests/` | PHPUnit tests (`php artisan test`) and the Playwright synthetic users in `tests/e2e/`. |
+| `docs/` | The website (GitHub Pages). `docs/readme/` holds the README images, drawn from the website with `node scripts/readme-images.mjs`. |
+
+Full dependency list: [CREDITS.md](CREDITS.md).
+
+## Contributing
+
+1. Fork the repo.
+2. Create a branch (`git checkout -b feature/cool-thing`).
+3. Commit your changes and run `php artisan test`.
+4. Push and open a pull request.
+
+Please follow PSR-12 and add tests for new features.
 
 ---
 
-## 🧪 Testing
-
-```bash
-php artisan test
-php artisan test --coverage
-```
-
----
-
-## 🤝 Contributing
-
-1. Fork the repo
-2. Create feature branch (`git checkout -b feature/cool-thing`)
-3. Commit changes (`git commit -m 'Add cool thing'`)
-4. Push & open PR
-
-Please follow PSR-12 and include tests for new features.
-
----
-
-## 📄 License & Credits
-
-**MIT License** — Free to use, modify, and distribute. See [LICENSE](LICENSE).
-
-Built with Laravel, Tailwind CSS, Alpine.js, and 45+ open-source libraries. Link in Bio inspired by [LinkStack](https://github.com/LinkStackOrg/LinkStack) and [LittleLink](https://github.com/sethcottle/littlelink). Brand icons from [Simple Icons](https://simpleicons.org).
-
-Full credits, dependencies, and acknowledgments: **[CREDITS.md](CREDITS.md)**
-
----
-
-## 👤 Author
-
-**Ivan Novskies** — [@navi-crwn](https://github.com/navi-crwn)
-
----
-
-<p align="center">
-  <a href="https://hel.ink">hel.ink</a> • 
-  <a href="https://github.com/navi-crwn/hel.ink">GitHub</a> •
-  <a href="https://hel.ink/b/hel">Bio Page</a>
-</p>
+<p align="center">MIT License · Made by <a href="https://github.com/navi-crwn">Ivan Novskies (@navi-crwn)</a> · <a href="https://hel.ink">hel.ink</a> · <a href="https://navi-crwn.github.io/hel.ink/">Website</a></p>
