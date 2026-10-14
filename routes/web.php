@@ -171,6 +171,7 @@ Route::middleware('ip.ban')->group(function () {
             Route::get('/seo', [SeoController::class, 'edit'])->name('seo.edit');
             Route::post('/seo', [SeoController::class, 'update'])->name('seo.update');
             Route::get('/abuse', [AdminAbuseController::class, 'index'])->name('abuse.index');
+            Route::post('/abuse/scan', [AdminAbuseController::class, 'scan'])->middleware('throttle:3,10')->name('abuse.scan');
             Route::patch('/abuse/{report}', [AdminAbuseController::class, 'update'])->name('abuse.update');
             Route::post('/abuse/flags/{flag}/confirm', [AdminAbuseController::class, 'confirmFlag'])->name('abuse.flags.confirm');
             Route::post('/abuse/flags/{flag}/restore', [AdminAbuseController::class, 'restoreFlag'])->name('abuse.flags.restore');

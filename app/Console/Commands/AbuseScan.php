@@ -13,6 +13,7 @@ use App\Services\LinkService;
 use App\Services\NotificationService;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 
 class AbuseScan extends Command
 {
@@ -22,6 +23,8 @@ class AbuseScan extends Command
         {--remote : Query Safe Browsing / URLhaus (default on for windowed scans, off for --full)}
         {--purge : Delete items disabled for abuse longer than abuse.purge_after_days (never CSAM)}
         {--dry-run : Report only, change nothing}';
+
+    public const LAST_RUN_KEY = 'abuse:scan:last_run';
 
     protected $description = 'Scan links and bio pages for spam/abuse; disable offenders and suspend repeat accounts';
 
@@ -67,7 +70,15 @@ class AbuseScan extends Command
         }
         if ($this->dryRun) {
             $this->warn('Dry run: nothing was changed.');
-        } elseif ($this->stats['disabled'] + $this->stats['suspended'] > 0) {
+        } else {
+            // Shown on the admin Abuse page so a scheduler that never runs is visible.
+            Cache::forever(self::LAST_RUN_KEY, [
+                'at' => now()->toIso8601String(),
+                'mode' => $this->option('full') ? 'full' : 'since '.$this->option('since'),
+                'stats' => $this->stats,
+            ]);
+        }
+        if (! $this->dryRun && $this->stats['disabled'] + $this->stats['suspended'] > 0) {
             $notifications->notifySuspiciousActivity([
                 'source' => 'abuse:scan',
                 'stats' => $this->stats,
