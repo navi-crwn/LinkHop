@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BioLink;
 use App\Models\BioPage;
 use App\Services\LinkSafety;
+use App\Support\SafeContent;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -33,7 +34,7 @@ class BioLinkController extends Controller
         foreach ($checks as $field => $schemes) {
             $value = trim((string) ($data[$field] ?? ''));
             // Uploaded files are stored as site-relative paths (/storage/...)
-            if ($value === '' || (str_starts_with($value, '/') && ! str_starts_with($value, '//'))) {
+            if ($value === '' || SafeContent::isSitePath($value)) {
                 continue;
             }
             if ($reason = $safety->rejectionReason($value, $field === 'url' ? $text : '', $schemes)) {
