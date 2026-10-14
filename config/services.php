@@ -50,5 +50,6 @@ return [
         'account_id' => env('GEOLITE_ACCOUNT_ID'),
         'license_key' => env('GEOLITE_LICENSE_KEY'),
         'city_db' => storage_path('app/GeoLite2-City.mmdb'),
+        'asn_db' => storage_path('app/GeoLite2-ASN.mmdb'),
     ],
 ];
