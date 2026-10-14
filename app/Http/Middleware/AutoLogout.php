@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -14,7 +15,7 @@ class AutoLogout
         if (Auth::check()) {
             $timeout = config('session.inactivity_logout', 60);
             $lastActivity = session('last_activity_time');
-            if ($lastActivity && now()->diffInMinutes(\Illuminate\Support\Carbon::parse($lastActivity)) >= $timeout) {
+            if ($lastActivity && now()->diffInMinutes(Carbon::parse($lastActivity)) >= $timeout) {
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();

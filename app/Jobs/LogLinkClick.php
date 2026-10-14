@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Link;
 use App\Models\LinkClick;
 use App\Services\GeoIpService;
+use App\Services\ProxyDetectionService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -32,7 +33,7 @@ class LogLinkClick implements ShouldQueue
         }
         try {
             $geoData = $geoIp->details($this->ip);
-            $proxyService = app(\App\Services\ProxyDetectionService::class);
+            $proxyService = app(ProxyDetectionService::class);
             $proxyData = $proxyService->detect($this->ip);
             LinkClick::create([
                 'link_id' => $link->id,
