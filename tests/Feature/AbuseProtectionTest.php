@@ -215,3 +215,10 @@ test('vcard values cannot break out of the inline handler', function () {
         ->not->toContain('downloadVCard(&#039;x&#039;);alert')
         ->toContain('downloadVCard(\'x\u0027);alert');
 });
+
+test('uploaded images resolve on the public disk whatever the default disk is', function () {
+    config(['filesystems.default' => 's3']);
+    bioPageFor(User::factory()->create(), 'avatarpage', ['avatar_url' => 'avatars/me.jpg']);
+
+    $this->get('/b/avatarpage')->assertOk()->assertSee('/storage/avatars/me.jpg', false);
+});

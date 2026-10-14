@@ -105,7 +105,7 @@
                                 </div>
                                 <div class="flex h-full flex-col items-center justify-center text-center relative z-10">
                                     @if($bioPage->avatar_url)
-                                        <img src="{{ Storage::url($bioPage->avatar_url) }}" alt="{{ $bioPage->title }}" class="mb-3 h-16 w-16 rounded-full border-3 border-white/90 object-cover shadow-lg transition-transform group-hover:scale-110">
+                                        <img src="{{ Storage::disk('public')->url($bioPage->avatar_url) }}" alt="{{ $bioPage->title }}" class="mb-3 h-16 w-16 rounded-full border-3 border-white/90 object-cover shadow-lg transition-transform group-hover:scale-110">
                                     @else
                                         <div class="mb-3 flex h-16 w-16 items-center justify-center rounded-full border-3 border-white/90 bg-white/20 text-2xl font-bold text-white backdrop-blur-sm shadow-lg transition-transform group-hover:scale-110">
                                             {{ substr($bioPage->title, 0, 1) }}

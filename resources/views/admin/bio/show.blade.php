@@ -77,7 +77,7 @@
                             @foreach($bioPage->links as $link)
                                 <div class="flex items-start gap-3 rounded-lg border border-slate-200 p-4 dark:border-slate-700">
                                     @if($link->thumbnail_url)
-                                        <img src="{{ Storage::url($link->thumbnail_url) }}" class="h-12 w-12 rounded object-cover" alt="{{ $link->title }}">
+                                        <img src="{{ Storage::disk('public')->url($link->thumbnail_url) }}" class="h-12 w-12 rounded object-cover" alt="{{ $link->title }}">
                                     @else
                                         <div class="flex h-12 w-12 items-center justify-center rounded bg-slate-100 dark:bg-slate-700">
                                             <svg class="h-6 w-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
