@@ -1145,7 +1145,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="bfindex-20" class="form-label">Target Date & Time</label>
-                                    <input id="bfindex-20" type="datetime-local" x-model="editingBlock.countdown_date" class="form-input">
+                                    <input id="bfindex-20" type="datetime-local" :value="toLocalInput(editingBlock.countdown_date)" @input="editingBlock.countdown_date = fromLocalInput($event.target.value)" class="form-input">
+                                    <p class="text-xs editor-text-muted mt-1">In your time zone. Visitors see the time left until the same moment.</p>
                                 </div>
                             </div>
                         </template>
@@ -1585,6 +1586,11 @@ window.bioEditorV2 = function() {
         previewUrl: '{{ route("bio.preview", $bioPage) }}',
         previewReady: false,
         deletedBlockIds: [],
+        // Last server revision this tab has seen; a save from another tab makes the next save fail with 409 (L2).
+        _baseUpdatedAt: null,
+        _saveInFlight: false,
+        _saveQueued: false,
+        _orderDirty: false,
         // Link Library State
         showLinkLibraryModal: false,
         librarySearch: '',
@@ -1598,27 +1604,7 @@ window.bioEditorV2 = function() {
         blocks: @json($bioPage->links->sortBy('order')->values()),
         brands: @json(config('brands.platforms', [])),
         // Themes - using hex colors only for input compatibility
-        themes: {
-            // Basic Themes
-            'default': { name: 'Default', background: '#f8fafc', text: '#1e293b', bio: '#64748b', link_bg: '#6366f1', link_text: '#ffffff' },
-            'dark': { name: 'Dark', background: '#0f172a', text: '#f8fafc', bio: '#94a3b8', link_bg: '#3b82f6', link_text: '#ffffff' },
-            'minimal': { name: 'Minimal', background: '#ffffff', text: '#000000', bio: '#6b7280', link_bg: '#000000', link_text: '#ffffff' },
-            'ocean': { name: 'Ocean', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', text: '#ffffff', bio: '#e2e8f0', link_bg: '#ffffff', link_text: '#667eea' },
-            'sunset': { name: 'Sunset', background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', text: '#ffffff', bio: '#fef3c7', link_bg: '#ffffff', link_text: '#f97316' },
-            'forest': { name: 'Forest', background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)', text: '#1e293b', bio: '#374151', link_bg: '#1e293b', link_text: '#ffffff' },
-            // LinkStack Themes
-            'galaxy': { name: 'Galaxy', background: 'linear-gradient(135deg, #0c0a3e 0%, #2d1b69 50%, #7b2cbf 100%)', text: '#ffffff', bio: '#e0aaff', link_bg: 'rgba(255,255,255,0.15)', link_text: '#ffffff' },
-            'neon': { name: 'Neon', background: '#0a0a0a', text: '#39ff14', bio: '#00ff88', link_bg: 'rgba(57, 255, 20, 0.15)', link_text: '#39ff14', link_border: '#39ff14' },
-            'pastel': { name: 'Pastel', background: 'linear-gradient(180deg, #ffecd2 0%, #fcb69f 100%)', text: '#5c4742', bio: '#8b7355', link_bg: '#ffffff', link_text: '#5c4742' },
-            'cyberpunk': { name: 'Cyberpunk', background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)', text: '#00fff5', bio: '#ff006e', link_bg: 'rgba(0,255,245,0.1)', link_text: '#00fff5' },
-            'aurora': { name: 'Aurora', background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)', text: '#b8b8d1', bio: '#7f7f9a', link_bg: 'rgba(88,86,214,0.3)', link_text: '#ffffff' },
-            'cherry': { name: 'Cherry Blossom', background: 'linear-gradient(180deg, #ffc0cb 0%, #ffb6c1 50%, #ff69b4 100%)', text: '#4a1942', bio: '#722f37', link_bg: '#ffffff', link_text: '#4a1942' },
-            'midnight': { name: 'Midnight', background: 'linear-gradient(180deg, #0f0f23 0%, #1a1a3e 100%)', text: '#e8e8ff', bio: '#8888aa', link_bg: 'rgba(99,102,241,0.2)', link_text: '#a5b4fc' },
-            'retro': { name: 'Retro', background: '#f4e4ba', text: '#2d1b00', bio: '#5c4033', link_bg: '#e07a5f', link_text: '#ffffff' },
-            'ice': { name: 'Ice', background: 'linear-gradient(180deg, #e0f7fa 0%, #b2ebf2 50%, #80deea 100%)', text: '#006064', bio: '#00838f', link_bg: '#ffffff', link_text: '#00838f' },
-            'lavender': { name: 'Lavender Dreams', background: 'linear-gradient(135deg, #e6e6fa 0%, #d8bfd8 50%, #dda0dd 100%)', text: '#4b0082', bio: '#663399', link_bg: '#ffffff', link_text: '#4b0082' },
-            'matrix': { name: 'Matrix', background: '#000000', text: '#00ff00', bio: '#00cc00', link_bg: 'rgba(0,255,0,0.1)', link_text: '#00ff00' }
-        },
+        themes: @json(\App\Support\BioThemes::picker()),
         // Sortable instances
         blocksSortable: null,
         socialsSortable: null,
@@ -1661,6 +1647,7 @@ window.bioEditorV2 = function() {
             }
             // Stable client-side keys for x-for / drag sorting (stripped before saving)
             this.bioPage.social_links.forEach(s => { s._uid ??= this.uid(); });
+            this._baseUpdatedAt = this.bioPage.updated_at || null;
             // Store original data hash for change detection
             this.originalDataHash = this.getDataHash();
             // Listen for preview ready
@@ -2407,16 +2394,38 @@ window.bioEditorV2 = function() {
             const whatLabel = what === 'button' ? 'Button style' : what === 'background' ? 'Background' : 'Style';
             this.showNotification(`${whatLabel} copied from ${theme.name}!`, 'success');
         },
+        // Deletes blocks removed in the editor. Failed ids stay queued for the next save (M3).
         async processDeletions() {
-            if (this.deletedBlockIds.length === 0) return;
-            // Process deletions in parallel for faster saves
-            const deletePromises = this.deletedBlockIds.map(id => 
-                this.deleteBlockFromServer(id).catch(e => console.error('Failed to delete block:', id, e))
-            );
-            await Promise.all(deletePromises);
-            this.deletedBlockIds = [];
+            if (this.deletedBlockIds.length === 0) return 0;
+            const results = await Promise.all(this.deletedBlockIds.map(id =>
+                this.deleteBlockFromServer(id).then(() => null, () => id)
+            ));
+            this.deletedBlockIds = results.filter(id => id !== null);
+            return this.deletedBlockIds.length;
+        },
+        // Countdown targets are saved as an exact moment (UTC), not a wall-clock time (M13).
+        toLocalInput(value) {
+            const d = value ? new Date(value) : null;
+            if (!d || isNaN(d)) return '';
+            const p = n => String(n).padStart(2, '0');
+            return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+        },
+        fromLocalInput(value) {
+            const d = value ? new Date(value) : null;
+            return d && !isNaN(d) ? d.toISOString() : '';
+        },
+        noteRevision(updatedAt) {
+            if (updatedAt && (!this._baseUpdatedAt || new Date(updatedAt) >= new Date(this._baseUpdatedAt))) {
+                this._baseUpdatedAt = updatedAt;
+            }
         },
         async saveBioPage() {
+            // One save at a time: a second click while saving would create new blocks twice (M2).
+            if (this._saveInFlight) {
+                this._saveQueued = true;
+                return;
+            }
+            this._saveInFlight = true;
             this.saving = true;
             try {
                 const { links, user, created_at, updated_at, ...bioData } = this.bioPage;
@@ -2424,8 +2433,7 @@ window.bioEditorV2 = function() {
                 if (bioData.socials && !Array.isArray(bioData.socials)) {
                     delete bioData.socials;
                 }
-                // Process deletions first
-                await this.processDeletions();
+                bioData.base_updated_at = this._baseUpdatedAt;
                 const response = await fetch(bioEditorUrl(''), {
                     method: 'PUT',
                     headers: {
@@ -2436,16 +2444,21 @@ window.bioEditorV2 = function() {
                     body: JSON.stringify(bioData)
                 });
                 if (!response.ok) {
-                    const errorData = await response.json();
+                    const errorData = await response.json().catch(() => ({}));
                     console.error('Save error:', errorData);
                     throw new Error(errorData.message || 'Failed to save');
                 }
                 const saved = await response.json().catch(() => ({}));
+                this.noteRevision(saved.bioPage?.updated_at);
                 if (saved.bioPage?.slug && saved.bioPage.slug !== window.bioEditorSlug) {
                     window.bioEditorSlug = saved.bioPage.slug;
                     this.previewUrl = bioEditorUrl('/preview');
                 }
+                const failedDeletes = await this.processDeletions();
                 await this.saveBlocks();
+                if (failedDeletes > 0) {
+                    throw new Error(`${failedDeletes} deleted block(s) could not be removed. Save again to retry.`);
+                }
                 this.showNotification('Saved successfully!', 'success');
                 this.originalDataHash = this.getDataHash();
                 this.hasUnsavedChanges = false;
@@ -2454,6 +2467,11 @@ window.bioEditorV2 = function() {
                 this.showNotification('Failed to save: ' + error.message, 'error');
             } finally {
                 this.saving = false;
+                this._saveInFlight = false;
+                if (this._saveQueued) {
+                    this._saveQueued = false;
+                    this.saveBioPage();
+                }
             }
         },
         async saveBlocks() {
@@ -2474,8 +2492,8 @@ window.bioEditorV2 = function() {
                 await Promise.all(savePromises);
             }
             // New blocks got real ids: persist the full order once.
-            if (created) {
-                await this.saveBlocksOrder();
+            if ((created || this._orderDirty) && !(await this.saveBlocksOrder())) {
+                throw new Error('The block order could not be saved');
             }
             // Clear dirty tracking after save
             this.dirtyBlockIds = new Set();
@@ -2495,9 +2513,10 @@ window.bioEditorV2 = function() {
                 },
                 body: JSON.stringify(block)
             });
-            const data = await response.json();
+            const data = await response.json().catch(() => ({}));
             if (response.ok) {
                 block.id = data.block?.id || data.id;
+                this.noteRevision(data.page_updated_at);
             } else {
                 throw new Error(data.message || 'Failed to create block');
             }
@@ -2512,33 +2531,51 @@ window.bioEditorV2 = function() {
                 },
                 body: JSON.stringify(block)
             });
+            const data = await response.json().catch(() => ({}));
             if (!response.ok) {
-                const data = await response.json();
                 throw new Error(data.message || 'Failed to update block');
             }
+            this.noteRevision(data.page_updated_at);
         },
         async deleteBlockFromServer(blockId) {
             const response = await fetch(bioEditorUrl(`/links/${blockId}`), {
                 method: 'DELETE',
-                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' }
             });
-            if (!response.ok) {
+            // 404: already gone (deleted from another tab), nothing left to retry.
+            if (!response.ok && response.status !== 404) {
                 throw new Error('Failed to delete block');
             }
+            this.noteRevision((await response.json().catch(() => ({}))).page_updated_at);
         },
         async saveBlocksOrder() {
             const linksData = this.blocks
                 .filter(b => b.id < 1000000000)
                 .map((b, idx) => ({ id: b.id, order: idx }));
-            if (linksData.length === 0) return;
-            await fetch(bioEditorUrl('/links/reorder'), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ links: linksData })
-            });
+            if (linksData.length === 0) return true;
+            try {
+                const response = await fetch(bioEditorUrl('/links/reorder'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ links: linksData })
+                });
+                if (!response.ok) throw new Error(response.status);
+                this.noteRevision((await response.json().catch(() => ({}))).page_updated_at);
+                this._orderDirty = false;
+                return true;
+            } catch (e) {
+                // Autosave of the order must not fail silently (M4): keep the change pending.
+                console.error('Reorder failed:', e);
+                this._orderDirty = true;
+                this.hasUnsavedChanges = true;
+                this.originalDataHash = null;
+                this.showNotification('Could not save the new order. Click Save to retry.', 'error');
+                return false;
+            }
         },
         getFontFamily(fontValue) {
             const fontMap = {

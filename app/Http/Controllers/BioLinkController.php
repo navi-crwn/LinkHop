@@ -10,6 +10,7 @@ use App\Support\BioUploads;
 use App\Support\CssValue;
 use App\Support\SafeContent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
 
 class BioLinkController extends Controller
@@ -55,6 +56,29 @@ class BioLinkController extends Controller
         }
     }
 
+    /**
+     * Block changes count as a page change, so another editor tab sees a conflict (L2).
+     */
+    private function touchPage(BioPage $bioPage): string
+    {
+        $bioPage->touch();
+
+        return $bioPage->updated_at->toJSON();
+    }
+
+    /**
+     * The editor sends the countdown target as an exact moment; store it in the app's time zone
+     * so every visitor counts down to the same instant (M13).
+     */
+    private function normalizeCountdown(array $data): array
+    {
+        if (! empty($data['countdown_date'])) {
+            $data['countdown_date'] = Carbon::parse($data['countdown_date'])->setTimezone(config('app.timezone'));
+        }
+
+        return $data;
+    }
+
     public function store(Request $request, BioPage $bioPage)
     {
         $this->authorize('update', $bioPage);
@@ -96,6 +120,7 @@ class BioLinkController extends Controller
             throw ValidationException::withMessages(['type' => 'A bio page can have at most '.self::MAX_BLOCKS.' blocks.']);
         }
         $this->assertSafe($validated);
+        $validated = $this->normalizeCountdown($validated);
         $maxOrder = $bioPage->links()->max('order') ?? 0;
         // Provide default titles for block types that don't require user-entered titles
         $defaultTitles = [
@@ -140,6 +165,7 @@ class BioLinkController extends Controller
         return response()->json([
             'success' => true,
             'block' => $link,
+            'page_updated_at' => $this->touchPage($bioPage),
         ]);
     }
 
@@ -181,6 +207,7 @@ class BioLinkController extends Controller
             'attention_animation' => 'nullable|in:none,pulse,bounce,shake,wiggle,glow,heartbeat,rainbow',
         ]);
         $this->assertSafe($validated);
+        $validated = $this->normalizeCountdown($validated);
         if (! empty($validated['is_active']) && ! $bioLink->is_active && AbuseFlag::locks('bio_link', $bioLink->id)) {
             throw ValidationException::withMessages(['is_active' => 'This block was disabled by moderation.']);
         }
@@ -196,6 +223,7 @@ class BioLinkController extends Controller
         return response()->json([
             'success' => true,
             'block' => $bioLink,
+            'page_updated_at' => $this->touchPage($bioPage),
         ]);
     }
 
@@ -208,6 +236,7 @@ class BioLinkController extends Controller
 
         return response()->json([
             'success' => true,
+            'page_updated_at' => $this->touchPage($bioPage),
         ]);
     }
 
@@ -227,6 +256,7 @@ class BioLinkController extends Controller
 
         return response()->json([
             'success' => true,
+            'page_updated_at' => $this->touchPage($bioPage),
         ]);
     }
 
@@ -243,6 +273,7 @@ class BioLinkController extends Controller
         return response()->json([
             'success' => true,
             'is_active' => $bioLink->is_active,
+            'page_updated_at' => $this->touchPage($bioPage),
         ]);
     }
 }
