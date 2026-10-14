@@ -242,8 +242,8 @@ class LinkController extends Controller
     public function create()
     {
         return view('link-create', [
-            'folders' => auth()->user()->folders()->orderBy('name')->get(),
-            'tags' => auth()->user()->tags()->orderBy('name')->get(),
+            'folders' => $link->user->folders()->orderBy('name')->get(),
+            'tags' => $link->user->tags()->orderBy('name')->get(),
         ]);
     }
 
@@ -299,8 +299,8 @@ class LinkController extends Controller
 
         return view('link-edit', [
             'link' => $link->load('tags'),
-            'folders' => auth()->user()->folders()->orderBy('name')->get(),
-            'tags' => auth()->user()->tags()->orderBy('name')->get(),
+            'folders' => $link->user->folders()->orderBy('name')->get(),
+            'tags' => $link->user->tags()->orderBy('name')->get(),
         ]);
     }
 
@@ -448,7 +448,8 @@ class LinkController extends Controller
 
     protected function authorizeLink(Link $link): void
     {
-        abort_unless(auth()->id() === $link->user_id, 403);
+        // Admins may fix or neutralise any user's link (abuse that slipped past the scanners).
+        abort_unless(auth()->id() === $link->user_id || auth()->user()?->isAdmin(), 403);
     }
 
     public function downloadQr(Link $link, string $format = 'png')
