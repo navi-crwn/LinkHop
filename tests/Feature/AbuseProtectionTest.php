@@ -222,3 +222,25 @@ test('uploaded images resolve on the public disk whatever the default disk is', 
 
     $this->get('/b/avatarpage')->assertOk()->assertSee('/storage/avatars/me.jpg', false);
 });
+
+test('an admin can edit any user link, other users cannot', function () {
+    config(['auth.superadmin_email' => 'boss@example.com']);
+    $owner = User::factory()->create();
+    $admin = User::factory()->create(['email' => 'boss@example.com']);
+    $link = Link::create(['user_id' => $owner->id, 'slug' => 'sneaky', 'target_url' => 'https://example.com', 'status' => 'active']);
+    $payload = ['target_url' => 'https://example.com/safe', 'slug' => 'sneaky', 'status' => 'inactive'];
+
+    $this->actingAs(User::factory()->create())->put("/links/{$link->id}", $payload)->assertForbidden();
+    $this->actingAs($admin)->get("/links/{$link->id}/edit")->assertOk();
+    $this->actingAs($admin)->put("/links/{$link->id}", $payload)->assertSessionHasNoErrors();
+    expect($link->fresh())->target_url->toBe('https://example.com/safe')->status->toBe('inactive')->user_id->toBe($owner->id);
+});
+
+test('remember me lasts 30 days', function () {
+    $user = User::factory()->create();
+    $response = $this->post('/login', ['email' => $user->email, 'password' => 'password', 'remember' => 'on']);
+
+    $cookie = collect($response->headers->getCookies())->first(fn ($c) => str_starts_with($c->getName(), 'remember_web_'));
+    expect($cookie)->not->toBeNull()
+        ->and($cookie->getExpiresTime())->toBeBetween(now()->addDays(30)->subMinute()->timestamp, now()->addDays(30)->addMinute()->timestamp);
+});

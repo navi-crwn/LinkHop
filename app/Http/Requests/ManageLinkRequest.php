@@ -17,6 +17,8 @@ class ManageLinkRequest extends FormRequest
     public function rules(): array
     {
         $linkId = $this->route('link')?->id;
+        // Folders/tags belong to the link owner (an admin may be editing).
+        $ownerId = $this->route('link')?->user_id ?? $this->user()?->id;
 
         return [
             'target_url' => ['required', 'string', 'max:2000'],
@@ -38,11 +40,11 @@ class ManageLinkRequest extends FormRequest
             'custom_image_url' => ['nullable', 'url', 'max:500'],
             'folder_id' => [
                 'nullable',
-                Rule::exists('folders', 'id')->where(fn ($query) => $query->where('user_id', $this->user()?->id)),
+                Rule::exists('folders', 'id')->where(fn ($query) => $query->where('user_id', $ownerId)),
             ],
             'tags' => ['nullable', 'array'],
             'tags.*' => [
-                Rule::exists('tags', 'id')->where(fn ($query) => $query->where('user_id', $this->user()?->id)),
+                Rule::exists('tags', 'id')->where(fn ($query) => $query->where('user_id', $ownerId)),
             ],
             'comment' => ['nullable', 'string', 'max:500'],
             'remove_password' => ['nullable', 'boolean'],
