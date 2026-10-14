@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AbuseFlag;
 use App\Models\BioLink;
 use App\Models\BioPage;
 use App\Services\LinkSafety;
+use App\Support\SafeContent;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -33,7 +35,7 @@ class BioLinkController extends Controller
         foreach ($checks as $field => $schemes) {
             $value = trim((string) ($data[$field] ?? ''));
             // Uploaded files are stored as site-relative paths (/storage/...)
-            if ($value === '' || (str_starts_with($value, '/') && ! str_starts_with($value, '//'))) {
+            if ($value === '' || SafeContent::isSitePath($value)) {
                 continue;
             }
             if ($reason = $safety->rejectionReason($value, $field === 'url' ? $text : '', $schemes)) {
@@ -85,6 +87,8 @@ class BioLinkController extends Controller
             'faq_items.*.question' => 'nullable|string|max:500',
             'faq_items.*.answer' => 'nullable|string|max:2000',
             'html_content' => 'nullable|string|max:10000',
+            'entrance_animation' => 'nullable|in:none,fade,slide-up,slide-down,pop,bounce,flip,stagger',
+            'attention_animation' => 'nullable|in:none,pulse,bounce,shake,wiggle,glow,heartbeat,rainbow',
         ]);
         if ($bioPage->links()->count() >= self::MAX_BLOCKS) {
             throw ValidationException::withMessages(['type' => 'A bio page can have at most '.self::MAX_BLOCKS.' blocks.']);
@@ -171,8 +175,13 @@ class BioLinkController extends Controller
             'faq_items.*.question' => 'nullable|string|max:500',
             'faq_items.*.answer' => 'nullable|string|max:2000',
             'html_content' => 'nullable|string|max:10000',
+            'entrance_animation' => 'nullable|in:none,fade,slide-up,slide-down,pop,bounce,flip,stagger',
+            'attention_animation' => 'nullable|in:none,pulse,bounce,shake,wiggle,glow,heartbeat,rainbow',
         ]);
         $this->assertSafe($validated);
+        if (! empty($validated['is_active']) && ! $bioLink->is_active && AbuseFlag::locks('bio_link', $bioLink->id)) {
+            throw ValidationException::withMessages(['is_active' => 'This block was disabled by moderation.']);
+        }
         // Ensure boolean fields are not null
         if (array_key_exists('btn_icon_invert', $validated) && is_null($validated['btn_icon_invert'])) {
             $validated['btn_icon_invert'] = false;
@@ -220,6 +229,9 @@ class BioLinkController extends Controller
     public function toggle(BioPage $bioPage, BioLink $bioLink)
     {
         $this->authorize('update', $bioPage);
+        if (! $bioLink->is_active && AbuseFlag::locks('bio_link', $bioLink->id)) {
+            return response()->json(['success' => false, 'message' => 'This block was disabled by moderation.'], 422);
+        }
         $bioLink->update([
             'is_active' => ! $bioLink->is_active,
         ]);

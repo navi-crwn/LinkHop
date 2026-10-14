@@ -49,12 +49,23 @@ class SafeContent
         if ($url === '') {
             return '#';
         }
-        if (str_starts_with($url, '/') && ! str_starts_with($url, '//')) {
+        if (self::isSitePath($url)) {
             return $url;
         }
         $scheme = app(LinkSafety::class)->scheme($url);
 
         return $scheme !== null && in_array($scheme, $schemes, true) ? $url : '#';
+    }
+
+    /**
+     * A same-site path such as "/storage/x.png". Browsers ignore tabs/newlines and
+     * read "\" as "/", so "/\evil.com" or "/\t/evil.com" would leave the site.
+     */
+    public static function isSitePath(string $url): bool
+    {
+        $clean = preg_replace('/[\x00-\x20]+/', '', $url);
+
+        return str_starts_with($clean, '/') && ! str_contains($clean, '\\') && ! str_starts_with($clean, '//');
     }
 
     /**
