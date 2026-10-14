@@ -161,7 +161,7 @@
                                     <form id="delete-form-{{ $bioPage->id }}" action="{{ route('bio.destroy', $bioPage) }}" method="POST" class="flex-1">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" @click="confirmDelete('delete-form-{{ $bioPage->id }}', '{{ $bioPage->title }}')" class="w-full rounded-xl border border-red-200 px-3 py-2 text-center text-xs font-medium text-red-600 hover:bg-red-50 hover:border-red-300 transition-all dark:border-red-900 dark:text-red-400 dark:hover:bg-red-900/20">
+                                        <button type="button" @click="confirmDelete('delete-form-{{ $bioPage->id }}', @js($bioPage->title))" class="w-full rounded-xl border border-red-200 px-3 py-2 text-center text-xs font-medium text-red-600 hover:bg-red-50 hover:border-red-300 transition-all dark:border-red-900 dark:text-red-400 dark:hover:bg-red-900/20">
                                             Delete
                                         </button>
                                     </form>

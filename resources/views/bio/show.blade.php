@@ -987,7 +987,7 @@
                                         </div>
                                     @endif
                                 </div>
-                                <button onclick="downloadVCard('{{ $link->vcard_name }}', '{{ $link->vcard_phone }}', '{{ $link->vcard_email }}', '{{ $link->vcard_company }}')" 
+                                <button onclick="downloadVCard(@js($link->vcard_name), @js($link->vcard_phone), @js($link->vcard_email), @js($link->vcard_company))" 
                                         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all"
                                         style="background: var(--button-bg, #6366f1); color: var(--button-text, #fff);">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
