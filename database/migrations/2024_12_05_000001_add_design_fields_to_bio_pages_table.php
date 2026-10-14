@@ -11,6 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Filename predates the bio_pages create migration; on fresh installs the table
+        // does not exist yet. 2026_10_14_000001 re-applies this once it does.
+        if (! Schema::hasTable('bio_pages')) {
+            return;
+        }
         Schema::table('bio_pages', function (Blueprint $table) {
             // New design fields
             if (! Schema::hasColumn('bio_pages', 'background_color')) {
@@ -60,6 +65,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (! Schema::hasTable('bio_pages')) {
+            return;
+        }
         Schema::table('bio_pages', function (Blueprint $table) {
             $columns = [
                 'background_color',

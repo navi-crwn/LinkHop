@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\BioLink;
 use App\Models\BioPage;
+use App\Services\GeoIpService;
+use App\Services\UserAgentService;
+use App\Support\SafeContent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Jenssegers\Agent\Agent;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PublicBioController extends Controller
@@ -64,18 +68,24 @@ class PublicBioController extends Controller
 
     public function click(BioLink $bioLink)
     {
+        // Disabled blocks / unpublished pages must not keep redirecting.
+        $bioLink->loadMissing('bioPage');
+        $target = SafeContent::url($bioLink->url);
+        if (! $bioLink->is_active || ! $bioLink->bioPage?->is_published || $target === '#') {
+            abort(404);
+        }
         $ipAddress = request()->ip();
-        $agent = new Agent;
+        $ua = app(UserAgentService::class)->parse(request()->userAgent());
         $clickData = [
             'ip_address' => $ipAddress,
-            'device' => $this->getDeviceType($agent),
-            'browser' => $agent->browser(),
+            'device' => strtolower($ua['device']),
+            'browser' => $ua['browser'],
             'referrer' => request()->header('referer'),
             'country' => $this->getCountryFromIp($ipAddress),
         ];
         $bioLink->recordClick($clickData);
 
-        return redirect($bioLink->url);
+        return redirect()->away($target);
     }
 
     public function qr(string $slug)
@@ -105,19 +115,6 @@ class PublicBioController extends Controller
         }
     }
 
-    protected function getDeviceType(Agent $agent): string
-    {
-        if ($agent->isDesktop()) {
-            return 'desktop';
-        } elseif ($agent->isTablet()) {
-            return 'tablet';
-        } elseif ($agent->isMobile()) {
-            return 'mobile';
-        }
-
-        return 'unknown';
-    }
-
     /**
      * Verify a submitted bio-page password against the stored value.
      *
@@ -129,8 +126,8 @@ class PublicBioController extends Controller
         if ($input === null || $stored === null || $stored === '') {
             return false;
         }
-        if (\Illuminate\Support\Str::startsWith($stored, ['$2y$', '$2a$', '$2b$', '$argon2i$', '$argon2id$'])) {
-            return \Illuminate\Support\Facades\Hash::check($input, $stored);
+        if (Str::startsWith($stored, ['$2y$', '$2a$', '$2b$', '$argon2i$', '$argon2id$'])) {
+            return Hash::check($input, $stored);
         }
 
         return hash_equals($stored, $input);
@@ -139,7 +136,7 @@ class PublicBioController extends Controller
     protected function getCountryFromIp(string $ipAddress): ?string
     {
         try {
-            return app(\App\Services\GeoIpService::class)->country($ipAddress);
+            return app(GeoIpService::class)->country($ipAddress);
         } catch (\Exception $e) {
             return null;
         }

@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Link;
+use App\Services\LinkSafety;
 use App\Services\LinkService;
+use App\Services\UrlGuard;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class LinkController extends Controller
@@ -48,14 +51,13 @@ class LinkController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
         $data = $request->validate([
-            'url' => ['required', 'string'],
-            'title' => ['nullable', 'string'],
+            'url' => ['required', 'string', 'max:2000'],
+            'title' => ['nullable', 'string', 'max:255'],
             'is_public' => ['nullable', 'boolean'],
         ]);
-        // Normalize URL: add https if missing, keep http if present
-        $url = trim($data['url']);
-        if (! preg_match('/^https?:\/\//i', $url)) {
-            $url = 'https://'.ltrim($url, '/');
+        $url = $this->normalizeUrl($data['url']);
+        if ($reason = app(LinkSafety::class)->rejectionReason($url, (string) ($data['title'] ?? ''))) {
+            return response()->json(['message' => $reason, 'errors' => ['url' => [$reason]]], 422);
         }
         // Use LinkService to create a shortlink for the user
         $link = $linkService->createShortlink(
@@ -83,17 +85,16 @@ class LinkController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
         $data = $request->validate([
-            'url' => ['required', 'string'],
-            'title' => ['nullable', 'string'],
+            'url' => ['required', 'string', 'max:2000'],
+            'title' => ['nullable', 'string', 'max:255'],
         ]);
-        // Normalize URL: add https if missing, keep http if present
-        $url = trim($data['url']);
-        if (! preg_match('/^https?:\/\//i', $url)) {
-            $url = 'https://'.ltrim($url, '/');
+        $url = $this->normalizeUrl($data['url']);
+        if ($reason = app(LinkSafety::class)->rejectionReason($url, (string) ($data['title'] ?? ''))) {
+            return response()->json(['message' => $reason, 'errors' => ['url' => [$reason]]], 422);
         }
         try {
             // Check if user already has a shortlink for this URL (prevent duplicates)
-            $existing = \App\Models\Link::where('user_id', $user->id)
+            $existing = Link::where('user_id', $user->id)
                 ->where('target_url', $url)
                 ->first();
             if ($existing) {
@@ -123,20 +124,33 @@ class LinkController extends Controller
             \Log::error('Bio shorten error: '.$e->getMessage());
 
             return response()->json([
-                'message' => 'Failed to create shortlink: '.$e->getMessage(),
+                'message' => 'Failed to create shortlink.',
             ], 500);
         }
+    }
+
+    /**
+     * Add https:// when no scheme is given; keeps http:// as is.
+     */
+    private function normalizeUrl(string $url): string
+    {
+        $url = trim($url);
+        if (! preg_match('/^[a-z][a-z0-9+.\-]*:/i', $url)) {
+            $url = 'https://'.ltrim($url, '/');
+        }
+
+        return $url;
     }
 
     public function fetchTitle(Request $request)
     {
         $request->validate(['url' => 'required|url']);
         $url = $request->input('url');
-        if (! app(\App\Services\UrlGuard::class)->isSafe($url)) {
+        if (! app(UrlGuard::class)->isSafe($url)) {
             return response()->json(['title' => null], 422);
         }
         try {
-            $client = new \GuzzleHttp\Client(['timeout' => 5, 'verify' => true, 'allow_redirects' => false]);
+            $client = new Client(['timeout' => 5, 'verify' => true, 'allow_redirects' => false]);
             $response = $client->get($url, [
                 'headers' => [
                     'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\WelcomeEmail;
 use App\Models\Folder;
 use App\Models\User;
 use App\Services\TurnstileService;
@@ -31,16 +32,16 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'tos_accepted' => ['required', 'accepted'],
         ]);
+        $domain = strtolower(substr(strrchr($request->email, '@') ?: '', 1));
+        if (in_array($domain, config('abuse.disposable_email_domains', []), true)) {
+            return back()
+                ->withErrors(['email' => 'Disposable email addresses are not allowed.'])
+                ->withInput($request->only('name', 'email'));
+        }
         if (! $this->turnstile->verify($request->input('cf-turnstile-response'), $request->ip())) {
             return back()
                 ->withErrors(['turnstile' => 'Security verification failed, please try again.'])
                 ->withInput($request->only('name', 'email'));
-        }
-        $role = 'user';
-        if (str_ends_with($request->email, '@admin.com')) {
-            $role = 'admin';
-        } elseif (str_ends_with($request->email, '@superadmin.com')) {
-            $role = 'superadmin';
         }
         $words = ['Swift', 'Bright', 'Noble', 'Calm', 'Bold', 'Wise', 'Quick', 'Brave', 'Sharp', 'Clear',
             'River', 'Mountain', 'Ocean', 'Forest', 'Desert', 'Valley', 'Storm', 'Dawn', 'Sunset', 'Star',
@@ -51,7 +52,7 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'catchphrase' => $catchphrase,
-            'role' => $role,
+            'role' => User::ROLE_USER,
         ]);
         Folder::create([
             'name' => 'Default',
@@ -62,7 +63,7 @@ class RegisteredUserController extends Controller
         Auth::login($user);
         session(['user_catchphrase' => $catchphrase]);
         try {
-            \Mail::to($user->email)->send(new \App\Mail\WelcomeEmail($user, $catchphrase, false));
+            \Mail::to($user->email)->send(new WelcomeEmail($user, $catchphrase, false));
         } catch (\Exception $e) {
             \Log::error('Failed to send welcome email', [
                 'error' => $e->getMessage(),

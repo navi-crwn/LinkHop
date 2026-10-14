@@ -4,10 +4,53 @@ namespace App\Http\Controllers;
 
 use App\Models\BioLink;
 use App\Models\BioPage;
+use App\Services\LinkSafety;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class BioLinkController extends Controller
 {
+    private const MAX_BLOCKS = 100;
+
+    /**
+     * Reject unsafe URL schemes, blacklisted or abusive destinations.
+     */
+    private function assertSafe(array $data): void
+    {
+        $safety = app(LinkSafety::class);
+        $text = implode(' ', array_filter([
+            $data['title'] ?? null,
+            $data['description'] ?? null,
+            isset($data['content']) ? strip_tags($data['content']) : null,
+        ]));
+        $checks = [
+            'url' => LinkSafety::BIO_SCHEMES,
+            'embed_url' => LinkSafety::WEB_SCHEMES,
+            'thumbnail_url' => LinkSafety::WEB_SCHEMES,
+            'custom_icon' => LinkSafety::WEB_SCHEMES,
+        ];
+        $errors = [];
+        foreach ($checks as $field => $schemes) {
+            $value = trim((string) ($data[$field] ?? ''));
+            // Uploaded files are stored as site-relative paths (/storage/...)
+            if ($value === '' || (str_starts_with($value, '/') && ! str_starts_with($value, '//'))) {
+                continue;
+            }
+            if ($reason = $safety->rejectionReason($value, $field === 'url' ? $text : '', $schemes)) {
+                $errors[$field] = $reason;
+            }
+        }
+        if (! isset($errors['url']) && $text !== '') {
+            $result = $safety->assess(null, $text);
+            if (array_intersect($result['signals'], config('abuse.block_categories', [])) !== []) {
+                $errors['title'] = 'This content is not allowed due to our security policy.';
+            }
+        }
+        if ($errors !== []) {
+            throw ValidationException::withMessages($errors);
+        }
+    }
+
     public function store(Request $request, BioPage $bioPage)
     {
         $this->authorize('update', $bioPage);
@@ -43,6 +86,10 @@ class BioLinkController extends Controller
             'faq_items.*.answer' => 'nullable|string|max:2000',
             'html_content' => 'nullable|string|max:10000',
         ]);
+        if ($bioPage->links()->count() >= self::MAX_BLOCKS) {
+            throw ValidationException::withMessages(['type' => 'A bio page can have at most '.self::MAX_BLOCKS.' blocks.']);
+        }
+        $this->assertSafe($validated);
         $maxOrder = $bioPage->links()->max('order') ?? 0;
         // Provide default titles for block types that don't require user-entered titles
         $defaultTitles = [
@@ -125,6 +172,7 @@ class BioLinkController extends Controller
             'faq_items.*.answer' => 'nullable|string|max:2000',
             'html_content' => 'nullable|string|max:10000',
         ]);
+        $this->assertSafe($validated);
         // Ensure boolean fields are not null
         if (array_key_exists('btn_icon_invert', $validated) && is_null($validated['btn_icon_invert'])) {
             $validated['btn_icon_invert'] = false;

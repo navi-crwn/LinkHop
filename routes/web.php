@@ -4,6 +4,7 @@ use App\Http\Controllers\AbuseReportController;
 use App\Http\Controllers\Admin\SeoController;
 use App\Http\Controllers\AdminAbuseController;
 use App\Http\Controllers\AdminAnalyticsController;
+use App\Http\Controllers\AdminBioController;
 use App\Http\Controllers\AdminDomainBlacklistController;
 use App\Http\Controllers\AdminIpBanController;
 use App\Http\Controllers\AdminIpWatchlistController;
@@ -12,6 +13,8 @@ use App\Http\Controllers\AdminQueueController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ApiTokenController;
+use App\Http\Controllers\BioLinkController;
+use App\Http\Controllers\BioPageController;
 use App\Http\Controllers\BrandAssetController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\GeoIpMonitorController;
@@ -19,22 +22,16 @@ use App\Http\Controllers\LinkCommentController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\MarketingPageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProxyMonitorController;
+use App\Http\Controllers\PublicBioController;
 use App\Http\Controllers\PublicLinkController;
 use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TwoFactorController;
-use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
-RateLimiter::for('shorten', function (Request $request) {
-    return [
-        Limit::perMinute(10)->by($request->ip()),
-    ];
-});
 Route::middleware('ip.ban')->group(function () {
     Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
     Route::get('/brand/logo.png', [BrandAssetController::class, 'logo'])->name('brand.logo');
@@ -64,7 +61,7 @@ Route::middleware('ip.ban')->group(function () {
     Route::get('/faq', [MarketingPageController::class, 'faq'])->name('faq');
     Route::get('/products', [MarketingPageController::class, 'products'])->name('products');
     Route::get('/feature-requests', [MarketingPageController::class, 'featureRequests'])->name('feature.requests');
-    Route::get('/api/qr-generate', [\App\Http\Controllers\BioPageController::class, 'generateQR'])->name('api.qr.generate');
+    Route::get('/api/qr-generate', [BioPageController::class, 'generateQR'])->name('api.qr.generate');
     Route::post('/shorten', [PublicLinkController::class, 'store'])
         ->middleware(['throttle:shorten', 'quota'])
         ->name('shorten.store');
@@ -109,29 +106,32 @@ Route::middleware('ip.ban')->group(function () {
         Route::put('/tags/{tag}', [TagController::class, 'update'])->name('tags.update');
         Route::delete('/tags/{tag}', [TagController::class, 'destroy'])->name('tags.destroy');
         Route::prefix('bio')->name('bio.')->group(function () {
-            Route::get('/', [\App\Http\Controllers\BioPageController::class, 'index'])->name('index');
-            Route::get('/create', [\App\Http\Controllers\BioPageController::class, 'create'])->name('create');
-            Route::get('/check-slug', [\App\Http\Controllers\BioPageController::class, 'checkSlug'])->name('check-slug');
-            Route::post('/', [\App\Http\Controllers\BioPageController::class, 'store'])->name('store');
-            Route::get('/{bioPage}/edit', [\App\Http\Controllers\BioPageController::class, 'edit'])->name('edit');
-            Route::put('/{bioPage}', [\App\Http\Controllers\BioPageController::class, 'update'])->name('update');
-            Route::delete('/{bioPage}', [\App\Http\Controllers\BioPageController::class, 'destroy'])->name('destroy');
-            Route::get('/{bioPage}/analytics', [\App\Http\Controllers\BioPageController::class, 'analytics'])->name('analytics');
-            Route::post('/{bioPage}/duplicate', [\App\Http\Controllers\BioPageController::class, 'duplicate'])->name('duplicate');
-            Route::post('/{bioPage}/upload-image', [\App\Http\Controllers\BioPageController::class, 'uploadImage'])->name('upload-image');
-            Route::post('/{bioPage}/upload-avatar', [\App\Http\Controllers\BioPageController::class, 'uploadAvatar'])->name('upload-avatar');
-            Route::post('/{bioPage}/upload-thumbnail', [\App\Http\Controllers\BioPageController::class, 'uploadThumbnail'])->name('upload-thumbnail');
-            Route::post('/{bioPage}/upload-icon', [\App\Http\Controllers\BioPageController::class, 'uploadIcon'])->name('upload-icon');
-            Route::post('/{bioPage}/upload-qr-logo', [\App\Http\Controllers\BioPageController::class, 'uploadQrLogo'])->name('upload-qr-logo');
-            Route::get('/{bioPage}/preview', [\App\Http\Controllers\BioPageController::class, 'preview'])->name('preview');
-            Route::get('/links/search', [\App\Http\Controllers\Api\LinkController::class, 'index'])->name('links.search');
-            Route::post('/shorten', [\App\Http\Controllers\Api\LinkController::class, 'shortenForBio'])->name('shorten');
-            Route::prefix('{bioPage}/links')->name('links.')->group(function () {
-                Route::post('/', [\App\Http\Controllers\BioLinkController::class, 'store'])->name('store');
-                Route::put('/{bioLink}', [\App\Http\Controllers\BioLinkController::class, 'update'])->name('update');
-                Route::delete('/{bioLink}', [\App\Http\Controllers\BioLinkController::class, 'destroy'])->name('destroy');
-                Route::post('/reorder', [\App\Http\Controllers\BioLinkController::class, 'reorder'])->name('reorder');
-                Route::post('/{bioLink}/toggle', [\App\Http\Controllers\BioLinkController::class, 'toggle'])->name('toggle');
+            Route::get('/', [BioPageController::class, 'index'])->name('index');
+            Route::get('/create', [BioPageController::class, 'create'])->name('create');
+            Route::get('/check-slug', [BioPageController::class, 'checkSlug'])->name('check-slug');
+            Route::post('/', [BioPageController::class, 'store'])->name('store');
+            Route::get('/{bioPage}/edit', [BioPageController::class, 'edit'])->name('edit');
+            Route::put('/{bioPage}', [BioPageController::class, 'update'])->name('update');
+            Route::delete('/{bioPage}', [BioPageController::class, 'destroy'])->name('destroy');
+            Route::get('/{bioPage}/analytics', [BioPageController::class, 'analytics'])->name('analytics');
+            Route::post('/{bioPage}/duplicate', [BioPageController::class, 'duplicate'])->name('duplicate');
+            Route::post('/{bioPage}/upload-image', [BioPageController::class, 'uploadImage'])->name('upload-image');
+            Route::post('/{bioPage}/upload-avatar', [BioPageController::class, 'uploadAvatar'])->name('upload-avatar');
+            Route::post('/{bioPage}/upload-thumbnail', [BioPageController::class, 'uploadThumbnail'])->name('upload-thumbnail');
+            Route::post('/{bioPage}/upload-icon', [BioPageController::class, 'uploadIcon'])->name('upload-icon');
+            Route::post('/{bioPage}/upload-qr-logo', [BioPageController::class, 'uploadQrLogo'])->name('upload-qr-logo');
+            Route::get('/{bioPage}/preview', [BioPageController::class, 'preview'])->name('preview');
+            Route::get('/links/search', [App\Http\Controllers\Api\LinkController::class, 'index'])->name('links.search');
+            Route::post('/shorten', [App\Http\Controllers\Api\LinkController::class, 'shortenForBio'])
+                ->middleware(['throttle:shorten', 'quota'])
+                ->name('shorten');
+            // scopeBindings: {bioLink} must belong to {bioPage}, otherwise 404
+            Route::prefix('{bioPage}/links')->name('links.')->scopeBindings()->group(function () {
+                Route::post('/', [BioLinkController::class, 'store'])->name('store');
+                Route::put('/{bioLink}', [BioLinkController::class, 'update'])->name('update');
+                Route::delete('/{bioLink}', [BioLinkController::class, 'destroy'])->name('destroy');
+                Route::post('/reorder', [BioLinkController::class, 'reorder'])->name('reorder');
+                Route::post('/{bioLink}/toggle', [BioLinkController::class, 'toggle'])->name('toggle');
             });
         });
     });
@@ -166,27 +166,29 @@ Route::middleware('ip.ban')->group(function () {
             Route::post('/seo', [SeoController::class, 'update'])->name('seo.update');
             Route::get('/abuse', [AdminAbuseController::class, 'index'])->name('abuse.index');
             Route::patch('/abuse/{report}', [AdminAbuseController::class, 'update'])->name('abuse.update');
+            Route::post('/abuse/flags/{flag}/confirm', [AdminAbuseController::class, 'confirmFlag'])->name('abuse.flags.confirm');
+            Route::post('/abuse/flags/{flag}/restore', [AdminAbuseController::class, 'restoreFlag'])->name('abuse.flags.restore');
             Route::post('/queue/restart', [AdminQueueController::class, 'restart'])->name('queue.restart');
             Route::get('/queue/status', [AdminQueueController::class, 'status'])->name('queue.status');
             Route::get('/geoip-monitor', [GeoIpMonitorController::class, 'index'])->name('geoip.monitor');
             Route::post('/geoip-test', [GeoIpMonitorController::class, 'testProvider'])->name('geoip.test');
-            Route::get('/proxy-monitor', [\App\Http\Controllers\ProxyMonitorController::class, 'index'])->name('proxy.monitor');
-            Route::post('/proxy-test', [\App\Http\Controllers\ProxyMonitorController::class, 'test'])->name('proxy.test');
-            Route::delete('/proxy-reset-stats', [\App\Http\Controllers\ProxyMonitorController::class, 'resetStats'])->name('proxy.reset-stats');
-            Route::get('/bio', [\App\Http\Controllers\AdminBioController::class, 'index'])->name('bio.index');
-            Route::get('/bio/monitor', [\App\Http\Controllers\AdminBioController::class, 'monitor'])->name('bio.monitor');
-            Route::get('/bio/export', [\App\Http\Controllers\AdminBioController::class, 'export'])->name('bio.export');
-            Route::get('/bio/{bioPage}', [\App\Http\Controllers\AdminBioController::class, 'show'])->name('bio.show');
-            Route::delete('/bio/{bioPage}', [\App\Http\Controllers\AdminBioController::class, 'destroy'])->name('bio.destroy');
-            Route::post('/bio/{bioPage}/toggle', [\App\Http\Controllers\AdminBioController::class, 'togglePublish'])->name('bio.toggle');
-            Route::post('/bio/bulk-delete', [\App\Http\Controllers\AdminBioController::class, 'bulkDelete'])->name('bio.bulk-delete');
+            Route::get('/proxy-monitor', [ProxyMonitorController::class, 'index'])->name('proxy.monitor');
+            Route::post('/proxy-test', [ProxyMonitorController::class, 'test'])->name('proxy.test');
+            Route::delete('/proxy-reset-stats', [ProxyMonitorController::class, 'resetStats'])->name('proxy.reset-stats');
+            Route::get('/bio', [AdminBioController::class, 'index'])->name('bio.index');
+            Route::get('/bio/monitor', [AdminBioController::class, 'monitor'])->name('bio.monitor');
+            Route::get('/bio/export', [AdminBioController::class, 'export'])->name('bio.export');
+            Route::get('/bio/{bioPage}', [AdminBioController::class, 'show'])->name('bio.show');
+            Route::delete('/bio/{bioPage}', [AdminBioController::class, 'destroy'])->name('bio.destroy');
+            Route::post('/bio/{bioPage}/toggle', [AdminBioController::class, 'togglePublish'])->name('bio.toggle');
+            Route::post('/bio/bulk-delete', [AdminBioController::class, 'bulkDelete'])->name('bio.bulk-delete');
         });
     Route::get('/report-abuse', [AbuseReportController::class, 'create'])->name('report.create');
     Route::post('/report-abuse', [AbuseReportController::class, 'store'])->middleware('throttle:5,10')->name('report.store');
     Route::prefix('b')->name('bio.public.')->group(function () {
-        Route::match(['get', 'post'], '/{slug}', [\App\Http\Controllers\PublicBioController::class, 'show'])->name('show');
-        Route::get('/{slug}/qr', [\App\Http\Controllers\PublicBioController::class, 'qr'])->name('qr');
-        Route::get('/click/{bioLink}', [\App\Http\Controllers\PublicBioController::class, 'click'])->name('click');
+        Route::match(['get', 'post'], '/{slug}', [PublicBioController::class, 'show'])->name('show');
+        Route::get('/{slug}/qr', [PublicBioController::class, 'qr'])->name('qr');
+        Route::get('/click/{bioLink}', [PublicBioController::class, 'click'])->name('click');
     });
 });
 require __DIR__.'/auth.php';
@@ -200,10 +202,3 @@ Route::get('/health/queue', function () {
         'last_heartbeat' => $heartbeat,
     ]);
 });
-Route::get('/test-modal', function () {
-    return view('components.link-creation-modal', [
-        'folders' => collect([]),
-        'tags' => collect([]),
-        'isAdmin' => false,
-    ]);
-})->middleware('auth');

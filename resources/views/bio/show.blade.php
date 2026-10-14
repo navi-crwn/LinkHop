@@ -273,7 +273,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Inter:wght@400;500;600;700&family=Lato:wght@400;700&family=Lexend:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Merriweather:wght@400;700&family=Montserrat:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&family=Raleway:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Source+Sans+Pro:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Ubuntu:wght@400;500;700&family=Work+Sans:wght@400;500;600;700&display=swap');
         .bio-container {
-            {!! $bgStyle !!}
+            {!! \App\Support\SafeContent::css($bgStyle) !!}
             font-family: {!! $fontFamily !!};
             min-height: 100vh;
             scrollbar-width: none;
@@ -641,7 +641,7 @@
         }
     </style>
     @if($bioPage->custom_css)
-        <style>{!! $bioPage->custom_css !!}</style>
+        <style>{!! \App\Support\SafeContent::css($bioPage->custom_css) !!}</style>
     @endif
 </head>
 @php
@@ -766,7 +766,7 @@
                             @if(is_array($socialLink) && $isEnabled && !empty($linkValue))
                                 @php
                                     $platform = $socialLink['platform'];
-                                    $url = SocialUrlHelper::buildUrl($platform, $linkValue);
+                                    $url = \App\Support\SafeContent::url(SocialUrlHelper::buildUrl($platform, $linkValue));
                                     $platformConfig = config("brands.platforms.{$platform}");
                                     $brandColor = $platformConfig['color'] ?? '#6b7280';
                                 @endphp
@@ -815,13 +815,17 @@
                                 }
                                 $borderStyle = $link->btn_border_color ? 'border: 1px solid '.$link->btn_border_color.';' : ($themeLinkBorder ? 'border: 1px solid '.$themeLinkBorder.';' : '');
                                 $linkRel = $getLinkRel($link->url);
+                                // http(s) links go through the click tracker; mailto/tel/sms stay direct
+                                $linkHref = preg_match('#^https?://#i', trim((string) $link->url))
+                                    ? route('bio.public.click', $link)
+                                    : \App\Support\SafeContent::url($link->url);
                                 $entranceAnim = $link->entrance_animation ?? 'none';
                                 $attentionAnim = $link->attention_animation ?? 'none';
                                 $animClasses = '';
                                 if ($entranceAnim && $entranceAnim !== 'none') $animClasses .= ' entrance-' . $entranceAnim;
                                 if ($attentionAnim && $attentionAnim !== 'none') $animClasses .= ' attention-' . $attentionAnim;
                             @endphp
-                            <a href="{{ $link->url }}" target="_blank" rel="{{ $linkRel }}" 
+                            <a href="{{ $linkHref }}" target="_blank" rel="{{ $linkRel }}" 
                                class="link-block {{ $hasThumbnail ? 'has-thumbnail' : '' }} {{ $hasIcon && !$hasThumbnail ? 'has-icon' : '' }}{{ $animClasses }}"
                                style="background: {{ $brandColor }}; color: {{ $textColor }}; {{ $borderStyle }}{{ $entranceAnim === 'stagger' ? ' animation-delay: ' . ($loop->index * 0.1) . 's;' : '' }}"
                                @if($entranceAnim && $entranceAnim !== 'none')
@@ -856,11 +860,8 @@
                                 </div>
                                 <div class="text-block-content truncated" style="color: inherit;">
                                     @php
-                                        $textContent = $link->content ?? '';
-                                        $textContent = html_entity_decode($textContent, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-                                        $textContent = strip_tags($textContent, '<p><a><br><strong><b><em><i><u><s><strike><ul><ol><li><h1><h2><h3><h4><h5><h6><span><div><img><sub><sup><blockquote><code><pre>');
-                                        $textContent = preg_replace('/<a\s+(?:[^>]*?\s+)?href=(["\'])(.*?)\1/i', '<a href="$2" rel="nofollow noreferrer" target="_blank"', $textContent);
-                                        $textContent = nl2br($textContent);
+                                        $textContent = html_entity_decode($link->content ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                                        $textContent = \App\Support\SafeContent::html(nl2br($textContent));
                                     @endphp
                                     {!! $textContent !!}
                                 </div>
@@ -1000,8 +1001,7 @@
                                 @endif
                                 <div class="text-sm leading-relaxed" style="color: inherit;">
                                     @php
-                                        $htmlContent = strip_tags($link->html_content, '<p><a><br><strong><em><ul><ol><li><h1><h2><h3><h4><h5><h6><span><div><img>');
-                                        $htmlContent = preg_replace('/<a\s+(?:[^>]*?\s+)?href=(["\'])(.*?)\1/i', '<a href="$2" rel="nofollow noreferrer" target="_blank"', $htmlContent);
+                                        $htmlContent = \App\Support\SafeContent::html($link->html_content);
                                     @endphp
                                     {!! $htmlContent !!}
                                 </div>
@@ -1095,7 +1095,7 @@
                             @if(is_array($socialLink) && $isEnabled && !empty($linkValue))
                                 @php
                                     $platform = $socialLink['platform'];
-                                    $url = SocialUrlHelper::buildUrl($platform, $linkValue);
+                                    $url = \App\Support\SafeContent::url(SocialUrlHelper::buildUrl($platform, $linkValue));
                                     $platformConfig = config("brands.platforms.{$platform}");
                                     $brandColor = $platformConfig['color'] ?? '#6b7280';
                                 @endphp

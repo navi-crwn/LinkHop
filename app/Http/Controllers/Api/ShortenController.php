@@ -4,10 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HandlesSlugs;
+use App\Models\ActivityLog;
 use App\Models\Folder;
 use App\Models\Link;
+use App\Services\LinkSafety;
 use App\Services\LinkService;
+use App\Services\QuotaService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -22,7 +27,7 @@ class ShortenController extends Controller
     /**
      * Create a shortened URL via API
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function store(Request $request)
     {
@@ -48,8 +53,15 @@ class ShortenController extends Controller
         if (! preg_match('/^https?:\/\//i', $targetUrl)) {
             $targetUrl = 'https://'.$targetUrl;
         }
+        if ($reason = app(LinkSafety::class)->rejectionReason($targetUrl, (string) $request->input('alias'))) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Validation Error',
+                'messages' => ['url' => [$reason]],
+            ], 422);
+        }
         // Check user quota
-        if (! app(\App\Services\QuotaService::class)->checkUserLimits($user->id)) {
+        if (! app(QuotaService::class)->checkUserLimits($user->id)) {
             return response()->json([
                 'success' => false,
                 'error' => 'Quota Exceeded',
@@ -92,14 +104,14 @@ class ShortenController extends Controller
                 'redirect_type' => '302',
                 'expires_at' => $request->input('expires_at'),
                 'password_hash' => $request->filled('password')
-                    ? \Illuminate\Support\Facades\Hash::make($request->input('password'))
+                    ? Hash::make($request->input('password'))
                     : null,
             ]);
             // Generate QR code
             $this->links->generateQr($link);
             $this->links->forgetCache($link);
             // Log activity
-            \App\Models\ActivityLog::log(
+            ActivityLog::log(
                 'created',
                 'Link',
                 $link->id,

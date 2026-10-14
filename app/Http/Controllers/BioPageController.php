@@ -4,12 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\BioClick;
 use App\Models\BioPage;
+use App\Services\LinkSafety;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class BioPageController extends Controller
 {
+    private const MAX_PAGES = 3;
+
     public function index()
     {
         $bioPages = auth()->user()->bioPages()->withCount('links')->latest()->get();
@@ -59,7 +65,7 @@ class BioPageController extends Controller
         }
         try {
             // Generate QR code with high error correction for logo overlay
-            $qrString = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')
+            $qrString = QrCode::format('png')
                 ->size($size)
                 ->color(hexdec(substr($color, 0, 2)), hexdec(substr($color, 2, 2)), hexdec(substr($color, 4, 2)))
                 ->backgroundColor(hexdec(substr($bgcolor, 0, 2)), hexdec(substr($bgcolor, 2, 2)), hexdec(substr($bgcolor, 4, 2)))
@@ -157,10 +163,40 @@ class BioPageController extends Controller
         return $settings;
     }
 
+    /**
+     * Reject abusive page text and unsafe social link values.
+     */
+    private function assertSafeContent(array $data): void
+    {
+        $safety = app(LinkSafety::class);
+        $errors = [];
+        $text = implode(' ', array_filter([$data['slug'] ?? null, $data['title'] ?? null, $data['bio'] ?? null, $data['seo_title'] ?? null, $data['seo_description'] ?? null]));
+        if ($text !== '' && array_intersect($safety->assess(null, $text)['signals'], config('abuse.block_categories', [])) !== []) {
+            $errors['title'] = 'This content is not allowed due to our security policy.';
+        }
+        foreach ((array) ($data['social_links'] ?? []) as $i => $social) {
+            $value = trim((string) ($social['value'] ?? ''));
+            // Plain usernames/handles have no scheme and are expanded per platform.
+            if ($value === '' || $safety->scheme($value) === null) {
+                continue;
+            }
+            if ($reason = $safety->rejectionReason($value, '', LinkSafety::BIO_SCHEMES)) {
+                $errors["social_links.{$i}.value"] = $reason;
+            }
+        }
+        if (! empty($data['background_image']) && ! str_starts_with($data['background_image'], '/')
+            && ($reason = $safety->rejectionReason($data['background_image']))) {
+            $errors['background_image'] = $reason;
+        }
+        if ($errors !== []) {
+            throw ValidationException::withMessages($errors);
+        }
+    }
+
     public function store(Request $request)
     {
-        if (auth()->user()->bioPages()->count() >= 3) {
-            return back()->withErrors(['slug' => 'You have reached the maximum limit of 3 bio pages.']);
+        if (auth()->user()->bioPages()->count() >= self::MAX_PAGES) {
+            return back()->withErrors(['slug' => 'You have reached the maximum limit of '.self::MAX_PAGES.' bio pages.']);
         }
         $request->merge(['slug' => strtolower($request->slug)]);
         $validated = $request->validate([
@@ -177,6 +213,7 @@ class BioPageController extends Controller
             'bio' => 'nullable|string|max:155',
             'qr_settings' => 'nullable|json',
         ]);
+        $this->assertSafeContent($validated);
         $qrSettings = $request->filled('qr_settings') ? json_decode($request->qr_settings, true) : null;
         if ($qrSettings) {
             $qrSettings = $this->handleQrImage($qrSettings);
@@ -275,6 +312,7 @@ class BioPageController extends Controller
             'hover_effect' => 'nullable|string|max:50',
             'background_animation' => 'nullable|string|max:50',
         ]);
+        $this->assertSafeContent($validated);
         if ($request->hasFile('avatar')) {
             if ($bioPage->avatar_url) {
                 Storage::disk('public')->delete($bioPage->avatar_url);
@@ -296,7 +334,7 @@ class BioPageController extends Controller
         // submission leaves the existing password untouched.
         if (array_key_exists('password', $validated)) {
             if (filled($validated['password'])) {
-                $validated['password'] = \Illuminate\Support\Facades\Hash::make($validated['password']);
+                $validated['password'] = Hash::make($validated['password']);
             } else {
                 unset($validated['password']);
             }
@@ -421,12 +459,17 @@ class BioPageController extends Controller
     public function duplicate(BioPage $bioPage)
     {
         $this->authorize('view', $bioPage);
-        $newSlug = $bioPage->slug.'-copy';
-        $counter = 1;
-        while (BioPage::where('slug', $newSlug)->exists()) {
-            $newSlug = $bioPage->slug.'-copy-'.$counter;
-            $counter++;
+        if (auth()->user()->bioPages()->count() >= self::MAX_PAGES) {
+            return back()->withErrors(['slug' => 'You have reached the maximum limit of '.self::MAX_PAGES.' bio pages.']);
         }
+        // Slugs are alphanumeric only (max 20), so no "-copy" suffix.
+        $base = substr($bioPage->slug, 0, 16);
+        $counter = 1;
+        do {
+            $newSlug = $base.'copy'.($counter > 1 ? $counter : '');
+            $newSlug = substr($newSlug, 0, 20);
+            $counter++;
+        } while (BioPage::where('slug', $newSlug)->exists());
         $newBioPage = $bioPage->replicate(['view_count']);
         $newBioPage->slug = $newSlug;
         $newBioPage->title = $bioPage->title.' (Copy)';

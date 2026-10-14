@@ -8,6 +8,7 @@ use App\Models\IpWatchlist;
 use App\Models\LoginHistory;
 use App\Models\User;
 use App\Services\GeoIpService;
+use App\Services\ProxyDetectionService;
 use App\Services\TurnstileService;
 use App\Services\UserAgentService;
 use Illuminate\Http\RedirectResponse;
@@ -54,7 +55,7 @@ class AuthenticatedSessionController extends Controller
         if ($user) {
             $geoDetails = $this->geoIp->details($request->ip());
             $uaDetails = $this->userAgent->parse($request->userAgent());
-            $proxyService = app(\App\Services\ProxyDetectionService::class);
+            $proxyService = app(ProxyDetectionService::class);
             $proxyResult = $proxyService->detect($request->ip());
             $user->forceFill([
                 'last_login_ip' => $request->ip(),
@@ -91,11 +92,6 @@ class AuthenticatedSessionController extends Controller
             }
             if (! $user->two_factor_secret || ! $user->two_factor_confirmed_at) {
                 $request->session()->put('2fa_verified', true);
-            }
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            } elseif ($user->role === 'superadmin') {
-                return redirect()->route('superadmin.dashboard');
             }
         }
 
