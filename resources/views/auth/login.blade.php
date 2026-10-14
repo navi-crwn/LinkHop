@@ -1,4 +1,8 @@
 <x-guest-layout>
+    <div class="mb-6">
+        <h1 class="page-title">Welcome back</h1>
+        <p class="mt-1 text-sm text-muted">Sign in to manage your links.</p>
+    </div>
     <x-auth-session-status class="mb-4" :status="session('status')" />
     @if(session('error'))
         <div class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20">
@@ -94,19 +98,10 @@
                         {{ __('Forgot your password?') }}
                     </a>
                 @endif
-                <button type="button" @click="darkMode = !darkMode" class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 dark:bg-gray-700 px-3 py-1.5 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all" title="Switch Theme">
-                    <svg x-show="!darkMode" class="h-4 w-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-                    </svg>
-                    <svg x-show="darkMode" x-cloak class="h-4 w-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
-                    </svg>
-                    <span class="text-xs font-medium text-gray-700 dark:text-gray-200">Theme</span>
-                </button>
             </div>
             <button
                 type="submit"
-                class="ms-3 inline-flex items-center rounded-md border border-transparent bg-slate-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:bg-slate-900 dark:bg-slate-950 dark:hover:bg-slate-900 dark:active:bg-slate-950 dark:text-white"
+                class="btn-primary ms-3"
                 {!! $turnstileKey ? 'x-bind:disabled="showCaptcha && !token"' : '' !!}
             >
                 {{ __('Log in') }}
