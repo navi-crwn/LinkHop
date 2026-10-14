@@ -86,6 +86,8 @@ export async function runJourney(browser: Browser, j: Pick<Journey, 'role' | 'st
   await context.route(url => !url.href.startsWith(opts.baseURL), route => thirdParty(route));
   const page = await context.newPage();
   page.setDefaultTimeout(opts.stepTimeout ?? 15000);
+  // "Leave site?" prompts: a person who clicked away means it.
+  page.on('dialog', d => (d.type() === 'beforeunload' ? d.accept() : d.dismiss()).catch(() => {}));
   const rec = new Recorder(page, opts.baseURL);
   const result: RunResult = { ok: true, problems: [], warnings: [], visited: [START.state], executed: [], a11y: {} };
   const ctx = { page, me, others: () => [], memo: {} as Record<string, unknown> };
@@ -107,7 +109,7 @@ export async function runJourney(browser: Browser, j: Pick<Journey, 'role' | 'st
       pos = advance(pos, action);
       result.executed.push(id);
       result.visited.push(pos.state);
-      const { problems, warnings } = await checkStep({ page, rec, action, step: n, state: pos.state, role: j.role, myToken: me.token, lockedSecret: me.lockedSecret });
+      const { problems, warnings } = await checkStep({ page, rec, action, step: n, state: pos.state, role: j.role, myToken: me.token, lockedSecret: me.lockedSecret, unlocked: Boolean(ctx.memo.unlocked) });
       result.problems.push(...problems);
       result.warnings.push(...warnings);
       if (problems.length) break;

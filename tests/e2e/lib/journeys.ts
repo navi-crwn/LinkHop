@@ -119,7 +119,8 @@ function cover(role: Role, prefix: string, targets: string[][], maxSteps: number
       flush();
       continue;
     }
-    if (steps.length && steps.length + best.route.length + best.target.length > maxSteps) {
+    const next = [...best.route, ...best.target];
+    if (steps.length && (steps.length + next.length > maxSteps || logins(steps) + logins(next) > MAX_LOGINS)) {
       flush();
       continue;
     }
@@ -143,6 +144,10 @@ function walkFrom(pos: Position, steps: string[], role: Role): Position | null {
   }
   return pos;
 }
+
+/** Login is limited to 5 attempts a minute per IP; a journey stays under that. */
+const MAX_LOGINS = 4;
+const logins = (steps: string[]) => steps.filter(s => s === 'login' || s === 'login_wrong_password').length;
 
 const roleActions = (role: Role) => ACTIONS.filter(a => (role === 'admin' ? a.adminOnly : !a.adminOnly));
 
@@ -204,9 +209,10 @@ export function randomJourney(seed: number, length = 25): Journey {
   const steps: string[] = [];
   let pos = START;
   while (steps.length < length) {
-    const options = available(pos, role);
+    const tired = logins(steps) >= MAX_LOGINS;
+    const options = available(pos, role).filter(a => !tired || !(a.id === 'login' || a.id === 'login_wrong_password'));
     // A guest who never logs in only ever sees the marketing pages; nudge towards login.
-    if (pos.state.startsWith('guest_') && rand() < 0.5) {
+    if (!tired && pos.state.startsWith('guest_') && rand() < 0.5) {
       const route = pathTo(pos, role, p => p.state === 'user_dashboard');
       if (route) { for (const id of route) { pos = step(pos, ACTION_BY_ID[id]); steps.push(id); } continue; }
     }
