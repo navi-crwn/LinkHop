@@ -2,6 +2,8 @@
 
 namespace App\Services\ProxyDetection\Detectors;
 
+use App\Services\GeoIpService;
+
 class IspPatternDetector extends BaseProxyDetector
 {
     protected array $vpnPatterns = [
@@ -43,7 +45,7 @@ class IspPatternDetector extends BaseProxyDetector
 
     public function detect(string $ip): ?array
     {
-        $geoIp = app(\App\Services\GeoIpService::class);
+        $geoIp = app(GeoIpService::class);
         $details = $geoIp->details($ip);
         $isp = strtolower($details['provider'] ?? '');
         if (empty($isp)) {

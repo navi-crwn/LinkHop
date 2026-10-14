@@ -1,5 +1,15 @@
 <?php
 
+use App\Http\AdminMiddleware;
+use App\Http\Middleware\ApiAuthenticate;
+use App\Http\Middleware\AutoLogout;
+use App\Http\Middleware\CheckIpBan;
+use App\Http\Middleware\CheckLinkQuota;
+use App\Http\Middleware\CheckSuspended;
+use App\Http\Middleware\ContentSecurityPolicyMiddleware;
+use App\Http\Middleware\EnsureGoogleUserHasPassword;
+use App\Http\Middleware\EnsureTwoFactorAuthenticated;
+use App\Http\Middleware\RemoveWwwPrefix;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,19 +23,19 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         // Global middleware to remove www prefix
-        $middleware->prepend(\App\Http\Middleware\RemoveWwwPrefix::class);
+        $middleware->prepend(RemoveWwwPrefix::class);
         $middleware->appendToGroup('web', [
-            \App\Http\Middleware\AutoLogout::class,
-            \App\Http\Middleware\CheckSuspended::class,
-            \App\Http\Middleware\EnsureGoogleUserHasPassword::class,
-            \App\Http\Middleware\ContentSecurityPolicyMiddleware::class,
+            AutoLogout::class,
+            CheckSuspended::class,
+            EnsureGoogleUserHasPassword::class,
+            ContentSecurityPolicyMiddleware::class,
         ]);
         $middleware->alias([
-            'admin' => \App\Http\AdminMiddleware::class,
-            'ip.ban' => \App\Http\Middleware\CheckIpBan::class,
-            'quota' => \App\Http\Middleware\CheckLinkQuota::class,
-            '2fa' => \App\Http\Middleware\EnsureTwoFactorAuthenticated::class,
-            'api.auth' => \App\Http\Middleware\ApiAuthenticate::class,
+            'admin' => AdminMiddleware::class,
+            'ip.ban' => CheckIpBan::class,
+            'quota' => CheckLinkQuota::class,
+            '2fa' => EnsureTwoFactorAuthenticated::class,
+            'api.auth' => ApiAuthenticate::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
