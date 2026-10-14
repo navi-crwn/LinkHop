@@ -7,6 +7,7 @@ use App\Models\BioLink;
 use App\Models\BioPage;
 use App\Services\LinkSafety;
 use App\Support\BioUploads;
+use App\Support\CssValue;
 use App\Support\SafeContent;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -60,16 +61,16 @@ class BioLinkController extends Controller
         $validated = $request->validate([
             'type' => 'required|in:link,image,text,header,divider,spacer,video,music,vcard,html,countdown,map,faq,youtube,spotify,soundcloud,email,code',
             'title' => 'nullable|string|max:100',
-            'url' => 'nullable|string|max:2000',
+            'url' => 'nullable|string|max:500',
             'content' => 'nullable|string|max:5000',
             'description' => 'nullable|string|max:500',
-            'thumbnail_url' => 'nullable|string|max:500',
+            'thumbnail_url' => 'nullable|string|max:255',
             'icon' => 'nullable|string|max:50',
-            'custom_icon' => 'nullable|string|max:500',
+            'custom_icon' => 'nullable|string|max:255',
             'brand' => 'nullable|string|max:50',
-            'btn_bg_color' => 'nullable|string|max:20',
-            'btn_text_color' => 'nullable|string|max:20',
-            'btn_border_color' => 'nullable|string|max:20',
+            'btn_bg_color' => CssValue::color(30),
+            'btn_text_color' => CssValue::color(30),
+            'btn_border_color' => CssValue::color(30),
             'btn_icon_invert' => 'nullable|boolean',
             'settings' => 'nullable|array',
             'is_active' => 'nullable|boolean',
@@ -148,16 +149,16 @@ class BioLinkController extends Controller
         $validated = $request->validate([
             'type' => 'nullable|in:link,image,text,header,divider,spacer,video,music,vcard,html,countdown,map,faq,youtube,spotify,soundcloud,email,code',
             'title' => 'nullable|string|max:100',
-            'url' => 'nullable|string|max:2000',
+            'url' => 'nullable|string|max:500',
             'content' => 'nullable|string|max:5000',
             'description' => 'nullable|string|max:500',
-            'thumbnail_url' => 'nullable|string|max:500',
+            'thumbnail_url' => 'nullable|string|max:255',
             'icon' => 'nullable|string|max:50',
-            'custom_icon' => 'nullable|string|max:500',
+            'custom_icon' => 'nullable|string|max:255',
             'brand' => 'nullable|string|max:50',
-            'btn_bg_color' => 'nullable|string|max:20',
-            'btn_text_color' => 'nullable|string|max:20',
-            'btn_border_color' => 'nullable|string|max:20',
+            'btn_bg_color' => CssValue::color(30),
+            'btn_text_color' => CssValue::color(30),
+            'btn_border_color' => CssValue::color(30),
             'btn_icon_invert' => 'nullable|boolean',
             'settings' => 'nullable|array',
             'is_active' => 'nullable|boolean',

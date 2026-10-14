@@ -8,6 +8,7 @@ use App\Models\BioClick;
 use App\Models\BioPage;
 use App\Services\LinkSafety;
 use App\Support\BioUploads;
+use App\Support\CssValue;
 use App\Support\QrPng;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -35,20 +36,28 @@ class BioPageController extends Controller
 
     public function checkSlug(Request $request)
     {
-        $slug = $request->input('slug');
-        if (! $slug || strlen($slug) < 3) {
-            return response()->json(['available' => false]);
-        }
-        if (! preg_match('/^[a-zA-Z0-9]+$/', $slug)) {
-            return response()->json(['available' => false]);
-        }
-        $slug = strtolower($slug);
-        $exists = BioPage::where('slug', $slug)->exists();
-        $reserved = in_array($slug, config('shortener.reserved_slugs', []));
+        // Same rules as store() and update(), so "available" here means saving will accept it.
+        $current = $request->filled('current') ? $request->user()->bioPages()->where('slug', $request->input('current'))->first() : null;
+        $slug = strtolower((string) $request->input('slug'));
+        $valid = validator(['slug' => $slug], ['slug' => $this->slugRules($current)])->passes();
 
-        return response()->json([
-            'available' => ! $exists && ! $reserved,
-        ]);
+        return response()->json(['available' => $valid]);
+    }
+
+    /** Validation for a bio page slug; $current is the page being renamed, if any. */
+    private function slugRules(?BioPage $current = null): array
+    {
+        return [
+            'required',
+            'string',
+            'min:3',
+            'max:20',
+            'regex:/^[a-z0-9]+$/',
+            Rule::unique('bio_pages', 'slug')->ignore($current?->id),
+            // Reserved words are refused for new slugs; an existing slug is left alone.
+            fn ($attribute, $value, $fail) => $value !== $current?->slug && in_array($value, config('shortener.reserved_slugs', []), true)
+                ? $fail('This slug is reserved.') : null,
+        ];
     }
 
     public function generateQR(Request $request)
@@ -172,15 +181,7 @@ class BioPageController extends Controller
         }
         $request->merge(['slug' => strtolower($request->slug)]);
         $validated = $request->validate([
-            'slug' => [
-                'required',
-                'string',
-                'min:3',
-                'max:20',
-                'regex:/^[a-zA-Z0-9]+$/',
-                'unique:bio_pages,slug',
-                Rule::notIn(config('shortener.reserved_slugs', [])),
-            ],
+            'slug' => $this->slugRules(),
             'title' => 'required|string|max:45',
             'bio' => 'nullable|string|max:155',
             'qr_settings' => 'nullable|json',
@@ -220,41 +221,30 @@ class BioPageController extends Controller
             $request->merge(['slug' => strtolower($request->slug)]);
         }
         $validated = $request->validate([
-            'slug' => [
-                'sometimes',
-                'required',
-                'string',
-                'min:3',
-                'max:20',
-                'regex:/^[a-zA-Z0-9]+$/',
-                Rule::unique('bio_pages')->ignore($bioPage->id),
-                // Same reserved list as store(); an existing slug is left alone.
-                fn ($attribute, $value, $fail) => $value !== $bioPage->slug && in_array($value, config('shortener.reserved_slugs', []), true)
-                    ? $fail('This slug is reserved.') : null,
-            ],
+            'slug' => ['sometimes', ...$this->slugRules($bioPage)],
             'title' => 'sometimes|required|string|max:45',
             'bio' => 'nullable|string|max:155',
-            'theme' => 'nullable|string|max:50',
-            'layout' => 'nullable|string|max:50',
+            'theme' => CssValue::keyword(50),
+            'layout' => CssValue::keyword(50),
             'background_type' => 'nullable|in:color,gradient,image,solid',
-            'background_value' => 'nullable|string',
-            'background_color' => 'nullable|string|max:100',
-            'background_gradient' => 'nullable|string|max:255',
-            'background_image' => 'nullable|string|max:500',
-            'text_color' => 'nullable|string|max:50',
-            'title_color' => 'nullable|string|max:50',
-            'bio_color' => 'nullable|string|max:50',
-            'link_bg_color' => 'nullable|string|max:100',
-            'link_text_color' => 'nullable|string|max:50',
-            'button_bg_color' => 'nullable|string|max:100',
-            'button_text_color' => 'nullable|string|max:50',
-            'button_shape' => 'nullable|string|max:50',
-            'button_shadow' => 'nullable|string|max:50',
-            'header_bg_color' => 'nullable|string|max:50',
-            'font_family' => 'nullable|string|max:50',
-            'block_shape' => 'nullable|string|max:50',
-            'block_shadow' => 'nullable|string|max:50',
-            'social_icon_color' => 'nullable|string|max:20',
+            'background_value' => ['nullable', 'string', 'max:500', fn ($attribute, $value, $fail) => CssValue::isBackground($value) ? null : $fail('Use a colour, a gradient or an uploaded image.')],
+            'background_color' => CssValue::color(20),
+            'background_gradient' => ['nullable', 'string', 'max:255', 'regex:'.CssValue::GRADIENT],
+            'background_image' => ['nullable', 'string', 'max:500', 'regex:'.CssValue::IMAGE],
+            'text_color' => CssValue::color(20),
+            'title_color' => CssValue::color(20),
+            'bio_color' => CssValue::color(20),
+            'link_bg_color' => CssValue::color(100),
+            'link_text_color' => CssValue::color(50),
+            'button_bg_color' => CssValue::color(100),
+            'button_text_color' => CssValue::color(50),
+            'button_shape' => CssValue::keyword(50),
+            'button_shadow' => CssValue::keyword(50),
+            'header_bg_color' => ['nullable', 'string', 'max:50', fn ($attribute, $value, $fail) => preg_match(CssValue::COLOR, (string) $value) || preg_match(CssValue::GRADIENT, (string) $value) ? null : $fail('Use a colour or a gradient.')],
+            'font_family' => CssValue::keyword(50),
+            'block_shape' => CssValue::keyword(20),
+            'block_shadow' => CssValue::keyword(20),
+            'social_icon_color' => CssValue::color(20),
             'social_placement' => 'nullable|in:top,bottom',
             'social_links' => 'nullable|array',
             'social_links.*' => 'nullable|array',
@@ -266,7 +256,7 @@ class BioPageController extends Controller
             'social_icons_position' => 'nullable|in:below_bio,bottom_page',
             'avatar_shape' => 'nullable|in:circle,rounded,square',
             'badge' => 'nullable|in:verified,star,crown,fire',
-            'badge_color' => 'nullable|string|max:20',
+            'badge_color' => CssValue::color(20),
             'seo_title' => 'nullable|string|max:47',
             'seo_description' => 'nullable|string|max:160',
             'seo_noindex' => 'nullable|boolean',
@@ -280,13 +270,13 @@ class BioPageController extends Controller
             'facebook_pixel_id' => 'nullable|string|max:50',
             'tiktok_pixel_id' => ['nullable', 'regex:/^[A-Z0-9]{20,30}$/'],
             'avatar' => 'nullable|image|max:2048',
-            'avatar_url' => 'nullable|string',
+            'avatar_url' => 'nullable|string|max:255',
             'password_enabled' => 'nullable|boolean',
             'password' => 'nullable|string|max:50',
             'allow_indexing' => 'nullable|boolean',
             'qr_settings' => 'nullable|array',
-            'hover_effect' => 'nullable|string|max:50',
-            'background_animation' => 'nullable|string|max:50',
+            'hover_effect' => CssValue::keyword(30),
+            'background_animation' => CssValue::keyword(30),
         ]);
         $this->assertSafeContent($validated);
         if (! empty($validated['is_published']) && ! $bioPage->is_published && AbuseFlag::locks('bio_page', $bioPage->id)) {
@@ -300,9 +290,7 @@ class BioPageController extends Controller
         if ($request->hasFile('avatar')) {
             $validated['avatar_url'] = $request->file('avatar')->store('avatars', 'public');
         }
-        if (isset($validated['socials'])) {
-            $validated['socials'] = json_encode($validated['socials']);
-        }
+        // socials is cast to array on the model; encoding it here stored a JSON string inside JSON (L1).
         if (isset($validated['qr_settings'])) {
             $validated['qr_settings'] = $this->handleQrImage($validated['qr_settings'], $bioPage->qr_settings);
         }

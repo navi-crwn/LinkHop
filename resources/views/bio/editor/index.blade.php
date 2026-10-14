@@ -2327,7 +2327,6 @@ window.bioEditorV2 = function() {
             .then(res => res.json())
             .then(data => {
                 if (data.success && data.url) {
-                    this.bioPage.theme = null;
                     this.bioPage.background_image = data.path || data.image_url;
                     this.bioPage.background_value = data.url;
                     this.bioPage.background_type = 'image';
