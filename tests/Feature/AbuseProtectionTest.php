@@ -86,12 +86,12 @@ test('public click only redirects active blocks on published pages and is tracke
     $active = blockOn($page, ['url' => 'https://example.com/a']);
     $inactive = blockOn($page, ['url' => 'https://example.com/b', 'is_active' => false]);
 
-    $this->get("/b/click/{$active->id}")->assertRedirect('https://example.com/a');
+    $this->get("/b/click/{$active->public_id}")->assertRedirect('https://example.com/a');
     expect($active->fresh()->click_count)->toBe(1);
-    $this->get("/b/click/{$inactive->id}")->assertNotFound();
+    $this->get("/b/click/{$inactive->public_id}")->assertNotFound();
 
     $page->update(['is_published' => false]);
-    $this->get("/b/click/{$active->id}")->assertNotFound();
+    $this->get("/b/click/{$active->public_id}")->assertNotFound();
 });
 
 test('public bio page sanitizes user html and custom css', function () {

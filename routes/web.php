@@ -193,7 +193,7 @@ Route::middleware('ip.ban')->group(function () {
     Route::prefix('b')->name('bio.public.')->group(function () {
         Route::match(['get', 'post'], '/{slug}', [PublicBioController::class, 'show'])->name('show');
         Route::get('/{slug}/qr', [PublicBioController::class, 'qr'])->name('qr');
-        Route::get('/click/{bioLink}', [PublicBioController::class, 'click'])->name('click');
+        Route::get('/click/{bioLink:public_id}', [PublicBioController::class, 'click'])->middleware('throttle:bio-click')->name('click');
     });
 });
 // CSP violation reports (report-only policy). Logged to storage/logs/csp-*.log.
