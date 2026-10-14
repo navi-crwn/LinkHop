@@ -7,7 +7,7 @@
             <ul class="list-disc space-y-2 pl-6">
                 <li>Account information: name, email, hashed password.</li>
                 <li>Link metadata: slug, destination URL, folders/tags, optional password hash.</li>
-                <li>Click analytics: timestamp, IP (hashed), country (via IP geolocation APIs), user agent, referrer.</li>
+                <li>Click analytics: timestamp, IP (stored only as a keyed hash, never shown to link owners), approximate location (country, region, city) and network provider via IP geolocation, user agent, referrer. Link owners see location and network only as totals, never per visit.</li>
             </ul>
         </div>
         <div class="rounded-3xl border border-white/10 bg-white/5 p-6 space-y-3">
