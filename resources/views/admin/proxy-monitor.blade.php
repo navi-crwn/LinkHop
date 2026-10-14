@@ -27,7 +27,7 @@
                         <form action="{{ route('admin.proxy.reset-stats') }}" method="POST">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" onclick="return confirm('Reset all detector statistics?')" class="rounded-lg bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700">
+                            <button type="submit" data-confirm="Reset all detector statistics?" class="rounded-lg bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700">
                                 Reset Stats
                             </button>
                         </form>

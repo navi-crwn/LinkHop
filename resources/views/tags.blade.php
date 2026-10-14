@@ -68,7 +68,7 @@
                             </div>
                             <div class="flex flex-wrap justify-end gap-2 text-sm">
                                 <a href="{{ route('tags.manage', $tag) }}" class="rounded-full border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800">Edit</a>
-                                <form method="POST" action="{{ route('tags.destroy', $tag) }}" onsubmit="return confirm('Delete this tag?')">
+                                <form method="POST" action="{{ route('tags.destroy', $tag) }}" data-confirm="Delete this tag?">
                                     @csrf
                                     @method('DELETE')
                                     <button class="rounded-full border border-red-200 px-4 py-2 text-red-600 hover:bg-red-50 dark:border-red-900/40 dark:text-red-300 dark:hover:bg-red-900/30">Delete</button>
@@ -120,7 +120,7 @@
                                                 <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400" x-text="`${link.clicks} clicks • ${link.created_at || '—'}`"></p>
                                                 <div class="mt-2 flex gap-2 text-xs">
                                                     <a :href="link.edit_url" class="rounded-full border border-slate-300 px-3 py-1 text-slate-700 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">Edit</a>
-                                                    <form method="POST" :action="link.delete_url" class="inline" onsubmit="return confirm('Delete this link?')">
+                                                    <form method="POST" :action="link.delete_url" class="inline" data-confirm="Delete this link?">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button class="rounded-full border border-red-200 px-3 py-1 text-red-600 hover:bg-red-50 dark:border-red-900/40 dark:text-red-300 dark:hover:bg-red-900/30">Delete</button>

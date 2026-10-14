@@ -27,7 +27,7 @@
                                     <img :src="item.custom_icon" alt="" class="w-5 h-5 object-contain">
                                 </template>
                                 <template x-if="!item.custom_icon && item.brand">
-                                    <img :src="getPlatformIcon(item.brand)" alt="" class="w-5 h-5" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+                                    <img :src="getPlatformIcon(item.brand)" alt="" class="w-5 h-5" style="filter: brightness(0) invert(1);" data-fallback="hide">
                                 </template>
                                 <template x-if="!item.custom_icon && !item.brand">
                                     <div x-html="getBlockTypeIcon(item.type)"></div>
@@ -116,15 +116,13 @@
                     <div class="grid grid-cols-3 gap-2">
                         <template x-for="brandId in ['instagram', 'tiktok', 'youtube', 'twitter', 'spotify', 'whatsapp', 'telegram', 'email', 'facebook']" :key="brandId">
                             <button @click="addBrandBlock(brandId)" 
-                                    class="p-2 rounded-lg transition-colors flex flex-col items-center gap-1" 
+                                    class="p-2 rounded-lg transition-colors flex flex-col items-center gap-1 hover:[background:var(--editor-hover-bg)]" 
                                     style="border: 1px solid var(--editor-border);"
-                                    onmouseover="this.style.background='var(--editor-hover-bg)'"
-                                    onmouseout="this.style.background=''"
                                     :title="brands[brandId]?.name"
                                     :aria-label="'Add ' + (brands[brandId]?.name || brandId)">
                                 <div class="w-8 h-8 rounded-md flex items-center justify-center" 
                                      :style="{ backgroundColor: brands[brandId]?.color || '#6b7280' }">
-                                    <img :src="'/images/brands/' + brandId + '.svg'" alt="" class="w-5 h-5" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+                                    <img :src="'/images/brands/' + brandId + '.svg'" alt="" class="w-5 h-5" style="filter: brightness(0) invert(1);" data-fallback="hide">
                                 </div>
                                 <span class="text-[10px] capitalize truncate w-full text-center" style="color: var(--editor-text-muted);" x-text="brandId === 'twitter' ? 'X' : brandId"></span>
                             </button>

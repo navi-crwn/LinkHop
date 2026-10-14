@@ -56,7 +56,7 @@
                                     <td class="px-4 py-3">{{ $ban->reason ?? '-' }}</td>
                                     <td class="px-4 py-3">{{ optional($ban->expires_at)->format('d M Y H:i') ?? 'No expiry' }}</td>
                                     <td class="px-4 py-3 text-right">
-                                        <form method="POST" action="{{ route('admin.ip-bans.destroy', $ban) }}" onsubmit="return confirm('Remove this IP ban?');">
+                                        <form method="POST" action="{{ route('admin.ip-bans.destroy', $ban) }}" data-confirm="Remove this IP ban?">
                                             @csrf
                                             @method('DELETE')
                                             <button class="rounded-lg bg-gray-200 px-3 py-1 text-xs font-semibold text-gray-800 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-100">Delete</button>

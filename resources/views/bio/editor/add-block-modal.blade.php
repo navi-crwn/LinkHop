@@ -127,7 +127,7 @@
                 class="block-modal-btn p-3 rounded-lg hover:border-blue-500 hover:shadow-md transition-all group"
             >
                 <div class="w-10 h-10 rounded-lg flex items-center justify-center mx-auto mb-1" style="background-color: {{ $brand['color'] ?? '#6b7280' }}">
-                    <img src="/images/brands/{{ $brand['icon'] ?? $brandId . '.svg' }}" class="w-6 h-6" style="filter: brightness(0) invert(1);" alt="{{ $brand['name'] ?? $brandId }}" onerror="this.style.display='none'">
+                    <img src="/images/brands/{{ $brand['icon'] ?? $brandId . '.svg' }}" class="w-6 h-6" style="filter: brightness(0) invert(1);" alt="{{ $brand['name'] ?? $brandId }}" data-fallback="hide">
                 </div>
                 <p class="text-xs text-center font-medium truncate" style="color: var(--editor-text-muted);">{{ $brand['name'] ?? ucfirst($brandId) }}</p>
             </button>

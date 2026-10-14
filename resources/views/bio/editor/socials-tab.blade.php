@@ -47,7 +47,7 @@
                         </div>
                         <!-- Icon -->
                         <div class="block-icon" :style="{ backgroundColor: getPlatformColor(item.platform) }">
-                            <img :src="getPlatformIcon(item.platform)" alt="" class="w-5 h-5" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+                            <img :src="getPlatformIcon(item.platform)" alt="" class="w-5 h-5" style="filter: brightness(0) invert(1);" data-fallback="hide">
                         </div>
                         <!-- Input -->
                         <div class="block-content">

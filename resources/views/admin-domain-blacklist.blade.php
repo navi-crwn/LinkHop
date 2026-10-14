@@ -83,7 +83,7 @@
                                         {{ $domain->created_at->format('M d, Y') }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        <form method="POST" action="{{ route('admin.domain-blacklist.destroy', $domain) }}" onsubmit="return confirm('Remove this domain from blacklist?')">
+                                        <form method="POST" action="{{ route('admin.domain-blacklist.destroy', $domain) }}" data-confirm="Remove this domain from blacklist?">
                                             @csrf
                                             @method('DELETE')
                                             <button class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">Remove</button>

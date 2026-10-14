@@ -204,17 +204,16 @@ test('urls listed in the local threat feeds are rejected and scanned', function 
     unlink("{$dir}/malware.txt");
 });
 
-test('vcard values cannot break out of the inline handler', function () {
+test('vcard values stay data, not script', function () {
     $user = User::factory()->create();
     $page = bioPageFor($user, 'vcardpage');
     blockOn($page, ['type' => 'vcard', 'url' => '', 'vcard_name' => "x');alert(document.domain);//"]);
 
     $html = $this->get('/b/vcardpage')->assertOk()->getContent();
 
-    // The quote stays inside the JS string (\u0027) instead of closing it.
-    expect($html)->not->toContain("downloadVCard('x');alert")
-        ->not->toContain('downloadVCard(&#039;x&#039;);alert')
-        ->toContain('downloadVCard(\'x\u0027);alert');
+    // No inline handler at all: the values travel as an escaped JSON data attribute.
+    expect($html)->not->toContain('onclick=')
+        ->toContain('data-call="downloadVCard" data-args="[&quot;x&#039;);alert(document.domain);\\/\\/&quot;,');
 });
 
 test('uploaded images resolve on the public disk whatever the default disk is', function () {

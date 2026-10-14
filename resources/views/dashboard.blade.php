@@ -99,7 +99,7 @@
                 @empty
                     <div class="px-4 py-10 text-center">
                         <p class="text-sm text-muted">No links yet.</p>
-                        <button type="button" onclick="window.openLinkPanel && window.openLinkPanel()" class="btn-primary btn-sm mt-3">Create your first link</button>
+                        <button type="button" data-call="openLinkPanel" class="btn-primary btn-sm mt-3">Create your first link</button>
                     </div>
                 @endforelse
             </div>
