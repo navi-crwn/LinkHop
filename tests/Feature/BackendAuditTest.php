@@ -231,3 +231,13 @@ test('a countdown keeps the exact moment the owner picked and the page gives it 
     expect(BioLink::find($id)->countdown_date->utc()->format('Y-m-d H:i'))->toBe('2030-01-02 03:00');
     $this->get("/b/{$page->slug}")->assertOk()->assertSee('data-target="2030-01-02T03:00:00Z"', false);
 });
+
+test('the editor, the create form and the server share the title and bio limits', function () {
+    $page = backendPage(['title' => str_repeat('n', 40)]);
+    $editor = $this->actingAs($page->user)->get("/bio/{$page->slug}/edit")->assertOk();
+    $editor->assertSee('maxlength="'.BioPage::TITLE_MAX.'"', false)->assertSee('maxlength="'.BioPage::BIO_MAX.'"', false);
+    $this->actingAs($page->user)->get('/bio/create')->assertSee('maxlength="'.BioPage::TITLE_MAX.'"', false);
+
+    $this->actingAs($page->user)->putJson("/bio/{$page->slug}", ['title' => str_repeat('n', BioPage::TITLE_MAX)])->assertOk();
+    $this->actingAs($page->user)->putJson("/bio/{$page->slug}", ['title' => str_repeat('n', BioPage::TITLE_MAX + 1)])->assertUnprocessable();
+});

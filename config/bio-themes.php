@@ -4,6 +4,14 @@
 // A preset's colours always win over the page's own colours when the page uses it.
 return [
     // Choices in the editor that only fill in the page's own colours; the public page does not enforce them.
+    // Colours a page without a preset falls back to when a colour is empty (L4).
+    'defaults' => [
+        'title' => '#1e293b',
+        'bio' => '#64748b',
+        'link_bg' => '#ffffff',
+        'link_text' => '#1e293b',
+    ],
+
     'starters' => [
         'default' => ['name' => 'Default', 'background' => '#f8fafc', 'text' => '#1e293b', 'bio' => '#64748b', 'link_bg' => '#6366f1', 'link_text' => '#ffffff'],
         'minimal' => ['name' => 'Minimal', 'background' => '#ffffff', 'text' => '#000000', 'bio' => '#6b7280', 'link_bg' => '#000000', 'link_text' => '#ffffff'],

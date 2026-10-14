@@ -90,10 +90,10 @@
             $linkBgColor = $themeData['link_bg'];
             $themeLinkBorder = $themeData['link_border'] ?? null;
         } else {
-            $titleColor = $bioPage->title_color ?? '#1e293b';
-            $bioColor = $bioPage->bio_color ?? '#64748b';
-            $linkTextColor = $bioPage->link_text_color ?? '#1e293b';
-            $linkBgColor = $bioPage->link_bg_color ?? '#ffffff';
+            $titleColor = $bioPage->title_color ?: config('bio-themes.defaults.title');
+            $bioColor = $bioPage->bio_color ?: config('bio-themes.defaults.bio');
+            $linkTextColor = $bioPage->link_text_color ?: config('bio-themes.defaults.link_text');
+            $linkBgColor = $bioPage->link_bg_color ?: config('bio-themes.defaults.link_bg');
             $themeLinkBorder = null;
         }
         $themeGlowColors = config('bio-themes.glow');
