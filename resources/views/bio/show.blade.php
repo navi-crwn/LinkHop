@@ -817,7 +817,7 @@
                                 $linkRel = $getLinkRel($link->url);
                                 // http(s) links go through the click tracker; mailto/tel/sms stay direct
                                 $linkHref = preg_match('#^https?://#i', trim((string) $link->url))
-                                    ? route('bio.public.click', $link)
+                                    ? route('bio.public.click', $link->public_id)
                                     : \App\Support\SafeContent::url($link->url);
                                 $entranceAnim = $link->entrance_animation ?? 'none';
                                 $attentionAnim = $link->attention_animation ?? 'none';

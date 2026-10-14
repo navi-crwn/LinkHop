@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class BioLink extends Model
 {
@@ -56,6 +57,12 @@ class BioLink extends Model
         'countdown_date' => 'datetime',
         'map_zoom' => 'integer',
     ];
+
+    protected static function booted(): void
+    {
+        // Unguessable id for public click URLs (never expose the sequential id).
+        static::creating(fn (BioLink $link) => $link->public_id ??= Str::random(12));
+    }
 
     public function bioPage(): BelongsTo
     {
