@@ -93,7 +93,7 @@
 <x-modal name="create-{{ $kind }}" :show="$errors->has('name')" maxWidth="md" focusable>
     <form method="POST" action="{{ route($plural.'.store') }}" class="space-y-4 p-5">
         @csrf
-        <h2 class="section-title text-base">New {{ $kind }}</h2>
+        <h2 class="section-title text-base">Create new {{ $kind }}</h2>
         <div>
             <label for="{{ $kind }}-name" class="label">Name</label>
             <input type="text" id="{{ $kind }}-name" name="name" value="{{ old('name') }}" placeholder="{{ $kind === 'folder' ? 'e.g. Marketing campaign' : 'e.g. social' }}" class="input" required>
