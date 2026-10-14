@@ -947,8 +947,8 @@
                     <!-- Link Block -->
                     <template x-if="block.type === 'link'">
                         <a :href="block.url || '#'" class="link-block" :class="[
-                            block.thumbnail ? 'has-thumbnail' : '',
-                            (block.brand || block.custom_icon) ? 'has-icon' : '',
+                            blockThumb(block) ? 'has-thumbnail' : '',
+                            (block.brand || block.custom_icon) && !blockThumb(block) ? 'has-icon' : '',
                             block.brand ? 'block-' + block.brand : '',
                             block.entrance_animation && block.entrance_animation !== 'none' ? 'entrance-' + block.entrance_animation : '',
                             block.attention_animation && block.attention_animation !== 'none' ? 'attention-' + block.attention_animation : ''
@@ -958,11 +958,11 @@
                             border: block.btn_border_color ? '1px solid ' + block.btn_border_color : getEffectiveBorder(),
                             animationDelay: block.entrance_animation === 'stagger' ? (blockIndex * 0.1) + 's' : '0s'
                         }" target="_blank">
-                            <template x-if="block.thumbnail">
-                                <img :src="block.thumbnail" class="block-thumbnail" :alt="block.title" :key="'thumb-'+block.id">
+                            <template x-if="blockThumb(block)">
+                                <img :src="blockThumb(block)" class="block-thumbnail" alt="" :key="'thumb-'+block.id">
                             </template>
-                            <template x-if="(block.brand || block.custom_icon) && !block.thumbnail">
-                                <img :src="block.custom_icon || '/images/brands/' + block.brand + '.svg?v=20251212'" 
+                            <template x-if="(block.brand || block.custom_icon) && !blockThumb(block)">
+                                <img :src="block.custom_icon || '/images/brands/' + (brandIcons[block.brand] || block.brand + '.svg') + '?v=20251212'" 
                                      class="block-icon" :alt="block.brand || 'icon'"
                                      :key="'icon-'+block.id+'-'+(block.brand||'custom')"
                                      :style="{ 
@@ -1173,6 +1173,8 @@
     <script nonce="{{ Vite::cspNonce() }}">
         // Brand colors from config
         const brandColors = @json(collect(config('brands.platforms', []))->mapWithKeys(fn($b, $k) => [$k => $b['color'] ?? '#000000']));
+        // Same icon files as the public page (some brands use a shared icon).
+        const brandIcons = @json(collect(config('brands.platforms', []))->mapWithKeys(fn($b, $k) => [$k => $b['icon'] ?? $k.'.svg']));
         function previewApp() {
             return {
                 isLoaded: false,
@@ -1204,28 +1206,7 @@
                     backgroundGradient: null,
                     theme: 'none'
                 },
-                themes: {
-                    'light': { background: '#ffffff', text: '#1e293b', bio: '#64748b', link_bg: '#f1f5f9', link_text: '#1e293b' },
-                    'dark': { background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', text: '#f1f5f9', bio: 'rgba(241,245,249,0.8)', link_bg: 'rgba(51, 65, 85, 0.9)', link_text: '#f1f5f9' },
-                    'modern': { background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', text: '#ffffff', bio: 'rgba(255,255,255,0.8)', link_bg: 'rgba(255, 255, 255, 0.2)', link_text: '#ffffff' },
-                    'classic': { background: 'linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%)', text: '#1e293b', bio: '#64748b', link_bg: '#ffffff', link_text: '#1e293b' },
-                    'minimal-light': { background: '#fafafa', text: '#171717', bio: '#525252', link_bg: '#ffffff', link_text: '#171717' },
-                    'minimal-dark': { background: '#171717', text: '#fafafa', bio: '#a3a3a3', link_bg: '#262626', link_text: '#fafafa' },
-                    'ocean': { background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', text: '#ffffff', bio: 'rgba(255,255,255,0.8)', link_bg: 'rgba(255, 255, 255, 0.2)', link_text: '#ffffff' },
-                    'sunset': { background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', text: '#ffffff', bio: 'rgba(255,255,255,0.9)', link_bg: 'rgba(255, 255, 255, 0.25)', link_text: '#ffffff' },
-                    'forest': { background: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)', text: '#ffffff', bio: 'rgba(255,255,255,0.85)', link_bg: 'rgba(255, 255, 255, 0.2)', link_text: '#ffffff' },
-                    'galaxy': { background: 'linear-gradient(135deg, #0c0a3e 0%, #2d1b69 50%, #7b2cbf 100%)', text: '#ffffff', bio: '#e0aaff', link_bg: 'rgba(255,255,255,0.15)', link_text: '#ffffff' },
-                    'neon': { background: '#0a0a0a', text: '#39ff14', bio: '#00ff88', link_bg: 'rgba(57, 255, 20, 0.15)', link_text: '#39ff14', link_border: '#39ff14' },
-                    'pastel': { background: 'linear-gradient(180deg, #ffecd2 0%, #fcb69f 100%)', text: '#5c4742', bio: '#8b7355', link_bg: '#ffffff', link_text: '#5c4742' },
-                    'cyberpunk': { background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)', text: '#00fff5', bio: '#ff006e', link_bg: 'rgba(0,255,245,0.1)', link_text: '#00fff5' },
-                    'aurora': { background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)', text: '#b8b8d1', bio: '#7f7f9a', link_bg: 'rgba(88,86,214,0.3)', link_text: '#ffffff' },
-                    'cherry': { background: 'linear-gradient(180deg, #ffc0cb 0%, #ffb6c1 50%, #ff69b4 100%)', text: '#4a1942', bio: '#722f37', link_bg: '#ffffff', link_text: '#4a1942' },
-                    'midnight': { background: 'linear-gradient(180deg, #0f0f23 0%, #1a1a3e 100%)', text: '#e8e8ff', bio: '#8888aa', link_bg: 'rgba(99,102,241,0.2)', link_text: '#a5b4fc' },
-                    'retro': { background: '#f4e4ba', text: '#2d1b00', bio: '#5c4033', link_bg: '#e07a5f', link_text: '#ffffff' },
-                    'ice': { background: 'linear-gradient(180deg, #e0f7fa 0%, #b2ebf2 50%, #80deea 100%)', text: '#006064', bio: '#00838f', link_bg: '#ffffff', link_text: '#00838f' },
-                    'lavender': { background: 'linear-gradient(135deg, #e6e6fa 0%, #d8bfd8 50%, #dda0dd 100%)', text: '#4b0082', bio: '#663399', link_bg: '#ffffff', link_text: '#4b0082' },
-                    'matrix': { background: '#000000', text: '#00ff00', bio: '#00cc00', link_bg: 'rgba(0,255,0,0.1)', link_text: '#00ff00' }
-                },
+                themes: @json(config('bio-themes.presets')),
                 settings: {
                     hideBranding: false
                 },
@@ -1246,42 +1227,8 @@
                 },
                 // Update CSS custom properties for theme-aware hover effects
                 updateHoverColors() {
-                    const themeGlowColors = {
-                        'default': 'rgba(99, 102, 241, 0.4)',
-                        'light': 'rgba(99, 102, 241, 0.4)',
-                        'dark': 'rgba(96, 165, 250, 0.5)',
-                        'modern': 'rgba(139, 92, 246, 0.5)',
-                        'classic': 'rgba(71, 85, 105, 0.4)',
-                        'minimal-light': 'rgba(23, 23, 23, 0.3)',
-                        'minimal-dark': 'rgba(250, 250, 250, 0.3)',
-                        'ocean': 'rgba(118, 75, 162, 0.5)',
-                        'sunset': 'rgba(245, 87, 108, 0.5)',
-                        'forest': 'rgba(113, 178, 128, 0.5)',
-                        'galaxy': 'rgba(123, 44, 191, 0.5)',
-                        'neon': 'rgba(57, 255, 20, 0.5)',
-                        'pastel': 'rgba(252, 182, 159, 0.5)',
-                        'cyberpunk': 'rgba(0, 255, 245, 0.5)',
-                        'aurora': 'rgba(88, 86, 214, 0.5)',
-                        'cherry': 'rgba(255, 105, 180, 0.5)',
-                        'midnight': 'rgba(165, 180, 252, 0.5)',
-                        'retro': 'rgba(224, 122, 95, 0.5)',
-                        'ice': 'rgba(0, 131, 143, 0.5)',
-                        'lavender': 'rgba(75, 0, 130, 0.4)',
-                        'matrix': 'rgba(0, 255, 0, 0.5)',
-                    };
-                    const themeHueShifts = {
-                        'default': '30deg',
-                        'neon': '60deg',
-                        'cyberpunk': '-40deg',
-                        'matrix': '120deg',
-                        'sunset': '-30deg',
-                        'ocean': '40deg',
-                        'galaxy': '45deg',
-                        'aurora': '50deg',
-                        'cherry': '-20deg',
-                        'ice': '20deg',
-                        'retro': '-25deg',
-                    };
+                    const themeGlowColors = @json(config('bio-themes.glow'));
+                    const themeHueShifts = @json(config('bio-themes.hue'));
                     const theme = this.design.theme || 'default';
                     document.documentElement.style.setProperty('--hover-glow-color', themeGlowColors[theme] || 'rgba(99, 102, 241, 0.4)');
                     document.documentElement.style.setProperty('--hover-hue-shift', themeHueShifts[theme] || '30deg');
@@ -1443,6 +1390,13 @@
                 getBrandColor(platform) {
                     return brandColors[platform] || '#6b7280';
                 },
+                // The block's saved thumbnail, as the public page reads it (thumbnail_url).
+                blockThumb(block) {
+                    const url = block.thumbnail_url || block.thumbnail;
+                    if (!url) return null;
+                    return /^(https?:)?\//.test(url) ? url : '/storage/' + url;
+                },
+                // Same rule as $isLightColor on the public page, so icons get the same contrast.
                 isLightColor(color) {
                     if (!color) return true;
                     // Handle hex
@@ -1454,17 +1408,17 @@
                         const g = parseInt(fullHex.substr(2, 2), 16);
                         const b = parseInt(fullHex.substr(4, 2), 16);
                         const brightness = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-                        return brightness > 155;
+                        return brightness > 127.5;
                     }
                     // Handle rgb/rgba
                     if (color.startsWith('rgb')) {
                         const rgb = color.match(/\d+/g);
                         if (rgb && rgb.length >= 3) {
                             const brightness = ((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000;
-                            return brightness > 155;
+                            return brightness > 127.5;
                         }
                     }
-                    return false;
+                    return true;
                 },
                 // Video embed helper - more versatile
                 getVideoEmbed(url) {
@@ -1492,9 +1446,9 @@
                         return `<iframe src="https://player.vimeo.com/video/${vimeoMatch[1]}?dnt=1" style="width:100%;aspect-ratio:16/9;border-radius:12px;" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
                     }
                     // TikTok embed
-                    const tiktokMatch = url.match(/tiktok\.com\/@[\w.]+\/video\/(\d+)/);
+                    const tiktokMatch = url.match(/tiktok\.com\/(?:@[\w.]+\/video|embed(?:\/v2)?)\/(\d+)/);
                     if (tiktokMatch) {
-                        return `<iframe src="https://www.tiktok.com/embed/${tiktokMatch[1]}" style="width:100%;min-height:400px;border-radius:12px;" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+                        return `<iframe src="https://www.tiktok.com/embed/v2/${tiktokMatch[1]}" style="width:100%;max-width:325px;height:740px;display:block;margin:0 auto;border-radius:12px;" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
                     }
                     return '<div class="text-center opacity-50 p-4">Paste YouTube, Vimeo, or TikTok URL</div>';
                 },
@@ -1526,7 +1480,7 @@
                     }
                     // Apple Music
                     if (url.includes('music.apple.com')) {
-                        const appleMatch = url.match(/music\.apple\.com\/([a-z]{2})\/(album|playlist|song)\/[^\/]+\/(\d+)/i);
+                        const appleMatch = url.match(/music\.apple\.com\/([a-z]{2})\/(album|playlist|song)\/[^\/]+\/([A-Za-z0-9.\-]+)/i);
                         if (appleMatch) {
                             const type = appleMatch[2] === 'song' ? 'song' : appleMatch[2];
                             return `<iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="175" style="width:100%;max-width:660px;overflow:hidden;border-radius:10px;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/${appleMatch[1]}/${type}/${appleMatch[3]}"></iframe>`;

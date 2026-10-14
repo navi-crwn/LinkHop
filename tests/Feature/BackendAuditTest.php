@@ -4,6 +4,7 @@ use App\Models\BioLink;
 use App\Models\BioPage;
 use App\Models\User;
 use App\Services\GeoIpService;
+use App\Support\BioThemes;
 use App\Support\QrPng;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -127,7 +128,7 @@ test('design fields only accept colours, gradients and images, not arbitrary css
 
 test('text longer than its database column is rejected instead of failing on save', function () {
     $page = backendPage();
-    $this->actingAs($page->user)->putJson("/bio/{$page->slug}", ['title_color' => '#'.str_repeat('a', 30)])->assertUnprocessable();
+    $this->actingAs($page->user)->putJson("/bio/{$page->slug}", ['title_color' => '#'.str_repeat('a', 60)])->assertUnprocessable();
     $this->actingAs($page->user)->postJson("/bio/{$page->slug}/links", ['type' => 'link', 'title' => 'x', 'url' => 'https://example.com/'.str_repeat('a', 600)])
         ->assertUnprocessable()->assertJsonValidationErrors('url');
 });
@@ -147,4 +148,86 @@ test('socials are stored as a json array, not a json string', function () {
     $page = backendPage();
     $this->actingAs($page->user)->putJson("/bio/{$page->slug}", ['socials' => ['position' => 'top']])->assertOk();
     expect($page->fresh()->socials)->toBe(['position' => 'top']);
+});
+
+test('a save from a stale editor tab is rejected instead of overwriting the newer one', function () {
+    $page = backendPage();
+    $this->travel(-5)->minutes();
+    $page->touch();
+    $this->travelBack();
+    $stale = $page->fresh()->updated_at->toJSON();
+
+    // The other tab adds a block: that counts as a page change.
+    $added = $this->actingAs($page->user)->postJson(route('bio.links.store', $page), ['type' => 'divider'])
+        ->assertOk()->json('page_updated_at');
+    expect($added)->not->toBe($stale);
+
+    $this->actingAs($page->user)->putJson(route('bio.update', $page), ['title' => 'Old tab', 'base_updated_at' => $stale])
+        ->assertStatus(409)->assertJsonPath('conflict', true);
+    expect($page->fresh()->title)->toBe('Page');
+
+    $this->actingAs($page->user)->putJson(route('bio.update', $page), ['title' => 'Current tab', 'base_updated_at' => $added])
+        ->assertOk();
+    expect($page->fresh()->title)->toBe('Current tab');
+});
+
+test('the editor, preview and public page use the same theme colours, and every theme saves', function () {
+    $page = backendPage();
+    $picker = BioThemes::picker();
+    foreach ($picker as $id => $theme) {
+        // What applyTheme() in the editor sends.
+        $gradient = str_contains($theme['background'], 'gradient');
+        $this->actingAs($page->user)->putJson("/bio/{$page->slug}", [
+            'theme' => $id,
+            'background_type' => $gradient ? 'gradient' : 'solid',
+            'background_value' => $theme['background'],
+            ($gradient ? 'background_gradient' : 'background_color') => $theme['background'],
+            'title_color' => $theme['text'],
+            'bio_color' => $theme['bio'],
+            'link_bg_color' => $theme['link_bg'],
+            'button_bg_color' => $theme['link_bg'],
+            'link_text_color' => $theme['link_text'],
+            'button_text_color' => $theme['link_text'],
+        ])->assertOk();
+    }
+
+    $sunset = config('bio-themes.presets.sunset');
+    expect($picker['sunset']['background'])->toBe($sunset['background']);
+    $page->update(['theme' => 'sunset']);
+    $this->get("/b/{$page->slug}")->assertOk()->assertSee($sunset['background'], false);
+    $this->actingAs($page->user)->get("/bio/{$page->slug}/edit")->assertOk()->assertSee(json_encode($sunset['background']), false);
+});
+
+test('embeds that play in the preview also play on the public page', function () {
+    $page = backendPage();
+    $cases = [
+        ['video', 'https://youtube.com/shorts/abcDEF12345', 'https://www.youtube.com/embed/abcDEF12345?rel=0'],
+        ['video', 'https://www.tiktok.com/@someone/video/7234567890123456789', 'https://www.tiktok.com/embed/v2/7234567890123456789'],
+        ['video', 'https://vimeo.com/76979871', 'https://player.vimeo.com/video/76979871?dnt=1'],
+        ['music', 'https://music.apple.com/us/album/some-album/1440857781', 'https://embed.music.apple.com/us/album/1440857781'],
+        ['music', 'https://open.spotify.com/episode/4rOoJ6Egrf8K2IrywzwOMk', 'https://open.spotify.com/embed/episode/4rOoJ6Egrf8K2IrywzwOMk'],
+        ['youtube', 'https://www.youtube.com/live/zyx987_ABCD', 'https://www.youtube.com/embed/zyx987_ABCD?rel=0'],
+    ];
+    foreach ($cases as $i => [$type, $url]) {
+        $page->links()->create(['type' => $type, 'title' => "Embed {$i}", 'embed_url' => $url, 'order' => $i, 'is_active' => true]);
+    }
+
+    $response = $this->get("/b/{$page->slug}")->assertOk();
+    foreach ($cases as [, , $src]) {
+        $response->assertSee('src="'.e($src), false);
+    }
+    $response->assertSee('loading="lazy"', false);
+    expect($response->headers->get('Content-Security-Policy'))
+        ->toContain('https://www.tiktok.com')->toContain('https://embed.music.apple.com')->toContain('https://player.vimeo.com');
+});
+
+test('a countdown keeps the exact moment the owner picked and the page gives it to browsers in a format every browser parses', function () {
+    $page = backendPage();
+    // 10:00 in Jakarta (UTC+7), as the editor sends it.
+    $id = $this->actingAs($page->user)->postJson("/bio/{$page->slug}/links", [
+        'type' => 'countdown', 'countdown_label' => 'Launch', 'countdown_date' => '2030-01-02T03:00:00.000Z',
+    ])->assertOk()->json('block.id');
+
+    expect(BioLink::find($id)->countdown_date->utc()->format('Y-m-d H:i'))->toBe('2030-01-02 03:00');
+    $this->get("/b/{$page->slug}")->assertOk()->assertSee('data-target="2030-01-02T03:00:00Z"', false);
 });

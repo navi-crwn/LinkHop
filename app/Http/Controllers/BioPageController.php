@@ -217,6 +217,15 @@ class BioPageController extends Controller
     public function update(Request $request, BioPage $bioPage)
     {
         $this->authorize('update', $bioPage);
+        // Two editor tabs: the later save must not silently overwrite the earlier one (L2).
+        $base = $request->input('base_updated_at');
+        if (is_string($base) && $base !== '' && $bioPage->updated_at
+            && strtotime($base) !== $bioPage->updated_at->getTimestamp()) {
+            return response()->json([
+                'message' => 'This page was changed in another tab or window. Reload the editor to get the latest version.',
+                'conflict' => true,
+            ], 409);
+        }
         if ($request->has('slug')) {
             $request->merge(['slug' => strtolower($request->slug)]);
         }
@@ -231,9 +240,9 @@ class BioPageController extends Controller
             'background_color' => CssValue::color(20),
             'background_gradient' => ['nullable', 'string', 'max:255', 'regex:'.CssValue::GRADIENT],
             'background_image' => ['nullable', 'string', 'max:500', 'regex:'.CssValue::IMAGE],
-            'text_color' => CssValue::color(20),
-            'title_color' => CssValue::color(20),
-            'bio_color' => CssValue::color(20),
+            'text_color' => CssValue::color(50),
+            'title_color' => CssValue::color(50),
+            'bio_color' => CssValue::color(50),
             'link_bg_color' => CssValue::color(100),
             'link_text_color' => CssValue::color(50),
             'button_bg_color' => CssValue::color(100),

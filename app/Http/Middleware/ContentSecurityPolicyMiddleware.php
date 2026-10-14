@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\BioEmbed;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Vite;
@@ -23,7 +24,7 @@ class ContentSecurityPolicyMiddleware
             "img-src 'self' data: https: blob: https://flagcdn.com https://*.tile.openstreetmap.org https://www.google-analytics.com https://www.facebook.com",
             "font-src 'self' https://fonts.bunny.net https://fonts.gstatic.com data:",
             "connect-src 'self' data: blob: https://challenges.cloudflare.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://cdn.jsdelivr.net https://unpkg.com https://www.google-analytics.com https://analytics.google.com https://www.facebook.com",
-            "frame-src 'self' https://challenges.cloudflare.com https://maps.google.com https://www.google.com https://www.youtube.com https://youtube.com https://open.spotify.com https://w.soundcloud.com",
+            "frame-src 'self' https://challenges.cloudflare.com https://maps.google.com https://www.google.com https://youtube.com ".implode(' ', BioEmbed::FRAME_HOSTS),
             "object-src 'none'",
             "base-uri 'self'",
             "form-action 'self'",
