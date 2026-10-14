@@ -6,6 +6,7 @@ use App\Models\AbuseFlag;
 use App\Models\BioLink;
 use App\Models\BioPage;
 use App\Services\LinkSafety;
+use App\Support\BioUploads;
 use App\Support\SafeContent;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -200,7 +201,9 @@ class BioLinkController extends Controller
     public function destroy(BioPage $bioPage, BioLink $bioLink)
     {
         $this->authorize('update', $bioPage);
+        $files = BioUploads::ofLink($bioLink);
         $bioLink->delete();
+        BioUploads::deleteUnused($files);
 
         return response()->json([
             'success' => true,

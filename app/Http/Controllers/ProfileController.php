@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\ActivityLog;
 use App\Services\LinkService;
+use App\Support\BioUploads;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -69,6 +70,7 @@ class ProfileController extends Controller
                 'tags_count' => $user->tags()->count(),
                 'total_clicks' => DB::table('link_clicks')->whereIn('link_id', $user->links()->pluck('id'))->count(),
             ];
+            $bioFiles = BioUploads::ofUser($user);
             DB::transaction(function () use ($user) {
                 foreach ($user->links as $link) {
                     $link->tags()->detach();
@@ -89,6 +91,8 @@ class ProfileController extends Controller
                 DB::table('tags')->where('user_id', $user->id)->delete();
                 DB::table('users')->where('id', $user->id)->delete();
             });
+            // Bio pages and blocks are gone with the user (cascade); remove their files too.
+            BioUploads::deleteUnused($bioFiles);
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();

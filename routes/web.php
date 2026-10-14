@@ -31,6 +31,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TwoFactorController;
+use App\Support\CspReport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -90,6 +91,7 @@ Route::middleware('ip.ban')->group(function () {
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
         Route::post('/settings/export', [SettingsController::class, 'exportData'])->name('settings.export');
+        Route::post('/settings/export-account', [SettingsController::class, 'exportAccount'])->middleware('throttle:5,1,export-account')->name('settings.export.account');
         Route::post('/settings/export-analytics', [SettingsController::class, 'exportAnalytics'])->name('settings.export.analytics');
         Route::post('/settings/2fa/enable', [TwoFactorController::class, 'enable'])->name('settings.2fa.enable');
         Route::post('/settings/2fa/confirm', [TwoFactorController::class, 'confirm'])->name('settings.2fa.confirm');
@@ -134,8 +136,8 @@ Route::middleware('ip.ban')->group(function () {
                 Route::post('/', [BioLinkController::class, 'store'])->middleware('verified')->name('store');
                 Route::put('/{bioLink}', [BioLinkController::class, 'update'])->middleware('verified')->name('update');
                 Route::delete('/{bioLink}', [BioLinkController::class, 'destroy'])->name('destroy');
-                Route::post('/reorder', [BioLinkController::class, 'reorder'])->name('reorder');
-                Route::post('/{bioLink}/toggle', [BioLinkController::class, 'toggle'])->name('toggle');
+                Route::post('/reorder', [BioLinkController::class, 'reorder'])->middleware('verified')->name('reorder');
+                Route::post('/{bioLink}/toggle', [BioLinkController::class, 'toggle'])->middleware('verified')->name('toggle');
             });
         });
     });
@@ -200,7 +202,7 @@ Route::middleware('ip.ban')->group(function () {
 Route::post('/csp-report', function (Request $request) {
     $report = json_decode($request->getContent(), true)['csp-report'] ?? [];
     Log::build(['driver' => 'daily', 'path' => storage_path('logs/csp.log'), 'days' => 14])
-        ->warning('csp', array_intersect_key($report, array_flip(['document-uri', 'violated-directive', 'blocked-uri', 'source-file', 'line-number', 'script-sample'])));
+        ->warning('csp', CspReport::sanitize(is_array($report) ? $report : []));
 
     return response()->noContent();
 })->middleware('throttle:60,1,csp-report')->name('csp.report');

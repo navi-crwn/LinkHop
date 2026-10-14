@@ -400,6 +400,20 @@
                             </p>
                         </div>
                     </div>
+                    <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                                <h4 class="font-medium text-slate-900 dark:text-white">Download My Account Data</h4>
+                                <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                                    Profile, links, folders, tags, bio pages with their blocks, recent sign-ins and activity log (JSON)
+                                </p>
+                            </div>
+                            <form method="POST" action="{{ route('settings.export.account') }}">
+                                @csrf
+                                <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">Download JSON</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
                 <div x-show="tab === 'notifications'" class="p-6 space-y-6">
                     <div>
