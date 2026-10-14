@@ -51,8 +51,7 @@
         </div>
         <form method="POST" action="{{ route('register') }}" 
               @if($turnstileKey) 
-              x-data="window.turnstileForm ? window.turnstileForm('{{ $turnstileKey }}', {{ $errors->has('turnstile') ? 'true' : 'false' }}) : {}"
-              x-init="if (!window.turnstileForm) { let interval = setInterval(() => { if (window.turnstileForm) { Object.assign($data, window.turnstileForm('{{ $turnstileKey }}', {{ $errors->has('turnstile') ? 'true' : 'false' }})); clearInterval(interval); } }, 50); }"
+              x-data="turnstileForm(@js($turnstileKey))"
               x-on:submit="handleSubmit($event)"
               @endif>
         @csrf
@@ -105,13 +104,7 @@
             </div>
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
-        @if ($turnstileKey)
-            <div class="mt-4" x-cloak x-show="showCaptcha">
-                <div x-ref="captcha"></div>
-                <x-input-error :messages="$errors->get('turnstile')" class="mt-2" />
-            </div>
-            <input type="hidden" name="cf-turnstile-response" :value="token">
-        @endif
+        <x-turnstile class="mt-4" />
         <input type="hidden" name="tos_accepted" x-bind:value="tosAccepted ? '1' : '0'">
         <div class="mt-4">
             <label class="flex items-start space-x-3 cursor-pointer group">
@@ -144,10 +137,14 @@
             <button
                 type="submit"
                 class="btn ms-4"
-                x-bind:class="tosAccepted {{ $turnstileKey ? '&& (!showCaptcha || token)' : '' }} ? 'btn-primary' : 'bg-slate-500/20 text-muted cursor-not-allowed'"
-                x-bind:disabled="!tosAccepted {{ $turnstileKey ? '|| (showCaptcha && !token)' : '' }}"
+                x-bind:class="tosAccepted ? 'btn-primary' : 'bg-slate-500/20 text-muted cursor-not-allowed'"
+                x-bind:disabled="!tosAccepted"
             >
-                {{ __('Register') }}
+                @if ($turnstileKey)
+                    <span x-show="!waiting">{{ __('Register') }}</span><span x-cloak x-show="waiting">{{ __('Verifying…') }}</span>
+                @else
+                    {{ __('Register') }}
+                @endif
             </button>
         </div>
     </form>
