@@ -288,7 +288,7 @@
             <p>Powered by <a href="{{ url('/') }}">HEL.ink</a></p>
         </div>
     </div>
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
         function togglePassword() {
             const input = document.getElementById('password');
             const toggleText = document.getElementById('toggle-text');

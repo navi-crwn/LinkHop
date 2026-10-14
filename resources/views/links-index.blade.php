@@ -124,7 +124,7 @@
         </section>
         <div>{{ $links->links() }}</div>
     </div>
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
         function linksManager() {
             return {
                 selectedLinks: [],

@@ -235,7 +235,7 @@
         </div>
     </div>
     @push('scripts')
-        <script>
+        <script nonce="{{ Vite::cspNonce() }}">
             const viewsChartCtx = document.getElementById('viewsChart').getContext('2d');
             new Chart(viewsChartCtx, {
                 type: 'line',

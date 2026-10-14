@@ -49,3 +49,12 @@ test('client ip comes from cloudflare forwarded headers only when cloudflare pro
 
     TrustProxies::flushState();
 });
+
+test('pages carry a per-request script nonce and accept csp reports', function () {
+    $response = $this->get('/login');
+    preg_match("/'nonce-([^']+)'/", $response->headers->get('Content-Security-Policy-Report-Only'), $m);
+
+    expect($m[1] ?? null)->not->toBeNull();
+    $response->assertSee('nonce="'.$m[1].'"', false);
+    $this->postJson('/csp-report', ['csp-report' => ['violated-directive' => 'script-src-attr']])->assertNoContent();
+});

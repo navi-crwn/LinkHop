@@ -860,7 +860,7 @@
         </div>
     </div>
 </div>
-<script>
+<script nonce="{{ Vite::cspNonce() }}">
 function linkCreationModal() {
     return {
         panel: false,

@@ -386,7 +386,7 @@
         </div>
     </div>
     @push('scripts')
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
         document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('clicksChart').getContext('2d');
             const isDark = document.documentElement.classList.contains('dark');

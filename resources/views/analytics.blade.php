@@ -228,7 +228,7 @@
             .leaflet-popup-content-wrapper { padding: 4px 6px; border-radius: 10px; }
             .leaflet-popup-content { margin: 0; }
         </style>
-        <script>
+        <script nonce="{{ Vite::cspNonce() }}">
             (function () {
                 const dark = () => document.documentElement.classList.contains('dark');
                 const labels = @json(array_values($timeline->keys()->toArray()));

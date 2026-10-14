@@ -310,7 +310,7 @@
     </div>
 </div>
 @push('styles')
-<script>
+<script nonce="{{ Vite::cspNonce() }}">
 window.qrGenerator = function() {
     return {
         qrColor: '#000000',

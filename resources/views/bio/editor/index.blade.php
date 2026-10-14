@@ -1524,7 +1524,7 @@
 </div>
 @endsection
 @push('scripts-head')
-<script>
+<script nonce="{{ Vite::cspNonce() }}">
 // Editor API URLs follow the *saved* slug, so renaming the page doesn't break later requests.
 window.bioEditorSlug = @json($bioPage->slug);
 window.bioEditorUrl = (path = '') => '/bio/' + encodeURIComponent(window.bioEditorSlug) + path;

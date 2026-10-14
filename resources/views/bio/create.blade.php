@@ -303,7 +303,7 @@
             </div>
         </div>
     </div>
-    <script>
+    <script nonce="{{ Vite::cspNonce() }}">
         function slugChecker() {
             return {
                 slug: '',

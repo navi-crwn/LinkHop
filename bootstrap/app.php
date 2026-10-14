@@ -30,6 +30,8 @@ return Application::configure(basePath: dirname(__DIR__))
             EnsureGoogleUserHasPassword::class,
             ContentSecurityPolicyMiddleware::class,
         ]);
+        // Browsers POST CSP reports without a CSRF token.
+        $middleware->validateCsrfTokens(except: ['csp-report']);
         $middleware->alias([
             'admin' => AdminMiddleware::class,
             'ip.ban' => CheckIpBan::class,

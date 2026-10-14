@@ -125,7 +125,7 @@
                 </div>
                 </form>
             </div>
-            <script>
+            <script nonce="{{ Vite::cspNonce() }}">
                 function bulkActions() {
                     return {
                         toggleAll(event) {
