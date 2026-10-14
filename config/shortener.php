@@ -1,6 +1,7 @@
 <?php
 
-// Guest links never live longer than 30 days, whatever the server's .env says.
+// Guest links: deleted after 14 days in a row without a click, and never live
+// longer than 30 days, whatever the server's .env says (it can only shorten them).
 $guestMaxDays = min(30, max(1, (int) env('GUEST_LINK_MAX_DAYS', 30)));
 
 return [
@@ -9,13 +10,21 @@ return [
     | Guest (anonymous) links
     |--------------------------------------------------------------------------
     |
-    | Links created without an account stop working after `guest_idle_days`
-    | without a click and, at the latest, `guest_max_days` after creation.
-    | `links:prune-guest` deletes them daily. Both are capped at 30 days.
+    | Links created without an account count in whole calendar days in
+    | `guest_timezone` and stop working at 00:00:
+    |  - after `guest_idle_days` full days in a row without a click (the day of
+    |    the last click, or of creation, is not counted), or
+    |  - after day `guest_max_days`, counting the day it was created as day 1.
+    | `links:prune-guest` deletes them right after midnight.
     |
     */
-    'guest_idle_days' => min($guestMaxDays, max(1, (int) env('GUEST_LINK_IDLE_DAYS', 14))),
+    'guest_idle_days' => min(14, $guestMaxDays, max(1, (int) env('GUEST_LINK_IDLE_DAYS', 14))),
     'guest_max_days' => $guestMaxDays,
+    'guest_timezone' => env('GUEST_LINK_TIMEZONE') ?: env('APP_TIMEZONE', 'UTC'),
+
+    // A deleted guest link's slug shows an "expired" page and cannot be taken
+    // again for this many days, so old shared copies can't be hijacked.
+    'retired_slug_days' => max(1, (int) env('RETIRED_SLUG_DAYS', 90)),
 
     /*
     |--------------------------------------------------------------------------

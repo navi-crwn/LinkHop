@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Link;
+use App\Models\RetiredSlug;
 use App\Support\QrPng;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -128,7 +129,7 @@ class LinkService
             for ($i = 0; $i < $length; $i++) {
                 $slug .= $characters[random_int(0, strlen($characters) - 1)];
             }
-        } while (Link::where('slug', $slug)->exists());
+        } while (Link::where('slug', $slug)->exists() || RetiredSlug::isBlocked($slug));
 
         return $slug;
     }

@@ -51,6 +51,7 @@ window.turnstileForm = (siteKey) => ({
     widgetId: null,
     status: 'idle', // idle | loading | ready | error
     waiting: false, // user submitted before the token was ready
+    challenge: false, // Cloudflare wants the visitor to click the checkbox
     init() {
         if (!this.siteKey) {
             return;
@@ -67,6 +68,13 @@ window.turnstileForm = (siteKey) => ({
         this.widgetId = turnstile.render(this.$refs.captcha, {
             sitekey: this.siteKey,
             appearance: 'interaction-only',
+            size: this.$refs.captcha.dataset.size || 'normal',
+            'before-interactive-callback': () => {
+                this.challenge = true;
+            },
+            'after-interactive-callback': () => {
+                this.challenge = false;
+            },
             callback: (token) => {
                 this.token = token;
                 this.status = 'ready';
