@@ -73,8 +73,8 @@ class AdminBioController extends Controller
             ->get();
         // Bio Pages by User (top creators)
         $topCreators = User::select('users.*')
+            ->has('bioPages')
             ->withCount('bioPages')
-            ->having('bio_pages_count', '>', 0)
             ->orderByDesc('bio_pages_count')
             ->limit(10)
             ->get();
