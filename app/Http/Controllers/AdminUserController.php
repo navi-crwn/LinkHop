@@ -36,13 +36,21 @@ class AdminUserController extends Controller
 
     public function inspect(Request $request, User $user)
     {
-        $user->load(['links' => function ($query) {
-            $query->latest()->with(['folder', 'tags']);
-        }, 'folders', 'tags']);
+        $user->loadCount(['links', 'folders', 'tags']);
+        $links = $user->links()
+            ->with(['folder:id,name', 'tags:id,name'])
+            ->latest('id')
+            ->paginate(20)
+            ->withQueryString();
 
         return view('admin-user-inspect', [
             'user' => $user,
-            'totalClicks' => $user->links->sum('clicks'),
+            'links' => $links,
+            'folders' => $user->folders()->withCount('links')->orderByDesc('is_default')->orderBy('name')->limit(50)->get(),
+            'tags' => $user->tags()->withCount('links')->orderByDesc('links_count')->limit(50)->get(),
+            'totalClicks' => (int) $user->links()->sum('clicks'),
+            'activeLinks' => $user->links()->where('status', 'active')->count(),
+            'bioPages' => $user->bioPages()->get(['id', 'slug', 'title', 'is_published']),
             'viewerIsSuperAdmin' => $request->user()->isSuperAdmin(),
         ]);
     }
