@@ -187,3 +187,12 @@
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* Auth pages: map Breeze's gray utilities onto the theme tokens. */
+.auth-card :is(.text-gray-600, .text-gray-700, .text-gray-500, .dark\:text-gray-400, .dark\:text-gray-300) { color: rgb(var(--muted)); }
+.auth-card :is(.text-gray-900, .dark\:text-gray-100, .dark\:text-white) { color: rgb(var(--ink)); }
+.auth-card :is(.bg-white, .dark\:bg-gray-800, .dark\:bg-gray-900):not(input) { background-color: rgb(var(--glass) / 0.6) !important; }
+.auth-card .relative > .relative > span[class*="px-"] { background-color: rgb(var(--glass)) !important; border-radius: 9999px; }
+.auth-card :is(.rounded-md) { border-radius: 0.75rem; }
+.auth-card :is(.border-gray-300, .dark\:border-gray-600, .dark\:border-gray-700) { border-color: rgb(var(--muted) / 0.25) !important; }
+.auth-card input[type=checkbox] { @apply rounded border-slate-400/50 bg-transparent text-indigo-500; }
