@@ -23,3 +23,7 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 docs/AI_BRIEFING.md
+/test-results/
+/playwright-report/
+/tests/e2e/reports/runs/
+.env.e2e

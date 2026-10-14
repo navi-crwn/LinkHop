@@ -205,6 +205,9 @@ Route::post('/csp-report', function (Request $request) {
     return response()->noContent();
 })->middleware('throttle:60,1')->name('csp.report');
 require __DIR__.'/auth.php';
+if (env('E2E_HOOKS') === true && ! app()->isProduction()) {
+    require __DIR__.'/e2e.php';
+}
 Route::middleware('ip.ban')->match(['GET', 'POST'], '/{slug}', RedirectController::class)
     ->where('slug', '^(?!login$|logout$|register$|password.*|verify-email.*|email/.*|confirm-password.*|admin.*|dashboard$|settings$|links/|folders|tags|shorten$|about$|contact$|privacy$|terms$|plans$|help$|faq$|products$|feature-requests$|report-abuse$|b/).*[A-Za-z0-9-]+$');
 Route::get('/health/queue', function () {
