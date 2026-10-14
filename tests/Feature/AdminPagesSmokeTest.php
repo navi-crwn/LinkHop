@@ -41,3 +41,21 @@ test('admin can inspect a user with links, folders and tags', function () {
 test('every member page renders', function (string $path) {
     $this->actingAs(smokeMember())->get($path)->assertOk();
 })->with(['/dashboard', '/links', '/analytics', '/folders', '/tags', '/bio', '/profile', '/settings']);
+
+test('global links filters do not render every user or tag and still filter', function () {
+    $member = smokeMember();
+    $other = User::factory()->create(['name' => 'Someone Else']);
+    Link::create(['slug' => 'otherlink', 'target_url' => 'https://example.org', 'user_id' => $other->id, 'status' => 'active']);
+    $admin = smokeAdmin();
+
+    $this->actingAs($admin)->get('/admin/links')->assertOk()
+        ->assertSee('otherlink')->assertDontSee('<option value="'.$other->id.'"', false);
+
+    $this->actingAs($admin)->get('/admin/links?user_id='.$member->id)->assertOk()
+        ->assertSee('memberlink')->assertDontSee('otherlink');
+    $this->actingAs($admin)->get('/admin/links?tag=promo')->assertOk()
+        ->assertSee('memberlink')->assertDontSee('otherlink');
+
+    $this->actingAs($admin)->getJson(route('admin.users.lookup', ['q' => 'Someone']))
+        ->assertOk()->assertJsonCount(1)->assertJsonPath('0.id', $other->id);
+});

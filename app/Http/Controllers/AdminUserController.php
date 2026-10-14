@@ -34,6 +34,21 @@ class AdminUserController extends Controller
         ]);
     }
 
+    /**
+     * Owner picker for admin filters: the first matches by name or email.
+     */
+    public function lookup(Request $request)
+    {
+        $term = $request->string('q')->trim()->toString();
+        $users = User::query()
+            ->when($term !== '', fn ($q) => $q->where(fn ($w) => $w->where('name', 'like', "%{$term}%")->orWhere('email', 'like', "%{$term}%")))
+            ->orderBy('name')
+            ->limit(10)
+            ->get(['id', 'name', 'email']);
+
+        return response()->json($users);
+    }
+
     public function inspect(Request $request, User $user)
     {
         $user->loadCount(['links', 'folders', 'tags']);
@@ -49,7 +64,7 @@ class AdminUserController extends Controller
             'folders' => $user->folders()->withCount('links')->orderByDesc('is_default')->orderBy('name')->limit(50)->get(),
             'tags' => $user->tags()->withCount('links')->orderByDesc('links_count')->limit(50)->get(),
             'totalClicks' => (int) $user->links()->sum('clicks'),
-            'activeLinks' => $user->links()->where('status', 'active')->count(),
+            'activeLinks' => $user->links()->live()->count(),
             'bioPages' => $user->bioPages()->get(['id', 'slug', 'title', 'is_published']),
             'viewerIsSuperAdmin' => $request->user()->isSuperAdmin(),
         ]);

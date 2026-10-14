@@ -42,14 +42,14 @@
                                         value="{{ old('slug') }}"
                                         placeholder="yourname"
                                         pattern="[a-zA-Z0-9]+"
-                                        minlength="3"
+                                        minlength="{{ auth()->user()->isAdmin() ? 3 : config('shortener.bio_slug_min_length', 5) }}"
                                         maxlength="20"
                                         x-model="slug"
                                         @input.debounce.500ms="checkSlug()"
                                         class="flex-1 rounded-lg border border-slate-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                                     >
                                 </div>
-                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Only letters and numbers (3-20 characters)</p>
+                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Only letters and numbers ({{ auth()->user()->isAdmin() ? 3 : config('shortener.bio_slug_min_length', 5) }}-20 characters)</p>
                                 <div class="mt-2 text-sm" x-show="checking">
                                     <span class="text-blue-600 dark:text-blue-400">Checking availability...</span>
                                 </div>
@@ -57,7 +57,7 @@
                                     <span class="text-green-600 dark:text-green-400">✓ Available!</span>
                                 </div>
                                 <div class="mt-2 text-sm" x-show="!checking && available === false" x-cloak>
-                                    <span class="text-red-600 dark:text-red-400">✗ Already taken</span>
+                                    <span class="text-red-600 dark:text-red-400" x-text="'✗ ' + (message || 'Already taken')">✗ Already taken</span>
                                 </div>
                                 @error('slug')
                                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -309,8 +309,9 @@
                 slug: '',
                 checking: false,
                 available: null,
+                message: '',
                 checkSlug() {
-                    if (this.slug.length < 3) {
+                    if (this.slug.length < {{ auth()->user()->isAdmin() ? 3 : (int) config('shortener.bio_slug_min_length', 5) }}) {
                         this.available = null;
                         return;
                     }
@@ -319,6 +320,7 @@
                         .then(response => response.json())
                         .then(data => {
                             this.available = data.available;
+                            this.message = data.message || '';
                             this.checking = false;
                             if (data.available) {
                                 window.dispatchEvent(new CustomEvent('slug-available', { 

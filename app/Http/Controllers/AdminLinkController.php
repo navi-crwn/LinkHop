@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Folder;
 use App\Models\Link;
-use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -13,22 +12,29 @@ class AdminLinkController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Link::query()->with(['user', 'folder', 'tags'])->latest();
+        $query = Link::query()->with(['user:id,name,email', 'folder:id,name', 'tags:id,name']);
         $status = $request->string('status')->toString();
         $userId = $request->integer('user_id');
         $folderId = $request->integer('folder_id');
-        $tagId = $request->integer('tag_id');
-        if ($status !== '') {
-            $query->where('status', $status);
-        }
+        $tag = ltrim($request->string('tag')->trim()->toString(), '#');
+        $sort = $request->string('sort')->toString();
+        match ($status) {
+            'active' => $query->live(),
+            'inactive' => $query->where('status', Link::STATUS_INACTIVE),
+            'expired' => $query->where('status', Link::STATUS_ACTIVE)->ended(),
+            default => null,
+        };
         if ($userId) {
             $query->where('user_id', $userId);
         }
-        if ($folderId) {
+        if ($request->string('owner')->toString() === 'guest') {
+            $query->whereNull('user_id');
+        }
+        if ($userId && $folderId) {
             $query->where('folder_id', $folderId);
         }
-        if ($tagId) {
-            $query->whereHas('tags', fn ($q) => $q->where('tags.id', $tagId));
+        if ($tag !== '') {
+            $query->whereHas('tags', fn ($q) => $q->where('tags.name', 'like', "%{$tag}%"));
         }
         $search = $request->string('q')->trim()->toString();
         if ($search !== '') {
@@ -37,19 +43,23 @@ class AdminLinkController extends Controller
                     ->orWhere('target_url', 'like', "%{$search}%");
             });
         }
-        $links = $query->paginate(15)->withQueryString();
+        $sort === 'clicks' ? $query->orderByDesc('clicks') : $query->latest('id');
+        $links = $query->paginate(20)->withQueryString();
+        // Only the selected owner's folders are offered, so the filter never lists every folder on the platform.
+        $owner = $userId ? User::find($userId, ['id', 'name', 'email']) : null;
 
         return view('admin-links', [
             'links' => $links,
             'status' => $status,
             'search' => $search,
-            'users' => User::orderBy('name')->get(['id', 'name']),
-            'folders' => Folder::orderBy('name')->get(['id', 'name']),
-            'tags' => Tag::orderBy('name')->get(['id', 'name']),
+            'owner' => $owner,
+            'folders' => $owner ? Folder::where('user_id', $owner->id)->orderBy('name')->get(['id', 'name']) : collect(),
             'filters' => [
                 'user_id' => $userId,
                 'folder_id' => $folderId,
-                'tag_id' => $tagId,
+                'tag' => $tag,
+                'sort' => $sort,
+                'guest' => $request->string('owner')->toString() === 'guest',
             ],
         ]);
     }
