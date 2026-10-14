@@ -28,7 +28,7 @@
                     <!-- Copy Style Dropdown (only for non-default themes) -->
                     <template x-if="id !== 'default'">
                         <div x-data="{ showCopyMenu: false }" class="absolute top-1 right-1 z-10">
-                            <button @click.stop="showCopyMenu = !showCopyMenu" 
+                            <button :aria-label="'Copy style from ' + theme.name + ' to Default theme'" @click.stop="showCopyMenu = !showCopyMenu" 
                                     class="w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80 transition-colors"
                                     title="Copy style to Default theme">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,17 +96,17 @@
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="form-label text-xs mb-1">Title Color</label>
+                            <label for="bfappear-1" class="form-label text-xs mb-1">Title Color</label>
                             <div class="flex items-center gap-2">
-                                <input type="color" :value="bioPage.title_color || '#1e293b'" @input="bioPage.title_color = $event.target.value" class="color-picker-input w-8 h-8">
-                                <input type="text" x-model="bioPage.title_color" class="form-input flex-1 text-xs py-1.5" placeholder="#1e293b" autocomplete="off" data-lpignore="true" data-1p-ignore="true">
+                                <input id="bfappear-1" type="color" :value="bioPage.title_color || '#1e293b'" @input="bioPage.title_color = $event.target.value" class="color-picker-input w-8 h-8">
+                                <input aria-label="Title color hex value" type="text" x-model="bioPage.title_color" class="form-input flex-1 text-xs py-1.5" placeholder="#1e293b" autocomplete="off" data-lpignore="true" data-1p-ignore="true">
                             </div>
                         </div>
                         <div>
-                            <label class="form-label text-xs mb-1">Bio Color</label>
+                            <label for="bfappear-2" class="form-label text-xs mb-1">Bio Color</label>
                             <div class="flex items-center gap-2">
-                                <input type="color" :value="bioPage.bio_color || '#64748b'" @input="bioPage.bio_color = $event.target.value" class="color-picker-input w-8 h-8">
-                                <input type="text" x-model="bioPage.bio_color" class="form-input flex-1 text-xs py-1.5" placeholder="#64748b" autocomplete="off" data-lpignore="true" data-1p-ignore="true">
+                                <input id="bfappear-2" type="color" :value="bioPage.bio_color || '#64748b'" @input="bioPage.bio_color = $event.target.value" class="color-picker-input w-8 h-8">
+                                <input aria-label="Bio color hex value" type="text" x-model="bioPage.bio_color" class="form-input flex-1 text-xs py-1.5" placeholder="#64748b" autocomplete="off" data-lpignore="true" data-1p-ignore="true">
                             </div>
                         </div>
                     </div>
@@ -248,23 +248,23 @@
                     </div>
                     <!-- Solid Color -->
                     <div x-show="bioPage.background_type === 'solid'" class="flex items-center gap-2">
-                        <input type="color" x-model="bioPage.background_value" class="color-picker-input w-10 h-10">
-                        <input type="text" x-model="bioPage.background_value" class="form-input flex-1 text-sm py-2" placeholder="#ffffff" autocomplete="off" data-lpignore="true" data-1p-ignore="true">
+                        <input aria-label="Background color" type="color" x-model="bioPage.background_value" class="color-picker-input w-10 h-10">
+                        <input aria-label="Background color hex value" type="text" x-model="bioPage.background_value" class="form-input flex-1 text-sm py-2" placeholder="#ffffff" autocomplete="off" data-lpignore="true" data-1p-ignore="true">
                     </div>
                     <!-- Gradient -->
                     <div x-show="bioPage.background_type === 'gradient'" class="grid grid-cols-4 gap-2">
-                        <button @click="bioPage.background_value = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'" class="h-10 rounded-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)"></button>
-                        <button @click="bioPage.background_value = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'" class="h-10 rounded-lg" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"></button>
-                        <button @click="bioPage.background_value = 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'" class="h-10 rounded-lg" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"></button>
-                        <button @click="bioPage.background_value = 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)'" class="h-10 rounded-lg" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%)"></button>
-                        <button @click="bioPage.background_value = 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)'" class="h-10 rounded-lg" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)"></button>
-                        <button @click="bioPage.background_value = 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)'" class="h-10 rounded-lg" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)"></button>
-                        <button @click="bioPage.background_value = 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)'" class="h-10 rounded-lg" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)"></button>
-                        <button @click="bioPage.background_value = 'linear-gradient(135deg, #000000 0%, #434343 100%)'" class="h-10 rounded-lg" style="background: linear-gradient(135deg, #000000 0%, #434343 100%)"></button>
+                        <button aria-label="Purple gradient" @click="bioPage.background_value = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'" class="h-10 rounded-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)"></button>
+                        <button aria-label="Pink gradient" @click="bioPage.background_value = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'" class="h-10 rounded-lg" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"></button>
+                        <button aria-label="Blue gradient" @click="bioPage.background_value = 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'" class="h-10 rounded-lg" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"></button>
+                        <button aria-label="Dark navy gradient" @click="bioPage.background_value = 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)'" class="h-10 rounded-lg" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%)"></button>
+                        <button aria-label="Rose gradient" @click="bioPage.background_value = 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)'" class="h-10 rounded-lg" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)"></button>
+                        <button aria-label="Mint gradient" @click="bioPage.background_value = 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)'" class="h-10 rounded-lg" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)"></button>
+                        <button aria-label="Peach gradient" @click="bioPage.background_value = 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)'" class="h-10 rounded-lg" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)"></button>
+                        <button aria-label="Black gradient" @click="bioPage.background_value = 'linear-gradient(135deg, #000000 0%, #434343 100%)'" class="h-10 rounded-lg" style="background: linear-gradient(135deg, #000000 0%, #434343 100%)"></button>
                     </div>
                     <!-- Image -->
                     <div x-show="bioPage.background_type === 'image'">
-                        <input type="file" accept="image/*" class="hidden" x-ref="bgImageInput" @change="uploadBackgroundImage($event)">
+                        <input aria-label="Upload background image" type="file" accept="image/*" class="hidden" x-ref="bgImageInput" @change="uploadBackgroundImage($event)">
                         <button @click="$refs.bgImageInput.click()" class="btn btn-secondary w-full text-sm py-2">Upload Image</button>
                         <template x-if="bioPage.background_value && bioPage.background_type === 'image' && bioPage.background_value.length > 0">
                             <div class="mt-2 relative rounded-lg overflow-hidden">
@@ -276,7 +276,7 @@
                                 <div class="bg-error hidden absolute inset-0 flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-xs text-slate-500">
                                     <span>Image not found</span>
                                 </div>
-                                <button @click="bioPage.background_value = ''; bioPage.background_image = ''" class="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600">
+                                <button aria-label="Remove background image" @click="bioPage.background_value = ''; bioPage.background_image = ''" class="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                 </button>
                             </div>

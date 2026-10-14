@@ -10,7 +10,7 @@
         --editor-border: rgb(var(--muted) / 0.2);
         --editor-card-bg: rgb(var(--glass) / 0.55);
         --editor-text: #1e293b;
-        --editor-text-muted: #64748b;
+        --editor-text-muted: #475569;
         --editor-input-bg: #ffffff;
         --editor-input-border: #cbd5e1;
         --editor-hover-bg: #f1f5f9;
@@ -21,7 +21,7 @@
         --editor-border: rgb(255 255 255 / 0.08);
         --editor-card-bg: rgb(var(--glass) / 0.55);
         --editor-text: #f1f5f9;
-        --editor-text-muted: #94a3b8;
+        --editor-text-muted: #aab6c6;
         --editor-input-bg: #1e293b;
         --editor-input-border: #475569;
         --editor-hover-bg: #334155;
@@ -170,9 +170,10 @@
         background: var(--editor-hover-bg);
     }
     .editor-tab.active {
-        color: #3b82f6;
+        color: #1d4ed8;
         background: rgba(59, 130, 246, 0.1);
     }
+    .dark .editor-tab.active { color: #93c5fd; }
     .editor-tab svg {
         width: 16px;
         height: 16px;
@@ -226,6 +227,23 @@
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
     }
     .form-input::placeholder { color: var(--editor-text-muted); }
+    /* Keyboard focus must stay visible on every control (WCAG 2.4.7). */
+    .editor-container :is(button, a, [role="tab"], [tabindex]):focus-visible,
+    .modal-content :is(button, a, [tabindex]):focus-visible,
+    .toggle-switch input:focus-visible + .toggle-slider {
+        outline: 2px solid #2563eb;
+        outline-offset: 2px;
+    }
+    .dark .editor-container :is(button, a, [role="tab"], [tabindex]):focus-visible,
+    .dark .modal-content :is(button, a, [tabindex]):focus-visible,
+    .dark .toggle-switch input:focus-visible + .toggle-slider { outline-color: #93c5fd; }
+    @media (prefers-reduced-motion: reduce) {
+        .editor-container *, .modal-overlay, .modal-overlay * {
+            transition-duration: 0.01ms !important;
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+        }
+    }
     .form-textarea { resize: vertical; min-height: 60px; }
     .btn {
         display: inline-flex;
@@ -240,10 +258,10 @@
         border: none;
     }
     .btn-primary {
-        background: #3b82f6;
+        background: #2563eb;
         color: white;
     }
-    .btn-primary:hover { background: #2563eb; }
+    .btn-primary:hover { background: #1d4ed8; }
     .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
     .btn-secondary {
         background: var(--editor-hover-bg);
@@ -533,6 +551,8 @@
 @endpush
 @section('content')
 <div x-data="window.bioEditorV2()">
+    <!-- Screen reader announcements (reorder, save results) -->
+    <div class="sr-only" role="status" aria-live="polite" aria-atomic="true" x-text="announcement"></div>
     <!-- Fake fields to prevent browser password autofill -->
     <input type="text" name="fake_username" style="display:none !important" tabindex="-1" autocomplete="username">
     <input type="password" name="fake_password" style="display:none !important" tabindex="-1" autocomplete="new-password">
@@ -541,14 +561,14 @@
             <div class="border-b px-6 py-4 sticky top-0 z-40" style="background: var(--editor-card-bg); border-color: var(--editor-border);">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-4">
-                    <a href="{{ route('bio.index') }}" @click.prevent="handleNavigation('{{ route('bio.index') }}')" class="hover:opacity-70" style="color: var(--editor-text-muted);">
+                    <a href="{{ route('bio.index') }}" @click.prevent="handleNavigation('{{ route('bio.index') }}')" class="hover:opacity-70" style="color: var(--editor-text-muted);" aria-label="Back to bio pages">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                         </svg>
                     </a>
                     <div>
                         <h1 class="text-lg font-semibold" style="color: var(--editor-text);" x-text="bioPage.title || 'Untitled'"></h1>
-                        <a :href="'{{ url('/') }}/' + bioPage.slug" target="_blank" class="text-sm text-blue-400 hover:underline flex items-center gap-1">
+                        <a :href="'{{ url('/') }}/' + bioPage.slug" target="_blank" class="text-sm text-blue-700 dark:text-blue-400 hover:underline flex items-center gap-1">
                             <span x-text="'{{ url('/') }}/' + bioPage.slug"></span>
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
@@ -557,11 +577,11 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    <span x-show="hasUnsavedChanges" class="text-xs text-amber-400 flex items-center gap-1">
+                    <span x-show="hasUnsavedChanges" class="text-xs text-amber-700 dark:text-amber-400 flex items-center gap-1">
                         <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>
                         Unsaved
                     </span>
-                    <button type="button" onclick="toggleTheme()" id="theme-toggle-button" class="p-2 rounded-lg editor-text-muted hover:editor-text hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" title="Toggle theme">
+                    <button type="button" onclick="toggleTheme()" id="theme-toggle-button" class="p-2 rounded-lg editor-text-muted hover:editor-text hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" title="Toggle theme" aria-label="Toggle theme">
                         <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
                         </svg>
@@ -578,32 +598,32 @@
                 </div>
             </div>
         </div>
-        <div class="editor-tabs">
-            <button @click="activeTab = 'profile'" :class="{ 'active': activeTab === 'profile' }" class="editor-tab">
+        <div class="editor-tabs" role="tablist" aria-label="Editor sections" @keydown.arrow-right.prevent="cycleTab(1)" @keydown.arrow-left.prevent="cycleTab(-1)" @keydown.home.prevent="cycleTab(0, true)" @keydown.end.prevent="cycleTab(-1, true)">
+            <button type="button" @click="activeTab = 'profile'" :class="{ 'active': activeTab === 'profile' }" class="editor-tab" role="tab" id="editor-tab-profile" aria-controls="editor-panel-profile" :aria-selected="activeTab === 'profile' ? 'true' : 'false'" :tabindex="activeTab === 'profile' ? 0 : -1">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                 </svg>
                 Profile
             </button>
-            <button @click="activeTab = 'links'" :class="{ 'active': activeTab === 'links' }" class="editor-tab">
+            <button type="button" @click="activeTab = 'links'" :class="{ 'active': activeTab === 'links' }" class="editor-tab" role="tab" id="editor-tab-links" aria-controls="editor-panel-links" :aria-selected="activeTab === 'links' ? 'true' : 'false'" :tabindex="activeTab === 'links' ? 0 : -1">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                 </svg>
                 Build
             </button>
-            <button @click="activeTab = 'socials'" :class="{ 'active': activeTab === 'socials' }" class="editor-tab">
+            <button type="button" @click="activeTab = 'socials'" :class="{ 'active': activeTab === 'socials' }" class="editor-tab" role="tab" id="editor-tab-socials" aria-controls="editor-panel-socials" :aria-selected="activeTab === 'socials' ? 'true' : 'false'" :tabindex="activeTab === 'socials' ? 0 : -1">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                 </svg>
                 Socials
             </button>
-            <button @click="activeTab = 'appearance'" :class="{ 'active': activeTab === 'appearance' }" class="editor-tab">
+            <button type="button" @click="activeTab = 'appearance'" :class="{ 'active': activeTab === 'appearance' }" class="editor-tab" role="tab" id="editor-tab-appearance" aria-controls="editor-panel-appearance" :aria-selected="activeTab === 'appearance' ? 'true' : 'false'" :tabindex="activeTab === 'appearance' ? 0 : -1">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
                 </svg>
                 Appearance
             </button>
-            <button @click="activeTab = 'settings'" :class="{ 'active': activeTab === 'settings' }" class="editor-tab">
+            <button type="button" @click="activeTab = 'settings'" :class="{ 'active': activeTab === 'settings' }" class="editor-tab" role="tab" id="editor-tab-settings" aria-controls="editor-panel-settings" :aria-selected="activeTab === 'settings' ? 'true' : 'false'" :tabindex="activeTab === 'settings' ? 0 : -1">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -612,19 +632,19 @@
             </button>
         </div>
         <div class="tab-content">
-            <div x-show="activeTab === 'profile'" x-cloak>
+            <div x-show="activeTab === 'profile'" x-cloak role="tabpanel" id="editor-panel-profile" aria-labelledby="editor-tab-profile" tabindex="0">
                 @include('bio.editor.profile-tab')
             </div>
-            <div x-show="activeTab === 'links'" x-cloak>
+            <div x-show="activeTab === 'links'" x-cloak role="tabpanel" id="editor-panel-links" aria-labelledby="editor-tab-links" tabindex="0">
                 @include('bio.editor.links-tab')
             </div>
-            <div x-show="activeTab === 'socials'" x-cloak>
+            <div x-show="activeTab === 'socials'" x-cloak role="tabpanel" id="editor-panel-socials" aria-labelledby="editor-tab-socials" tabindex="0">
                 @include('bio.editor.socials-tab')
             </div>
-            <div x-show="activeTab === 'appearance'" x-cloak>
+            <div x-show="activeTab === 'appearance'" x-cloak role="tabpanel" id="editor-panel-appearance" aria-labelledby="editor-tab-appearance" tabindex="0">
                 @include('bio.editor.appearance-tab')
             </div>
-            <div x-show="activeTab === 'settings'" x-cloak>
+            <div x-show="activeTab === 'settings'" x-cloak role="tabpanel" id="editor-panel-settings" aria-labelledby="editor-tab-settings" tabindex="0">
                 @include('bio.editor.settings-tab')
             </div>
         </div>
@@ -633,7 +653,7 @@
         <div class="preview-header">
             <span class="text-sm font-medium editor-text">Live Preview</span>
             <a :href="'{{ url('/') }}/' + bioPage.slug" target="_blank" 
-               class="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
+               class="text-xs text-blue-700 dark:text-blue-400 hover:underline flex items-center gap-1">
                 Open in new tab
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
@@ -644,6 +664,7 @@
             <div class="mobile-frame">
                 <div class="mobile-frame-inner">
                     <iframe 
+                        title="Live preview of your bio page"
                         x-ref="previewFrame"
                         :src="previewUrl"
                         @load="onPreviewLoad()"
@@ -656,10 +677,10 @@
     <!-- All Modals - Outside of editor-container to avoid overflow:hidden clipping -->
     <!-- Link Icon Picker Modal -->
     <div x-show="showIconPicker" x-cloak class="modal-overlay" @click.self="showIconPicker = false" style="z-index: 10001;">
-        <div class="modal-content" style="max-width: 560px;" @click.stop>
+        <div class="modal-content" x-modal="showIconPicker" style="max-width: 560px;" @click.stop>
             <div class="modal-header">
                 <h3 class="modal-title">Choose Icon</h3>
-                <button type="button" @click.prevent.stop="showIconPicker = false" class="modal-close">
+                <button type="button" @click.prevent.stop="showIconPicker = false" class="modal-close" aria-label="Close">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -672,14 +693,14 @@
                         <span class="text-sm font-medium editor-text-muted">Upload Custom Icon</span>
                     </label>
                     <div class="flex gap-2">
-                        <input type="file" accept="image/*" @change="uploadCustomIcon($event)" 
+                        <input aria-label="Upload custom icon" type="file" accept="image/*" @change="uploadCustomIcon($event)" 
                                class="flex-1 text-sm editor-text-muted file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white file:font-medium hover:file:bg-blue-700">
                     </div>
                     <p class="text-xs editor-text-muted mt-1">PNG, JPG, or SVG. Max 1MB.</p>
                 </div>
                 <!-- Search -->
                 <div class="p-4" style="border-bottom: 1px solid var(--editor-border);">
-                    <input type="text" x-model="iconSearch" placeholder="Search icons..." class="form-input">
+                    <input aria-label="Search icons" type="text" x-model="iconSearch" placeholder="Search icons..." class="form-input">
                 </div>
                 <!-- Icon Grid - 4 columns -->
                 <div class="p-4 max-h-80 overflow-y-auto">
@@ -701,10 +722,10 @@
     </div>
     <template x-if="editingBlock">
     <div class="modal-overlay" @click.self="closeBlockEditor()">
-        <div class="modal-content" @click.stop>
+        <div class="modal-content" x-modal="editingBlock" data-modal-close="closeBlockEditor()" @click.stop>
             <div class="modal-header">
                 <h3 class="modal-title">Edit Block</h3>
-                <button @click="closeBlockEditor()" class="modal-close">
+                <button @click="closeBlockEditor()" class="modal-close" aria-label="Close">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -731,8 +752,8 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Title</label>
-                            <input type="text" x-model="editingBlock.title" class="form-input" placeholder="Button title" autocomplete="off" data-lpignore="true" data-form-type="other">
+                            <label for="bfindex-1" class="form-label">Title</label>
+                            <input id="bfindex-1" type="text" x-model="editingBlock.title" class="form-input" placeholder="Button title" autocomplete="off" data-lpignore="true" data-form-type="other">
                         </div>
                         <template x-if="editingBlock && editingBlock?.type === 'link'">
                             <div class="space-y-4">
@@ -755,8 +776,8 @@
                                     <!-- Create New Mode -->
                                     <template x-if="editingBlock?.brand || linkInputMode === 'create'">
                                         <div>
-                                            <label class="form-label" x-text="editingBlock?.brand ? 'URL' : 'Destination URL'"></label>
-                                            <input type="text" :value="editingBlock?.url ?? ''"
+                                            <label for="bfindex-2" class="form-label" x-text="editingBlock?.brand ? 'URL' : 'Destination URL'"></label>
+                                            <input id="bfindex-2" type="text" :value="editingBlock?.url ?? ''"
                                                 @input="if (editingBlock) { editingBlock.url = $event.target.value; validatePlatformUrl(editingBlock) }"
                                                 @blur="processUrl(editingBlock, true); validatePlatformUrl(editingBlock)"
                                                 @input.debounce.1000ms="fetchUrlTitle(editingBlock)"
@@ -786,7 +807,7 @@
                                                         <div class="text-sm font-medium truncate" x-text="editingBlock?.title || 'Untitled'"></div>
                                                         <div class="text-xs text-slate-500 truncate" x-text="editingBlock?.url"></div>
                                                     </div>
-                                                    <button @click="editingBlock.url = ''; editingBlock.title = '';" class="p-1 hover:bg-blue-100 dark:hover:bg-blue-800 rounded text-blue-600 dark:text-blue-400">
+                                                    <button aria-label="Clear selected link" @click="editingBlock.url = ''; editingBlock.title = '';" class="p-1 hover:bg-blue-100 dark:hover:bg-blue-800 rounded text-blue-600 dark:text-blue-400">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                                         </svg>
@@ -799,7 +820,7 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                                                     </svg>
                                                 </div>
-                                                <input type="text" 
+                                                <input aria-label="Search your links" type="text" 
                                                     x-model="librarySearch" 
                                                     @input.debounce.300ms="librarySearch ? fetchLibraryLinks() : (libraryLinks = [])"
                                                     @focus="librarySearch ? fetchLibraryLinks() : null"
@@ -917,13 +938,13 @@
                                             <div class="space-y-3">
                                                 <div class="grid grid-cols-2 gap-3">
                                                     <div>
-                                                        <label class="form-label text-xs">Background</label>
+                                                        <label for="bfindex-3" class="form-label text-xs">Background</label>
                                                         <div class="flex items-center gap-2">
-                                                            <input type="color" x-model="editingBlock.btn_bg_color" 
+                                                            <input id="bfindex-3" type="color" x-model="editingBlock.btn_bg_color" 
                                                                    :value="editingBlock.btn_bg_color || getEffectiveButtonBg()"
                                                                    class="w-10 h-10 rounded cursor-pointer border-0 bg-transparent"
                                                                    @input="markBlockDirty(editingBlock.id)">
-                                                            <input type="text" x-model="editingBlock.btn_bg_color" 
+                                                            <input aria-label="Button background hex value" type="text" x-model="editingBlock.btn_bg_color" 
                                                                    class="form-input text-xs font-mono flex-1" 
                                                                    :placeholder="getEffectiveButtonBg()"
                                                                    @change="markBlockDirty(editingBlock.id)">
@@ -940,10 +961,10 @@
                                                             </button>
                                                         </div>
                                                         <div class="flex items-center gap-2">
-                                                            <input type="color" x-model="editingBlock.btn_text_color" 
+                                                            <input aria-label="Button text color" type="color" x-model="editingBlock.btn_text_color" 
                                                                    :value="editingBlock.btn_text_color || getEffectiveButtonText()"
                                                                    class="w-10 h-10 rounded cursor-pointer border-0 bg-transparent">
-                                                            <input type="text" x-model="editingBlock.btn_text_color" 
+                                                            <input aria-label="Button text color hex value" type="text" x-model="editingBlock.btn_text_color" 
                                                                    class="form-input text-xs font-mono flex-1" 
                                                                    :placeholder="getEffectiveButtonText()">
                                                         </div>
@@ -951,19 +972,19 @@
                                                 </div>
                                                 <div class="grid grid-cols-2 gap-3">
                                                     <div>
-                                                        <label class="form-label text-xs">Border Color</label>
+                                                        <label for="bfindex-4" class="form-label text-xs">Border Color</label>
                                                         <div class="flex items-center gap-2">
-                                                            <input type="color" x-model="editingBlock.btn_border_color" 
+                                                            <input id="bfindex-4" type="color" x-model="editingBlock.btn_border_color" 
                                                                    :value="editingBlock.btn_border_color || '#ffffff'"
                                                                    class="w-10 h-10 rounded cursor-pointer border-0 bg-transparent">
-                                                            <input type="text" x-model="editingBlock.btn_border_color" 
+                                                            <input aria-label="Button border color hex value" type="text" x-model="editingBlock.btn_border_color" 
                                                                    class="form-input text-xs font-mono flex-1" placeholder="None">
                                                         </div>
                                                     </div>
                                                     <div>
                                                         <label class="form-label text-xs">Icon Style</label>
                                                         <label class="toggle-switch mt-2">
-                                                            <input type="checkbox" x-model="editingBlock.btn_icon_invert">
+                                                            <input type="checkbox" x-model="editingBlock.btn_icon_invert" aria-label="White icon">
                                                             <span class="toggle-slider"></span>
                                                         </label>
                                                         <span class="text-xs editor-text-muted ml-2">White icon</span>
@@ -996,7 +1017,7 @@
                                         Rich Editor
                                     </button>
                                 </label>
-                                <textarea :value="editingBlock?.content ?? ''" @input="editingBlock && (editingBlock.content = $event.target.value)" class="form-input form-textarea" rows="3" placeholder="Enter content..."></textarea>
+                                <textarea aria-label="Text content" :value="editingBlock?.content ?? ''" @input="editingBlock && (editingBlock.content = $event.target.value)" class="form-input form-textarea" rows="3" placeholder="Enter content..."></textarea>
                             </div>
                         </template>
                         <template x-if="editingBlock?.type === 'image'">
@@ -1005,7 +1026,7 @@
                                     <label class="form-label">Current Image</label>
                                     <div class="relative w-full h-40 rounded-lg overflow-hidden" style="background: var(--editor-input-bg);">
                                         <img :src="editingBlock?.content" class="w-full h-full object-contain">
-                                        <button type="button" @click="editingBlock.content = ''; editingBlock.thumbnail_url = ''" 
+                                        <button aria-label="Remove image" type="button" @click="editingBlock.content = ''; editingBlock.thumbnail_url = ''" 
                                                 class="absolute top-2 right-2 p-1.5 bg-red-600 hover:bg-red-700 rounded-full text-white">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -1014,14 +1035,14 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Image Source</label>
+                                    <label for="bfindex-5" class="form-label">Image Source</label>
                                     <div class="space-y-3">
                                         <div class="flex gap-2">
-                                            <input type="url" :value="editingBlock?.content ?? ''" @input="editingBlock && (editingBlock.content = editingBlock.thumbnail_url = $event.target.value)" class="form-input flex-1" placeholder="https://example.com/image.jpg">
+                                            <input id="bfindex-5" type="url" :value="editingBlock?.content ?? ''" @input="editingBlock && (editingBlock.content = editingBlock.thumbnail_url = $event.target.value)" class="form-input flex-1" placeholder="https://example.com/image.jpg">
                                         </div>
                                         <div class="text-center editor-text-muted text-sm">or</div>
                                         <label class="block p-4 border-2 border-dashed [border-color:var(--editor-border)] hover:border-indigo-500 rounded-lg cursor-pointer transition-colors text-center">
-                                            <input type="file" class="hidden" accept="image/*" @change="uploadBlockImage($event, editingBlock)">
+                                            <input aria-label="Upload image" type="file" class="hidden" accept="image/*" @change="uploadBlockImage($event, editingBlock)">
                                             <svg class="w-8 h-8 mx-auto editor-text-muted mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                             </svg>
@@ -1030,8 +1051,8 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Link URL (optional)</label>
-                                    <input type="url" x-model="editingBlock.url" class="form-input" placeholder="https://example.com">
+                                    <label for="bfindex-6" class="form-label">Link URL (optional)</label>
+                                    <input id="bfindex-6" type="url" x-model="editingBlock.url" class="form-input" placeholder="https://example.com">
                                     <p class="text-xs editor-text-muted mt-1">Where should this image link to when clicked?</p>
                                 </div>
                             </div>
@@ -1039,55 +1060,55 @@
                         <template x-if="editingBlock?.type === 'youtube'">
                             <div class="space-y-4">
                                 <div class="form-group">
-                                    <label class="form-label">YouTube Video URL</label>
-                                    <input type="url" x-model="editingBlock.embed_url" class="form-input" placeholder="https://youtube.com/watch?v=...">
+                                    <label for="bfindex-7" class="form-label">YouTube Video URL</label>
+                                    <input id="bfindex-7" type="url" x-model="editingBlock.embed_url" class="form-input" placeholder="https://youtube.com/watch?v=...">
                                     <p class="text-xs editor-text-muted mt-1">Paste the full YouTube video URL</p>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Title (Optional)</label>
-                                    <input type="text" x-model="editingBlock.title" class="form-input" placeholder="My Video">
+                                    <label for="bfindex-8" class="form-label">Title (Optional)</label>
+                                    <input id="bfindex-8" type="text" x-model="editingBlock.title" class="form-input" placeholder="My Video">
                                 </div>
                             </div>
                         </template>
                         <template x-if="editingBlock?.type === 'spotify'">
                             <div class="space-y-4">
                                 <div class="form-group">
-                                    <label class="form-label">Spotify URL</label>
-                                    <input type="url" x-model="editingBlock.embed_url" class="form-input" placeholder="https://open.spotify.com/track/...">
+                                    <label for="bfindex-9" class="form-label">Spotify URL</label>
+                                    <input id="bfindex-9" type="url" x-model="editingBlock.embed_url" class="form-input" placeholder="https://open.spotify.com/track/...">
                                     <p class="text-xs editor-text-muted mt-1">Supports tracks, albums, playlists, and artists</p>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Title (Optional)</label>
-                                    <input type="text" x-model="editingBlock.title" class="form-input" placeholder="My Music">
+                                    <label for="bfindex-10" class="form-label">Title (Optional)</label>
+                                    <input id="bfindex-10" type="text" x-model="editingBlock.title" class="form-input" placeholder="My Music">
                                 </div>
                             </div>
                         </template>
                         <template x-if="editingBlock?.type === 'soundcloud'">
                             <div class="space-y-4">
                                 <div class="form-group">
-                                    <label class="form-label">SoundCloud URL</label>
-                                    <input type="url" x-model="editingBlock.embed_url" class="form-input" placeholder="https://soundcloud.com/...">
+                                    <label for="bfindex-11" class="form-label">SoundCloud URL</label>
+                                    <input id="bfindex-11" type="url" x-model="editingBlock.embed_url" class="form-input" placeholder="https://soundcloud.com/...">
                                     <p class="text-xs editor-text-muted mt-1">Paste any SoundCloud track or profile URL</p>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Title (Optional)</label>
-                                    <input type="text" x-model="editingBlock.title" class="form-input" placeholder="My Track">
+                                    <label for="bfindex-12" class="form-label">Title (Optional)</label>
+                                    <input id="bfindex-12" type="text" x-model="editingBlock.title" class="form-input" placeholder="My Track">
                                 </div>
                             </div>
                         </template>
                         <template x-if="editingBlock?.type === 'code'">
                             <div class="space-y-4">
                                 <div class="form-group">
-                                    <label class="form-label">Block Title</label>
-                                    <input type="text" x-model="editingBlock.title" class="form-input" placeholder="Code Example">
+                                    <label for="bfindex-13" class="form-label">Block Title</label>
+                                    <input id="bfindex-13" type="text" x-model="editingBlock.title" class="form-input" placeholder="Code Example">
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Code</label>
-                                    <textarea :value="editingBlock?.html_content ?? ''" @input="editingBlock && (editingBlock.html_content = $event.target.value)" class="form-input form-textarea font-mono text-sm" rows="8" placeholder="// Your code here..." style="min-height: 150px;"></textarea>
+                                    <label for="bfindex-14" class="form-label">Code</label>
+                                    <textarea id="bfindex-14" :value="editingBlock?.html_content ?? ''" @input="editingBlock && (editingBlock.html_content = $event.target.value)" class="form-input form-textarea font-mono text-sm" rows="8" placeholder="// Your code here..." style="min-height: 150px;"></textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Language</label>
-                                    <select :value="editingBlock?.content ?? ''" @change="editingBlock && (editingBlock.content = $event.target.value)" class="form-input">
+                                    <label for="bfindex-15" class="form-label">Language</label>
+                                    <select id="bfindex-15" :value="editingBlock?.content ?? ''" @change="editingBlock && (editingBlock.content = $event.target.value)" class="form-input">
                                         <option value="javascript">JavaScript</option>
                                         <option value="python">Python</option>
                                         <option value="php">PHP</option>
@@ -1102,16 +1123,16 @@
                         <template x-if="editingBlock?.type === 'map'">
                             <div class="space-y-4">
                                 <div class="form-group">
-                                    <label class="form-label">Location Title</label>
-                                    <input type="text" x-model="editingBlock.title" class="form-input" placeholder="Our Office">
+                                    <label for="bfindex-16" class="form-label">Location Title</label>
+                                    <input id="bfindex-16" type="text" x-model="editingBlock.title" class="form-input" placeholder="Our Office">
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Address</label>
-                                    <textarea x-model="editingBlock.map_address" class="form-input form-textarea" rows="2" placeholder="Jl. Example No. 123, Jakarta, Indonesia"></textarea>
+                                    <label for="bfindex-17" class="form-label">Address</label>
+                                    <textarea id="bfindex-17" x-model="editingBlock.map_address" class="form-input form-textarea" rows="2" placeholder="Jl. Example No. 123, Jakarta, Indonesia"></textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Zoom Level</label>
-                                    <input type="range" x-model="editingBlock.map_zoom" min="10" max="18" class="w-full">
+                                    <label for="bfindex-18" class="form-label">Zoom Level</label>
+                                    <input id="bfindex-18" type="range" x-model="editingBlock.map_zoom" min="10" max="18" class="w-full">
                                     <p class="text-sm editor-text-muted text-center" x-text="'Zoom: ' + (editingBlock?.map_zoom || 15)"></p>
                                 </div>
                             </div>
@@ -1119,52 +1140,52 @@
                         <template x-if="editingBlock?.type === 'countdown'">
                             <div class="space-y-4">
                                 <div class="form-group">
-                                    <label class="form-label">Countdown Label</label>
-                                    <input type="text" x-model="editingBlock.countdown_label" class="form-input" placeholder="Event starts in...">
+                                    <label for="bfindex-19" class="form-label">Countdown Label</label>
+                                    <input id="bfindex-19" type="text" x-model="editingBlock.countdown_label" class="form-input" placeholder="Event starts in...">
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Target Date & Time</label>
-                                    <input type="datetime-local" x-model="editingBlock.countdown_date" class="form-input">
+                                    <label for="bfindex-20" class="form-label">Target Date & Time</label>
+                                    <input id="bfindex-20" type="datetime-local" x-model="editingBlock.countdown_date" class="form-input">
                                 </div>
                             </div>
                         </template>
                         <template x-if="editingBlock?.type === 'header'">
                             <div class="space-y-4">
                                 <div class="form-group">
-                                    <label class="form-label">Header Text</label>
-                                    <input type="text" x-model="editingBlock.title" class="form-input" placeholder="Section Header">
+                                    <label for="bfindex-21" class="form-label">Header Text</label>
+                                    <input id="bfindex-21" type="text" x-model="editingBlock.title" class="form-input" placeholder="Section Header">
                                 </div>
                             </div>
                         </template>
                         <template x-if="editingBlock?.type === 'vcard'">
                             <div class="space-y-4">
                                 <div class="form-group">
-                                    <label class="form-label">Full Name</label>
-                                    <input type="text" x-model="editingBlock.vcard_name" class="form-input" placeholder="John Doe">
+                                    <label for="bfindex-22" class="form-label">Full Name</label>
+                                    <input id="bfindex-22" type="text" x-model="editingBlock.vcard_name" class="form-input" placeholder="John Doe">
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Phone Number</label>
-                                    <input type="tel" x-model="editingBlock.vcard_phone" class="form-input" placeholder="+1 234 567 8900">
+                                    <label for="bfindex-23" class="form-label">Phone Number</label>
+                                    <input id="bfindex-23" type="tel" x-model="editingBlock.vcard_phone" class="form-input" placeholder="+1 234 567 8900">
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" x-model="editingBlock.vcard_email" class="form-input" placeholder="john@example.com">
+                                    <label for="bfindex-24" class="form-label">Email</label>
+                                    <input id="bfindex-24" type="email" x-model="editingBlock.vcard_email" class="form-input" placeholder="john@example.com">
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Company (Optional)</label>
-                                    <input type="text" x-model="editingBlock.vcard_company" class="form-input" placeholder="Company Name">
+                                    <label for="bfindex-25" class="form-label">Company (Optional)</label>
+                                    <input id="bfindex-25" type="text" x-model="editingBlock.vcard_company" class="form-input" placeholder="Company Name">
                                 </div>
                             </div>
                         </template>
                         <template x-if="editingBlock?.type === 'html'">
                             <div class="space-y-4">
                                 <div class="form-group">
-                                    <label class="form-label">Block Title (Optional)</label>
-                                    <input type="text" x-model="editingBlock.title" class="form-input" placeholder="Custom HTML Block">
+                                    <label for="bfindex-26" class="form-label">Block Title (Optional)</label>
+                                    <input id="bfindex-26" type="text" x-model="editingBlock.title" class="form-input" placeholder="Custom HTML Block">
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">HTML Code</label>
-                                    <textarea :value="editingBlock?.html_content ?? ''" @input="editingBlock && (editingBlock.html_content = $event.target.value)" class="form-input form-textarea font-mono text-sm" rows="8" placeholder="<div>Your HTML here...</div>" style="min-height: 150px;"></textarea>
+                                    <label for="bfindex-27" class="form-label">HTML Code</label>
+                                    <textarea id="bfindex-27" :value="editingBlock?.html_content ?? ''" @input="editingBlock && (editingBlock.html_content = $event.target.value)" class="form-input form-textarea font-mono text-sm" rows="8" placeholder="<div>Your HTML here...</div>" style="min-height: 150px;"></textarea>
                                     <p class="text-xs editor-text-muted mt-1">⚠️ Be careful with custom HTML - ensure it's safe and valid</p>
                                 </div>
                             </div>
@@ -1180,8 +1201,8 @@
                                 </div>
                                 <div class="grid grid-cols-2 gap-3">
                                     <div>
-                                        <label class="form-label text-xs mb-1">Entrance Animation</label>
-                                        <select x-model="editingBlock.entrance_animation" class="form-input text-xs">
+                                        <label for="bfindex-28" class="form-label text-xs mb-1">Entrance Animation</label>
+                                        <select id="bfindex-28" x-model="editingBlock.entrance_animation" class="form-input text-xs">
                                             <option value="none">None</option>
                                             <option value="fade">Fade In</option>
                                             <option value="slide-up">Slide Up</option>
@@ -1194,8 +1215,8 @@
                                         <p class="text-[10px] editor-text-muted mt-1">Animation when link first appears</p>
                                     </div>
                                     <div>
-                                        <label class="form-label text-xs mb-1">Attention Animation</label>
-                                        <select x-model="editingBlock.attention_animation" class="form-input text-xs">
+                                        <label for="bfindex-29" class="form-label text-xs mb-1">Attention Animation</label>
+                                        <select id="bfindex-29" x-model="editingBlock.attention_animation" class="form-input text-xs">
                                             <option value="none">None</option>
                                             <option value="pulse">Pulse</option>
                                             <option value="bounce">Bounce</option>
@@ -1215,7 +1236,7 @@
                                 <div class="text-xs editor-text-muted">Show this block on your page</div>
                             </div>
                             <label class="toggle-switch">
-                                <input type="checkbox" x-model="editingBlock.is_active">
+                                <input type="checkbox" x-model="editingBlock.is_active" aria-label="Show this block on your page">
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
@@ -1233,7 +1254,7 @@
     </div>
     </template>
     <div x-show="showDiscardModal" x-cloak class="modal-overlay" style="z-index: 9999;">
-        <div class="modal-content" style="max-width: 400px;" @click.stop>
+        <div class="modal-content" x-modal="showDiscardModal" data-modal-close="cancelDiscard()" style="max-width: 400px;" @click.stop>
             <div class="p-6 text-center">
                 <div class="w-16 h-16 mx-auto mb-4 bg-amber-500/20 rounded-full flex items-center justify-center">
                     <svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1254,10 +1275,10 @@
         </div>
     </div>
     <div x-show="showAddBlockModal" x-cloak class="modal-overlay" @click.self="showAddBlockModal = false">
-        <div class="modal-content" style="max-width: 600px;" @click.stop>
+        <div class="modal-content" x-modal="showAddBlockModal" style="max-width: 600px;" @click.stop>
             <div class="modal-header">
                 <h3 class="modal-title">Add Block</h3>
-                <button @click="showAddBlockModal = false" class="modal-close">
+                <button @click="showAddBlockModal = false" class="modal-close" aria-label="Close">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -1269,10 +1290,10 @@
         </div>
     </div>
     <div x-show="showLinkLibraryModal" x-cloak class="modal-overlay" @click.self="showLinkLibraryModal = false" style="z-index: 10000;">
-        <div class="modal-content" style="max-width: 500px;" @click.stop>
+        <div class="modal-content" x-modal="showLinkLibraryModal" style="max-width: 500px;" @click.stop>
             <div class="modal-header">
                 <h3 class="modal-title">Link Library</h3>
-                <button @click="showLinkLibraryModal = false" class="modal-close">
+                <button @click="showLinkLibraryModal = false" class="modal-close" aria-label="Close">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -1280,7 +1301,7 @@
             </div>
             <div class="modal-body">
                 <div class="mb-4">
-                    <input type="text" x-model="librarySearch" @input.debounce.300ms="fetchLibraryLinks()" placeholder="Search your links..." class="form-input w-full">
+                    <input aria-label="Search your links" type="text" x-model="librarySearch" @input.debounce.300ms="fetchLibraryLinks()" placeholder="Search your links..." class="form-input w-full">
                 </div>
                 <div class="space-y-2 max-h-[300px] overflow-y-auto custom-scrollbar">
                     <template x-if="libraryLoading">
@@ -1313,10 +1334,10 @@
         </div>
     </div>
     <div x-show="showSocialPicker" x-cloak class="modal-overlay" @click.self="showSocialPicker = false">
-        <div class="modal-content" style="max-width: 480px;" @click.stop>
+        <div class="modal-content" x-modal="showSocialPicker" style="max-width: 480px;" @click.stop>
             <div class="modal-header">
                 <h3 class="modal-title">Add Social Icon</h3>
-                <button @click="showSocialPicker = false" class="modal-close">
+                <button @click="showSocialPicker = false" class="modal-close" aria-label="Close">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -1324,7 +1345,7 @@
             </div>
             <div class="modal-body p-0">
                 <div class="p-4 border-b [border-color:var(--editor-border)]">
-                    <input type="text" x-model="socialSearch" placeholder="Search platforms..." 
+                    <input aria-label="Search platforms" type="text" x-model="socialSearch" placeholder="Search platforms..." 
                            class="form-input" autocomplete="off" data-lpignore="true" data-1p-ignore="true">
                 </div>
                 <div class="max-h-80 overflow-y-auto">
@@ -1353,7 +1374,7 @@
     <!-- Social Link Editor Modal -->
     <div x-show="showSocialEditor" x-cloak class="modal-overlay" @click.self="cancelSocialEdit()">
         <template x-if="editingSocial">
-            <div class="modal-content" style="max-width: 420px;" @click.stop>
+            <div class="modal-content" x-modal="showSocialEditor" data-modal-close="cancelSocialEdit()" style="max-width: 420px;" @click.stop>
                 <div class="modal-header">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl flex items-center justify-center" 
@@ -1364,7 +1385,7 @@
                         </div>
                         <h3 class="modal-title" x-text="'Add ' + (platforms[editingSocial.platform]?.name || 'Social') + ' Link'"></h3>
                     </div>
-                    <button @click="cancelSocialEdit()" class="modal-close">
+                    <button @click="cancelSocialEdit()" class="modal-close" aria-label="Close">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                         </svg>
@@ -1372,8 +1393,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label class="form-label" x-text="platforms[editingSocial.platform]?.name + ' Username or URL'"></label>
-                        <input type="text" 
+                        <label for="bfindex-30" class="form-label" x-text="platforms[editingSocial.platform]?.name + ' Username or URL'"></label>
+                        <input id="bfindex-30" type="text" 
                                x-model="editingSocial.value"
                                :placeholder="platforms[editingSocial.platform]?.placeholder || 'Enter username or URL'"
                                class="form-input"
@@ -1397,10 +1418,10 @@
         </template>
     </div>
     <div x-show="showTextEditor" x-cloak class="modal-overlay" @click.self="showTextEditor = false">
-        <div class="modal-content" style="max-width: 600px;" @click.stop>
+        <div class="modal-content" x-modal="showTextEditor" style="max-width: 600px;" @click.stop>
             <div class="modal-header">
                 <h3 class="modal-title">Edit Text Block</h3>
-                <button @click="showTextEditor = false" class="modal-close">
+                <button @click="showTextEditor = false" class="modal-close" aria-label="Close">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -1408,26 +1429,26 @@
             </div>
             <div class="modal-body">
                 <div class="flex flex-wrap gap-1 p-2 rounded-t-lg" style="background: var(--editor-card-bg);">
-                    <button @click="formatText('bold')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Bold">
+                    <button aria-label="Bold" @click="formatText('bold')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Bold">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z"/>
                         </svg>
                     </button>
-                    <button @click="formatText('italic')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Italic">
+                    <button aria-label="Italic" @click="formatText('italic')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Italic">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <line x1="19" y1="4" x2="10" y2="4" stroke-width="2"/>
                             <line x1="14" y1="20" x2="5" y2="20" stroke-width="2"/>
                             <line x1="15" y1="4" x2="9" y2="20" stroke-width="2"/>
                         </svg>
                     </button>
-                    <button @click="formatText('underline')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Underline">
+                    <button aria-label="Underline" @click="formatText('underline')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Underline">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v7a5 5 0 0010 0V4"/>
                             <line x1="4" y1="21" x2="20" y2="21" stroke-width="2"/>
                         </svg>
                     </button>
-                    <button @click="formatText('strikeThrough')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Strikethrough">
+                    <button aria-label="Strikethrough" @click="formatText('strikeThrough')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Strikethrough">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.5 9.5c0-2.5-2-4.5-4.5-4.5s-4.5 2-4.5 4.5"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.5 14.5c0 2.5 2 4.5 4.5 4.5s4.5-2 4.5-4.5"/>
@@ -1435,21 +1456,21 @@
                         </svg>
                     </button>
                     <div class="w-px h-6 mx-1 self-center" style="background: var(--editor-border);"></div>
-                    <button @click="formatText('justifyLeft')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Align Left">
+                    <button aria-label="Align Left" @click="formatText('justifyLeft')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Align Left">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <line x1="3" y1="6" x2="21" y2="6" stroke-width="2"/>
                             <line x1="3" y1="12" x2="15" y2="12" stroke-width="2"/>
                             <line x1="3" y1="18" x2="18" y2="18" stroke-width="2"/>
                         </svg>
                     </button>
-                    <button @click="formatText('justifyCenter')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Align Center">
+                    <button aria-label="Align Center" @click="formatText('justifyCenter')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Align Center">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <line x1="3" y1="6" x2="21" y2="6" stroke-width="2"/>
                             <line x1="6" y1="12" x2="18" y2="12" stroke-width="2"/>
                             <line x1="4" y1="18" x2="20" y2="18" stroke-width="2"/>
                         </svg>
                     </button>
-                    <button @click="formatText('justifyRight')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Align Right">
+                    <button aria-label="Align Right" @click="formatText('justifyRight')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Align Right">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <line x1="3" y1="6" x2="21" y2="6" stroke-width="2"/>
                             <line x1="9" y1="12" x2="21" y2="12" stroke-width="2"/>
@@ -1471,10 +1492,10 @@
         </div>
     </div>
     <div x-show="showImageUploader" x-cloak class="modal-overlay" @click.self="showImageUploader = false">
-        <div class="modal-content" style="max-width: 500px;" @click.stop>
+        <div class="modal-content" x-modal="showImageUploader" style="max-width: 500px;" @click.stop>
             <div class="modal-header">
                 <h3 class="modal-title">Add Image</h3>
-                <button @click="showImageUploader = false" class="modal-close">
+                <button @click="showImageUploader = false" class="modal-close" aria-label="Close">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -1495,7 +1516,7 @@
                 </div>
                 <div x-show="imageUploadTab === 'upload'">
                     <div class="border-2 border-dashed [border-color:var(--editor-border)] rounded-xl p-8 text-center">
-                        <input type="file" accept="image/*" class="hidden" x-ref="imageBlockInput" @change="uploadImageBlock($event)">
+                        <input aria-label="Upload image" type="file" accept="image/*" class="hidden" x-ref="imageBlockInput" @change="uploadImageBlock($event)">
                         <svg class="w-12 h-12 mx-auto editor-text-muted mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
@@ -1506,12 +1527,12 @@
                 <!-- URL Tab -->
                 <div x-show="imageUploadTab === 'url'">
                     <div class="form-group">
-                        <label class="form-label">Image URL</label>
-                        <input type="url" x-model="imageBlockUrl" class="form-input" placeholder="https://example.com/image.jpg">
+                        <label for="bfindex-31" class="form-label">Image URL</label>
+                        <input id="bfindex-31" type="url" x-model="imageBlockUrl" class="form-input" placeholder="https://example.com/image.jpg">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Alt Text (optional)</label>
-                        <input type="text" x-model="imageBlockAlt" class="form-input" placeholder="Image description">
+                        <label for="bfindex-32" class="form-label">Alt Text (optional)</label>
+                        <input id="bfindex-32" type="text" x-model="imageBlockAlt" class="form-input" placeholder="Image description">
                     </div>
                 </div>
             </div>
@@ -1538,6 +1559,7 @@ window.bioEditorV2 = function() {
         hasUnsavedChanges: false,
         originalDataHash: '',
         showDiscardModal: false,
+        announcement: '',
         pendingNavigation: null,
         editingBlock: null,
         showAddBlockModal: false,
@@ -1754,6 +1776,42 @@ window.bioEditorV2 = function() {
         cancelDiscard() {
             this.showDiscardModal = false;
             this.pendingNavigation = null;
+        },
+        announce(message) {
+            // Clear first so repeating the same message is still read out.
+            this.announcement = '';
+            this.$nextTick(() => { this.announcement = message; });
+        },
+        // Keyboard alternative to drag and drop (arrow keys on the drag handle).
+        moveBlock(index, step) {
+            const to = index + step;
+            if (to < 0 || to >= this.blocks.length) return;
+            const [moved] = this.blocks.splice(index, 1);
+            this.blocks.splice(to, 0, moved);
+            this.blocks.forEach((b, i) => b.order = i);
+            this.debouncedSaveOrder();
+            this.announce(`${this.getBlockDisplayTitle(moved)} moved to position ${to + 1} of ${this.blocks.length}`);
+            this.$nextTick(() => document.querySelectorAll('#blocks-list .block-drag-handle')[to]?.focus());
+        },
+        moveSocial(index, step) {
+            const list = this.bioPage.social_links || [];
+            const to = index + step;
+            if (to < 0 || to >= list.length) return;
+            const [moved] = list.splice(index, 1);
+            list.splice(to, 0, moved);
+            this.announce(`${this.platforms[moved.platform]?.name || moved.platform} moved to position ${to + 1} of ${list.length}`);
+            this.$nextTick(() => document.querySelectorAll('#socials-list .social-drag-handle')[to]?.focus());
+        },
+        cycleTab(step, absolute = false) {
+            const tabs = ['profile', 'links', 'socials', 'appearance', 'settings'];
+            // Arrow keys move from the focused tab, which may differ from the open one.
+            const focused = document.activeElement?.id?.replace('editor-tab-', '');
+            const current = tabs.indexOf(tabs.includes(focused) ? focused : this.activeTab);
+            const next = absolute
+                ? (step < 0 ? tabs.length - 1 : 0)
+                : (current + step + tabs.length) % tabs.length;
+            this.activeTab = tabs[next];
+            this.$nextTick(() => document.getElementById('editor-tab-' + tabs[next])?.focus());
         },
         initSortable() {
             // Tabs use x-show, so the list containers exist for the editor's lifetime:
@@ -3828,7 +3886,8 @@ window.bioEditorV2 = function() {
         },
         showNotification(message, type = 'info') {
             const notification = document.createElement('div');
-            notification.className = `fixed top-4 right-4 z-[200] px-6 py-3 rounded-lg shadow-lg text-white ${type === 'success' ? 'bg-green-600' : type === 'error' ? 'bg-red-600' : 'bg-blue-600'}`;
+            notification.className = `fixed top-4 right-4 z-[200] px-6 py-3 rounded-lg shadow-lg text-white ${type === 'success' ? 'bg-green-700' : type === 'error' ? 'bg-red-700' : 'bg-blue-700'}`;
+            notification.setAttribute('role', type === 'error' ? 'alert' : 'status');
             notification.textContent = message;
             document.body.appendChild(notification);
             setTimeout(() => notification.remove(), 3000);

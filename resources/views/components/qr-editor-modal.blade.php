@@ -16,7 +16,7 @@
                 <h4 class="text-lg font-semibold text-slate-900 dark:text-white">QR Code Design</h4>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Customize your QR code appearance</p>
             </div>
-            <button @click="showQrEditor = false" class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-white transition-colors">
+            <button aria-label="Close" @click="showQrEditor = false" class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-white transition-colors">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -48,7 +48,7 @@
                 </label>
                 <div class="flex items-center gap-2 mb-3">
                     <template x-for="color in qrColorPresets" :key="color">
-                        <button
+                        <button :aria-label="'QR color ' + color"
                             type="button"
                             @click="qrSettings.fgColor = color"
                             :class="qrSettings.fgColor === color ? 'ring-2 ring-offset-2 ring-blue-500 dark:ring-offset-slate-800' : ''"
@@ -56,7 +56,7 @@
                             :style="'background-color: ' + color"
                         ></button>
                     </template>
-                    <button
+                    <button aria-label="Custom QR color"
                         type="button"
                         @click="showColorPicker = !showColorPicker"
                         class="w-10 h-10 rounded-lg border-2 border-slate-300 dark:border-slate-600 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"

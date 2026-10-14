@@ -364,7 +364,7 @@
                                     <p class="text-xs text-slate-500 dark:text-slate-400">
                                         {{ $click->bioLink->bioPage->title ?? 'Unknown' }}
                                     </p>
-                                    <div class="mt-1 flex items-center justify-between text-xs text-slate-400 dark:text-slate-500">
+                                    <div class="mt-1 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                                         <span>{{ $click->created_at->diffForHumans() }}</span>
                                         <div class="flex items-center gap-2">
                                             @if($click->country)

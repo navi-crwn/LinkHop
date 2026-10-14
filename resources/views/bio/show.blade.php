@@ -479,6 +479,18 @@
         .attention-bounce { animation: attentionBounce 1s ease-in-out infinite; }
         .bg-animation-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
         .bg-particle { position: absolute; pointer-events: none; }
+        /* Visitors who asked for less motion get the final state without animating. */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                animation-delay: 0s !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            #bg-animation { display: none !important; }
+        }
+
         @keyframes fall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0.3; } }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
         .text-block-expandable .text-block-text {
@@ -658,7 +670,7 @@
 @endphp
 <body class="bio-container {{ $hoverEffect && $hoverEffect !== 'none' ? 'hover-' . $hoverEffect : '' }}" data-theme="{{ $bioPage->theme }}" data-bg-animation="{{ $bgAnimation }}">
     <div class="bg-animation-container" id="bg-animation"></div>
-    <button onclick="document.getElementById('share-modal').classList.remove('hidden')" 
+    <button aria-label="Share this page" onclick="document.getElementById('share-modal').classList.remove('hidden')" 
             class="fixed top-4 right-4 z-40 w-10 h-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center hover:bg-white dark:hover:bg-slate-700 transition-all">
         <svg class="w-5 h-5 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
@@ -669,7 +681,7 @@
         <div class="share-modal-content relative rounded-2xl p-4 max-w-xs w-full shadow-2xl" style="background: {{ $isDarkTheme ? '#1e293b' : '#ffffff' }}; color: {{ $isDarkTheme ? '#f1f5f9' : '#1e293b' }}; max-height: 90vh; overflow-y: auto;">
             <div class="flex items-center justify-between mb-3">
                 <h3 class="text-base font-semibold" style="color: {{ $isDarkTheme ? '#f1f5f9' : '#1e293b' }};">Share this Page</h3>
-                <button onclick="document.getElementById('share-modal').classList.add('hidden')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/10 transition-colors" style="color: {{ $isDarkTheme ? '#94a3b8' : '#64748b' }};">
+                <button aria-label="Close" onclick="document.getElementById('share-modal').classList.add('hidden')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/10 transition-colors" style="color: {{ $isDarkTheme ? '#94a3b8' : '#64748b' }};">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -1318,6 +1330,7 @@ END:VCARD`;
             const theme = document.body.dataset.theme;
             const container = document.getElementById('bg-animation');
             if (!container) return;
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
             if ((theme === 'neon' || theme === 'matrix') && bgAnim === 'matrix') {
                 initMatrixEffect(container);
                 return; // Matrix is the only animation
@@ -1504,7 +1517,9 @@ END:VCARD`;
                 }
             }
             const particles = [];
-            for (let i = 0; i < c.count; i++) {
+            // Fewer particles on small screens: a phone gets about a third of the desktop count.
+            const density = Math.min(1, Math.max(0.35, (window.innerWidth * window.innerHeight) / (1440 * 900)));
+            for (let i = 0; i < Math.round(c.count * density); i++) {
                 particles.push(new Particle());
             }
             let windowDroplets = [];

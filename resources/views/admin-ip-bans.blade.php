@@ -23,16 +23,16 @@
             <form method="POST" action="{{ route('admin.ip-bans.store') }}" class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 grid gap-4 md:grid-cols-2">
                 @csrf
                 <div>
-                    <label class="text-sm text-gray-600 dark:text-gray-300">IP Address</label>
-                    <input type="text" name="ip_address" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="217.15.164.195" required>
+                    <label for="fadmini-1" class="text-sm text-gray-600 dark:text-gray-300">IP Address</label>
+                    <input id="fadmini-1" type="text" name="ip_address" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="217.15.164.195" required>
                 </div>
                 <div>
-                    <label class="text-sm text-gray-600 dark:text-gray-300">Expires at (optional)</label>
-                    <input type="datetime-local" name="expires_at" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                    <label for="fadmini-2" class="text-sm text-gray-600 dark:text-gray-300">Expires at (optional)</label>
+                    <input id="fadmini-2" type="datetime-local" name="expires_at" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
                 </div>
                 <div class="md:col-span-2">
-                    <label class="text-sm text-gray-600 dark:text-gray-300">Reason</label>
-                    <input type="text" name="reason" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="Spam or abuse">
+                    <label for="fadmini-3" class="text-sm text-gray-600 dark:text-gray-300">Reason</label>
+                    <input id="fadmini-3" type="text" name="reason" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="Spam or abuse">
                 </div>
                 <div class="md:col-span-2 flex justify-end">
                     <button class="rounded-xl bg-rose-600 px-4 py-2 text-white">Add IP ban</button>

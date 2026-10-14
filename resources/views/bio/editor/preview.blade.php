@@ -127,7 +127,6 @@
             font-size: 12px;
             line-height: 1.4;
             color: var(--bio-color, inherit);
-            opacity: 0.9;
         }
         /* Social Icons */
         .social-icons {
@@ -601,7 +600,7 @@
             text-align: center;
             margin-top: 32px;
             padding-top: 16px;
-            opacity: 0.5;
+            opacity: 0.75;
             font-size: 12px;
         }
         .footer a {
@@ -820,6 +819,14 @@
             position: absolute;
             pointer-events: none;
         }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                animation-delay: 0s !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
         @keyframes fall {
             0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
             100% { transform: translateY(110vh) rotate(360deg); opacity: 0.3; }
@@ -862,7 +869,7 @@
         </div>
     </div>
     <!-- Share Button -->
-    <button x-show="isLoaded" class="share-button" @click="showShareTooltip = true" title="Share">
+    <button aria-label="Share" x-show="isLoaded" class="share-button" @click="showShareTooltip = true" title="Share">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
         </svg>
@@ -1645,6 +1652,7 @@ END:VCARD`;
                         return; // Matrix is the only animation for this selection
                     }
                     if (!type || type === 'none') return;
+                    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
                     // Detect light themes for visibility adjustments
                     const lightThemes = ['default', 'light', 'classic', 'minimal-light', 'pastel', 'cherry', 'ice', 'lavender', 'retro'];
                     const isLightTheme = lightThemes.includes(theme) || !theme;

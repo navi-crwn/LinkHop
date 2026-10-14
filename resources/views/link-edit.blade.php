@@ -105,27 +105,27 @@
                     </div>
                     <div class="grid gap-4 md:grid-cols-2">
                         <div>
-                            <label class="text-sm text-gray-600 dark:text-gray-300">Password (set a new value or leave blank)</label>
-                            <input type="password" name="password" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="******">
+                            <label for="flinked-1" class="text-sm text-gray-600 dark:text-gray-300">Password (set a new value or leave blank)</label>
+                            <input id="flinked-1" type="password" name="password" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="******">
                             <label class="mt-2 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
                                 <input type="checkbox" name="remove_password" value="1" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600">
                                 Remove existing password
                             </label>
                         </div>
                         <div>
-                            <label class="text-sm text-gray-600 dark:text-gray-300">Expires at</label>
-                            <input type="datetime-local" name="expires_at" value="{{ old('expires_at', optional($link->expires_at)->format('Y-m-d\TH:i')) }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                            <label for="flinked-2" class="text-sm text-gray-600 dark:text-gray-300">Expires at</label>
+                            <input id="flinked-2" type="datetime-local" name="expires_at" value="{{ old('expires_at', optional($link->expires_at)->format('Y-m-d\TH:i')) }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
                         </div>
                     </div>
                     <div>
-                        <label class="text-sm text-gray-600 dark:text-gray-300">Custom preview</label>
-                        <input type="text" name="custom_title" value="{{ old('custom_title', $link->custom_title) }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="Social preview title">
+                        <label for="flinked-3" class="text-sm text-gray-600 dark:text-gray-300">Custom preview</label>
+                        <input id="flinked-3" type="text" name="custom_title" value="{{ old('custom_title', $link->custom_title) }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="Social preview title">
                         <textarea name="custom_description" rows="2" class="mt-2 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="Description">{{ old('custom_description', $link->custom_description) }}</textarea>
                         <input type="url" name="custom_image_url" value="{{ old('custom_image_url', $link->custom_image_url) }}" class="mt-2 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="https://...jpg">
                     </div>
                     <div>
-                        <label class="text-sm text-gray-600 dark:text-gray-300">New note</label>
-                        <textarea name="comment" rows="2" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="Internal note"></textarea>
+                        <label for="flinked-4" class="text-sm text-gray-600 dark:text-gray-300">New note</label>
+                        <textarea id="flinked-4" name="comment" rows="2" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="Internal note"></textarea>
                     </div>
                     @if ($errors->any())
                         <div class="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">

@@ -2,7 +2,9 @@ import './bootstrap';
 import Alpine from 'alpinejs';
 import collapse from '@alpinejs/collapse';
 import Sortable from 'sortablejs';
+import modal from './modal';
 Alpine.plugin(collapse);
+Alpine.plugin(modal);
 window.Alpine = Alpine;
 window.Sortable = Sortable;
 // Use requestAnimationFrame to ensure inline scripts in blade templates have executed

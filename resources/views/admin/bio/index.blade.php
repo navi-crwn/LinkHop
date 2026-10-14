@@ -72,7 +72,7 @@
             <div class="border-b border-slate-200 p-6 dark:border-slate-700">
                 <form method="GET" class="flex flex-col gap-4 sm:flex-row">
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by slug, title, user..." class="flex-1 rounded-lg border border-slate-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-                    <select name="status" class="rounded-lg border border-slate-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                    <select name="status" aria-label="Filter by status" class="rounded-lg border border-slate-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
                         <option value="">All Status</option>
                         <option value="published" {{ request('status') === 'published' ? 'selected' : '' }}>Published</option>
                         <option value="draft" {{ request('status') === 'draft' ? 'selected' : '' }}>Draft</option>
@@ -144,7 +144,7 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <p class="text-sm text-slate-500 dark:text-slate-400">{{ $bioPage->created_at->format('M d, Y') }}</p>
-                                    <p class="text-xs text-slate-400 dark:text-slate-500">{{ $bioPage->created_at->diffForHumans() }}</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ $bioPage->created_at->diffForHumans() }}</p>
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
