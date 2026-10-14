@@ -6,6 +6,7 @@ use App\Models\BioPage;
 use App\Models\DomainBlacklist;
 use App\Models\Link;
 use App\Models\User;
+use Illuminate\Support\Facades\File;
 
 function bioPageFor(User $user, string $slug, array $attrs = []): BioPage
 {
@@ -185,4 +186,19 @@ test('an expired link can still be edited', function () {
         'expires_at' => now()->subDay()->format('Y-m-d\TH:i'),
     ])->assertSessionHasNoErrors();
     expect($link->fresh()->target_url)->toBe('https://example.com/new');
+});
+
+test('urls listed in the local threat feeds are rejected and scanned', function () {
+    $dir = storage_path('app/threat-feeds');
+    File::ensureDirectoryExists($dir);
+    file_put_contents("{$dir}/phishing.txt", "phish.example/login\nother.example/x");
+    file_put_contents("{$dir}/malware.txt", '');
+    $user = User::factory()->create();
+
+    $this->actingAs($user)->postJson('/api/bio/shorten', ['url' => 'https://www.phish.example/login/'])->assertUnprocessable();
+    // Same host, different URL: shared platforms are not blocked wholesale.
+    $this->actingAs($user)->postJson('/api/bio/shorten', ['url' => 'https://phish.example/about'])->assertCreated();
+
+    unlink("{$dir}/phishing.txt");
+    unlink("{$dir}/malware.txt");
 });

@@ -28,16 +28,12 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'indisposable', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'tos_accepted' => ['required', 'accepted'],
+        ], [
+            'email.indisposable' => 'Disposable email addresses are not allowed.',
         ]);
-        $domain = strtolower(substr(strrchr($request->email, '@') ?: '', 1));
-        if (in_array($domain, config('abuse.disposable_email_domains', []), true)) {
-            return back()
-                ->withErrors(['email' => 'Disposable email addresses are not allowed.'])
-                ->withInput($request->only('name', 'email'));
-        }
         if (! $this->turnstile->verify($request->input('cf-turnstile-response'), $request->ip())) {
             return back()
                 ->withErrors(['turnstile' => 'Security verification failed, please try again.'])

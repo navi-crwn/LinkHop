@@ -59,17 +59,12 @@ return [
 
     'risky_tlds' => ['zip', 'mov', 'top', 'xyz', 'click', 'icu', 'cfd', 'sbs', 'rest', 'lol', 'buzz', 'cyou', 'monster'],
 
-    'disposable_email_domains' => [
-        'mailinator.com', 'guerrillamail.com', '10minutemail.com', 'tempmail.com', 'temp-mail.org',
-        'yopmail.com', 'trashmail.com', 'sharklasers.com', 'getnada.com', 'dispostable.com',
-        'maildrop.cc', 'fakeinbox.com', 'mohmal.com', 'emailondeck.com', 'throwawaymail.com',
-        'tempmail.plus', 'mail.tm', 'grr.la', 'guerrillamailblock.com', 'spam4.me',
-    ],
-
     // Optional external reputation lookups (skipped when the key is empty).
     'providers' => [
         'safe_browsing_key' => env('SAFE_BROWSING_KEY'),
         'urlhaus_auth_key' => env('URLHAUS_AUTH_KEY'),
+        // DNS lookup against dbl.spamhaus.org; needs a non-public DNS resolver on the server.
+        'spamhaus_dbl' => (bool) env('SPAMHAUS_DBL', true),
         'timeout' => 5,
         'cache_hours' => 12,
     ],

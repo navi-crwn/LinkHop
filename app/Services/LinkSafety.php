@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Console\Commands\UpdateThreatFeeds;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -22,6 +23,9 @@ class LinkSafety
 
     /** @var array{exact: array<string, string|null>, wildcard: array<int, array{0: string, 1: string|null}>}|null */
     private ?array $blacklist = null;
+
+    /** @var array<string, array<string, int>>|null */
+    private ?array $feeds = null;
 
     /**
      * Validation helper: returns a user-facing error, or null when allowed.
@@ -95,6 +99,9 @@ class LinkSafety
                 if ($remote && in_array($scheme, self::WEB_SCHEMES, true) && $this->isKnownMalicious($url, $host)) {
                     $signals[] = 'malware';
                 }
+            }
+            if ($category = $this->feedCategory($url)) {
+                $signals[] = $category;
             }
             if (preg_match('/\.(apk|exe|scr|msi|bat|cmd|vbs|jar)(\?|#|$)/i', $url)) {
                 $signals[] = 'executable_download';
@@ -176,13 +183,55 @@ class LinkSafety
     private function isKnownMalicious(string $url, string $host): bool
     {
         $cfg = config('abuse.providers');
-        if (empty($cfg['safe_browsing_key']) && empty($cfg['urlhaus_auth_key'])) {
+        if (empty($cfg['safe_browsing_key']) && empty($cfg['urlhaus_auth_key']) && empty($cfg['spamhaus_dbl'])) {
             return false;
         }
 
         return Cache::remember('abuse:remote:'.sha1($url), now()->addHours((int) ($cfg['cache_hours'] ?? 12)), function () use ($url, $host, $cfg) {
-            return $this->safeBrowsingHit($url, $cfg) || $this->urlhausHit($host, $cfg);
+            return $this->spamhausHit($host, $cfg) || $this->safeBrowsingHit($url, $cfg) || $this->urlhausHit($host, $cfg);
         });
+    }
+
+    /**
+     * Spamhaus DBL over DNS (free for low volume, no key). Only 127.0.1.2-99
+     * (spam/phish/malware/botnet domains) count; 127.0.1.1xx means a legit domain
+     * with abused content, and 127.255.255.x means our resolver is refused
+     * (public resolvers are blocked) - both are ignored.
+     */
+    private function spamhausHit(string $host, array $cfg): bool
+    {
+        if (empty($cfg['spamhaus_dbl']) || filter_var($host, FILTER_VALIDATE_IP)) {
+            return false;
+        }
+        $records = @dns_get_record($host.'.dbl.spamhaus.org', DNS_A) ?: [];
+        foreach ($records as $record) {
+            if (preg_match('/^127\.0\.1\.(\d+)$/', $record['ip'] ?? '', $m) && (int) $m[1] >= 2 && (int) $m[1] < 100) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Exact-URL match against the local URLhaus/OpenPhish feeds (abuse:feeds).
+     */
+    private function feedCategory(string $url): ?string
+    {
+        $this->feeds ??= collect(array_keys(UpdateThreatFeeds::FEEDS))
+            ->mapWithKeys(function ($category) {
+                $file = storage_path("app/threat-feeds/{$category}.txt");
+
+                return [$category => is_file($file) ? array_flip(explode("\n", file_get_contents($file))) : []];
+            })->all();
+        $needle = UpdateThreatFeeds::normalize($url);
+        foreach ($this->feeds as $category => $set) {
+            if (isset($set[$needle])) {
+                return $category;
+            }
+        }
+
+        return null;
     }
 
     private function safeBrowsingHit(string $url, array $cfg): bool
