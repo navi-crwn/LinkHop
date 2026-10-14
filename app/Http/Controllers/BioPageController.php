@@ -5,18 +5,20 @@ namespace App\Http\Controllers;
 use App\Helpers\SocialUrlHelper;
 use App\Models\AbuseFlag;
 use App\Models\BioClick;
-use App\Models\BioLink;
 use App\Models\BioPage;
 use App\Services\LinkSafety;
+use App\Support\BioUploads;
+use App\Support\QrPng;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class BioPageController extends Controller
 {
+    private const ANALYTICS_RANGES = [7, 30];
+
     private const MAX_PAGES = 3;
 
     public function index()
@@ -66,79 +68,39 @@ class BioPageController extends Controller
         if (strlen((string) $data) > 2048) {
             return response('Data too long', 400);
         }
+        $rgb = fn (string $hex) => [hexdec(substr($hex, 0, 2)), hexdec(substr($hex, 2, 2)), hexdec(substr($hex, 4, 2))];
         try {
-            // Generate QR code with high error correction for logo overlay
-            $qrString = QrCode::format('png')
-                ->size($size)
-                ->color(hexdec(substr($color, 0, 2)), hexdec(substr($color, 2, 2)), hexdec(substr($color, 4, 2)))
-                ->backgroundColor(hexdec(substr($bgcolor, 0, 2)), hexdec(substr($bgcolor, 2, 2)), hexdec(substr($bgcolor, 4, 2)))
-                ->errorCorrection('H') // High error correction for logo overlay
-                ->margin(1)
-                ->generate($data);
-            // If logo is provided, overlay it on the QR code
-            if ($logoData && str_starts_with($logoData, 'data:image')) {
-                // Create image from QR code
-                $qrImage = @imagecreatefromstring($qrString);
-                if (! $qrImage) {
-                    return response($qrString)->header('Content-Type', 'image/png');
-                }
-                // Extract base64 data and decode
-                $logoData = preg_replace('/^data:image\/\w+;base64,/', '', $logoData);
-                $logoDecoded = base64_decode($logoData);
-                if (! $logoDecoded) {
-                    imagedestroy($qrImage);
+            // High error correction leaves room for the logo overlay.
+            $qrString = QrPng::render((string) $data, $size, $rgb($color), $rgb($bgcolor));
+        } catch (\Throwable $e) {
+            report($e);
 
-                    return response($qrString)->header('Content-Type', 'image/png');
-                }
-                $logo = @imagecreatefromstring($logoDecoded);
-                if (! $logo) {
-                    imagedestroy($qrImage);
-
-                    return response($qrString)->header('Content-Type', 'image/png');
-                }
-                // Get dimensions
-                $qrWidth = imagesx($qrImage);
-                $qrHeight = imagesy($qrImage);
-                $logoWidth = imagesx($logo);
-                $logoHeight = imagesy($logo);
-                // Logo size: 20% of QR code size
-                $logoSize = (int) ($qrWidth * 0.2);
-                $logoX = (int) (($qrWidth - $logoSize) / 2);
-                $logoY = (int) (($qrHeight - $logoSize) / 2);
-                // Create white background for logo (slightly larger for padding)
-                $bgSize = (int) ($logoSize + 20);
-                $bgX = (int) (($qrWidth - $bgSize) / 2);
-                $bgY = (int) (($qrHeight - $bgSize) / 2);
-                $white = imagecolorallocate($qrImage, 255, 255, 255);
-                imagefilledrectangle($qrImage, $bgX, $bgY, $bgX + $bgSize, $bgY + $bgSize, $white);
-                // Overlay logo on QR code with resampling for quality
-                imagecopyresampled(
-                    $qrImage,
-                    $logo,
-                    $logoX,
-                    $logoY,
-                    0,
-                    0,
-                    $logoSize,
-                    $logoSize,
-                    $logoWidth,
-                    $logoHeight
-                );
-                // Output final image
-                ob_start();
-                imagepng($qrImage, null, 9); // Max compression
-                $finalQr = ob_get_clean();
-                // Clean up
-                imagedestroy($qrImage);
-                imagedestroy($logo);
-
-                return response($finalQr)->header('Content-Type', 'image/png');
-            }
-
-            return response($qrString)->header('Content-Type', 'image/png');
-        } catch (\Exception $e) {
             return response('Error generating QR code', 500);
         }
+        // Optional logo; anything too large or not an image is ignored (QrPng::logo).
+        $logo = QrPng::logo(is_string($logoData) ? $logoData : null);
+        $qrImage = $logo ? @imagecreatefromstring($qrString) : false;
+        if (! $logo || ! $qrImage) {
+            return response($qrString)->header('Content-Type', 'image/png');
+        }
+        $qrWidth = imagesx($qrImage);
+        $qrHeight = imagesy($qrImage);
+        // Logo covers 20% of the code, on a white square with 10px padding.
+        $logoSize = (int) ($qrWidth * 0.2);
+        $logoX = (int) (($qrWidth - $logoSize) / 2);
+        $logoY = (int) (($qrHeight - $logoSize) / 2);
+        $bgSize = $logoSize + 20;
+        $bgX = (int) (($qrWidth - $bgSize) / 2);
+        $bgY = (int) (($qrHeight - $bgSize) / 2);
+        imagefilledrectangle($qrImage, $bgX, $bgY, $bgX + $bgSize, $bgY + $bgSize, imagecolorallocate($qrImage, 255, 255, 255));
+        imagecopyresampled($qrImage, $logo, $logoX, $logoY, 0, 0, $logoSize, $logoSize, imagesx($logo), imagesy($logo));
+        ob_start();
+        imagepng($qrImage, null, 9);
+        $finalQr = ob_get_clean();
+        imagedestroy($qrImage);
+        imagedestroy($logo);
+
+        return response($finalQr)->header('Content-Type', 'image/png');
     }
 
     private function handleQrImage($settings, $oldSettings = null)
@@ -171,35 +133,6 @@ class BioPageController extends Controller
      *
      * @return array<int, string|null>
      */
-    private function uploadedFiles(BioPage $bioPage): array
-    {
-        $files = [$bioPage->avatar_url, $bioPage->background_image, $bioPage->qr_settings['image'] ?? null, $bioPage->qr_settings['logo_url'] ?? null];
-        foreach ($bioPage->links()->get(['thumbnail_url', 'custom_icon', 'content']) as $link) {
-            array_push($files, $link->thumbnail_url, $link->custom_icon, $link->content);
-        }
-
-        return $files;
-    }
-
-    private function deleteUnusedUpload(?string $path): void
-    {
-        $path = preg_replace('#^/?storage/#', '', trim((string) $path));
-        if (! preg_match('#^(avatars|bio-images|bio-thumbnails|bio-icons|qr-logos)/[A-Za-z0-9._-]+$#', $path)) {
-            return;
-        }
-        $like = '%'.$path.'%';
-        $inUse = BioPage::where(fn ($q) => $q->where('avatar_url', 'like', $like)
-            ->orWhere('qr_settings', 'like', $like)
-            ->orWhere('background_value', 'like', $like)
-            ->orWhere('background_image', 'like', $like))->exists()
-            || BioLink::where(fn ($q) => $q->where('thumbnail_url', 'like', $like)
-                ->orWhere('custom_icon', 'like', $like)
-                ->orWhere('content', 'like', $like))->exists();
-        if (! $inUse) {
-            Storage::disk('public')->delete($path);
-        }
-    }
-
     /**
      * Reject abusive page text and unsafe social link values.
      */
@@ -387,7 +320,7 @@ class BioPageController extends Controller
             }
         }
         $bioPage->update($validated);
-        array_map(fn ($file) => $this->deleteUnusedUpload($file), $oldFiles);
+        BioUploads::deleteUnused($oldFiles);
         // Return JSON for AJAX requests
         if ($request->expectsJson() || $request->wantsJson()) {
             return response()->json([
@@ -403,9 +336,9 @@ class BioPageController extends Controller
     public function destroy(BioPage $bioPage)
     {
         $this->authorize('delete', $bioPage);
-        $files = $this->uploadedFiles($bioPage);
+        $files = BioUploads::ofPage($bioPage);
         $bioPage->delete();
-        array_map(fn ($file) => $this->deleteUnusedUpload($file), $files);
+        BioUploads::deleteUnused($files);
 
         return redirect()->route('bio.index')->with('success', 'Bio page deleted successfully!');
     }
@@ -413,7 +346,9 @@ class BioPageController extends Controller
     public function analytics(BioPage $bioPage)
     {
         $this->authorize('view', $bioPage);
-        $days = request('days', 30);
+        // Only the ranges the page offers; click logs are kept 30 days (privacy policy).
+        $days = (int) request('days', 30);
+        $days = in_array($days, self::ANALYTICS_RANGES, true) ? $days : 30;
         $clicksData = BioClick::query()
             ->whereIn('bio_link_id', $bioPage->links->pluck('id'))
             ->where('clicked_at', '>=', now()->subDays($days))
@@ -429,7 +364,9 @@ class BioPageController extends Controller
             $clickCount = $clicksData->firstWhere('date', $date);
             $viewsChartData[] = $clickCount ? $clickCount->count : 0;
         }
+        // reorder(): the relation sorts by position, which would win over click_count.
         $topLinks = $bioPage->links()
+            ->reorder()
             ->where('is_active', true)
             ->orderByDesc('click_count')
             ->limit(10)
@@ -489,7 +426,7 @@ class BioPageController extends Controller
             'recentClicks' => $recentClicks,
         ];
 
-        return view('bio.analytics', compact('bioPage', 'stats'));
+        return view('bio.analytics', compact('bioPage', 'stats', 'days'));
     }
 
     private function getCountryFlag($countryCode)
@@ -570,7 +507,7 @@ class BioPageController extends Controller
             $oldAvatar = $bioPage->avatar_url;
             $path = $request->file('avatar')->store('avatars', 'public');
             $bioPage->update(['avatar_url' => $path]);
-            $this->deleteUnusedUpload($oldAvatar);
+            BioUploads::deleteIfUnused($oldAvatar);
 
             return response()->json([
                 'success' => true,
@@ -648,7 +585,7 @@ class BioPageController extends Controller
             $qrSettings = $bioPage->qr_settings ?? [];
             $qrSettings['logo_url'] = '/storage/'.$path;
             $bioPage->update(['qr_settings' => $qrSettings]);
-            $this->deleteUnusedUpload($oldLogo);
+            BioUploads::deleteIfUnused($oldLogo);
 
             return response()->json([
                 'success' => true,

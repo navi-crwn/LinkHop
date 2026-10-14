@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
+use function Illuminate\Support\defer;
+
 class AuthenticatedSessionController extends Controller
 {
     public function __construct(
@@ -51,43 +53,48 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
         $user = $request->user();
         if ($user) {
-            $geoDetails = $this->geoIp->details($request->ip());
-            $uaDetails = $this->userAgent->parse($request->userAgent());
-            $proxyService = app(ProxyDetectionService::class);
-            $proxyResult = $proxyService->detect($request->ip());
-            $user->forceFill([
-                'last_login_ip' => $request->ip(),
-                'last_login_at' => now(),
-                'last_login_country' => $geoDetails['country'],
-                'last_login_city' => $geoDetails['city'],
-                'last_login_provider' => $geoDetails['provider'],
-                'last_login_device' => $uaDetails['device'],
-                'last_login_browser' => $uaDetails['browser'],
-            ])->saveQuietly();
-            LoginHistory::create([
-                'user_id' => $user->id,
-                'ip_address' => $request->ip(),
-                'country' => $geoDetails['country'],
-                'country_name' => $geoDetails['country_name'] ?? null,
-                'city' => $geoDetails['city'],
-                'region' => $geoDetails['region'] ?? null,
-                'provider' => $geoDetails['provider'],
-                'isp' => $geoDetails['isp'] ?? null,
-                'device' => $uaDetails['device'],
-                'browser' => $uaDetails['browser'],
-                'is_proxy' => $proxyResult['is_proxy'],
-                'proxy_type' => $proxyResult['type'],
-                'proxy_confidence' => $proxyResult['confidence'],
-                'logged_in_at' => now(),
-            ]);
-            $oldHistories = LoginHistory::where('user_id', $user->id)
-                ->orderBy('logged_in_at', 'desc')
-                ->skip(5)
-                ->take(1000)
-                ->pluck('id');
-            if ($oldHistories->isNotEmpty()) {
-                LoginHistory::whereIn('id', $oldHistories)->delete();
-            }
+            // GeoIP and proxy checks can be slow for a new IP: run them after the response.
+            $ip = $request->ip();
+            $userAgent = $request->userAgent();
+            defer(function () use ($user, $ip, $userAgent) {
+                $geoDetails = $this->geoIp->details($ip);
+                $uaDetails = $this->userAgent->parse($userAgent);
+                $proxyService = app(ProxyDetectionService::class);
+                $proxyResult = $proxyService->detect($ip);
+                $user->forceFill([
+                    'last_login_ip' => $ip,
+                    'last_login_at' => now(),
+                    'last_login_country' => $geoDetails['country'],
+                    'last_login_city' => $geoDetails['city'],
+                    'last_login_provider' => $geoDetails['provider'],
+                    'last_login_device' => $uaDetails['device'],
+                    'last_login_browser' => $uaDetails['browser'],
+                ])->saveQuietly();
+                LoginHistory::create([
+                    'user_id' => $user->id,
+                    'ip_address' => $ip,
+                    'country' => $geoDetails['country'],
+                    'country_name' => $geoDetails['country_name'] ?? null,
+                    'city' => $geoDetails['city'],
+                    'region' => $geoDetails['region'] ?? null,
+                    'provider' => $geoDetails['provider'],
+                    'isp' => $geoDetails['isp'] ?? null,
+                    'device' => $uaDetails['device'],
+                    'browser' => $uaDetails['browser'],
+                    'is_proxy' => $proxyResult['is_proxy'],
+                    'proxy_type' => $proxyResult['type'],
+                    'proxy_confidence' => $proxyResult['confidence'],
+                    'logged_in_at' => now(),
+                ]);
+                $oldHistories = LoginHistory::where('user_id', $user->id)
+                    ->orderBy('logged_in_at', 'desc')
+                    ->skip(5)
+                    ->take(1000)
+                    ->pluck('id');
+                if ($oldHistories->isNotEmpty()) {
+                    LoginHistory::whereIn('id', $oldHistories)->delete();
+                }
+            });
             if (! $user->two_factor_secret || ! $user->two_factor_confirmed_at) {
                 $request->session()->put('2fa_verified', true);
             }

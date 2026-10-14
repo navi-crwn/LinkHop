@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use App\Models\Link;
+use App\Support\QrPng;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class LinkService
 {
@@ -30,13 +30,7 @@ class LinkService
         Storage::disk('public')->makeDirectory('qrcodes');
         $fgColor = $this->hexToRgb($link->qr_fg_color ?? '#000000');
         $bgColor = $this->hexToRgb($link->qr_bg_color ?? '#ffffff');
-        $qr = QrCode::format('png')
-            ->size(512) // Optimized size for web display and downloads
-            ->margin(2) // 2% margin/border around QR code (30% smaller)
-            ->errorCorrection('H') // High error correction for logo overlay
-            ->backgroundColor($bgColor['r'], $bgColor['g'], $bgColor['b'])
-            ->color($fgColor['r'], $fgColor['g'], $fgColor['b'])
-            ->generate($link->short_url);
+        $qr = QrPng::render($link->short_url, 512, array_values($fgColor), array_values($bgColor), 2);
         if (filled($link->qr_logo_url)) {
             $qr = $this->overlayLogo($qr, $link->qr_logo_url);
         }

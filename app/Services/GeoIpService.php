@@ -15,6 +15,10 @@ use Illuminate\Support\Facades\Log;
 
 class GeoIpService
 {
+    private const MAX_EXTERNAL_PER_LOOKUP = 2;
+
+    private const PROVIDER_COOLDOWN_MINUTES = 10;
+
     protected array $providers = [];
 
     protected QuotaManager $quotaManager;
@@ -57,10 +61,13 @@ class GeoIpService
         $cacheKey = "geoip:data:{$ip}";
         $cached = Cache::get($cacheKey);
         if ($cached !== null) {
-            return $cached;
+            return $cached ?: null; // false = looked up recently, nothing found
         }
+        // Private and reserved addresses are never in any database; do not spend web API calls on them.
+        $public = filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false;
+        $externalTried = 0;
         foreach ($this->providers as $provider) {
-            if (! $provider->isAvailable()) {
+            if (! $provider->isAvailable() || Cache::has($this->downKey($provider))) {
                 continue;
             }
             if (! $this->quotaManager->hasAvailableQuota(
@@ -70,26 +77,34 @@ class GeoIpService
             )) {
                 continue;
             }
+            // A new IP must not wait on a chain of slow web APIs: try at most two of them.
+            $external = ! $provider instanceof LocalMmdbProvider;
+            if ($external && (! $public || $externalTried++ >= self::MAX_EXTERNAL_PER_LOOKUP)) {
+                break;
+            }
             $result = $provider->lookup($ip);
             if ($result !== null) {
                 $this->quotaManager->increment($provider->getName());
-                Log::info('GeoIP lookup success', [
-                    'provider' => $provider->getName(),
-                    'ip' => $ip,
-                ]);
                 Cache::put($cacheKey, $result, now()->addDay());
 
                 return $result;
             }
-            Log::warning('GeoIP provider failed, trying next', [
-                'provider' => $provider->getName(),
-                'ip' => $ip,
-            ]);
+            if ($external) {
+                // Skip a failing web API for a while instead of paying its timeout on every new IP.
+                Cache::put($this->downKey($provider), true, now()->addMinutes(self::PROVIDER_COOLDOWN_MINUTES));
+                // No IP in the log: it is personal data and the policy promises hashes only.
+                Log::warning('GeoIP provider failed, trying next', ['provider' => $provider->getName()]);
+            }
         }
-        Log::error('All GeoIP providers failed for IP', ['ip' => $ip]);
-        Cache::put($cacheKey, null, now()->addHour());
+        Log::notice('No GeoIP provider could resolve an IP');
+        Cache::put($cacheKey, false, now()->addHour());
 
         return null;
+    }
+
+    private function downKey(GeoIpProviderInterface $provider): string
+    {
+        return 'geoip:down:'.$provider->getName();
     }
 
     public function country(string $ip): ?string

@@ -128,6 +128,35 @@ class SettingsController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
+    /**
+     * Everything stored about the account (right of access): profile, links, folders,
+     * tags, bio pages with their blocks, recent sign-ins and the activity log.
+     * Visitor click logs are not included: they describe visitors, not the account owner.
+     */
+    public function exportAccount(Request $request)
+    {
+        $user = $request->user();
+        $data = [
+            'exported_at' => now()->toIso8601String(),
+            'account' => $user->only(['name', 'email', 'created_at', 'email_verified_at', 'last_login_at']),
+            'links' => $user->links()->with(['folder:id,name', 'tags:id,name'])->get()
+                ->map(fn ($link) => $link->only(['slug', 'target_url', 'status', 'redirect_type', 'custom_title', 'custom_description', 'expires_at', 'created_at', 'clicks'])
+                    + ['folder' => $link->folder?->name, 'tags' => $link->tags->pluck('name')]),
+            'folders' => $user->folders()->pluck('name'),
+            'tags' => $user->tags()->pluck('name'),
+            'bio_pages' => $user->bioPages()->with('links')->get()->map(fn ($page) => collect($page->makeHidden(['links', 'id', 'user_id'])->toArray())
+                ->put('blocks', $page->links->map->makeHidden(['id', 'bio_page_id'])->values())),
+            'login_history' => $user->loginHistories()->latest('logged_in_at')->get(['logged_in_at', 'ip_address', 'country', 'city', 'device', 'browser']),
+            'activity_log' => $user->activityLogs()->latest()->get(['created_at', 'action', 'model', 'description']),
+        ];
+
+        return response()->streamDownload(
+            fn () => print (json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)),
+            'helink-account-'.now()->format('Y-m-d').'.json',
+            ['Content-Type' => 'application/json']
+        );
+    }
+
     public function exportAnalytics(Request $request)
     {
         return $this->exportData($request);

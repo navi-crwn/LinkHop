@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Log;
 
 abstract class BaseGeoIpProvider implements GeoIpProviderInterface
 {
-    protected int $timeout = 5;
+    // Short: lookups can happen while a visitor waits (login, bio page).
+    protected int $timeout = 2;
 
     protected function makeRequest(string $url, array $params = []): ?array
     {
@@ -16,16 +17,17 @@ abstract class BaseGeoIpProvider implements GeoIpProviderInterface
             if ($response->successful()) {
                 return $response->json();
             }
+            // Host only: the URL contains the visitor's IP.
             Log::warning("{$this->getName()} request failed", [
-                'url' => $url,
+                'host' => parse_url($url, PHP_URL_HOST),
                 'status' => $response->status(),
             ]);
 
             return null;
         } catch (\Throwable $e) {
             Log::warning("{$this->getName()} request error", [
-                'url' => $url,
-                'error' => $e->getMessage(),
+                'host' => parse_url($url, PHP_URL_HOST),
+                'error' => str_replace($url, '[url]', $e->getMessage()),
             ]);
 
             return null;
