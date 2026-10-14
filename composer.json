@@ -16,6 +16,7 @@
         "propaganistas/laravel-disposable-email": "^2.5",
         "sentry/sentry-laravel": "^4.19",
         "simplesoftwareio/simple-qrcode": "^4.2",
+        "spatie/laravel-backup": "^10.3",
         "symfony/html-sanitizer": "^7.4"
     },
     "require-dev": {
