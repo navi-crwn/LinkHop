@@ -26,10 +26,7 @@
     @endif
     @php
         $turnstileKey = config('services.turnstile.site_key');
-        $turnstileFormAttributes = '';
-        if ($turnstileKey) {
-            $turnstileFormAttributes = 'x-data="window.turnstileForm ? window.turnstileForm(\''.$turnstileKey.'\', '.($errors->has('turnstile') ? 'true' : 'false').') : {}" x-init="if (!window.turnstileForm) { let interval = setInterval(() => { if (window.turnstileForm) { Object.assign($data, window.turnstileForm(\''.$turnstileKey.'\', '.($errors->has('turnstile') ? 'true' : 'false').')); clearInterval(interval); } }, 50); }" x-on:submit="handleSubmit($event)"';
-        }
+        $turnstileFormAttributes = $turnstileKey ? 'x-data="turnstileForm('.e(json_encode($turnstileKey)).')" x-on:submit="handleSubmit($event)"' : '';
     @endphp
     <div class="mb-6">
         <a href="{{ route('auth.google', ['from_register' => 0]) }}" 
@@ -84,13 +81,7 @@
                 <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
             </label>
         </div>
-        @if ($turnstileKey)
-            <div class="mt-4" x-cloak x-show="showCaptcha">
-                <div x-ref="captcha"></div>
-                <x-input-error :messages="$errors->get('turnstile')" class="mt-2" />
-            </div>
-            <input type="hidden" name="cf-turnstile-response" :value="token">
-        @endif
+        <x-turnstile class="mt-4" />
         <div class="flex items-center justify-between mt-4">
             <div class="flex items-center gap-3">
                 @if (Route::has('password.request'))
@@ -102,9 +93,12 @@
             <button
                 type="submit"
                 class="btn-primary ms-3"
-                {!! $turnstileKey ? 'x-bind:disabled="showCaptcha && !token"' : '' !!}
             >
-                {{ __('Log in') }}
+                @if ($turnstileKey)
+                    <span x-show="!waiting">{{ __('Log in') }}</span><span x-cloak x-show="waiting">{{ __('Verifying…') }}</span>
+                @else
+                    {{ __('Log in') }}
+                @endif
             </button>
         </div>
     </form>

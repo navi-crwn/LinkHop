@@ -31,12 +31,10 @@ class AuthenticatedSessionController extends Controller
 
     public function store(LoginRequest $request): RedirectResponse
     {
-        if (! app()->runningUnitTests() && env('APP_ENV') !== 'testing') {
-            if (! $this->turnstile->verify($request->input('cf-turnstile-response'), $request->ip())) {
-                return back()
-                    ->withErrors(['turnstile' => 'Security verification failed, please try again.'])
-                    ->onlyInput('email');
-            }
+        if (! $this->turnstile->verify($request->input('cf-turnstile-response'), $request->ip())) {
+            return back()
+                ->withErrors(['turnstile' => 'Security verification failed, please try again.'])
+                ->onlyInput('email');
         }
         $user = User::where('email', $request->email)->first();
         if ($user && $user->status === User::STATUS_SUSPENDED) {
