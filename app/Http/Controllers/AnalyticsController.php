@@ -180,12 +180,13 @@ class AnalyticsController extends Controller
             ->orderBy('label')
             ->get();
         $availableDevices = collect(['Desktop', 'Mobile']);
+        // Visitor IPs, cities and networks are never listed per visit; owners
+        // only see aggregates, so a link cannot be used to locate someone.
         $recentIps = $clicksQuery
             ->clone()
-            ->whereNotNull('ip_address')
             ->latest()
             ->limit(20)
-            ->get(['ip_address', 'country', 'city', 'created_at']);
+            ->get(['country', 'created_at']);
         $userLinks = Link::where('user_id', $user->id)->orderBy('created_at', 'desc')->get(['id', 'slug', 'target_url']);
 
         return view('analytics', compact(
