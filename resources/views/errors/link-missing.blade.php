@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png" sizes="32x32">
     <link rel="apple-touch-icon" href="{{ route('brand.favicon') }}">
-    <title>Link Not Found - {{ config('app.name', 'HEL.ink') }}</title>
+    <title>{{ ($expired ?? false) ? 'Link Expired' : 'Link Not Found' }} - {{ config('app.name', 'HEL.ink') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50 dark:bg-gray-900">
@@ -21,14 +21,23 @@
                 </div>
                 <div class="text-center mb-8">
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-3">
-                        Link Not Found
+                        {{ ($expired ?? false) ? 'Link Expired' : 'Link Not Found' }}
                     </h1>
+                    @if ($expired ?? false)
+                    <p class="text-lg text-gray-600 dark:text-gray-400 mb-2">
+                        The short link <span class="font-semibold text-blue-600 dark:text-blue-400">{{ $slug }}</span> was a guest link and has expired.
+                    </p>
+                    <p class="text-sm text-gray-500 dark:text-gray-500">
+                        Guest links are deleted after {{ config('shortener.guest_idle_days') }} days without a click, or after {{ config('shortener.guest_max_days') }} days. Ask the person who shared it for a new link.
+                    </p>
+                    @else
                     <p class="text-lg text-gray-600 dark:text-gray-400 mb-2">
                         The short link <span class="font-semibold text-blue-600 dark:text-blue-400">{{ $slug ?? 'unknown' }}</span> doesn't exist or has been disabled.
                     </p>
                     <p class="text-sm text-gray-500 dark:text-gray-500">
                         It may have been deleted, expired, or you may have mistyped the URL.
                     </p>
+                    @endif
                 </div>
                 <div class="mb-8 rounded-lg bg-gray-50 dark:bg-gray-700/50 p-6">
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">

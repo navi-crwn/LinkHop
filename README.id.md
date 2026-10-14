@@ -47,7 +47,7 @@ Semua fitur sudah termasuk untuk setiap akun. Tanpa paket premium, tanpa fitur y
 ## Fitur
 
 - **🔗 Link pendek.** Slug acak atau custom, password dan tanggal kedaluwarsa opsional, dan QR code (PNG, SVG, atau JPG) untuk setiap link.
-- **🙋 Tanpa akun pun bisa.** Siapa saja bisa memendekkan link. Link tamu bertahan sampai 30 hari; daftar untuk menyimpannya dan melihat statistiknya.
+- **🙋 Tanpa akun pun bisa.** Siapa saja bisa memendekkan link. Link tamu dihapus setelah 14 hari tanpa klik, dan paling lama setelah 30 hari; daftar untuk menyimpannya dan melihat statistiknya.
 - **🪪 Link in Bio.** Halamanmu sendiri di `hel.ink/b/namamu`, disusun dari blok: link, teks, gambar, YouTube, Spotify, peta, hitung mundur, FAQ, vCard, dan potongan kode.
 - **🎨 20 tema.** Galaxy, Neon, Cyberpunk, Aurora, Cherry Blossom, Midnight, Matrix, Ice, Lavender, dan lainnya, atau warna, font, dan CSS kamu sendiri. Editornya menampilkan pratinjau langsung.
 - **✨ Animasi.** Hujan, salju, bintang, hati, daun, atau confetti di latar halaman; tombol yang muncul, bergeser, memantul, bersinar, berdenyut, atau bergoyang.
@@ -154,7 +154,7 @@ curl -X POST https://hel.ink/api/shorten \
 Ya. Tidak ada paket berbayar dan tidak ada fitur yang dikunci, dan kodenya berlisensi MIT, jadi kamu boleh menjalankan, mengubah, dan membagikannya.
 
 **Perlu akun?**
-Tidak untuk memendekkan link. Link tamu bertahan sampai 30 hari. Dengan akun, link kamu tersimpan, dan kamu dapat analitik, folder, API, dan halaman bio.
+Tidak untuk memendekkan link. Link tamu dihapus setelah 14 hari tanpa klik, dan paling lama setelah 30 hari. Dengan akun, link kamu tersimpan, dan kamu dapat analitik, folder, API, dan halaman bio.
 
 **Di mana halaman bio saya?**
 Di `hel.ink/b/` lalu nama yang kamu pilih, misalnya [hel.ink/b/hel](https://hel.ink/b/hel).

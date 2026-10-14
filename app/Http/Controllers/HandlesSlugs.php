@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Link;
+use App\Models\RetiredSlug;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -30,7 +31,7 @@ trait HandlesSlugs
             ->where('slug', $slug)
             ->when($ignore, fn ($query) => $query->where('id', '!=', $ignore->id))
             ->exists();
-        if ($exists) {
+        if ($exists || RetiredSlug::isBlocked($slug)) {
             throw ValidationException::withMessages([
                 'slug' => 'Slug sudah dipakai.',
             ]);
@@ -44,7 +45,7 @@ trait HandlesSlugs
         $length = $length ?? config('shortener.random_slug_length', 6);
         do {
             $slug = Str::random($length);
-        } while ($this->isReservedSlug($slug) || Link::where('slug', $slug)->exists());
+        } while ($this->isReservedSlug($slug) || Link::where('slug', $slug)->exists() || RetiredSlug::isBlocked($slug));
 
         return $slug;
     }
