@@ -2,56 +2,43 @@
 
 namespace App\Services;
 
+use DeviceDetector\DeviceDetector;
+
+/**
+ * User-agent parsing via matomo/device-detector (browsers, OS, device types, bots).
+ */
 class UserAgentService
 {
+    private array $memo = [];
+
     public function parse(?string $userAgent): array
     {
         if (! $userAgent) {
-            return [
-                'device' => 'Unknown',
-                'browser' => 'Unknown',
-            ];
+            return ['device' => 'Unknown', 'browser' => 'Unknown', 'os' => 'Unknown', 'bot' => false];
         }
+
+        return $this->memo[$userAgent] ??= $this->detect($userAgent);
+    }
+
+    private function detect(string $userAgent): array
+    {
+        $dd = new DeviceDetector($userAgent);
+        $dd->parse();
+        if ($dd->isBot()) {
+            return ['device' => 'Bot', 'browser' => $dd->getBot()['name'] ?? 'Bot', 'os' => 'Unknown', 'bot' => true];
+        }
+        $device = match (true) {
+            $dd->isTablet() => 'Tablet',
+            $dd->isMobile() => 'Mobile',
+            $dd->isDesktop() => 'Desktop',
+            default => ucfirst($dd->getDeviceName() ?: 'Unknown'),
+        };
 
         return [
-            'device' => $this->detectDevice($userAgent),
-            'browser' => $this->detectBrowser($userAgent),
+            'device' => $device,
+            'browser' => $dd->getClient('name') ?: 'Unknown',
+            'os' => $dd->getOs('name') ?: 'Unknown',
+            'bot' => false,
         ];
-    }
-
-    private function detectDevice(string $userAgent): string
-    {
-        if (preg_match('/mobile|android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i', $userAgent)) {
-            if (preg_match('/ipad|tablet|kindle/i', $userAgent)) {
-                return 'Tablet';
-            }
-
-            return 'Mobile';
-        }
-
-        return 'Desktop';
-    }
-
-    private function detectBrowser(string $userAgent): string
-    {
-        $browsers = [
-            'Edg' => 'Edge',
-            'OPR|Opera' => 'Opera',
-            'Chrome' => 'Chrome',
-            'Safari' => 'Safari',
-            'Firefox' => 'Firefox',
-            'MSIE|Trident' => 'Internet Explorer',
-        ];
-        foreach ($browsers as $pattern => $browser) {
-            if (preg_match("/$pattern/i", $userAgent)) {
-                if ($browser === 'Safari' && preg_match('/Chrome|Edg|OPR/i', $userAgent)) {
-                    continue;
-                }
-
-                return $browser;
-            }
-        }
-
-        return 'Unknown';
     }
 }

@@ -1082,7 +1082,7 @@ function linkCreationModal() {
                 const shortUrl = `${baseUrl}/${this.formData.slug}`;
                 const fgColor = this.qrSettings.fgColor.replace('#', '');
                 const bgColor = this.qrSettings.bgColor.replace('#', '');
-                this.qrPreviewUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(shortUrl)}&color=${fgColor}&bgcolor=${bgColor}`;
+                this.qrPreviewUrl = `{{ route('api.qr.generate') }}?size=200&data=${encodeURIComponent(shortUrl)}&color=${fgColor}&bgcolor=${bgColor}`;
             } else {
                 this.qrPreviewUrl = null;
             }
@@ -1192,7 +1192,7 @@ function linkCreationModal() {
             const shortUrl = `${baseUrl}/${this.formData.slug}`;
             const fgColor = this.qrSettings.fgColor.replace('#', '');
             const bgColor = this.qrSettings.bgColor.replace('#', '');
-            return `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(shortUrl)}&color=${fgColor}&bgcolor=${bgColor}`;
+            return `{{ route('api.qr.generate') }}?size=400&data=${encodeURIComponent(shortUrl)}&color=${fgColor}&bgcolor=${bgColor}`;
         },
         resetQrSettings() {
             this.qrSettings = {
