@@ -17,7 +17,7 @@ class AdminUserController extends Controller
 
     public function index(Request $request)
     {
-        $query = User::query()->latest();
+        $query = User::query()->withCount('links')->withSum('links', 'clicks');
         $search = $request->string('q')->trim()->toString();
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
@@ -25,11 +25,29 @@ class AdminUserController extends Controller
                     ->orWhere('email', 'like', "%{$search}%");
             });
         }
-        $users = $query->paginate(15)->withQueryString();
+        $status = $request->string('status')->toString();
+        if (in_array($status, [User::STATUS_ACTIVE, User::STATUS_SUSPENDED], true)) {
+            $query->where('status', $status);
+        }
+        match ($request->string('sort')->toString()) {
+            'links' => $query->orderByDesc('links_count'),
+            'login' => $query->orderByRaw('last_login_at IS NULL')->orderByDesc('last_login_at'),
+            'name' => $query->orderBy('name'),
+            default => $query->latest('id'),
+        };
+        $users = $query->paginate(20)->withQueryString();
 
         return view('admin-users', [
             'users' => $users,
             'search' => $search,
+            'status' => $status,
+            'sort' => $request->string('sort')->toString(),
+            'counts' => [
+                'all' => User::count(),
+                'active' => User::where('status', User::STATUS_ACTIVE)->count(),
+                'suspended' => User::where('status', User::STATUS_SUSPENDED)->count(),
+                'new' => User::where('created_at', '>=', now()->subDays(7))->count(),
+            ],
             'viewerIsSuperAdmin' => $request->user()->isSuperAdmin(),
         ]);
     }
