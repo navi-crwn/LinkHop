@@ -22,7 +22,7 @@
                         <p class="mt-1 text-3xl font-bold text-blue-900 dark:text-blue-100">{{ number_format($link->clicks) }}</p>
                     </div>
                     @if ($link->qr_code_path)
-                        <img src="{{ Storage::url($link->qr_code_path) }}" alt="QR" class="h-16 w-16 rounded-lg border-2 border-blue-200 dark:border-blue-700">
+                        <img src="{{ Storage::disk('public')->url($link->qr_code_path) }}" alt="QR" class="h-16 w-16 rounded-lg border-2 border-blue-200 dark:border-blue-700">
                     @endif
                 </div>
             </div>

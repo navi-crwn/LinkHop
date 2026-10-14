@@ -281,7 +281,7 @@ class LinkController extends Controller
                     'target_url' => $link->target_url,
                     'slug' => $link->slug,
                     'id' => $link->id,
-                    'qr_code_url' => $link->qr_code_path ? Storage::url($link->qr_code_path).'?t='.time() : null,
+                    'qr_code_url' => $link->qr_code_path ? Storage::disk('public')->url($link->qr_code_path).'?t='.time() : null,
                 ],
                 'message' => 'Link created successfully!',
             ]);
@@ -511,7 +511,7 @@ class LinkController extends Controller
 
             return response()->json([
                 'success' => true,
-                'path' => Storage::url($path),
+                'path' => Storage::disk('public')->url($path),
                 'message' => 'QR code saved successfully',
             ]);
         } catch (\Exception $e) {
