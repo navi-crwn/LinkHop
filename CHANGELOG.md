@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependencies updated within their constraints (Laravel 12.70); `composer audit` is clean
 
 ### Added
+- Project website on GitHub Pages (`docs/`, English and Indonesian, light and dark) and an Indonesian README (`README.id.md`); README images are rendered from the website by `scripts/readme-images.mjs`
 - `abuse:scan` command, scheduled hourly (new/edited items) and nightly (full sweep + purge): blacklist, keyword categories (CSAM, gambling, phishing, scam, adult), risky URL traits and optional Google Safe Browsing / URLhaus lookups (`SAFE_BROWSING_KEY`, `URLHAUS_AUTH_KEY`)
 - Automated findings on the admin Abuse page with Confirm / Restore
 - `config/abuse.php` for patterns, weights and thresholds
