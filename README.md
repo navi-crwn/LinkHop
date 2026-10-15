@@ -44,6 +44,26 @@ Everything is included for every account. No premium tier, no locked features. A
 
 📖 **The full tour, the self-host guide and the FAQ:** [navi-crwn.github.io/hel.ink](https://navi-crwn.github.io/hel.ink/)
 
+## Example
+
+<img src="docs/readme/example-bio.webp" alt="The example bio page at hel.ink/b/hel" width="280" align="right">
+
+**Bio page:** [hel.ink/b/hel](https://hel.ink/b/hel), HEL.ink's own page with the Galaxy theme, link buttons with brand icons, a text block, an FAQ and a contact card.
+
+**Short links:**
+
+| Short link | Goes to |
+| --- | --- |
+| [hel.ink/github](https://hel.ink/github) | The source code |
+| [hel.ink/website](https://hel.ink/website) | The website |
+| [hel.ink/selfhost](https://hel.ink/selfhost) | The self-host guide |
+| [hel.ink/api-docs](https://hel.ink/api-docs) | The API reference |
+| [hel.ink/changelog](https://hel.ink/changelog) | What changed in each release |
+
+To load the same example on your own install, run `php artisan db:seed --class=ExampleBioSeeder`.
+
+<br clear="right">
+
 ## Features
 
 - **🔗 Short links.** Random or custom slugs, an optional password and expiry date, and a QR code (PNG, SVG or JPG) for every link.
