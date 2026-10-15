@@ -120,3 +120,35 @@ window.turnstileForm = (siteKey) => ({
         }
     },
 });
+
+// A page left open past SESSION_LIFETIME still holds the old CSRF token, so its next form
+// (e.g. Logout) would fail with 419. When the tab is shown again after a while, fetch a fresh
+// token and put it in the page. Values baked into inline scripts are not updated.
+let csrfFetchedAt = Date.now();
+const refreshCsrfToken = async () => {
+    if (Date.now() - csrfFetchedAt < 5 * 60 * 1000) {
+        return;
+    }
+    try {
+        const response = await fetch('/csrf-token', { headers: { Accept: 'application/json' }, credentials: 'same-origin' });
+        if (!response.ok) {
+            return;
+        }
+        const { token } = await response.json();
+        csrfFetchedAt = Date.now();
+        document.querySelector('meta[name="csrf-token"]')?.setAttribute('content', token);
+        document.querySelectorAll('input[name="_token"]').forEach((input) => {
+            input.value = token;
+        });
+        if (window.axios) {
+            window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
+        }
+    } catch {
+        // Offline or blocked: the server-side handling of an expired token still applies.
+    }
+};
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+        refreshCsrfToken();
+    }
+});

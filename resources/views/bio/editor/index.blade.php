@@ -1837,7 +1837,8 @@ window.bioEditorV2 = function() {
                 scroll: true,
                 bubbleScroll: true,
                 fallbackOnBody: true,
-                // The drag ghost is a clone of the item appended to <body>; keep Alpine
+                // The drag ghost is a clone of the item appended to <body>
+        <x-session-expired-notice />; keep Alpine
                 // from initialising it outside its x-for scope ("item is not defined").
                 onStart: () => { document.body._x_ignoreMutationObserver = true; },
                 onEnd: (evt) => {

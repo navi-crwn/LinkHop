@@ -31,6 +31,7 @@
         @stack('styles')
     </head>
     <body class="app-bg min-h-screen">
+        <x-session-expired-notice />
         @auth
             @php
                 $user = auth()->user();
