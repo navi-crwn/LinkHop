@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Storage;
  * The example bio page (/b/hel) and short links shown on the GitHub Pages site and in the READMEs.
  * Run with `php artisan db:seed --class=ExampleBioSeeder`; running it again resets the example.
  * A slug already taken by another account is left alone, so this never touches real users' pages.
+ * To give the example to an existing account (e.g. the site owner who already has /b/hel), set
+ * EXAMPLE_BIO_OWNER=that@email; its current /b/hel page and these short links are then replaced.
  */
 class ExampleBioSeeder extends Seeder
 {
@@ -31,7 +33,8 @@ class ExampleBioSeeder extends Seeder
 
     public function run(): void
     {
-        $user = User::firstOrCreate(['email' => 'example@hel.ink'], [
+        $owner = env('EXAMPLE_BIO_OWNER');
+        $user = $owner ? User::where('email', $owner)->firstOrFail() : User::firstOrCreate(['email' => 'example@hel.ink'], [
             'name' => 'HEL.ink',
             'password' => bcrypt(str()->random(32)),
             'email_verified_at' => now(),

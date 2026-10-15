@@ -28,3 +28,19 @@ test('example bio seeder leaves slugs owned by other accounts alone', function (
     expect(BioPage::where('slug', 'hel')->first()->title)->toBe('Real page');
     expect(Link::where('slug', 'github')->first()->target_url)->toBe('https://example.com');
 });
+
+test('example bio seeder can hand the example to an existing account', function () {
+    Storage::fake('public');
+    $owner = User::factory()->create(['email' => 'owner@example.com']);
+    BioPage::create(['user_id' => $owner->id, 'slug' => 'hel', 'title' => 'Old page', 'is_published' => true]);
+    putenv('EXAMPLE_BIO_OWNER=owner@example.com');
+    try {
+        $this->seed(ExampleBioSeeder::class);
+    } finally {
+        putenv('EXAMPLE_BIO_OWNER');
+    }
+
+    $page = BioPage::where('slug', 'hel')->first();
+    expect($page->user_id)->toBe($owner->id)->and($page->title)->toBe('HEL.ink');
+    expect(Link::where('slug', 'github')->first()->user_id)->toBe($owner->id);
+});
