@@ -7,11 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Admin bio page: text, divider, embed, FAQ and contact-card blocks no longer show as blank rows
+- Public bio pages: header, FAQ and contact-card text follows the theme color, so it stays readable on dark themes
+
 ### Changed
 - Guest links are deleted at 00:00 (in `GUEST_LINK_TIMEZONE`) after 14 full days in a row without a click, and after day 30 at most; the server `.env` can no longer stretch the idle limit past 14 days. `links:prune-guest` now runs at midnight
 - Home page: the Cloudflare security check sits to the right of the Shorten button on wide screens and only takes room when Cloudflare asks for a click
 
 ### Added
+- `ExampleBioSeeder` builds the example bio page (`/b/hel`) and short links shown in the README and on the website
 - Slugs of deleted guest links stay blocked for 90 days (`RETIRED_SLUG_DAYS`) and show a "Link Expired" page (HTTP 410), so nobody can take over a link that is still shared somewhere
 
 ### Security

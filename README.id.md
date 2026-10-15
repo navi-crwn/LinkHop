@@ -44,6 +44,26 @@ Semua fitur sudah termasuk untuk setiap akun. Tanpa paket premium, tanpa fitur y
 
 📖 **Tur lengkap, panduan self-host, dan FAQ:** [navi-crwn.github.io/hel.ink](https://navi-crwn.github.io/hel.ink/)
 
+## Contoh
+
+<img src="docs/readme/example-bio.webp" alt="Contoh halaman bio di hel.ink/b/hel" width="280" align="right">
+
+**Halaman bio:** [hel.ink/b/hel](https://hel.ink/b/hel), halaman milik HEL.ink sendiri dengan tema Galaxy, tombol link berikon brand, blok teks, FAQ, dan kartu kontak.
+
+**Link pendek:**
+
+| Link pendek | Menuju |
+| --- | --- |
+| [hel.ink/github](https://hel.ink/github) | Kode sumber |
+| [hel.ink/website](https://hel.ink/website) | Website |
+| [hel.ink/selfhost](https://hel.ink/selfhost) | Panduan self-host |
+| [hel.ink/api-docs](https://hel.ink/api-docs) | Referensi API |
+| [hel.ink/changelog](https://hel.ink/changelog) | Perubahan di setiap rilis |
+
+Untuk memuat contoh yang sama di instalasi kamu sendiri, jalankan `php artisan db:seed --class=ExampleBioSeeder`.
+
+<br clear="right">
+
 ## Fitur
 
 - **🔗 Link pendek.** Slug acak atau custom, password dan tanggal kedaluwarsa opsional, dan QR code (PNG, SVG, atau JPG) untuk setiap link.

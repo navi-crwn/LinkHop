@@ -46,8 +46,12 @@
                             </span>
                         @endif
                         <div class="min-w-0 flex-1">
-                            <p class="truncate text-sm font-medium text-ink">{{ $link->title }}</p>
-                            <a href="{{ $link->url }}" target="_blank" rel="noopener nofollow" class="block truncate text-xs text-muted hover:underline">{{ $link->url }}</a>
+                            <p class="truncate text-sm font-medium text-ink">{{ $link->displayTitle() }}</p>
+                            @if ($summaryUrl = $link->displaySummaryUrl())
+                                <a href="{{ $summaryUrl }}" target="_blank" rel="noopener nofollow" class="block truncate text-xs text-muted hover:underline">{{ $link->displaySummary() }}</a>
+                            @elseif ($summary = $link->displaySummary())
+                                <p class="truncate text-xs text-muted">{{ $summary }}</p>
+                            @endif
                         </div>
                         <span class="shrink-0 text-xs tabular-nums text-muted">{{ number_format($link->click_count) }} clicks</span>
                         <span class="{{ $link->is_active ? 'chip-green' : 'chip-red' }} shrink-0">{{ $link->is_active ? 'Active' : 'Off' }}</span>
@@ -87,7 +91,7 @@
                 <ul class="divide-glass">
                     @forelse ($recentClicks->take(10) as $click)
                         <li class="flex items-center justify-between gap-2 px-4 py-2 text-xs">
-                            <span class="truncate text-ink">{{ $click->bioLink->title ?? 'Removed link' }}</span>
+                            <span class="truncate text-ink">{{ $click->bioLink?->displayTitle() ?? 'Removed link' }}</span>
                             <span class="flex shrink-0 items-center gap-1.5 text-muted">@if ($click->country){!! country_flag($click->country) !!}@endif{{ $click->created_at->diffForHumans(null, true) }}</span>
                         </li>
                     @empty

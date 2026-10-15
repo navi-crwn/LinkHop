@@ -81,3 +81,19 @@ test('admin bio detail page renders', function () {
     $this->actingAs(smokeAdmin())->get(route('admin.bio.show', $page))->assertOk()->assertSee('Member bio');
     $this->actingAs($member)->get(route('bio.analytics', $page))->assertOk();
 });
+
+test('admin bio detail labels blocks that have no title or url', function () {
+    $page = BioPage::create(['user_id' => smokeMember()->id, 'slug' => 'blocksbio', 'title' => 'Blocks bio', 'is_published' => true]);
+    $page->links()->createMany([
+        ['type' => 'link', 'title' => 'My site', 'url' => 'https://example.com', 'order' => 1],
+        ['type' => 'divider', 'order' => 2],
+        ['type' => 'text', 'content' => '<p>Hello <b>world</b></p>', 'order' => 3],
+        ['type' => 'youtube', 'title' => 'Watch', 'embed_url' => 'https://www.youtube.com/watch?v=abc', 'order' => 4],
+        ['type' => 'faq', 'faq_items' => [['question' => 'Is it free?', 'answer' => 'Yes'], ['question' => 'Q2', 'answer' => 'A2']], 'order' => 5],
+        ['type' => 'vcard', 'vcard_name' => 'Ivan', 'vcard_email' => 'ivan@example.com', 'order' => 6],
+    ]);
+
+    $this->actingAs(smokeAdmin())->get(route('admin.bio.show', $page))->assertOk()
+        ->assertSeeInOrder(['My site', 'https://example.com', 'Divider', 'Hello world', 'Watch', 'YouTube · https://www.youtube.com/watch?v=abc',
+            'Is it free?', 'FAQ · 2 questions', 'Ivan', 'Contact card · ivan@example.com'], false);
+});
