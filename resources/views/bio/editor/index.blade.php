@@ -1884,10 +1884,11 @@ window.bioEditorV2 = function() {
                         blocks: blocksData,
                         socials: {
                             position: bioPageData.social_icons_position === 'bottom_page' ? 'bottom' : 'top',
-                            items: (bioPageData.social_links || []).filter(s => s.enabled !== false).map((s, i) => ({
+                            // Same rule as the public page: shown unless switched off, and only with a value.
+                            items: (bioPageData.social_links || []).filter(s => s && ![false, 0, '0', 'false'].includes(s.enabled ?? s.is_active ?? true) && String(s.value || s.url || '').trim() !== '').map((s, i) => ({
                                 id: i,
                                 platform: s.platform,
-                                url: s.value || ''
+                                url: s.value || s.url || ''
                             }))
                         },
                         design: {
