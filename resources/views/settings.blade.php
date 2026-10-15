@@ -144,21 +144,21 @@
                         </section>
                     @endunless
                 </div>
-                <div x-show="tab === '2fa'" x-cloak class="space-y-6 p-5">
+                <div x-show="tab === '2fa'" x-cloak class="space-y-4 p-5">
                     <div>
                         <h3 class="text-base font-semibold text-ink">Two-Factor Authentication</h3>
-                        <p class="text-sm text-slate-600 dark:text-slate-400">Add an extra layer of security to your account</p>
+                        <p class="text-sm text-muted">Add an extra layer of security to your account</p>
                     </div>
                     @if(!auth()->user()->two_factor_secret)
-                        <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
-                            <h4 class="font-medium text-slate-900 dark:text-white">Enable Two-Factor Authentication</h4>
-                            <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                        <div class="glass-inset rounded-xl p-4">
+                            <h4 class="font-medium text-ink">Enable Two-Factor Authentication</h4>
+                            <p class="mt-1 text-sm text-muted">
                                 Secure your account by requiring a verification code from your authenticator app when logging in.
                             </p>
                             <form method="POST" action="{{ route('settings.2fa.enable') }}" class="mt-4 space-y-3">
                                 @csrf
                                 <div>
-                                    <label for="fsettin-7" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Confirm your password</label>
+                                    <label for="fsettin-7" class="label">Confirm your password</label>
                                     <input id="fsettin-7" type="password" name="password" class="input mt-1" required>
                                 </div>
                                 <button type="submit" class="btn-primary btn-sm">
@@ -168,9 +168,9 @@
                         </div>
                     @else
                         @if(!auth()->user()->two_factor_confirmed_at)
-                            <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-900/30 dark:bg-blue-900/20">
-                                <h4 class="font-medium text-blue-900 dark:text-blue-100">Complete Setup</h4>
-                                <p class="mt-1 text-sm text-blue-800 dark:text-blue-200">
+                            <div class="rounded-xl border border-indigo-500/30 bg-indigo-500/10 p-4">
+                                <h4 class="font-medium text-ink">Complete Setup</h4>
+                                <p class="mt-1 text-sm text-muted">
                                     Scan the QR code below with your authenticator app (Google Authenticator, Authy, etc.)
                                 </p>
                                 <div class="mt-4 flex items-center justify-center bg-white p-4 rounded-lg">
@@ -185,14 +185,14 @@
                                     @endphp
                                     {!! QrCode::size(200)->generate($qrCodeUrl) !!}
                                 </div>
-                                <div class="mt-4 p-3 bg-slate-800 rounded-lg">
-                                    <p class="text-xs text-slate-400 text-center">Secret Key (manual entry)</p>
-                                    <p class="text-sm font-mono text-white text-center">{{ $secret }}</p>
+                                <div class="glass-inset mt-4 rounded-xl p-3">
+                                    <p class="text-center text-xs text-muted">Secret Key (manual entry)</p>
+                                    <p class="text-center font-mono text-sm text-ink">{{ $secret }}</p>
                                 </div>
                                 <form method="POST" action="{{ route('settings.2fa.confirm') }}" class="mt-4 space-y-3">
                                     @csrf
                                     <div>
-                                        <label for="fsettin-8" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Enter 6-digit code from your app</label>
+                                        <label for="fsettin-8" class="label">Enter 6-digit code from your app</label>
                                         <input id="fsettin-8" type="text" name="code" maxlength="6" pattern="[0-9]{6}" class="input mt-1" required>
                                     </div>
                                     <button type="submit" class="btn-primary btn-sm">
@@ -212,23 +212,23 @@
                                     Your account is protected with two-factor authentication.
                                 </p>
                             </div>
-                            <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
-                                <h4 class="font-medium text-slate-900 dark:text-white">Recovery Codes</h4>
-                                <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                            <div class="glass-inset rounded-xl p-4">
+                                <h4 class="font-medium text-ink">Recovery Codes</h4>
+                                <p class="mt-1 text-sm text-muted">
                                     Store these codes in a safe place. You can use them to access your account if you lose your authenticator device.
                                 </p>
                                 @php
                                     $recoveryCodes = json_decode(decrypt(auth()->user()->two_factor_recovery_codes), true);
                                 @endphp
-                                <div class="mt-4 grid grid-cols-2 gap-2 p-3 bg-slate-800 rounded-lg">
+                                <div class="glass-inset mt-4 grid grid-cols-2 gap-2 rounded-xl p-3">
                                     @foreach($recoveryCodes as $code)
-                                        <div class="text-sm font-mono text-white">{{ $code }}</div>
+                                        <div class="font-mono text-sm text-ink">{{ $code }}</div>
                                     @endforeach
                                 </div>
                                 <form method="POST" action="{{ route('settings.2fa.recovery-codes') }}" class="mt-4" data-confirm="Are you sure you want to regenerate recovery codes? Your old codes will no longer work.">
                                     @csrf
                                     <input type="hidden" name="password" value="">
-                                    <button type="button" data-prompt-password="Enter your password to regenerate codes:" class="rounded-lg bg-slate-600 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-500">
+                                    <button type="button" data-prompt-password="Enter your password to regenerate codes:" class="btn-soft btn-sm">
                                         Regenerate Codes
                                     </button>
                                 </form>
@@ -250,42 +250,42 @@
                         @endif
                     @endif
                 </div>
-                <div x-show="tab === 'backup'" x-cloak class="space-y-6 p-5" x-data="{ showFilters: false }">
+                <div x-show="tab === 'backup'" x-cloak class="space-y-4 p-5" x-data="{ showFilters: false }">
                     <div>
                         <h3 class="text-base font-semibold text-ink">Backup & Export</h3>
-                        <p class="text-sm text-slate-600 dark:text-slate-400">Download your complete link data with analytics in CSV format</p>
+                        <p class="text-sm text-muted">Download your complete link data with analytics in CSV format</p>
                     </div>
-                    <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
+                    <div class="glass-inset rounded-xl p-4">
                         <div class="flex items-center justify-between">
                             <div>
-                                <h4 class="font-medium text-slate-900 dark:text-white">Export All Data</h4>
-                                <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                                <h4 class="font-medium text-ink">Export All Data</h4>
+                                <p class="mt-1 text-sm text-muted">
                                     Export links with complete analytics and statistics
                                 </p>
                             </div>
-                            <button type="button" @click="showFilters = !showFilters" class="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400">
+                            <button type="button" @click="showFilters = !showFilters" class="text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-300">
                                 <span x-text="showFilters ? 'Hide Filters' : 'Show Filters'"></span>
                             </button>
                         </div>
                         <form method="POST" action="{{ route('settings.export') }}" class="mt-4 space-y-4">
                             @csrf
-                            <div x-show="showFilters" x-cloak class="space-y-4 p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700">
+                            <div x-show="showFilters" x-cloak class="glass rounded-xl space-y-4 p-4">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label for="fsettin-9" class="block text-sm font-medium text-slate-700 dark:text-slate-300">From Date</label>
+                                        <label for="fsettin-9" class="label">From Date</label>
                                         <input id="fsettin-9" type="date" name="date_from" class="input mt-1">
                                     </div>
                                     <div>
-                                        <label for="fsettin-10" class="block text-sm font-medium text-slate-700 dark:text-slate-300">To Date</label>
+                                        <label for="fsettin-10" class="label">To Date</label>
                                         <input id="fsettin-10" type="date" name="date_to" class="input mt-1">
                                     </div>
                                     <div>
-                                        <label for="fsettin-11" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Minimum Clicks</label>
+                                        <label for="fsettin-11" class="label">Minimum Clicks</label>
                                         <input id="fsettin-11" type="number" name="min_clicks" min="0" placeholder="e.g., 10" class="input mt-1">
-                                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Only links with this many clicks or more</p>
+                                        <p class="mt-1 text-xs text-muted">Only links with this many clicks or more</p>
                                     </div>
                                     <div>
-                                        <label for="fsettin-12" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Sort By</label>
+                                        <label for="fsettin-12" class="label">Sort By</label>
                                         <select id="fsettin-12" name="sort_by" class="input mt-1">
                                             <option value="newest">Newest First</option>
                                             <option value="oldest">Oldest First</option>
@@ -294,7 +294,7 @@
                                         </select>
                                     </div>
                                     <div>
-                                        <label for="fsettin-13" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Folder</label>
+                                        <label for="fsettin-13" class="label">Folder</label>
                                         <select id="fsettin-13" name="folder_id" class="input mt-1">
                                             <option value="">All Folders</option>
                                             <option value="default">Default (No Folder)</option>
@@ -304,7 +304,7 @@
                                         </select>
                                     </div>
                                     <div>
-                                        <label for="fsettin-14" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Tag</label>
+                                        <label for="fsettin-14" class="label">Tag</label>
                                         <select id="fsettin-14" name="tag_id" class="input mt-1">
                                             <option value="">All Tags</option>
                                             @foreach($tags as $tag)
@@ -321,22 +321,22 @@
                                     </svg>
                                     Download Complete Export
                                 </button>
-                                <button type="button" @click="showFilters = false; $el.closest('form').reset();" class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600">
+                                <button type="button" @click="showFilters = false; $el.closest('form').reset();" class="btn-ghost btn-sm">
                                     Reset Filters
                                 </button>
                             </div>
                         </form>
-                        <div class="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                            <p class="text-xs text-blue-800 dark:text-blue-200">
+                        <div class="mt-4 rounded-xl bg-indigo-500/10 p-3">
+                            <p class="text-xs text-muted">
                                 <strong>Complete export includes:</strong> Short URL, Destination URL, Redirect type, Folder, Tags, Password status, Status, Total clicks, Unique visitors, Created date, Expiration date, Last clicked date
                             </p>
                         </div>
                     </div>
-                    <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
+                    <div class="glass-inset rounded-xl p-4">
                         <div class="flex flex-wrap items-center justify-between gap-3">
                             <div>
-                                <h4 class="font-medium text-slate-900 dark:text-white">Download My Account Data</h4>
-                                <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                                <h4 class="font-medium text-ink">Download My Account Data</h4>
+                                <p class="mt-1 text-sm text-muted">
                                     Profile, links, folders, tags, bio pages with their blocks, recent sign-ins and activity log (JSON)
                                 </p>
                             </div>
@@ -347,10 +347,10 @@
                         </div>
                     </div>
                 </div>
-                <div x-show="tab === 'notifications'" x-cloak class="space-y-6 p-5">
+                <div x-show="tab === 'notifications'" x-cloak class="space-y-4 p-5">
                     <div>
                         <h3 class="text-base font-semibold text-ink">Notification Preferences</h3>
-                        <p class="text-sm text-slate-600 dark:text-slate-400">Manage how you receive notifications</p>
+                        <p class="text-sm text-muted">Manage how you receive notifications</p>
                     </div>
                     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-900/30 dark:bg-yellow-900/20">
                         <p class="text-sm text-yellow-800 dark:text-yellow-200">
@@ -364,22 +364,22 @@
                         </ul>
                     </div>
                 </div>
-                <div x-show="tab === 'activity'" x-cloak class="space-y-6 p-5">
+                <div x-show="tab === 'activity'" x-cloak class="space-y-4 p-5">
                     <div class="flex items-center justify-between">
                         <div>
                             <h3 class="text-base font-semibold text-ink">Activity Logs</h3>
-                            <p class="text-sm text-slate-600 dark:text-slate-400">Recent actions performed on your account (max 1 month)</p>
+                            <p class="text-sm text-muted">Recent actions performed on your account (max 1 month)</p>
                         </div>
                     </div>
-                    <form method="GET" action="{{ route('settings') }}#activity" class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
+                    <form method="GET" action="{{ route('settings') }}#activity" class="glass-inset rounded-xl p-4">
                         <input type="hidden" name="tab" value="activity">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label for="fsettin-15" class="block text-sm font-medium text-slate-700 dark:text-slate-300">From Date</label>
+                                <label for="fsettin-15" class="label">From Date</label>
                                 <input id="fsettin-15" type="date" name="activity_from" value="{{ request('activity_from') }}" class="input mt-1">
                             </div>
                             <div>
-                                <label for="fsettin-16" class="block text-sm font-medium text-slate-700 dark:text-slate-300">To Date</label>
+                                <label for="fsettin-16" class="label">To Date</label>
                                 <input id="fsettin-16" type="date" name="activity_to" value="{{ request('activity_to') }}" class="input mt-1">
                             </div>
                         </div>
@@ -387,46 +387,46 @@
                             <button type="submit" class="btn-primary btn-sm">
                                 Apply Filter
                             </button>
-                            <a href="{{ route('settings') }}#activity" class="inline-flex items-center rounded-lg border border-slate-300 bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
+                            <a href="{{ route('settings') }}#activity" class="btn-ghost btn-sm">
                                 Clear
                             </a>
                         </div>
                     </form>
                     <div class="space-y-2">
                         @forelse ($activityLogs as $log)
-                            <div class="rounded-lg border border-slate-200 p-3 dark:border-slate-700">
+                            <div class="glass-inset rounded-xl p-3">
                                 <div class="flex items-start justify-between">
                                     <div>
-                                        <p class="text-sm font-medium text-slate-900 dark:text-white">{{ $log->description }}</p>
-                                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ \Carbon\Carbon::parse($log->created_at)->format('M d, Y H:i:s') }}</p>
+                                        <p class="text-sm font-medium text-ink">{{ $log->description }}</p>
+                                        <p class="text-xs text-muted">{{ \Carbon\Carbon::parse($log->created_at)->format('M d, Y H:i:s') }}</p>
                                     </div>
-                                    <span class="rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                                    <span class="chip-gray">
                                         {{ ucfirst($log->action) }}
                                     </span>
                                 </div>
                             </div>
                         @empty
-                            <p class="text-sm text-slate-500 dark:text-slate-400">No activity logs found for the selected date range.</p>
+                            <p class="text-sm text-muted">No activity logs found for the selected date range.</p>
                         @endforelse
                     </div>
                 </div>
-                <div x-show="tab === 'login'" x-cloak class="space-y-6 p-5">
+                <div x-show="tab === 'login'" x-cloak class="space-y-4 p-5">
                     <div>
                         <h3 class="text-base font-semibold text-ink">Login History</h3>
-                        <p class="text-sm text-slate-600 dark:text-slate-400">Last 5 login sessions to your account</p>
+                        <p class="text-sm text-muted">Last 5 login sessions to your account</p>
                     </div>
                     @forelse($loginHistories as $index => $history)
-                        <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+                        <div class="glass-inset rounded-xl p-4">
                             <div class="flex items-start justify-between">
                                 <div class="flex items-center gap-2">
-                                    <span class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-sm font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                                    <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-500/15 text-sm font-medium text-indigo-600 dark:text-indigo-300">
                                         {{ $index + 1 }}
                                     </span>
                                     <div>
-                                        <p class="text-sm font-medium text-slate-900 dark:text-white">
+                                        <p class="text-sm font-medium text-ink">
                                             {{ \Carbon\Carbon::parse($history->logged_in_at)->format('M d, Y - H:i:s') }}
                                         </p>
-                                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ \Carbon\Carbon::parse($history->logged_in_at)->diffForHumans() }}</p>
+                                        <p class="text-xs text-muted">{{ \Carbon\Carbon::parse($history->logged_in_at)->diffForHumans() }}</p>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2">
@@ -444,12 +444,12 @@
                             </div>
                             <div class="mt-3 grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                                 <div>
-                                    <p class="font-medium text-slate-500 dark:text-slate-400">IP Address</p>
-                                    <p class="text-slate-900 dark:text-white">{{ $history->ip_address ?? 'Unknown' }}</p>
+                                    <p class="font-medium text-muted">IP Address</p>
+                                    <p class="text-ink">{{ $history->ip_address ?? 'Unknown' }}</p>
                                 </div>
                                 <div>
-                                    <p class="font-medium text-slate-500 dark:text-slate-400">Location</p>
-                                    <p class="text-slate-900 dark:text-white">
+                                    <p class="font-medium text-muted">Location</p>
+                                    <p class="text-ink">
                                         @if($history->city && $history->country)
                                             {!! country_flag($history->country) !!} {{ $history->city }}, {{ country_name($history->country) }}
                                         @elseif($history->country)
@@ -460,39 +460,39 @@
                                     </p>
                                 </div>
                                 <div>
-                                    <p class="font-medium text-slate-500 dark:text-slate-400">Provider</p>
-                                    <p class="text-slate-900 dark:text-white truncate" title="{{ $history->isp ?? $history->provider ?? 'Unknown' }}">
+                                    <p class="font-medium text-muted">Provider</p>
+                                    <p class="text-ink truncate" title="{{ $history->isp ?? $history->provider ?? 'Unknown' }}">
                                         {{ \Illuminate\Support\Str::limit($history->isp ?? $history->provider ?? 'Unknown', 20) }}
                                     </p>
                                 </div>
                                 <div>
-                                    <p class="font-medium text-slate-500 dark:text-slate-400">Device</p>
-                                    <p class="text-slate-900 dark:text-white">{{ $history->device ?? 'Desktop' }}</p>
+                                    <p class="font-medium text-muted">Device</p>
+                                    <p class="text-ink">{{ $history->device ?? 'Desktop' }}</p>
                                 </div>
                                 <div>
-                                    <p class="font-medium text-slate-500 dark:text-slate-400">Browser</p>
-                                    <p class="text-slate-900 dark:text-white">{{ $history->browser ?? 'Unknown' }}</p>
+                                    <p class="font-medium text-muted">Browser</p>
+                                    <p class="text-ink">{{ $history->browser ?? 'Unknown' }}</p>
                                 </div>
                             </div>
                         </div>
                     @empty
-                        <p class="text-sm text-slate-500 dark:text-slate-400">No login history available yet.</p>
+                        <p class="text-sm text-muted">No login history available yet.</p>
                     @endforelse
                 </div>
                 </div>
                 <!-- API & Integrations Tab -->
-                <div x-show="tab === 'api'" x-cloak x-data="apiSettings()" class="space-y-6 p-5">
+                <div x-show="tab === 'api'" x-cloak x-data="apiSettings()" class="space-y-4 p-5">
                     <div>
                         <h3 class="text-base font-semibold text-ink">API Tokens</h3>
-                        <p class="text-sm text-slate-600 dark:text-slate-400">Create API tokens for ShareX, CLI tools, and custom integrations</p>
+                        <p class="text-sm text-muted">Create API tokens for ShareX, CLI tools, and custom integrations</p>
                     </div>
                     <!-- Create New Token Form -->
-                    <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/50">
-                        <h4 class="text-sm font-semibold text-slate-900 dark:text-white mb-3">Create New Token</h4>
+                    <div class="glass-inset rounded-xl p-4">
+                        <h4 class="text-sm font-semibold text-ink mb-3">Create New Token</h4>
                         <form method="POST" action="{{ route('api-tokens.store') }}" @submit.prevent="createToken" class="space-y-3">
                             @csrf
                             <div>
-                                <label for="fsettin-17" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Token Name</label>
+                                <label for="fsettin-17" class="label">Token Name</label>
                                 <input id="fsettin-17" 
                                     type="text" 
                                     name="name" 
@@ -501,7 +501,7 @@
                                     required
                                     class="input"
                                 >
-                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Give your token a memorable name</p>
+                                <p class="mt-1 text-xs text-muted">Give your token a memorable name</p>
                             </div>
                             <button type="submit" class="btn-primary btn-sm">
                                 <span x-show="!isCreating">🔑 Generate Token</span>
@@ -531,13 +531,13 @@
                     </div>
                     <!-- Existing Tokens List -->
                     <div>
-                        <h4 class="text-sm font-semibold text-slate-900 dark:text-white mb-3">Your API Tokens</h4>
+                        <h4 class="text-sm font-semibold text-ink mb-3">Your API Tokens</h4>
                         <div class="space-y-3">
                             @forelse(auth()->user()->apiTokens as $token)
-                                <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+                                <div class="flex items-center justify-between glass-inset rounded-xl p-4">
                                     <div class="flex-1">
-                                        <h5 class="font-semibold text-slate-900 dark:text-white">{{ $token->name }}</h5>
-                                        <div class="mt-1 flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+                                        <h5 class="font-semibold text-ink">{{ $token->name }}</h5>
+                                        <div class="mt-1 flex items-center gap-4 text-xs text-muted">
                                             <span>Created: {{ $token->created_at->format('M d, Y') }}</span>
                                             @if($token->last_used_at)
                                                 <span>Last used: {{ $token->last_used_at->diffForHumans() }}</span>
@@ -556,14 +556,14 @@
                                     </form>
                                 </div>
                             @empty
-                                <p class="text-sm text-slate-500 dark:text-slate-400">No API tokens yet. Create one to get started!</p>
+                                <p class="text-sm text-muted">No API tokens yet. Create one to get started!</p>
                             @endforelse
                         </div>
                     </div>
                     <!-- API Documentation Link -->
-                    <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
-                        <h4 class="text-sm font-semibold text-blue-900 dark:text-blue-200 mb-2">📚 API Documentation</h4>
-                        <p class="text-sm text-blue-800 dark:text-blue-300 mb-3">Learn how to integrate hel.ink with ShareX, CLI tools, and more.</p>
+                    <div class="rounded-xl border border-indigo-500/30 bg-indigo-500/10 p-4">
+                        <h4 class="section-title mb-1">API documentation</h4>
+                        <p class="mb-3 text-sm text-muted">Learn how to integrate hel.ink with ShareX, CLI tools, and more.</p>
                         <a href="{{ route('api-docs') }}" class="btn-primary btn-sm">
                             View API Docs →
                         </a>

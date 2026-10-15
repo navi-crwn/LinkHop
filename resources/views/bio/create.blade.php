@@ -9,12 +9,12 @@
         <!-- Notification Toast -->
         <div x-show="notification.show" x-transition 
              x-cloak
-             class="fixed top-24 right-4 z-50 rounded-lg px-4 py-3 text-white shadow-lg"
-             :class="notification.type === 'success' ? 'bg-green-600' : 'bg-red-600'">
+             class="glass-strong fixed right-4 top-24 z-50 rounded-xl px-4 py-3 text-sm"
+             :class="notification.type === 'success' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">
             <div class="flex items-center gap-2">
                 <svg x-show="notification.type === 'success'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                 <svg x-show="notification.type === 'error'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                <span x-text="notification.message" class="font-medium"></span>
+                <span x-text="notification.message" class="font-medium text-ink"></span>
             </div>
         </div>
         <div>
@@ -23,13 +23,13 @@
                     <form action="{{ route('bio.store') }}" method="POST" x-data="slugChecker()">
                         @csrf
                         <input type="hidden" name="qr_settings" id="qr_settings_input">
-                        <div class="space-y-6">
+                        <div class="space-y-4">
                             <div>
-                                <label for="slug" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                                    Choose Your URL <span class="text-red-500">*</span>
+                                <label for="slug" class="label">
+                                    Choose Your URL <span class="text-rose-500">*</span>
                                 </label>
-                                <div class="mt-2 flex items-center gap-2">
-                                    <span class="text-sm text-slate-500 dark:text-slate-400">hel.ink/b/</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="shrink-0 text-sm text-muted">hel.ink/b/</span>
                                     <input 
                                         type="text" 
                                         name="slug" 
@@ -42,26 +42,26 @@
                                         maxlength="20"
                                         x-model="slug"
                                         @input.debounce.500ms="checkSlug()"
-                                        class="flex-1 rounded-lg border border-slate-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                                        class="input flex-1"
                                     >
                                 </div>
-                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Only letters and numbers ({{ auth()->user()->isAdmin() ? 3 : config('shortener.bio_slug_min_length', 5) }}-20 characters)</p>
+                                <p class="mt-1 text-xs text-muted">Only letters and numbers ({{ auth()->user()->isAdmin() ? 3 : config('shortener.bio_slug_min_length', 5) }}-20 characters)</p>
                                 <div class="mt-2 text-sm" x-show="checking">
-                                    <span class="text-blue-600 dark:text-blue-400">Checking availability...</span>
+                                    <span class="text-muted">Checking availability…</span>
                                 </div>
                                 <div class="mt-2 text-sm" x-show="!checking && available === true" x-cloak>
-                                    <span class="text-green-600 dark:text-green-400">✓ Available!</span>
+                                    <span class="text-emerald-600 dark:text-emerald-400">✓ Available!</span>
                                 </div>
                                 <div class="mt-2 text-sm" x-show="!checking && available === false" x-cloak>
-                                    <span class="text-red-600 dark:text-red-400" x-text="'✗ ' + (message || 'Already taken')">✗ Already taken</span>
+                                    <span class="text-rose-500" x-text="'✗ ' + (message || 'Already taken')">✗ Already taken</span>
                                 </div>
                                 @error('slug')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
                                 @enderror
                             </div>
                             <div>
-                                <label for="title" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                                    Page Title <span class="text-red-500">*</span>
+                                <label for="title" class="label">
+                                    Page Title <span class="text-rose-500">*</span>
                                 </label>
                                 <input 
                                     type="text" 
@@ -71,14 +71,14 @@
                                     value="{{ old('title') }}"
                                     placeholder="Your Name or Brand"
                                     maxlength="{{ \App\Models\BioPage::TITLE_MAX }}"
-                                    class="mt-2 w-full rounded-lg border border-slate-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                                    class="input"
                                 >
                                 @error('title')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
                                 @enderror
                             </div>
                             <div>
-                                <label for="bio" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                                <label for="bio" class="label">
                                     Bio Description
                                 </label>
                                 <textarea 
@@ -87,32 +87,30 @@
                                     rows="3"
                                     placeholder="Tell your visitors about yourself..."
                                     maxlength="{{ \App\Models\BioPage::BIO_MAX }}"
-                                    class="mt-2 w-full rounded-lg border border-slate-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                                    class="input"
                                 >{{ old('bio') }}</textarea>
-                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Maximum 155 characters</p>
+                                <p class="mt-1 text-xs text-muted">Maximum 155 characters</p>
                                 @error('bio')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
-                        <div class="mt-8 flex justify-end gap-3">
-                            <a href="{{ route('bio.index') }}" class="rounded-lg border border-slate-300 px-6 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800">
-                                Cancel
-                            </a>
+                        <div class="mt-6 flex justify-end gap-2">
+                            <a href="{{ route('bio.index') }}" class="btn-ghost btn-sm">Cancel</a>
                             <button 
                                 type="submit" 
                                 :disabled="available === false"
-                                class="btn-primary disabled:cursor-not-allowed disabled:opacity-50"
+                                class="btn-primary btn-sm disabled:cursor-not-allowed disabled:opacity-50"
                             >
-                                Create Bio Page
+                                Create bio page
                             </button>
                         </div>
                     </form>
                 </div>
                 <div class="glass-card !p-6 lg:sticky lg:top-24">
-                    <h2 class="mb-4 text-lg font-semibold text-slate-900 dark:text-white">QR Code Preview</h2>
+                    <h2 class="section-title mb-3">QR Code Preview</h2>
                     <div x-data="qrGenerator()">
-                        <div class="relative flex items-center justify-center rounded-lg bg-slate-50 p-4 dark:bg-slate-800 mb-4">
+                        <div class="glass-inset relative mb-4 flex items-center justify-center rounded-xl p-4">
                             <div class="relative w-[200px] h-[200px]">
                                 <div 
                                     x-ref="qrContainer" 
@@ -144,7 +142,7 @@
                         </div>
                         <div class="space-y-3">
                             <div>
-                                <label class="mb-2 block text-xs font-medium text-slate-700 dark:text-slate-300">
+                                <label class="label">
                                      Logo
                                 </label>
                                 <div class="flex items-center gap-2">
@@ -152,7 +150,7 @@
                                         type="file" aria-label="Upload QR logo" 
                                         accept="image/*"
                                         @change="uploadLogo($event)"
-                                        class="block w-full text-xs text-slate-500 file:mr-2 file:rounded file:border-0 file:bg-blue-50 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/30 dark:file:text-blue-400"
+                                        class="block w-full text-xs text-muted file:mr-2 file:rounded file:border-0 file:bg-indigo-500/15 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-indigo-700 hover:file:bg-indigo-500/25 dark:file:text-indigo-300"
                                     >
                                     <button 
                                         type="button" 
@@ -164,11 +162,11 @@
                                     </button>
                                 </div>
                             </div>
-                            <div x-data="{ openColors: false }" class="border border-slate-200 rounded-lg dark:border-slate-700">
+                            <div x-data="{ openColors: false }" class="glass-inset rounded-xl">
                                 <button 
                                     type="button"
                                     @click="openColors = !openColors"
-                                    class="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                                    class="flex w-full items-center justify-between rounded-xl px-3 py-2 text-xs font-medium text-ink transition-colors hover:bg-slate-500/10"
                                 >
                                     <span>Colors (Dots & Background)</span>
                                     <svg 
@@ -183,40 +181,40 @@
                                 </button>
                                 <div x-show="openColors" x-collapse class="px-3 pb-3 space-y-4">
                                     <div>
-                                        <label class="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-400">
+                                        <label class="label">
                                             Dots Color
                                         </label>
                                         <div class="flex flex-wrap gap-2">
-                                            <button aria-label="Black" type="button" @click="setColor('#000000')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': qrColor === '#000000' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-all shadow-sm" style="background-color: #000000;"></button>
-                                            <button aria-label="Blue" type="button" @click="setColor('#1E40AF')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': qrColor === '#1E40AF' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-all shadow-sm" style="background-color: #1E40AF;"></button>
-                                            <button aria-label="Red" type="button" @click="setColor('#EF4444')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': qrColor === '#EF4444' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-all shadow-sm" style="background-color: #EF4444;"></button>
-                                            <button aria-label="Green" type="button" @click="setColor('#10B981')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': qrColor === '#10B981' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-all shadow-sm" style="background-color: #10B981;"></button>
-                                            <button aria-label="Purple" type="button" @click="setColor('#8B5CF6')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': qrColor === '#8B5CF6' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-all shadow-sm" style="background-color: #8B5CF6;"></button>
+                                            <button aria-label="Black" type="button" @click="setColor('#000000')" :class="{ 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-transparent': qrColor === '#000000' }" class="h-10 w-10 rounded-lg border-2 border-slate-400/40 hover:scale-110 transition-all shadow-sm" style="background-color: #000000;"></button>
+                                            <button aria-label="Blue" type="button" @click="setColor('#1E40AF')" :class="{ 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-transparent': qrColor === '#1E40AF' }" class="h-10 w-10 rounded-lg border-2 border-slate-400/40 hover:scale-110 transition-all shadow-sm" style="background-color: #1E40AF;"></button>
+                                            <button aria-label="Red" type="button" @click="setColor('#EF4444')" :class="{ 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-transparent': qrColor === '#EF4444' }" class="h-10 w-10 rounded-lg border-2 border-slate-400/40 hover:scale-110 transition-all shadow-sm" style="background-color: #EF4444;"></button>
+                                            <button aria-label="Green" type="button" @click="setColor('#10B981')" :class="{ 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-transparent': qrColor === '#10B981' }" class="h-10 w-10 rounded-lg border-2 border-slate-400/40 hover:scale-110 transition-all shadow-sm" style="background-color: #10B981;"></button>
+                                            <button aria-label="Purple" type="button" @click="setColor('#8B5CF6')" :class="{ 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-transparent': qrColor === '#8B5CF6' }" class="h-10 w-10 rounded-lg border-2 border-slate-400/40 hover:scale-110 transition-all shadow-sm" style="background-color: #8B5CF6;"></button>
                                             <div class="relative" x-data="{ showColorPicker: false }">
                                                 <button aria-label="Custom color" type="button" @click="showColorPicker = !showColorPicker" class="flex h-10 w-10 items-center justify-center rounded-lg border-2 border-slate-300 bg-gradient-to-br from-red-500 via-yellow-500 to-blue-500 hover:scale-110 transition-all shadow-sm">
                                                     <svg class="h-5 w-5 text-white drop-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
                                                 </button>
-                                                <div x-show="showColorPicker" @click.away="showColorPicker = false" class="absolute left-0 top-12 z-10 rounded border border-slate-300 bg-white p-2 shadow-xl dark:border-slate-600 dark:bg-slate-800">
+                                                <div x-show="showColorPicker" @click.away="showColorPicker = false" class="glass-strong absolute left-0 top-12 z-10 rounded-xl p-2">
                                                     <input type="color" x-model="customColor" @change="setColor(customColor)" class="h-10 w-24 cursor-pointer rounded">
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div>
-                                        <label class="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-400">
+                                        <label class="label">
                                             Background Color
                                         </label>
                                         <div class="flex flex-wrap gap-2">
-                                            <button aria-label="White background" type="button" @click="updateBgColor('#ffffff')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': bgColor === '#ffffff' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-transform shadow-sm" style="background-color: #ffffff;"></button>
-                                            <button aria-label="Gray background" type="button" @click="updateBgColor('#F3F4F6')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': bgColor === '#F3F4F6' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-transform shadow-sm" style="background-color: #F3F4F6;"></button>
-                                            <button aria-label="Yellow background" type="button" @click="updateBgColor('#FEF3C7')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': bgColor === '#FEF3C7' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-transform shadow-sm" style="background-color: #FEF3C7;"></button>
-                                            <button aria-label="Light blue background" type="button" @click="updateBgColor('#DBEAFE')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': bgColor === '#DBEAFE' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-transform shadow-sm" style="background-color: #DBEAFE;"></button>
-                                            <button aria-label="Light red background" type="button" @click="updateBgColor('#FEE2E2')" :class="{ 'ring-2 ring-blue-500 ring-offset-2': bgColor === '#FEE2E2' }" class="h-10 w-10 rounded-lg border-2 border-slate-300 hover:scale-110 transition-transform shadow-sm" style="background-color: #FEE2E2;"></button>
+                                            <button aria-label="White background" type="button" @click="updateBgColor('#ffffff')" :class="{ 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-transparent': bgColor === '#ffffff' }" class="h-10 w-10 rounded-lg border-2 border-slate-400/40 hover:scale-110 transition-transform shadow-sm" style="background-color: #ffffff;"></button>
+                                            <button aria-label="Gray background" type="button" @click="updateBgColor('#F3F4F6')" :class="{ 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-transparent': bgColor === '#F3F4F6' }" class="h-10 w-10 rounded-lg border-2 border-slate-400/40 hover:scale-110 transition-transform shadow-sm" style="background-color: #F3F4F6;"></button>
+                                            <button aria-label="Yellow background" type="button" @click="updateBgColor('#FEF3C7')" :class="{ 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-transparent': bgColor === '#FEF3C7' }" class="h-10 w-10 rounded-lg border-2 border-slate-400/40 hover:scale-110 transition-transform shadow-sm" style="background-color: #FEF3C7;"></button>
+                                            <button aria-label="Light blue background" type="button" @click="updateBgColor('#DBEAFE')" :class="{ 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-transparent': bgColor === '#DBEAFE' }" class="h-10 w-10 rounded-lg border-2 border-slate-400/40 hover:scale-110 transition-transform shadow-sm" style="background-color: #DBEAFE;"></button>
+                                            <button aria-label="Light red background" type="button" @click="updateBgColor('#FEE2E2')" :class="{ 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-transparent': bgColor === '#FEE2E2' }" class="h-10 w-10 rounded-lg border-2 border-slate-400/40 hover:scale-110 transition-transform shadow-sm" style="background-color: #FEE2E2;"></button>
                                             <div class="relative" x-data="{ showBgPicker: false }">
                                                 <button aria-label="Custom background color" type="button" @click="showBgPicker = !showBgPicker" class="flex h-10 w-10 items-center justify-center rounded-lg border-2 border-slate-300 bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-500 hover:scale-110 transition-all shadow-sm">
                                                     <svg class="h-5 w-5 text-white drop-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
                                                 </button>
-                                                <div x-show="showBgPicker" @click.away="showBgPicker = false" class="absolute left-0 top-12 z-10 rounded border border-slate-300 bg-white p-2 shadow-xl dark:border-slate-600 dark:bg-slate-800">
+                                                <div x-show="showBgPicker" @click.away="showBgPicker = false" class="glass-strong absolute left-0 top-12 z-10 rounded-xl p-2">
                                                     <input type="color" x-model="bgColor" @change="updateBgColor(bgColor)" class="h-10 w-24 cursor-pointer rounded">
                                                 </div>
                                             </div>
@@ -224,11 +222,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div x-data="{ openStyles: false }" class="border border-slate-200 rounded-lg dark:border-slate-700">
+                            <div x-data="{ openStyles: false }" class="glass-inset rounded-xl">
                                 <button 
                                     type="button"
                                     @click="openStyles = !openStyles"
-                                    class="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                                    class="flex w-full items-center justify-between rounded-xl px-3 py-2 text-xs font-medium text-ink transition-colors hover:bg-slate-500/10"
                                 >
                                     <span>Styles (Dots & Corners)</span>
                                     <svg 
@@ -243,35 +241,35 @@
                                 </button>
                                 <div x-show="openStyles" x-collapse class="px-3 pb-3 space-y-4">
                                     <div>
-                                        <label class="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-400">
+                                        <label class="label">
                                             Dots Style
                                         </label>
                                         <div class="grid grid-cols-5 gap-2">
-                                            <button type="button" @click="updateDotsType('rounded')" :class="dotsType === 'rounded' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300'" class="rounded-lg px-3 py-2 text-xs font-medium transition-all">Round</button>
-                                            <button type="button" @click="updateDotsType('dots')" :class="dotsType === 'dots' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300'" class="rounded-lg px-3 py-2 text-xs font-medium transition-all">Dots</button>
-                                            <button type="button" @click="updateDotsType('classy')" :class="dotsType === 'classy' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300'" class="rounded-lg px-3 py-2 text-xs font-medium transition-all">Classy</button>
-                                            <button type="button" @click="updateDotsType('square')" :class="dotsType === 'square' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300'" class="rounded-lg px-3 py-2 text-xs font-medium transition-all">Square</button>
-                                            <button type="button" @click="updateDotsType('extra-rounded')" :class="dotsType === 'extra-rounded' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300'" class="rounded-lg px-3 py-2 text-xs font-medium transition-all">Extra</button>
+                                            <button type="button" @click="updateDotsType('rounded')" :class="dotsType === 'rounded' ? 'bg-indigo-600 text-white' : 'bg-slate-500/10 text-muted hover:text-ink'" class="rounded-lg px-3 py-2 text-xs font-medium transition-all">Round</button>
+                                            <button type="button" @click="updateDotsType('dots')" :class="dotsType === 'dots' ? 'bg-indigo-600 text-white' : 'bg-slate-500/10 text-muted hover:text-ink'" class="rounded-lg px-3 py-2 text-xs font-medium transition-all">Dots</button>
+                                            <button type="button" @click="updateDotsType('classy')" :class="dotsType === 'classy' ? 'bg-indigo-600 text-white' : 'bg-slate-500/10 text-muted hover:text-ink'" class="rounded-lg px-3 py-2 text-xs font-medium transition-all">Classy</button>
+                                            <button type="button" @click="updateDotsType('square')" :class="dotsType === 'square' ? 'bg-indigo-600 text-white' : 'bg-slate-500/10 text-muted hover:text-ink'" class="rounded-lg px-3 py-2 text-xs font-medium transition-all">Square</button>
+                                            <button type="button" @click="updateDotsType('extra-rounded')" :class="dotsType === 'extra-rounded' ? 'bg-indigo-600 text-white' : 'bg-slate-500/10 text-muted hover:text-ink'" class="rounded-lg px-3 py-2 text-xs font-medium transition-all">Extra</button>
                                         </div>
                                     </div>
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label class="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-400">
+                                            <label class="label">
                                                 Corner Square
                                             </label>
                                             <div class="grid grid-cols-3 gap-2">
-                                                <button type="button" @click="updateCornerSquare('dot')" :class="cornerSquareType === 'dot' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300'" class="rounded-lg px-2 py-2 text-xs font-medium transition-all">Dot</button>
-                                                <button type="button" @click="updateCornerSquare('square')" :class="cornerSquareType === 'square' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300'" class="rounded-lg px-2 py-2 text-xs font-medium transition-all">Sqr</button>
-                                                <button type="button" @click="updateCornerSquare('extra-rounded')" :class="cornerSquareType === 'extra-rounded' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300'" class="rounded-lg px-2 py-2 text-xs font-medium transition-all">Ext</button>
+                                                <button type="button" @click="updateCornerSquare('dot')" :class="cornerSquareType === 'dot' ? 'bg-indigo-600 text-white' : 'bg-slate-500/10 text-muted hover:text-ink'" class="rounded-lg px-2 py-2 text-xs font-medium transition-all">Dot</button>
+                                                <button type="button" @click="updateCornerSquare('square')" :class="cornerSquareType === 'square' ? 'bg-indigo-600 text-white' : 'bg-slate-500/10 text-muted hover:text-ink'" class="rounded-lg px-2 py-2 text-xs font-medium transition-all">Sqr</button>
+                                                <button type="button" @click="updateCornerSquare('extra-rounded')" :class="cornerSquareType === 'extra-rounded' ? 'bg-indigo-600 text-white' : 'bg-slate-500/10 text-muted hover:text-ink'" class="rounded-lg px-2 py-2 text-xs font-medium transition-all">Ext</button>
                                             </div>
                                         </div>
                                         <div>
-                                            <label class="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-400">
+                                            <label class="label">
                                                 Corner Dot
                                             </label>
                                             <div class="grid grid-cols-2 gap-2">
-                                                <button type="button" @click="updateCornerDot('dot')" :class="cornerDotType === 'dot' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300'" class="rounded-lg px-3 py-2 text-xs font-medium transition-all">Dot</button>
-                                                <button type="button" @click="updateCornerDot('square')" :class="cornerDotType === 'square' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300'" class="rounded-lg px-3 py-2 text-xs font-medium transition-all">Square</button>
+                                                <button type="button" @click="updateCornerDot('dot')" :class="cornerDotType === 'dot' ? 'bg-indigo-600 text-white' : 'bg-slate-500/10 text-muted hover:text-ink'" class="rounded-lg px-3 py-2 text-xs font-medium transition-all">Dot</button>
+                                                <button type="button" @click="updateCornerDot('square')" :class="cornerDotType === 'square' ? 'bg-indigo-600 text-white' : 'bg-slate-500/10 text-muted hover:text-ink'" class="rounded-lg px-3 py-2 text-xs font-medium transition-all">Square</button>
                                             </div>
                                         </div>
                                     </div>
@@ -282,14 +280,14 @@
                                 <button 
                                     type="button" 
                                     @click="syncSettings(); $dispatch('notify', { message: 'QR Settings Applied', type: 'success' })"
-                                    class="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors shadow-sm flex items-center justify-center gap-2"
+                                    class="btn-primary btn-sm w-full justify-center gap-2"
                                 >
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                     </svg>
                                     Set QR Code
                                 </button>
-                                <p class="mt-2 text-xs text-center text-slate-500 dark:text-slate-400">
+                                <p class="mt-2 text-center text-xs text-muted">
                                     Click to ensure your QR design is saved before creating the page.
                                 </p>
                             </div>
