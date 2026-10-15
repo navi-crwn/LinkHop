@@ -241,6 +241,7 @@ main{position:relative;z-index:1}
 .ph-count{display:flex;gap:8px;position:relative}
 .ph-count>span{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:6px 10px;font:600 15px var(--mono)}
 .ph-count small{display:block;font:500 9px var(--sans);opacity:.7;text-transform:uppercase;letter-spacing:.1em}
+.ph-scroll{height:min(620px,70vh);overflow-y:auto;overscroll-behavior:contain;border-radius:32px;scrollbar-width:none}.ph-scroll::-webkit-scrollbar{display:none}.ph-scroll:focus-visible{outline:2px solid var(--indigo);outline-offset:3px}.ph-scroll img{display:block;width:100%;height:auto}
 .ph-url{position:absolute;left:50%;bottom:-18px;transform:translateX(-50%);font:500 14px var(--mono);background:var(--panel);border:1px solid var(--line-2);border-radius:10px;padding:8px 14px;white-space:nowrap;color:var(--text)}
 .ph-url span{color:var(--muted)}
 .ph-url b{font-weight:500}
