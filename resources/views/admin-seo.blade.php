@@ -85,7 +85,7 @@
                 <p class="eyebrow">Search preview</p>
                 <div class="glass-inset rounded-xl p-3">
                     <div class="flex items-center gap-2 text-xs text-muted">
-                        <img x-show="favicon" :src="favicon" alt="" class="h-4 w-4 rounded object-contain">
+                        <img x-show="favicon" :src="favicon" alt="" class="h-4 w-4 rounded-sm object-contain">
                         <span class="truncate">{{ url('/') }}</span>
                     </div>
                     <p class="mt-1 line-clamp-1 text-base font-semibold text-indigo-600 dark:text-indigo-300" x-text="siteTitle || 'HEL.ink'"></p>

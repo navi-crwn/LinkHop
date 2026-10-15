@@ -12,7 +12,7 @@
 
     <x-flash />
 
-    <form method="GET" class="glass-card !p-3">
+    <form method="GET" class="glass-card p-3!">
         <div class="grid gap-2 md:grid-cols-12">
             <div class="relative md:col-span-4">
                 <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
@@ -34,19 +34,19 @@
         </div>
         <div class="mt-2 flex flex-wrap items-center gap-2 text-xs">
             @if ($owner && $folders->isNotEmpty())
-                <select name="folder_id" aria-label="Folder" class="input !w-auto !py-1.5 text-xs" data-autosubmit>
+                <select name="folder_id" aria-label="Folder" class="input w-auto! py-1.5! text-xs" data-autosubmit>
                     <option value="">All folders of {{ \Illuminate\Support\Str::limit($owner->name, 20) }}</option>
                     @foreach ($folders as $folder)
                         <option value="{{ $folder->id }}" @selected($filters['folder_id'] == $folder->id)>{{ $folder->name }}</option>
                     @endforeach
                 </select>
             @endif
-            <select name="sort" aria-label="Sort" class="input !w-auto !py-1.5 text-xs" data-autosubmit>
+            <select name="sort" aria-label="Sort" class="input w-auto! py-1.5! text-xs" data-autosubmit>
                 <option value="">Newest first</option>
                 <option value="clicks" @selected($filters['sort'] === 'clicks')>Most clicks</option>
             </select>
             <label class="inline-flex items-center gap-1.5 text-muted">
-                <input type="checkbox" name="owner" value="guest" @checked($filters['guest']) data-autosubmit class="rounded border-slate-400/50 bg-transparent text-indigo-500">
+                <input type="checkbox" name="owner" value="guest" @checked($filters['guest']) data-autosubmit class="rounded-sm border-slate-400/50 bg-transparent text-indigo-500">
                 Guest links only
             </label>
             @if ($activeFilters)
@@ -68,7 +68,7 @@
                     <thead>
                         <tr>
                             <th class="w-8">
-                                <input type="checkbox" aria-label="Select all links" @click="$root.querySelectorAll('.link-check').forEach(cb => cb.checked = $event.target.checked); sync()" class="rounded border-slate-400/50 bg-transparent text-indigo-500">
+                                <input type="checkbox" aria-label="Select all links" @click="$root.querySelectorAll('.link-check').forEach(cb => cb.checked = $event.target.checked); sync()" class="rounded-sm border-slate-400/50 bg-transparent text-indigo-500">
                             </th>
                             <th>Link</th>
                             <th class="hidden md:table-cell">Owner</th>
@@ -82,13 +82,13 @@
                         @forelse ($links as $link)
                             <tr>
                                 <td>
-                                    <input type="checkbox" aria-label="Select {{ $link->slug }}" name="ids[]" value="{{ $link->id }}" class="link-check rounded border-slate-400/50 bg-transparent text-indigo-500">
+                                    <input type="checkbox" aria-label="Select {{ $link->slug }}" name="ids[]" value="{{ $link->id }}" class="link-check rounded-sm border-slate-400/50 bg-transparent text-indigo-500">
                                 </td>
                                 <td class="max-w-xs">
                                     <a href="{{ $link->short_url }}" target="_blank" rel="noopener" class="font-mono text-sm font-semibold text-indigo-600 hover:underline dark:text-indigo-300">/{{ $link->slug }}</a>
                                     <p class="truncate text-xs text-muted" title="{{ $link->target_url }}">{{ $link->target_url }}</p>
                                 </td>
-                                <td class="hidden max-w-[14rem] md:table-cell">
+                                <td class="hidden max-w-56 md:table-cell">
                                     @if ($link->user)
                                         <a href="{{ route('admin.users.inspect', $link->user) }}" class="block truncate text-sm text-ink hover:underline">{{ $link->user->name }}</a>
                                         <p class="truncate text-xs text-muted">{{ $link->user->email }}</p>
@@ -118,17 +118,17 @@
                                 </td>
                                 <td class="whitespace-nowrap text-right">
                                     <div class="inline-flex items-center gap-0.5">
-                                        <a href="{{ route('links.edit', $link) }}" class="icon-btn !h-8 !w-8" title="Edit" aria-label="Edit {{ $link->slug }}">
+                                        <a href="{{ route('links.edit', $link) }}" class="icon-btn h-8! w-8!" title="Edit" aria-label="Edit {{ $link->slug }}">
                                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M9 13l6.232-6.232a2.5 2.5 0 113.536 3.536L12.536 16.536 9 17l.464-3.536z"/></svg>
                                         </a>
-                                        <button type="submit" form="status-{{ $link->id }}" class="icon-btn !h-8 !w-8" title="{{ $link->status === 'active' ? 'Disable' : 'Enable' }}" aria-label="{{ $link->status === 'active' ? 'Disable' : 'Enable' }} {{ $link->slug }}">
+                                        <button type="submit" form="status-{{ $link->id }}" class="icon-btn h-8! w-8!" title="{{ $link->status === 'active' ? 'Disable' : 'Enable' }}" aria-label="{{ $link->status === 'active' ? 'Disable' : 'Enable' }} {{ $link->slug }}">
                                             @if ($link->status === 'active')
                                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
                                             @else
                                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                                             @endif
                                         </button>
-                                        <button type="submit" form="delete-{{ $link->id }}" class="icon-btn !h-8 !w-8 hover:!text-rose-500" title="Delete" aria-label="Delete {{ $link->slug }}">
+                                        <button type="submit" form="delete-{{ $link->id }}" class="icon-btn h-8! w-8! hover:text-rose-500!" title="Delete" aria-label="Delete {{ $link->slug }}">
                                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                         </button>
                                     </div>

@@ -11,15 +11,15 @@
             <!-- Avatar Row with responsive layout -->
             <div class="flex flex-col sm:flex-row gap-4 mb-4">
                 <!-- Avatar with shape selector below -->
-                <div class="flex flex-col items-center gap-3 flex-shrink-0">
+                <div class="flex flex-col items-center gap-3 shrink-0">
                     <div class="relative">
                         <div class="w-24 h-24 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden"
-                             :class="{ 'rounded-xl': bioPage.avatar_shape === 'rounded', 'rounded-none': bioPage.avatar_shape === 'square' }">
+                             :class="{ 'rounded-xl': bioPage.avatar_shape === 'rounded-sm', 'rounded-none': bioPage.avatar_shape === 'square' }">
                             <template x-if="bioPage.avatar_url">
                                 <img :src="bioPage.avatar_url.startsWith('/storage/') || bioPage.avatar_url.startsWith('http') ? bioPage.avatar_url : '/storage/' + bioPage.avatar_url" alt="Avatar" class="w-full h-full object-cover">
                             </template>
                             <template x-if="!bioPage.avatar_url">
-                                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-2xl font-bold" x-text="(bioPage.title || 'U').charAt(0).toUpperCase()"></div>
+                                <div class="w-full h-full flex items-center justify-center bg-linear-to-br from-blue-500 to-indigo-600 text-white text-2xl font-bold" x-text="(bioPage.title || 'U').charAt(0).toUpperCase()"></div>
                             </template>
                         </div>
                         <!-- Camera button overlay -->
@@ -43,8 +43,8 @@
                                     <circle cx="12" cy="12" r="10"/>
                                 </svg>
                             </button>
-                            <button aria-label="Rounded avatar" @click="bioPage.avatar_shape = 'rounded'" 
-                                    :class="bioPage.avatar_shape === 'rounded' ? 'ring-2 ring-blue-500 active' : ''"
+                            <button aria-label="Rounded avatar" @click="bioPage.avatar_shape = 'rounded-sm'" 
+                                    :class="bioPage.avatar_shape === 'rounded-sm' ? 'ring-2 ring-blue-500 active' : ''"
                                     class="option-btn w-8 h-8 rounded-lg transition-all flex items-center justify-center" title="Rounded">
                                 <svg class="w-4 h-4 editor-icon" viewBox="0 0 24 24" fill="currentColor">
                                     <rect x="2" y="2" width="20" height="20" rx="6"/>
@@ -237,7 +237,7 @@
                             </div>
                             <template x-if="logoUrl">
                                 <div class="mt-2 flex items-center gap-2 p-2 rounded-lg" style="background: var(--editor-input-bg);">
-                                    <img :src="logoUrl" class="w-8 h-8 rounded object-cover" alt="Logo">
+                                    <img :src="logoUrl" class="w-8 h-8 rounded-sm object-cover" alt="Logo">
                                     <span class="text-xs text-green-400 flex-1">✓ Logo saved</span>
                                 </div>
                             </template>
@@ -251,12 +251,12 @@
                                         <button :aria-label="'QR color ' + color" @click="setColor(color)" 
                                                 :class="{ 'ring-2 ring-blue-500': qrColor === color }"
                                                 :style="{ backgroundColor: color }"
-                                                class="w-5 h-5 rounded "></button>
+                                                class="w-5 h-5 rounded-sm "></button>
                                     </template>
                                     <div class="relative">
                                         <input aria-label="QR code color" type="color" x-model="qrColor" @input="debouncedUpdateQR()" 
-                                               class="w-5 h-5 rounded cursor-pointer opacity-0 absolute inset-0 z-10">
-                                        <div class="w-5 h-5 rounded flex items-center justify-center cursor-pointer" style="background: linear-gradient(135deg, #ef4444, #22c55e, #3b82f6); border: 1px solid rgba(255,255,255,0.3);">
+                                               class="w-5 h-5 rounded-sm cursor-pointer opacity-0 absolute inset-0 z-10">
+                                        <div class="w-5 h-5 rounded-sm flex items-center justify-center cursor-pointer" style="background: linear-gradient(135deg, #ef4444, #22c55e, #3b82f6); border: 1px solid rgba(255,255,255,0.3);">
                                             <span style="font-size: 12px; color: white; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">+</span>
                                         </div>
                                     </div>
@@ -269,12 +269,12 @@
                                         <button :aria-label="'QR background ' + color" @click="setBgColor(color)" 
                                                 :class="{ 'ring-2 ring-blue-500': bgColor === color }"
                                                 :style="{ backgroundColor: color }"
-                                                class="w-5 h-5 rounded "></button>
+                                                class="w-5 h-5 rounded-sm "></button>
                                     </template>
                                     <div class="relative">
                                         <input aria-label="QR background color" type="color" x-model="bgColor" @input="debouncedUpdateQR()" 
-                                               class="w-5 h-5 rounded cursor-pointer opacity-0 absolute inset-0 z-10">
-                                        <div class="w-5 h-5 rounded flex items-center justify-center cursor-pointer" style="background: linear-gradient(135deg, #eab308, #ec4899, #06b6d4); border: 1px solid rgba(255,255,255,0.3);">
+                                               class="w-5 h-5 rounded-sm cursor-pointer opacity-0 absolute inset-0 z-10">
+                                        <div class="w-5 h-5 rounded-sm flex items-center justify-center cursor-pointer" style="background: linear-gradient(135deg, #eab308, #ec4899, #06b6d4); border: 1px solid rgba(255,255,255,0.3);">
                                             <span style="font-size: 12px; color: white; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">+</span>
                                         </div>
                                     </div>
@@ -315,7 +315,7 @@ window.qrGenerator = function() {
     return {
         qrColor: '#000000',
         bgColor: '#ffffff',
-        dotStyle: 'rounded',
+        dotStyle: 'rounded-sm',
         cornerSquareStyle: 'extra-rounded',
         cornerDotStyle: 'dot',
         logoUrl: null,
@@ -361,7 +361,7 @@ window.qrGenerator = function() {
             const qrSettings = bioPage?.qr_settings || {};
             this.qrColor = qrSettings.dotsOptions?.color || qrSettings.color || '#000000';
             this.bgColor = qrSettings.backgroundOptions?.color || qrSettings.bg_color || '#ffffff';
-            this.dotStyle = qrSettings.dotsOptions?.type || qrSettings.dot_style || 'rounded';
+            this.dotStyle = qrSettings.dotsOptions?.type || qrSettings.dot_style || 'rounded-sm';
             this.cornerSquareStyle = qrSettings.cornersSquareOptions?.type || qrSettings.corner_style || 'extra-rounded';
             this.cornerDotStyle = qrSettings.cornersDotOptions?.type || 'dot';
             this.logoUrl = qrSettings.image || qrSettings.logo_url || null;
@@ -526,7 +526,7 @@ window.qrGenerator = function() {
         },
         showQrNotification(message, type = 'info') {
             const notification = document.createElement('div');
-            notification.className = `fixed bottom-4 right-4 z-[200] px-4 py-2 rounded-lg shadow-lg text-white text-sm ${type === 'success' ? 'bg-green-600' : type === 'error' ? 'bg-red-600' : 'bg-blue-600'}`;
+            notification.className = `fixed bottom-4 right-4 z-200 px-4 py-2 rounded-lg shadow-lg text-white text-sm ${type === 'success' ? 'bg-green-600' : type === 'error' ? 'bg-red-600' : 'bg-blue-600'}`;
             notification.textContent = message;
             document.body.appendChild(notification);
             setTimeout(() => notification.remove(), 3000);

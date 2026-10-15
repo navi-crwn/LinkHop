@@ -46,7 +46,7 @@
             <h2 class="section-title flex-1">Links</h2>
             <div class="relative w-full max-w-xs">
                 <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
-                <input type="search" name="q" value="{{ $search }}" placeholder="Search links" aria-label="Search links" class="input !py-1.5 pl-9 text-sm">
+                <input type="search" name="q" value="{{ $search }}" placeholder="Search links" aria-label="Search links" class="input py-1.5! pl-9 text-sm">
             </div>
         </form>
         <div class="overflow-x-auto">
@@ -62,7 +62,7 @@
                 <tbody>
                     @forelse ($links as $link)
                         <tr>
-                            <td class="max-w-[14rem] sm:max-w-md">
+                            <td class="max-w-56 sm:max-w-md">
                                 <a href="{{ route('links.show', $link) }}" class="block truncate text-sm font-semibold text-ink hover:underline">/{{ $link->slug }}</a>
                                 <p class="truncate text-xs text-muted" title="{{ $link->target_url }}">{{ $link->target_url }}</p>
                             </td>
@@ -81,13 +81,13 @@
                             </td>
                             <td class="whitespace-nowrap text-right">
                                 <div class="inline-flex items-center gap-0.5">
-                                    <a href="{{ route('links.edit', $link) }}" class="icon-btn !h-8 !w-8" title="Edit" aria-label="Edit {{ $link->slug }}">
+                                    <a href="{{ route('links.edit', $link) }}" class="icon-btn h-8! w-8!" title="Edit" aria-label="Edit {{ $link->slug }}">
                                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                     </a>
                                     <form method="POST" action="{{ route('links.destroy', $link) }}" data-confirm="Delete /{{ $link->slug }}?">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="icon-btn !h-8 !w-8 hover:!text-rose-500" title="Delete" aria-label="Delete {{ $link->slug }}">
+                                        <button class="icon-btn h-8! w-8! hover:text-rose-500!" title="Delete" aria-label="Delete {{ $link->slug }}">
                                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                         </button>
                                     </form>

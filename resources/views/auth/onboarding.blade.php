@@ -19,7 +19,7 @@
         @if(auth()->user()->google_id && session('google_user_needs_password'))
         <div class="mt-6 rounded-lg border border-blue-500/50 bg-blue-50 p-4 dark:border-blue-500/30 dark:bg-blue-900/20">
             <div class="flex items-start gap-2">
-                <div class="flex-shrink-0 text-xl">🔑</div>
+                <div class="shrink-0 text-xl">🔑</div>
                 <div class="flex-1">
                     <h2 class="text-base font-bold text-blue-900 dark:text-blue-100">Create Your Password (Required)</h2>
                     <p class="mt-1 text-xs text-blue-800 dark:text-blue-200">
@@ -87,7 +87,7 @@
         <div class="mt-8">
             <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Quick Start Guide</h2>
             <div class="grid gap-4 sm:grid-cols-2">
-                <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+                <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-xs dark:border-slate-700 dark:bg-slate-800">
                     <div class="flex items-center gap-2">
                         <div class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-lg dark:bg-blue-900/30">
                             🔗
@@ -98,7 +98,7 @@
                         Shorten URLs with custom slugs, passwords, and tags.
                     </p>
                 </div>
-                <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+                <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-xs dark:border-slate-700 dark:bg-slate-800">
                     <div class="flex items-center gap-2">
                         <div class="flex h-8 w-8 items-center justify-center rounded-full bg-purple-100 text-lg dark:bg-purple-900/30">
                             📁
@@ -109,7 +109,7 @@
                         Group related links for easy management.
                     </p>
                 </div>
-                <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+                <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-xs dark:border-slate-700 dark:bg-slate-800">
                     <div class="flex items-center gap-2">
                         <div class="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 text-lg dark:bg-green-900/30">
                             📊
@@ -120,7 +120,7 @@
                         See clicks, locations, and device breakdowns.
                     </p>
                 </div>
-                <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+                <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-xs dark:border-slate-700 dark:bg-slate-800">
                     <div class="flex items-center gap-2">
                         <div class="flex h-8 w-8 items-center justify-center rounded-full bg-orange-100 text-lg dark:bg-orange-900/30">
                             ⚙️
@@ -137,13 +137,13 @@
             @if(auth()->user()->google_id && session('google_user_needs_password'))
                 <p class="text-sm text-slate-600 dark:text-slate-400">Please create your password to continue</p>
             @else
-                <a href="{{ route('dashboard') }}" class="w-full sm:w-auto inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-500">
+                <a href="{{ route('dashboard') }}" class="w-full sm:w-auto inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-xs transition hover:bg-blue-500">
                     Go to Dashboard
                 </a>
                 @if(!auth()->user()->google_id)
                     <form method="POST" action="{{ route('onboarding.skip') }}" class="w-full sm:w-auto">
                         @csrf
-                        <button type="submit" class="w-full inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
+                        <button type="submit" class="w-full inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-xs transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
                             Skip
                         </button>
                     </form>
