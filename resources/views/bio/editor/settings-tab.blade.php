@@ -6,7 +6,7 @@
     </div>
     <div class="space-y-4">
         <!-- Google Preview -->
-        <div class="bg-white border border-slate-200 rounded-lg p-4 dark:bg-slate-900 dark:[border-color:var(--editor-border)]">
+        <div class="bg-white border border-slate-200 rounded-lg p-4 dark:bg-slate-900 dark:border-(--editor-border)">
             <p class="text-xs editor-text-muted mb-3 uppercase tracking-wide font-medium">Google Search Preview</p>
             <div class="space-y-1">
                 <p class="text-sm text-blue-700 dark:text-blue-400 truncate" x-text="'{{ url("/") }}/' + bioPage.slug"></p>
@@ -77,7 +77,7 @@
             </label>
         </div>
         <!-- Password Protection -->
-        <div class="border-t [border-color:var(--editor-border)] pt-4">
+        <div class="border-t border-(--editor-border) pt-4">
             <div class="flex items-center justify-between mb-3">
                 <div>
                     <p class="font-medium text-slate-900 dark:text-white flex items-center gap-2">

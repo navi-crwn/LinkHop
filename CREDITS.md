@@ -50,11 +50,9 @@ This document lists all open-source libraries, services, and tools that power **
 - **concurrently** v9.0 - Run multiple commands concurrently (MIT)
 
 ### CSS Framework & Plugins
-- **tailwindcss** v3.1 - Utility-first CSS framework (MIT)
+- **tailwindcss** v4.3 - Utility-first CSS framework (MIT)
 - **@tailwindcss/forms** v0.5 - Form styling plugin (MIT)
-- **@tailwindcss/vite** v4.0 - Vite integration (MIT)
-- **postcss** v8.4 - CSS transformation tool (MIT)
-- **autoprefixer** v10.4 - CSS vendor prefixer (MIT)
+- **@tailwindcss/vite** v4.3 - Vite integration (MIT)
 
 ### JavaScript
 - **alpinejs** v3.4 - Lightweight JavaScript framework (MIT)

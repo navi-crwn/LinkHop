@@ -50,7 +50,7 @@
             <div class="mt-6 flex h-40 items-end gap-1.5 lg:h-auto lg:min-h-40 lg:flex-1" role="img" aria-label="Clicks per day for the last 14 days">
                 @foreach ($clickTrend as $day => $total)
                     <div class="group relative flex h-full flex-1 flex-col justify-end">
-                        <div class="rounded-md bg-indigo-500/70 transition group-hover:bg-indigo-500 {{ $loop->last ? '!bg-indigo-500' : '' }}"
+                        <div class="rounded-md bg-indigo-500/70 transition group-hover:bg-indigo-500 {{ $loop->last ? 'bg-indigo-500!' : '' }}"
                              style="height: {{ max(2, round($total / $trendMax * 100)) }}%"></div>
                         <span class="pointer-events-none absolute -top-6 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-900 px-1.5 py-0.5 text-[10px] text-white group-hover:block dark:bg-white dark:text-slate-900">
                             {{ \Illuminate\Support\Carbon::parse($day)->format('d M') }} · {{ number_format($total) }}
@@ -92,7 +92,7 @@
                         <span class="{{ $queueOk ? 'chip-green' : 'chip-red' }}">{{ $queueOk ? 'Online' : 'Stale' }}</span>
                         <form method="POST" action="{{ route('admin.queue.restart') }}" @submit="restarting = true">
                             @csrf
-                            <button type="submit" class="icon-btn !h-7 !w-7" :disabled="restarting" title="Restart queue worker" aria-label="Restart queue worker">
+                            <button type="submit" class="icon-btn h-7! w-7!" :disabled="restarting" title="Restart queue worker" aria-label="Restart queue worker">
                                 <svg class="h-3.5 w-3.5" :class="{ 'animate-spin': restarting }" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                             </button>
                         </form>

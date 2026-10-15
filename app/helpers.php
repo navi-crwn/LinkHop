@@ -182,7 +182,7 @@ if (! function_exists('country_flag')) {
                          height="15"
                          alt="'.$countryName.'" 
                          title="'.$countryName.'"
-                         class="inline-block rounded"
+                         class="inline-block rounded-sm"
                          style="border-radius: 2px;">';
         }
 
@@ -191,7 +191,7 @@ if (! function_exists('country_flag')) {
                      width="20" 
                      alt="'.$countryName.'" 
                      title="'.$countryName.'"
-                     class="inline-block rounded">';
+                     class="inline-block rounded-sm">';
     }
 }
 if (! function_exists('country_name')) {

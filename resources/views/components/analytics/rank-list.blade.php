@@ -19,7 +19,7 @@
                 <span class="absolute inset-y-0 left-0 rounded-lg {{ $color }} opacity-[0.18]" style="width: {{ round($item['value'] / $max * 100, 1) }}%"></span>
                 <div class="relative flex items-center gap-2 px-2.5 py-1.5 text-[13px]">
                     @if (! empty($item['flag']))
-                        <span class="shrink-0 [&_img]:rounded-sm">{!! country_flag($item['flag']) !!}</span>
+                        <span class="shrink-0 [&_img]:rounded-xs">{!! country_flag($item['flag']) !!}</span>
                     @endif
                     <span class="min-w-0 flex-1 truncate text-ink" title="{{ $item['label'] }}">
                         @if (! empty($item['href']))

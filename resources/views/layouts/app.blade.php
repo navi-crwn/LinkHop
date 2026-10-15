@@ -41,10 +41,10 @@
                     : 0;
                 $sectionTitle = trim(\Illuminate\Support\Str::after($pageTitle ?? '', ' - ')) ?: 'HEL.ink';
             @endphp
-            <div x-data="{ nav: false }" @keydown.escape.window="nav = false" class="lg:pl-[17rem]">
+            <div x-data="{ nav: false }" @keydown.escape.window="nav = false" class="lg:pl-68">
                 {{-- Sidebar: floating glass panel on desktop, drawer on mobile --}}
-                <div x-show="nav" x-cloak x-transition.opacity @click="nav = false" class="fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-sm lg:hidden"></div>
-                <aside class="fixed inset-y-0 left-0 z-50 w-[17rem] p-3 transition-transform duration-300 lg:translate-x-0"
+                <div x-show="nav" x-cloak x-transition.opacity @click="nav = false" class="fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-xs lg:hidden"></div>
+                <aside class="fixed inset-y-0 left-0 z-50 w-68 p-3 transition-transform duration-300 lg:translate-x-0"
                        :class="nav ? 'translate-x-0' : '-translate-x-full'"
                        @click="if ($event.target.closest('a')) nav = false">
                     <div class="glass flex h-full flex-col rounded-3xl">
@@ -121,7 +121,7 @@
                 </header>
 
                 <main class="app-shell px-3 pb-10 pt-4 sm:px-5 sm:pt-6">
-                    <div class="mx-auto w-full @yield('container-width', 'max-w-screen-xl 2xl:max-w-screen-2xl') space-y-5">
+                    <div class="mx-auto w-full @yield('container-width', 'max-w-(--breakpoint-xl) 2xl:max-w-(--breakpoint-2xl)') space-y-5">
                         @unless ($user->hasVerifiedEmail())
                             <div class="glass flex flex-col gap-3 rounded-2xl border-amber-400/40 px-4 py-3 sm:flex-row sm:items-center">
                                 <div class="flex flex-1 items-start gap-3">

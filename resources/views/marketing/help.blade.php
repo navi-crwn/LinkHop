@@ -41,7 +41,7 @@
             </article>
             <article class="rounded-3xl border border-white/10 bg-white/5 p-6">
                 <h2 class="text-2xl font-semibold text-white">Queue & Automation</h2>
-                <p class="mt-3 text-sm text-white/70">HEL.ink uses Redis + worker queues for background processing. Visit <code class="rounded bg-white/10 px-2 py-1">/health/queue</code> to verify the worker is alive. If you're self-hosting, ensure your queue worker is running with <code class="rounded bg-white/10 px-2 py-1">php artisan queue:work</code>.</p>
+                <p class="mt-3 text-sm text-white/70">HEL.ink uses Redis + worker queues for background processing. Visit <code class="rounded-sm bg-white/10 px-2 py-1">/health/queue</code> to verify the worker is alive. If you're self-hosting, ensure your queue worker is running with <code class="rounded-sm bg-white/10 px-2 py-1">php artisan queue:work</code>.</p>
             </article>
             <article class="rounded-3xl border border-white/10 bg-white/5 p-6">
                 <h2 class="text-2xl font-semibold text-white">Account & Privacy</h2>

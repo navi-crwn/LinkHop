@@ -8,7 +8,7 @@
 @if($trackerNames)
     <div id="tracker-consent" hidden role="region" aria-label="Tracking consent"
          class="fixed inset-x-0 bottom-0 p-4 sm:p-6" style="z-index: 999998;">
-        <div class="mx-auto max-w-md rounded-2xl bg-slate-900/95 p-4 text-sm text-white shadow-xl ring-1 ring-white/10 backdrop-blur">
+        <div class="mx-auto max-w-md rounded-2xl bg-slate-900/95 p-4 text-sm text-white shadow-xl ring-1 ring-white/10 backdrop-blur-sm">
             <p>The owner of this page uses {{ implode(', ', $trackerNames) }} to measure visits. Allow this tracking?</p>
             <div class="mt-3 flex gap-2">
                 <button type="button" id="tracker-consent-allow" class="rounded-xl bg-white px-4 py-2 font-semibold text-slate-900 hover:bg-white/90">Allow</button>

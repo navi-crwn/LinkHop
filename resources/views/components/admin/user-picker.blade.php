@@ -15,7 +15,7 @@
     }" @click.outside="open = false">
     <input type="hidden" name="{{ $name }}" :value="selected ? selected.id : ''" x-ref="input">
     <template x-if="selected">
-        <div class="input flex items-center justify-between gap-2 !py-2">
+        <div class="input flex items-center justify-between gap-2 py-2!">
             <span class="min-w-0 truncate"><span class="font-medium" x-text="selected.name"></span> <span class="text-xs text-muted" x-text="selected.email"></span></span>
             <button type="button" @click="clear()" class="shrink-0 text-muted hover:text-ink" aria-label="Clear owner">&times;</button>
         </div>
