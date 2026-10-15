@@ -7,7 +7,7 @@
     <meta name="robots" content="noindex, nofollow">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 flex items-center justify-center p-4">
+<body class="min-h-screen bg-linear-to-br from-slate-900 via-indigo-900 to-slate-900 flex items-center justify-center p-4">
     <div class="w-full max-w-lg text-center">
         <div class="mb-8 relative">
             <div class="w-32 h-32 mx-auto bg-indigo-500/20 rounded-full flex items-center justify-center relative">
@@ -24,7 +24,7 @@
             <div class="absolute top-4 right-1/4 w-3 h-3 bg-purple-400 rounded-full animate-bounce" style="animation-delay: 0.4s;"></div>
             <div class="absolute bottom-0 left-1/3 w-2 h-2 bg-pink-400 rounded-full animate-bounce" style="animation-delay: 0.6s;"></div>
         </div>
-        <h1 class="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 mb-4">
+        <h1 class="text-8xl font-black text-transparent bg-clip-text bg-linear-to-r from-indigo-400 via-purple-400 to-pink-400 mb-4">
             404
         </h1>
         <h2 class="text-2xl font-bold text-white mb-3">
@@ -58,7 +58,7 @@
         <div class="mt-12 p-6 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10">
             <p class="text-slate-300 mb-4">Looking for something specific?</p>
             <form action="{{ url('/') }}" method="GET" class="flex gap-2">
-                <input type="text" name="search" placeholder="Search bio pages..." class="flex-1 px-4 py-2 bg-white/10 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <input type="text" name="search" placeholder="Search bio pages..." class="flex-1 px-4 py-2 bg-white/10 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-indigo-500">
                 <button aria-label="Search" type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>

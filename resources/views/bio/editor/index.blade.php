@@ -708,7 +708,7 @@
                         <template x-for="(brand, id) in filteredBrands" :key="id">
                             <button @click="setBlockIcon(id)" 
                                     :class="{ 'ring-2 ring-blue-500 var(--editor-hover-bg)': editingBlock && editingBlock.brand === id }"
-                                    class="p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 border [border-color:var(--editor-border)] hover:[border-color:var(--editor-border)] transition-colors flex flex-col items-center gap-2">
+                                    class="p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 border border-(--editor-border) hover:border-(--editor-border) transition-colors flex flex-col items-center gap-2">
                                 <div class="w-10 h-10 rounded-lg flex items-center justify-center" :style="{ backgroundColor: brand.color || '#6b7280' }">
                                     <img :src="'/images/brands/' + (brand.icon || id + '.svg') + '?v=20251212'" class="w-6 h-6" style="filter: brightness(0) invert(1);" data-fallback="hide">
                                 </div>
@@ -807,7 +807,7 @@
                                                         <div class="text-sm font-medium truncate" x-text="editingBlock?.title || 'Untitled'"></div>
                                                         <div class="text-xs text-slate-500 truncate" x-text="editingBlock?.url"></div>
                                                     </div>
-                                                    <button aria-label="Clear selected link" @click="editingBlock.url = ''; editingBlock.title = '';" class="p-1 hover:bg-blue-100 dark:hover:bg-blue-800 rounded text-blue-600 dark:text-blue-400">
+                                                    <button aria-label="Clear selected link" @click="editingBlock.url = ''; editingBlock.title = '';" class="p-1 hover:bg-blue-100 dark:hover:bg-blue-800 rounded-sm text-blue-600 dark:text-blue-400">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                                         </svg>
@@ -829,7 +829,7 @@
                                             </div>
                                             <!-- Inline Results Dropdown -->
                                             <div x-show="librarySearch.length > 0 || (libraryLinks.length > 0 && !editingBlock?.url)" 
-                                                 class="absolute z-[60] w-full mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 max-h-60 overflow-y-auto custom-scrollbar">
+                                                 class="absolute z-60 w-full mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 max-h-60 overflow-y-auto custom-scrollbar">
                                                 <template x-if="libraryLoading">
                                                     <div class="p-4 text-center text-sm text-slate-500">Loading...</div>
                                                 </template>
@@ -841,7 +841,7 @@
                                                             class="w-full text-left px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group">
                                                         <div class="flex justify-between items-start mb-1">
                                                             <span class="font-medium text-sm text-slate-900 dark:text-white group-hover:text-blue-600" x-text="link.title || 'Untitled'"></span>
-                                                            <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 font-mono">Short</span>
+                                                            <span class="text-[10px] px-1.5 py-0.5 rounded-sm bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 font-mono">Short</span>
                                                         </div>
                                                         <div class="text-xs text-slate-500 truncate" x-text="link.url"></div>
                                                     </button>
@@ -927,7 +927,7 @@
                                                     <input type="checkbox" 
                                                            :checked="isBlockAutoStyle(editingBlock)"
                                                            @change="toggleBlockAutoStyle(editingBlock, $event.target.checked)"
-                                                           class="w-4 h-4 rounded border-gray-600 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0">
+                                                           class="w-4 h-4 rounded-sm border-gray-600 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0">
                                                     <span class="text-sm font-medium editor-text">Auto (Follow Theme)</span>
                                                 </label>
                                             </div>
@@ -942,7 +942,7 @@
                                                         <div class="flex items-center gap-2">
                                                             <input id="bfindex-3" type="color" x-model="editingBlock.btn_bg_color" 
                                                                    :value="editingBlock.btn_bg_color || getEffectiveButtonBg()"
-                                                                   class="w-10 h-10 rounded cursor-pointer border-0 bg-transparent"
+                                                                   class="w-10 h-10 rounded-sm cursor-pointer border-0 bg-transparent"
                                                                    @input="markBlockDirty(editingBlock.id)">
                                                             <input maxlength="30" aria-label="Button background hex value" type="text" x-model="editingBlock.btn_bg_color" 
                                                                    class="form-input text-xs font-mono flex-1" 
@@ -955,7 +955,7 @@
                                                             <label class="form-label text-xs mb-0">Text Color</label>
                                                             <button type="button" 
                                                                     @click="editingBlock.btn_text_color = getContrastColor(editingBlock.btn_bg_color || getEffectiveButtonBg()); markBlockDirty(editingBlock.id)"
-                                                                    class="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors"
+                                                                    class="text-[10px] px-1.5 py-0.5 rounded-sm bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors"
                                                                     title="Auto-detect best text color">
                                                                 Auto
                                                             </button>
@@ -963,7 +963,7 @@
                                                         <div class="flex items-center gap-2">
                                                             <input aria-label="Button text color" type="color" x-model="editingBlock.btn_text_color" 
                                                                    :value="editingBlock.btn_text_color || getEffectiveButtonText()"
-                                                                   class="w-10 h-10 rounded cursor-pointer border-0 bg-transparent">
+                                                                   class="w-10 h-10 rounded-sm cursor-pointer border-0 bg-transparent">
                                                             <input maxlength="30" aria-label="Button text color hex value" type="text" x-model="editingBlock.btn_text_color" 
                                                                    class="form-input text-xs font-mono flex-1" 
                                                                    :placeholder="getEffectiveButtonText()">
@@ -976,7 +976,7 @@
                                                         <div class="flex items-center gap-2">
                                                             <input id="bfindex-4" type="color" x-model="editingBlock.btn_border_color" 
                                                                    :value="editingBlock.btn_border_color || '#ffffff'"
-                                                                   class="w-10 h-10 rounded cursor-pointer border-0 bg-transparent">
+                                                                   class="w-10 h-10 rounded-sm cursor-pointer border-0 bg-transparent">
                                                             <input maxlength="30" aria-label="Button border color hex value" type="text" x-model="editingBlock.btn_border_color" 
                                                                    class="form-input text-xs font-mono flex-1" placeholder="None">
                                                         </div>
@@ -990,7 +990,7 @@
                                                         <span class="text-xs editor-text-muted ml-2">White icon</span>
                                                     </div>
                                                 </div>
-                                                <div class="flex justify-end pt-2 border-t [border-color:var(--editor-border)]">
+                                                <div class="flex justify-end pt-2 border-t border-(--editor-border)">
                                                     <button type="button" @click="resetBlockToTheme(editingBlock)" 
                                                             class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1041,7 +1041,7 @@
                                             <input id="bfindex-5" type="url" :value="editingBlock?.content ?? ''" @input="editingBlock && (editingBlock.content = editingBlock.thumbnail_url = $event.target.value)" class="form-input flex-1" placeholder="https://example.com/image.jpg">
                                         </div>
                                         <div class="text-center editor-text-muted text-sm">or</div>
-                                        <label class="block p-4 border-2 border-dashed [border-color:var(--editor-border)] hover:border-indigo-500 rounded-lg cursor-pointer transition-colors text-center">
+                                        <label class="block p-4 border-2 border-dashed border-(--editor-border) hover:border-indigo-500 rounded-lg cursor-pointer transition-colors text-center">
                                             <input aria-label="Upload image" type="file" class="hidden" accept="image/*" @change="uploadBlockImage($event, editingBlock)">
                                             <svg class="w-8 h-8 mx-auto editor-text-muted mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -1324,7 +1324,7 @@
                         <button @click="selectLibraryLink(link)" class="w-full text-left p-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700 group">
                             <div class="flex justify-between items-start">
                                 <div class="font-medium text-sm text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors" x-text="link.title || 'Untitled Link'"></div>
-                                <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 font-mono">Short</span>
+                                <span class="text-[10px] px-1.5 py-0.5 rounded-sm bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 font-mono">Short</span>
                             </div>
                             <div class="text-xs text-blue-600 dark:text-blue-400 font-mono mt-1" x-text="link.short_url"></div>
                             <div class="text-xs text-slate-400 truncate mt-0.5" x-text="link.url"></div>
@@ -1345,14 +1345,14 @@
                 </button>
             </div>
             <div class="modal-body p-0">
-                <div class="p-4 border-b [border-color:var(--editor-border)]">
+                <div class="p-4 border-b border-(--editor-border)">
                     <input aria-label="Search platforms" type="text" x-model="socialSearch" placeholder="Search platforms..." 
                            class="form-input" autocomplete="off" data-lpignore="true" data-1p-ignore="true">
                 </div>
                 <div class="max-h-80 overflow-y-auto">
                     <template x-for="(platform, id) in filteredPlatforms" :key="id">
                         <button @click="selectSocialPlatform(id)" 
-                                class="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-700/50 border-b [border-color:var(--editor-border)]/50 transition-colors">
+                                class="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-700/50 border-b border-(--editor-border)/50 transition-colors">
                             <div class="w-10 h-10 rounded-xl flex items-center justify-center" 
                                  :style="{ backgroundColor: platform.color || '#6b7280' }">
                                 <img :src="'/images/brands/' + (platform.icon || id + '.svg') + '?v=20251212'" 
@@ -1430,26 +1430,26 @@
             </div>
             <div class="modal-body">
                 <div class="flex flex-wrap gap-1 p-2 rounded-t-lg" style="background: var(--editor-card-bg);">
-                    <button aria-label="Bold" @click="formatText('bold')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Bold">
+                    <button aria-label="Bold" @click="formatText('bold')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-sm" title="Bold">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z"/>
                         </svg>
                     </button>
-                    <button aria-label="Italic" @click="formatText('italic')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Italic">
+                    <button aria-label="Italic" @click="formatText('italic')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-sm" title="Italic">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <line x1="19" y1="4" x2="10" y2="4" stroke-width="2"/>
                             <line x1="14" y1="20" x2="5" y2="20" stroke-width="2"/>
                             <line x1="15" y1="4" x2="9" y2="20" stroke-width="2"/>
                         </svg>
                     </button>
-                    <button aria-label="Underline" @click="formatText('underline')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Underline">
+                    <button aria-label="Underline" @click="formatText('underline')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-sm" title="Underline">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v7a5 5 0 0010 0V4"/>
                             <line x1="4" y1="21" x2="20" y2="21" stroke-width="2"/>
                         </svg>
                     </button>
-                    <button aria-label="Strikethrough" @click="formatText('strikeThrough')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Strikethrough">
+                    <button aria-label="Strikethrough" @click="formatText('strikeThrough')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-sm" title="Strikethrough">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.5 9.5c0-2.5-2-4.5-4.5-4.5s-4.5 2-4.5 4.5"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.5 14.5c0 2.5 2 4.5 4.5 4.5s4.5-2 4.5-4.5"/>
@@ -1457,21 +1457,21 @@
                         </svg>
                     </button>
                     <div class="w-px h-6 mx-1 self-center" style="background: var(--editor-border);"></div>
-                    <button aria-label="Align Left" @click="formatText('justifyLeft')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Align Left">
+                    <button aria-label="Align Left" @click="formatText('justifyLeft')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-sm" title="Align Left">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <line x1="3" y1="6" x2="21" y2="6" stroke-width="2"/>
                             <line x1="3" y1="12" x2="15" y2="12" stroke-width="2"/>
                             <line x1="3" y1="18" x2="18" y2="18" stroke-width="2"/>
                         </svg>
                     </button>
-                    <button aria-label="Align Center" @click="formatText('justifyCenter')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Align Center">
+                    <button aria-label="Align Center" @click="formatText('justifyCenter')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-sm" title="Align Center">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <line x1="3" y1="6" x2="21" y2="6" stroke-width="2"/>
                             <line x1="6" y1="12" x2="18" y2="12" stroke-width="2"/>
                             <line x1="4" y1="18" x2="20" y2="18" stroke-width="2"/>
                         </svg>
                     </button>
-                    <button aria-label="Align Right" @click="formatText('justifyRight')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" title="Align Right">
+                    <button aria-label="Align Right" @click="formatText('justifyRight')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-sm" title="Align Right">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <line x1="3" y1="6" x2="21" y2="6" stroke-width="2"/>
                             <line x1="9" y1="12" x2="21" y2="12" stroke-width="2"/>
@@ -1481,7 +1481,7 @@
                 </div>
                 <div x-ref="richTextEditor" 
                      contenteditable="true" 
-                     class="min-h-[250px] p-4 rounded-b-lg focus:outline-none editor-text"
+                     class="min-h-[250px] p-4 rounded-b-lg focus:outline-hidden editor-text"
                      style="min-height: 200px; background: var(--editor-input-bg); border: 1px solid var(--editor-border); border-top: none;"
                      @input="updateTextBlockContent($event)">
                 </div>
@@ -1516,7 +1516,7 @@
                     </button>
                 </div>
                 <div x-show="imageUploadTab === 'upload'">
-                    <div class="border-2 border-dashed [border-color:var(--editor-border)] rounded-xl p-8 text-center">
+                    <div class="border-2 border-dashed border-(--editor-border) rounded-xl p-8 text-center">
                         <input aria-label="Upload image" type="file" accept="image/*" class="hidden" x-ref="imageBlockInput" @change="uploadImageBlock($event)">
                         <svg class="w-12 h-12 mx-auto editor-text-muted mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -1920,7 +1920,7 @@ window.bioEditorV2 = function() {
                             // Buttons
                             buttonBgColor: bioPageData.link_bg_color || bioPageData.button_bg_color || @js(config('bio-themes.defaults.link_bg')),
                             buttonTextColor: bioPageData.link_text_color || bioPageData.button_text_color || @js(config('bio-themes.defaults.link_text')),
-                            buttonShape: bioPageData.block_shape || bioPageData.button_shape || 'rounded',
+                            buttonShape: bioPageData.block_shape || bioPageData.button_shape || 'rounded-sm',
                             buttonShadow: bioPageData.block_shadow || bioPageData.button_shadow || 'md',
                             // Animations
                             hoverEffect: bioPageData.hover_effect || 'none',
@@ -3923,7 +3923,7 @@ window.bioEditorV2 = function() {
         },
         showNotification(message, type = 'info') {
             const notification = document.createElement('div');
-            notification.className = `fixed top-4 right-4 z-[200] px-6 py-3 rounded-lg shadow-lg text-white ${type === 'success' ? 'bg-green-700' : type === 'error' ? 'bg-red-700' : 'bg-blue-700'}`;
+            notification.className = `fixed top-4 right-4 z-200 px-6 py-3 rounded-lg shadow-lg text-white ${type === 'success' ? 'bg-green-700' : type === 'error' ? 'bg-red-700' : 'bg-blue-700'}`;
             notification.setAttribute('role', type === 'error' ? 'alert' : 'status');
             notification.textContent = message;
             document.body.appendChild(notification);

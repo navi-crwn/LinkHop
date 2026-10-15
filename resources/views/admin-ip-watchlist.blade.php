@@ -44,7 +44,7 @@
                         @forelse ($watchlist as $item)
                             <tr>
                                 <td class="whitespace-nowrap font-mono text-sm font-semibold text-ink">{{ $item->ip_address }}</td>
-                                <td class="hidden max-w-[12rem] md:table-cell">
+                                <td class="hidden max-w-48 md:table-cell">
                                     @if ($item->user)
                                         <a href="{{ route('admin.users.inspect', $item->user) }}" class="block truncate text-sm text-ink hover:underline">{{ $item->user->name }}</a>
                                         <p class="truncate text-xs text-muted">{{ $item->user->email }}</p>

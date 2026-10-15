@@ -23,7 +23,7 @@
         <form method="GET" class="glass flex flex-col gap-2 rounded-2xl p-2 sm:flex-row sm:items-center" x-data="{ more: {{ ($filters['folder'] || $filters['tag'] || $filters['sort'] !== 'created_desc') ? 'true' : 'false' }} }">
             <div class="relative flex-1">
                 <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="m20 20-3.5-3.5"/></svg>
-                <input type="search" name="q" value="{{ $filters['q'] }}" placeholder="Search links…" class="input !border-transparent !bg-transparent pl-9">
+                <input type="search" name="q" value="{{ $filters['q'] }}" placeholder="Search links…" class="input border-transparent! bg-transparent! pl-9">
             </div>
             <div class="flex flex-wrap gap-2 sm:flex-nowrap" :class="more ? '' : 'hidden sm:flex'">
                 <select name="folder" class="input sm:w-36" aria-label="Filter by folder">
@@ -63,7 +63,7 @@
         <section class="glass overflow-hidden rounded-2xl">
             @if ($links->count())
                 <div class="hidden items-center gap-3 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted md:flex">
-                    <input type="checkbox" aria-label="Select all links" x-model="selectAll" @change="toggleSelectAll()" class="rounded border-slate-400/50 bg-transparent text-indigo-500">
+                    <input type="checkbox" aria-label="Select all links" x-model="selectAll" @change="toggleSelectAll()" class="rounded-sm border-slate-400/50 bg-transparent text-indigo-500">
                     <span class="flex-1">Link</span>
                     <span class="w-20 text-right">Clicks</span>
                     <span class="w-24 text-right">Created</span>
@@ -73,7 +73,7 @@
             <div class="divide-glass">
                 @forelse ($links as $link)
                     <div class="list-row flex-wrap md:flex-nowrap" x-show="!deletedLinks.includes({{ $link->id }})">
-                        <input type="checkbox" aria-label="Select {{ $link->slug }}" value="{{ $link->id }}" x-model="selectedLinks" class="rounded border-slate-400/50 bg-transparent text-indigo-500">
+                        <input type="checkbox" aria-label="Select {{ $link->slug }}" value="{{ $link->id }}" x-model="selectedLinks" class="rounded-sm border-slate-400/50 bg-transparent text-indigo-500">
                         <div class="min-w-0 flex-1">
                             <div class="flex flex-wrap items-center gap-1.5">
                                 <a href="{{ route('links.show', $link) }}" class="truncate text-sm font-semibold text-ink hover:text-indigo-600 dark:hover:text-indigo-300">/{{ $link->slug }}</a>
@@ -100,7 +100,7 @@
                         </div>
                         <p class="hidden w-24 text-right text-xs text-muted md:block" title="{{ $link->created_at }}">{{ $link->created_at->format('M d, Y') }}</p>
                         <div class="flex w-full justify-end md:w-28">
-                            <button type="button" class="icon-btn" title="Copy" x-data @click="navigator.clipboard.writeText(@js($link->short_url)); $el.classList.add('!text-emerald-500'); setTimeout(() => $el.classList.remove('!text-emerald-500'), 1200)">
+                            <button type="button" class="icon-btn" title="Copy" x-data @click="navigator.clipboard.writeText(@js($link->short_url)); $el.classList.add('text-emerald-500!'); setTimeout(() => $el.classList.remove('text-emerald-500!'), 1200)">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
                             </button>
                             <a href="{{ route('links.show', $link) }}" class="icon-btn" title="Analytics">
@@ -109,7 +109,7 @@
                             <a href="{{ route('links.edit', $link) }}" class="icon-btn" title="Edit">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m15 5 4 4L8 20H4v-4L15 5Z"/></svg>
                             </a>
-                            <button @click="deleteLink({{ $link->id }})" class="icon-btn hover:!text-rose-500" title="Delete">
+                            <button @click="deleteLink({{ $link->id }})" class="icon-btn hover:text-rose-500!" title="Delete">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>
                             </button>
                         </div>
