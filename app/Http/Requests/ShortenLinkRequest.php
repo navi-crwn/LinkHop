@@ -3,8 +3,8 @@
 namespace App\Http\Requests;
 
 use App\Services\LinkSafety;
+use App\Support\ReservedSlugs;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class ShortenLinkRequest extends FormRequest
 {
@@ -22,7 +22,7 @@ class ShortenLinkRequest extends FormRequest
                 'regex:/^[a-z0-9-]+$/i',
                 'min:3',
                 'max:48',
-                Rule::notIn(config('shortener.reserved_slugs', [])),
+                ReservedSlugs::rule(),
             ],
             'cf-turnstile-response' => ['nullable', 'string'],
         ];

@@ -6,6 +6,7 @@ use App\Models\AbuseFlag;
 use App\Models\Link;
 use App\Models\RetiredSlug;
 use App\Services\LinkSafety;
+use App\Support\ReservedSlugs;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -32,7 +33,7 @@ class ManageLinkRequest extends FormRequest
                 Rule::unique('links', 'slug')->ignore($linkId),
                 fn ($attribute, $value, $fail) => $value && RetiredSlug::isBlocked($value) && $value !== $this->route('link')?->slug
                     ? $fail('The slug has already been taken.') : null,
-                Rule::notIn(config('shortener.reserved_slugs', [])),
+                ReservedSlugs::rule($this->route('link')?->slug),
             ],
             'status' => ['required', Rule::in([Link::STATUS_ACTIVE, Link::STATUS_INACTIVE]), function ($attribute, $value, $fail) use ($linkId) {
                 $link = $this->route('link');
