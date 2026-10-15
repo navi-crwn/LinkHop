@@ -57,7 +57,7 @@ Everything is included for every account. No premium tier, no locked features. A
 | [hel.ink/github](https://hel.ink/github) | The source code |
 | [hel.ink/website](https://hel.ink/website) | The website |
 | [hel.ink/selfhost](https://hel.ink/selfhost) | The self-host guide |
-| [hel.ink/api-docs](https://hel.ink/api-docs) | The API reference |
+| [hel.ink/documentation](https://hel.ink/documentation) | The API reference |
 | [hel.ink/changelog](https://hel.ink/changelog) | What changed in each release |
 
 To load the same example on your own install, run `php artisan db:seed --class=ExampleBioSeeder`.
