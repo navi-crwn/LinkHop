@@ -10,6 +10,7 @@ use App\Services\LinkSafety;
 use App\Support\BioUploads;
 use App\Support\CssValue;
 use App\Support\QrPng;
+use App\Support\ReservedSlugs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -62,8 +63,7 @@ class BioPageController extends Controller
                 ? $fail("The slug must be at least {$min} letters or numbers.") : null,
             Rule::unique('bio_pages', 'slug')->ignore($current?->id),
             // Reserved words are refused for new slugs; an existing slug is left alone.
-            fn ($attribute, $value, $fail) => $value !== $current?->slug && in_array($value, config('shortener.reserved_slugs', []), true)
-                ? $fail('This slug is reserved.') : null,
+            ReservedSlugs::rule($current?->slug),
         ];
     }
 
