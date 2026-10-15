@@ -20,7 +20,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Laravel-12-FF2D20?style=flat-square&logo=laravel&logoColor=white" alt="Laravel 12"/>
   <img src="https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat-square&logo=php&logoColor=white" alt="PHP 8.2+"/>
-  <img src="https://img.shields.io/badge/Tailwind-3.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS"/>
+  <img src="https://img.shields.io/badge/Tailwind-4.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS"/>
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="Lisensi MIT"/>
   <img src="https://img.shields.io/github/stars/navi-crwn/hel.ink?style=flat-square&color=yellow" alt="Stars"/>
 </p>
@@ -134,6 +134,8 @@ GOOGLE_REDIRECT_URI=https://yourdomain.com/auth/google/callback
 
 **Domain sendiri:** isi `APP_URL` dengan domainmu, maka semua link pendek dan halaman bio memakainya.
 
+**Di belakang Cloudflare:** HEL.ink mengirim Content Security Policy ketat dalam mode report-only yang hanya memercayai script dengan nonce halaman, dan mencatat apa yang akan diblokir ke `storage/logs/csp-*.log`. Fitur Cloudflare **Email Address Obfuscation** (Scrape Shield) dan **Rocket Loader** (Speed → Optimization) menyuntikkan script sendiri dari `/cdn-cgi/scripts/.../cloudflare-static/` tanpa nonce itu, sehingga memenuhi log. Matikan keduanya di dashboard Cloudflare (disarankan: HEL.ink tidak membutuhkannya, dan policy tetap siap diberlakukan), atau lewati hanya di path tertentu dengan Configuration Rule Cloudflare. Mengizinkannya di policy tidak bisa dengan policy nonce (`'strict-dynamic'` mengabaikan daftar host dan `'self'`); caranya harus membuang nonce, yang melemahkan policy untuk semua script lain.
+
 **Production:** biarkan queue worker tetap berjalan.
 ```bash
 php artisan queue:work
@@ -193,7 +195,7 @@ Pakai formulir laporan di hel.ink. Laporan masuk ke halaman Abuse di panel admin
 | Lapisan | Teknologi |
 |---|---|
 | **Backend** | Laravel 12, PHP 8.2+, MySQL / PostgreSQL / SQLite |
-| **Frontend** | Tailwind CSS 3, Alpine.js 3, Vite 7 |
+| **Frontend** | Tailwind CSS 4, Alpine.js 3, Vite 7 |
 | **Grafik & peta** | Chart.js 4, Leaflet 1.9 |
 | **Ikon** | Heroicons, Simple Icons (150+ brand) |
 | **Auth** | Laravel Breeze, Socialite, Google2FA |

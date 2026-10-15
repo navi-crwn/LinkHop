@@ -45,7 +45,7 @@
             <div class="flex flex-wrap items-center justify-between gap-2 px-4 pb-2 pt-4">
                 <h2 class="section-title">Blocked domains <span class="font-normal text-muted">· {{ number_format($domains->total()) }}</span></h2>
                 <form method="GET" class="w-full sm:w-56">
-                    <input type="search" name="q" value="{{ $search }}" placeholder="Search domain" aria-label="Search domains" class="input !py-1.5 text-sm">
+                    <input type="search" name="q" value="{{ $search }}" placeholder="Search domain" aria-label="Search domains" class="input py-1.5! text-sm">
                 </form>
             </div>
             <div class="overflow-x-auto">

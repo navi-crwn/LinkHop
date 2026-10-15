@@ -7,7 +7,7 @@
 
     <x-page-header title="Global analytics" subtitle="Platform-wide traffic, growth and sources.">
         <x-slot name="actions">
-            <select aria-label="Period" data-nav="?period={value}" class="input !w-auto !py-2">
+            <select aria-label="Period" data-nav="?period={value}" class="input w-auto! py-2!">
                 <option value="daily" @selected($period === 'daily')>Last 30 days</option>
                 <option value="weekly" @selected($period === 'weekly')>Last 12 weeks</option>
                 <option value="monthly" @selected($period === 'monthly')>Last 12 months</option>
@@ -64,8 +64,8 @@
             <div class="mb-3 flex items-center justify-between gap-2">
                 <h2 class="section-title">Top links</h2>
                 <div class="flex gap-0.5 rounded-lg bg-slate-500/10 p-0.5 text-xs font-medium">
-                    <button type="button" @click="tab = 'live'" class="rounded-md px-2.5 py-1" :class="tab === 'live' ? 'bg-white text-slate-900 shadow-sm dark:bg-white/15 dark:text-white' : 'text-muted'">Active</button>
-                    <button type="button" @click="tab = 'ended'" class="rounded-md px-2.5 py-1" :class="tab === 'ended' ? 'bg-white text-slate-900 shadow-sm dark:bg-white/15 dark:text-white' : 'text-muted'">Expired &amp; disabled</button>
+                    <button type="button" @click="tab = 'live'" class="rounded-md px-2.5 py-1" :class="tab === 'live' ? 'bg-white text-slate-900 shadow-xs dark:bg-white/15 dark:text-white' : 'text-muted'">Active</button>
+                    <button type="button" @click="tab = 'ended'" class="rounded-md px-2.5 py-1" :class="tab === 'ended' ? 'bg-white text-slate-900 shadow-xs dark:bg-white/15 dark:text-white' : 'text-muted'">Expired &amp; disabled</button>
                 </div>
             </div>
             <div x-show="tab === 'live'">
@@ -94,7 +94,7 @@
                 <div class="mt-2 flex items-center justify-end gap-2 text-[10px] text-muted">
                     <span>Low</span>
                     @foreach (['#e2e8f0', '#bfdbfe', '#60a5fa', '#2563eb', '#1d4ed8'] as $swatch)
-                        <span class="h-2.5 w-6 rounded-sm" style="background: {{ $swatch }}"></span>
+                        <span class="h-2.5 w-6 rounded-xs" style="background: {{ $swatch }}"></span>
                     @endforeach
                     <span>High</span>
                 </div>
@@ -295,7 +295,7 @@
                     .catch(error => {
                         console.error('❌ Map loading error:', error);
                         document.getElementById('choropleth-map').innerHTML = 
-                            '<div class="flex items-center justify-center h-full"><div class="text-center"><p class="text-sm text-red-600 font-semibold">Map Failed to Load</p><p class="text-xs text-slate-500 mt-1">Please try again.</p><button type="button" data-reload class="mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">Retry</button></div></div>';
+                            '<div class="flex items-center justify-center h-full"><div class="text-center"><p class="text-sm text-red-600 font-semibold">Map Failed to Load</p><p class="text-xs text-slate-500 mt-1">Please try again.</p><button type="button" data-reload class="mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded-sm hover:bg-blue-700">Retry</button></div></div>';
                     });
             } catch (error) {
                 console.error('❌ Map initialization error:', error);

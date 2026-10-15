@@ -70,7 +70,7 @@
                     <p class="text-sm editor-text-muted">Add your first block →</p>
                 </div>
                 <!-- Add Block Button -->
-                <button @click="showAddBlockModal = true" class="w-full py-3 border-2 border-dashed [border-color:var(--editor-border)] rounded-xl editor-text-muted hover:editor-text hover:border-blue-500 transition-colors flex items-center justify-center gap-2">
+                <button @click="showAddBlockModal = true" class="w-full py-3 border-2 border-dashed border-(--editor-border) rounded-xl editor-text-muted hover:editor-text hover:border-blue-500 transition-colors flex items-center justify-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                     </svg>

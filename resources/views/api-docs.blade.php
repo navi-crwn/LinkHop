@@ -89,7 +89,7 @@ Content-Type: application/json</code></pre>
                     <li>Open <a href="{{ route('settings') }}#api" class="text-ink underline">Settings → API</a>.</li>
                     <li>Create a token with a name you'll recognise.</li>
                     <li>Copy it now. It is shown only once.</li>
-                    <li>Send it as <code class="rounded bg-slate-500/10 px-1 font-mono text-xs text-ink">Authorization: Bearer …</code></li>
+                    <li>Send it as <code class="rounded-sm bg-slate-500/10 px-1 font-mono text-xs text-ink">Authorization: Bearer …</code></li>
                 </ol>
             </section>
 
