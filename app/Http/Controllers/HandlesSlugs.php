@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Link;
 use App\Models\RetiredSlug;
+use App\Support\ReservedSlugs;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -22,7 +23,8 @@ trait HandlesSlugs
         if (! $slug) {
             return null;
         }
-        if ($this->isReservedSlug($slug)) {
+        // A link keeps the slug it already has, even if that word became reserved later.
+        if ($slug !== $ignore?->slug && $this->isReservedSlug($slug)) {
             throw ValidationException::withMessages([
                 'slug' => 'Slug ini disediakan untuk sistem.',
             ]);
@@ -57,8 +59,6 @@ trait HandlesSlugs
 
     protected function isReservedSlug(string $slug): bool
     {
-        $reserved = config('shortener.reserved_slugs', []);
-
-        return in_array($this->normalizeSlug($slug), array_map('strtolower', $reserved), true);
+        return ReservedSlugs::isReserved($slug);
     }
 }
