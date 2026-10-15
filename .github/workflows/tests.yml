@@ -25,3 +25,5 @@ jobs:
       - run: vendor/bin/pint --test
       - run: php artisan test
       - run: composer audit
+      # Tailwind CSS 3 tooling still has high/moderate advisories; make this a plain `npm audit` after the Tailwind 4 upgrade.
+      - run: npm audit --audit-level=critical
