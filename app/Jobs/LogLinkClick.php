@@ -34,10 +34,21 @@ class LogLinkClick implements ShouldQueue
         if (! $link || app(UserAgentService::class)->parse($this->userAgent)['bot']) {
             return;
         }
+        // Enrichment is best effort: a failing GeoIP or proxy lookup must never cost
+        // the owner a click.
+        $geoData = ['country' => null, 'country_name' => null, 'city' => null, 'region' => null, 'provider' => null];
+        $proxyData = ['is_proxy' => false, 'type' => null, 'confidence' => 0];
         try {
-            $geoData = $geoIp->details($this->ip);
-            $proxyService = app(ProxyDetectionService::class);
-            $proxyData = $proxyService->detect($this->ip);
+            $geoData = array_merge($geoData, $geoIp->details($this->ip));
+        } catch (\Throwable $e) {
+            Log::warning('LogLinkClick geo lookup failed', ['link_id' => $link->id, 'error' => $e->getMessage()]);
+        }
+        try {
+            $proxyData = array_merge($proxyData, app(ProxyDetectionService::class)->detect($this->ip));
+        } catch (\Throwable $e) {
+            Log::warning('LogLinkClick proxy lookup failed', ['link_id' => $link->id, 'error' => $e->getMessage()]);
+        }
+        try {
             LinkClick::create([
                 'link_id' => $link->id,
                 'referer' => $this->referer,

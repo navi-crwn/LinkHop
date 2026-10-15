@@ -83,7 +83,7 @@ class PixelHopSsoTest extends TestCase
     public function test_images_menu_opens_pixelhop(): void
     {
         $user = User::factory()->create(['email_verified_at' => now()]);
-        $this->actingAs($user)->withSession(['2fa_verified' => true])->get('/images')
+        $this->actingAs($user)->withSession(['2fa_verified' => true])->get('/pixelhop')
             ->assertRedirect('https://p.example.com/auth/helink?next=%2Fdashboard');
     }
 }
