@@ -8,7 +8,7 @@
         <div class="p-4">
             <div class="grid grid-cols-2 gap-3">
                 <button @click="bioPage.social_icons_position = 'below_bio'" 
-                        :class="bioPage.social_icons_position === 'below_bio' || !bioPage.social_icons_position ? 'border-blue-500 bg-blue-900/20' : '[border-color:var(--editor-border)]'"
+                        :class="bioPage.social_icons_position === 'below_bio' || !bioPage.social_icons_position ? 'border-blue-500 bg-blue-900/20' : 'border-(--editor-border)'"
                         class="flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all">
                     <svg class="w-8 h-8" :class="bioPage.social_icons_position === 'below_bio' || !bioPage.social_icons_position ? 'text-blue-400' : 'editor-text-muted'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
@@ -16,7 +16,7 @@
                     <span class="text-sm font-medium" :class="bioPage.social_icons_position === 'below_bio' || !bioPage.social_icons_position ? 'text-blue-400' : 'editor-text-muted'">Below Bio</span>
                 </button>
                 <button @click="bioPage.social_icons_position = 'bottom_page'" 
-                        :class="bioPage.social_icons_position === 'bottom_page' ? 'border-blue-500 bg-blue-900/20' : '[border-color:var(--editor-border)]'"
+                        :class="bioPage.social_icons_position === 'bottom_page' ? 'border-blue-500 bg-blue-900/20' : 'border-(--editor-border)'"
                         class="flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all">
                     <svg class="w-8 h-8" :class="bioPage.social_icons_position === 'bottom_page' ? 'text-blue-400' : 'editor-text-muted'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
@@ -59,7 +59,7 @@
                                    data-lpignore="true"
                                    data-form-type="other"
                                    :aria-label="(platforms[item.platform]?.name || item.platform) + ' username or URL'"
-                                   class="w-full bg-transparent border-none focus:outline-none text-sm editor-text placeholder-slate-500">
+                                   class="w-full bg-transparent border-none focus:outline-hidden text-sm editor-text placeholder-slate-500">
                             <div class="text-xs editor-text-muted" x-text="platforms[item.platform]?.name || item.platform"></div>
                         </div>
                         <!-- Actions -->

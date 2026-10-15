@@ -24,7 +24,7 @@
     <div class="max-w-6xl mx-auto px-4 py-3">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div class="flex items-start space-x-3 flex-1">
-                <div class="flex-shrink-0">
+                <div class="shrink-0">
                     <svg class="w-5 h-5 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
@@ -36,16 +36,16 @@
                     </p>
                 </div>
             </div>
-            <div class="flex gap-2 sm:flex-shrink-0">
+            <div class="flex gap-2 sm:shrink-0">
                 <button 
                     @click="declineCookies()"
-                    class="px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors"
+                    class="px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-sm transition-colors"
                 >
                     Decline
                 </button>
                 <button 
                     @click="acceptCookies()"
-                    class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded transition-colors"
+                    class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-sm transition-colors"
                 >
                     Accept
                 </button>

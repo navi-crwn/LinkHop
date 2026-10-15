@@ -1,6 +1,29 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/forms';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+    --font-sans: Inter, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/*
+| Tailwind 4 with the v3 look. Two v3 defaults are put back: borders were gray-200 (now
+| currentcolor) and buttons had a pointer cursor. The component classes stay plain CSS in
+| the components layer, so they keep their v3 order: a later class (.btn-primary) still
+| wins over an earlier one (.btn-sm). Classes used with variants (hover:text-ink) are @utility.
+*/
+@layer base {
+    *, ::after, ::before, ::backdrop, ::file-selector-button { border-color: var(--color-gray-200, currentcolor); }
+    button:not(:disabled), [role='button']:not(:disabled) { cursor: pointer; }
+}
+
+@utility text-ink { color: rgb(var(--ink)); }
+@utility text-muted { color: rgb(var(--muted)); }
 
 /*
 |--------------------------------------------------------------------------
@@ -61,16 +84,16 @@
 
 @layer components {
     /* Surfaces */
-    .glass {
+    .glass, .glass-card, .glass-strong, .btn-soft, .stat {
         background-color: rgb(var(--glass) / var(--glass-alpha));
         border: 1px solid rgb(var(--glass-border) / var(--glass-border-alpha));
         box-shadow: 0 1px 0 rgb(255 255 255 / 0.35) inset, 0 8px 32px -12px rgb(var(--shadow) / 0.18);
         -webkit-backdrop-filter: blur(18px) saturate(160%);
         backdrop-filter: blur(18px) saturate(160%);
     }
-    .dark .glass { box-shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 8px 32px -12px rgb(0 0 0 / 0.6); }
-    .glass-card { @apply glass rounded-2xl p-4 sm:p-5; }
-    .glass-strong { @apply glass; background-color: rgb(var(--glass) / 0.85); }
+    .dark :is(.glass, .glass-card, .glass-strong, .btn-soft, .stat) { box-shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 8px 32px -12px rgb(0 0 0 / 0.6); }
+    .glass-card { @apply rounded-2xl p-4 sm:p-5; }
+    .glass-strong { background-color: rgb(var(--glass) / 0.85); }
     .glass-inset {
         background-color: rgb(var(--glass) / 0.45);
         border: 1px solid rgb(var(--glass-border) / calc(var(--glass-border-alpha) * 0.8));
@@ -78,8 +101,6 @@
     }
 
     /* Typography helpers */
-    .text-ink { color: rgb(var(--ink)); }
-    .text-muted { color: rgb(var(--muted)); }
     .eyebrow { @apply text-[11px] font-semibold uppercase tracking-[0.14em]; color: rgb(var(--muted)); }
     .page-title { @apply text-xl font-semibold tracking-tight sm:text-2xl; color: rgb(var(--ink)); }
     .section-title { @apply text-sm font-semibold; color: rgb(var(--ink)); }
@@ -87,19 +108,26 @@
     /* Buttons */
     .btn {
         @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold
-               transition duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60
+               transition duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-indigo-400/60
                disabled:cursor-not-allowed disabled:opacity-50;
     }
     .btn-sm { @apply rounded-lg px-3 py-1.5 text-xs; }
+    /* The variants below include .btn after .btn-sm, as applying .btn did with Tailwind 3,
+       so .btn-sm does not shrink them. */
+    .btn-primary, .btn-ghost, .btn-soft, .btn-danger {
+        @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold
+               transition duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-indigo-400/60
+               disabled:cursor-not-allowed disabled:opacity-50;
+    }
     /* Neutral solid primary (ink on light, white on dark); the accent is kept for links/active states. */
     .btn-primary {
-        @apply btn bg-slate-900 text-white shadow-sm hover:bg-slate-800 active:scale-[0.98]
+        @apply bg-slate-900 text-white shadow-xs hover:bg-slate-800 active:scale-[0.98]
                dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100;
     }
-    .btn-ghost { @apply btn hover:bg-slate-900/5 dark:hover:bg-white/10; color: rgb(var(--ink)); }
-    .btn-soft { @apply btn glass; color: rgb(var(--ink)); }
+    .btn-ghost { @apply hover:bg-slate-900/5 dark:hover:bg-white/10; color: rgb(var(--ink)); }
+    .btn-soft { color: rgb(var(--ink)); }
     .btn-soft:hover { background-color: rgb(var(--glass) / 0.9); }
-    .btn-danger { @apply btn bg-rose-500/90 text-white hover:bg-rose-500; }
+    .btn-danger { @apply bg-rose-500/90 text-white hover:bg-rose-500; }
     .icon-btn {
         @apply inline-flex h-9 w-9 items-center justify-center rounded-xl transition hover:bg-slate-900/5 dark:hover:bg-white/10;
         color: rgb(var(--muted));
@@ -108,7 +136,7 @@
 
     /* Form controls */
     .input {
-        @apply block w-full rounded-xl border px-3.5 py-2.5 text-sm shadow-none outline-none transition
+        @apply block w-full rounded-xl border px-3.5 py-2.5 text-sm shadow-none outline-hidden transition
                placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-400/40;
         color: rgb(var(--ink));
         background-color: rgb(var(--glass) / 0.6);
@@ -120,12 +148,12 @@
     .label { @apply mb-1.5 block text-xs font-medium; color: rgb(var(--muted)); }
 
     /* Chips / badges */
-    .chip { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold; }
-    .chip-green { @apply chip bg-emerald-500/15 text-emerald-700 dark:text-emerald-300; }
-    .chip-gray { @apply chip bg-slate-500/15 text-slate-600 dark:text-slate-300; }
-    .chip-red { @apply chip bg-rose-500/15 text-rose-700 dark:text-rose-300; }
-    .chip-blue { @apply chip bg-indigo-500/15 text-indigo-700 dark:text-indigo-300; }
-    .chip-amber { @apply chip bg-amber-500/15 text-amber-700 dark:text-amber-300; }
+    .chip, .chip-green, .chip-gray, .chip-red, .chip-blue, .chip-amber { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold; }
+    .chip-green { @apply bg-emerald-500/15 text-emerald-700 dark:text-emerald-300; }
+    .chip-gray { @apply bg-slate-500/15 text-slate-600 dark:text-slate-300; }
+    .chip-red { @apply bg-rose-500/15 text-rose-700 dark:text-rose-300; }
+    .chip-blue { @apply bg-indigo-500/15 text-indigo-700 dark:text-indigo-300; }
+    .chip-amber { @apply bg-amber-500/15 text-amber-700 dark:text-amber-300; }
 
     /* Navigation */
     .nav-item {
@@ -144,7 +172,7 @@
     .nav-sub-active { @apply font-semibold; }
 
     /* Compact metric tiles */
-    .stat { @apply glass rounded-2xl px-4 py-3; }
+    .stat { @apply rounded-2xl px-4 py-3; }
     .stat-label { @apply text-[11px] font-medium uppercase tracking-wider; color: rgb(var(--muted)); }
     .stat-value { @apply mt-0.5 text-xl font-semibold tabular-nums tracking-tight sm:text-2xl; color: rgb(var(--ink)); }
 
@@ -200,7 +228,7 @@
 .auth-card .relative > .relative > span[class*="px-"] { background-color: rgb(var(--glass)) !important; border-radius: 9999px; }
 .auth-card :is(.rounded-md) { border-radius: 0.75rem; }
 .auth-card :is(.border-gray-300, .dark\:border-gray-600, .dark\:border-gray-700) { border-color: rgb(var(--muted) / 0.25) !important; }
-.auth-card input[type=checkbox] { @apply rounded border-slate-400/50 bg-transparent text-indigo-500; }
+.auth-card input[type=checkbox] { @apply rounded-sm border-slate-400/50 bg-transparent text-indigo-500; }
 
 /* Legacy solid blue buttons follow the neutral primary style. */
 .app-shell :is(button, a, input[type=submit]):is(.bg-blue-600, .bg-indigo-600):not(.no-skin) {
@@ -208,4 +236,27 @@
 }
 .dark .app-shell :is(button, a, input[type=submit]):is(.bg-blue-600, .bg-indigo-600):not(.no-skin) {
     background-color: #fff !important; color: rgb(15 23 42) !important;
+}
+
+/*
+| space-x-* / space-y-* keep their Tailwind 3 rule: every visible child after the first gets
+| the gap as a top/left margin. Tailwind 4 puts it at the bottom/right of every child but
+| the last instead, which drops the gap after the hidden @csrf inputs at the top of a form.
+| The unlayered rules switch the v4 margins off; the utilities add the v3 ones.
+*/
+:where([class*='space-y-']) > :not(:last-child) { margin-block-end: 0; }
+:where([class*='space-x-']) > :not(:last-child) { margin-inline-end: 0; }
+
+@utility space-y-* {
+    & > :not([hidden]) ~ :not([hidden]) {
+        margin-top: calc(var(--spacing) * --value(number));
+        margin-bottom: 0;
+    }
+}
+
+@utility space-x-* {
+    & > :not([hidden]) ~ :not([hidden]) {
+        margin-left: calc(var(--spacing) * --value(number));
+        margin-right: 0;
+    }
 }

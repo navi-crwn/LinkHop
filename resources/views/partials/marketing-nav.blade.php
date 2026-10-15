@@ -9,7 +9,7 @@
     ];
 @endphp
 <header class="sticky top-0 z-40 px-3 pt-3 sm:px-5" x-data="{ open: false }" @keydown.escape.window="open = false">
-    <nav class="mx-auto flex h-14 max-w-6xl items-center justify-between rounded-2xl border border-slate-200/80 bg-white/70 px-3 shadow-sm shadow-slate-900/5 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/50 dark:shadow-none sm:px-4">
+    <nav class="mx-auto flex h-14 max-w-6xl items-center justify-between rounded-2xl border border-slate-200/80 bg-white/70 px-3 shadow-xs shadow-slate-900/5 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/50 dark:shadow-none sm:px-4">
         <a href="{{ route('home') }}" class="flex items-center gap-2.5 text-slate-900 dark:text-white">
             <x-application-logo class="h-7 w-7" />
             <span class="text-[15px] font-semibold tracking-tight">HEL.ink</span>

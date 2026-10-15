@@ -2,8 +2,8 @@
     @php
         $idleDays = config('shortener.guest_idle_days', 14);
         $maxDays = config('shortener.guest_max_days', 30);
-        $card = 'rounded-3xl border border-slate-200/80 bg-white/80 shadow-sm shadow-slate-900/5 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.05] dark:shadow-none';
-        $btnPrimary = 'rounded-xl bg-gradient-to-r from-indigo-500 via-sky-500 to-fuchsia-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition hover:brightness-110 active:scale-[0.98]';
+        $card = 'rounded-3xl border border-slate-200/80 bg-white/80 shadow-xs shadow-slate-900/5 backdrop-blur-xl dark:border-white/10 dark:bg-white/5 dark:shadow-none';
+        $btnPrimary = 'rounded-xl bg-linear-to-r from-indigo-500 via-sky-500 to-fuchsia-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition hover:brightness-110 active:scale-[0.98]';
         $btnSecondary = 'rounded-xl border border-slate-300 px-4 py-2.5 text-sm text-slate-700 transition hover:bg-slate-900/5 dark:border-white/15 dark:text-white/80 dark:hover:bg-white/10';
     @endphp
 
@@ -14,7 +14,7 @@
         </span>
         <h1 class="mt-5 text-4xl font-semibold leading-[1.1] tracking-tight sm:text-6xl">
             Short links,<br class="sm:hidden">
-            <span class="bg-gradient-to-r from-indigo-500 via-sky-500 to-fuchsia-500 bg-clip-text dark:from-indigo-300 dark:via-sky-300 dark:to-fuchsia-300 text-transparent">one hop away.</span>
+            <span class="bg-linear-to-r from-indigo-500 via-sky-500 to-fuchsia-500 bg-clip-text dark:from-indigo-300 dark:via-sky-300 dark:to-fuchsia-300 text-transparent">one hop away.</span>
         </h1>
         <p class="mx-auto mt-4 max-w-xl text-base text-slate-600 sm:text-lg dark:text-white/65">
             Shorten a link in seconds, or sign up for analytics, QR codes, folders and a Link in Bio page.
@@ -34,9 +34,9 @@
                     <label for="target_url" class="sr-only">Long URL</label>
                     <input id="target_url" type="url" name="target_url" value="{{ old('target_url') }}" required
                         placeholder="Paste a long link…"
-                        class="min-w-0 flex-1 rounded-2xl border-0 bg-slate-100 px-4 py-3.5 text-[15px] text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400/50 dark:bg-white/[0.06] dark:text-white dark:placeholder-white/35 dark:focus:bg-white/[0.09]">
+                        class="min-w-0 flex-1 rounded-2xl border-0 bg-slate-100 px-4 py-3.5 text-[15px] text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-indigo-400/50 dark:bg-white/6 dark:text-white dark:placeholder-white/35 dark:focus:bg-white/9">
                     <button type="submit"
-                        class="rounded-2xl bg-gradient-to-r from-indigo-500 via-sky-500 to-fuchsia-500 px-6 py-3.5 font-semibold text-white shadow-md shadow-indigo-500/25 transition hover:brightness-110 active:scale-[0.98] disabled:opacity-50">
+                        class="rounded-2xl bg-linear-to-r from-indigo-500 via-sky-500 to-fuchsia-500 px-6 py-3.5 font-semibold text-white shadow-md shadow-indigo-500/25 transition hover:brightness-110 active:scale-[0.98] disabled:opacity-50">
                         <span x-show="!waiting">Shorten</span><span x-cloak x-show="waiting">Verifying…</span>
                     </button>
                     {{-- Kept rendered but collapsed (Turnstile needs a live container); the negative margin cancels the row gap. --}}
@@ -48,7 +48,7 @@
                     <div x-show="custom" x-cloak class="flex items-center gap-2">
                         <span class="text-sm text-slate-400 dark:text-white/45">{{ parse_url(config('app.url'), PHP_URL_HOST) }}/</span>
                         <input id="slug" type="text" name="slug" value="{{ old('slug') }}" placeholder="my-link" pattern="[A-Za-z0-9\-]+"
-                            class="min-w-0 flex-1 rounded-xl border-0 bg-slate-100 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400/50 dark:bg-white/[0.06] dark:text-white dark:placeholder-white/30">
+                            class="min-w-0 flex-1 rounded-xl border-0 bg-slate-100 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-400/50 dark:bg-white/6 dark:text-white dark:placeholder-white/30">
                     </div>
                 </div>
                 @if (session('link_error') || $errors->any())
@@ -99,7 +99,7 @@
         <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
             @foreach ($features as $f)
                 <article class="{{ $card }} p-4 sm:p-5">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500/15 to-fuchsia-500/15 dark:from-indigo-400/20 dark:to-fuchsia-400/15">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br from-indigo-500/15 to-fuchsia-500/15 dark:from-indigo-400/20 dark:to-fuchsia-400/15">
                         <svg class="h-[18px] w-[18px] text-indigo-600 dark:text-indigo-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ $f['icon'] }}"/></svg>
                     </div>
                     <h3 class="mt-4 font-semibold">{{ $f['title'] }}</h3>
@@ -122,13 +122,13 @@
                 </div>
             </div>
             <div class="mx-auto w-full max-w-[260px]">
-                <div class="rounded-[2rem] border border-white/40 bg-gradient-to-b from-indigo-500 via-sky-500 to-fuchsia-500 p-5 shadow-2xl shadow-indigo-500/25 dark:border-white/15 dark:from-indigo-500/40 dark:via-sky-500/25 dark:to-fuchsia-500/30 dark:shadow-black/30">
+                <div class="rounded-4xl border border-white/40 bg-linear-to-b from-indigo-500 via-sky-500 to-fuchsia-500 p-5 shadow-2xl shadow-indigo-500/25 dark:border-white/15 dark:from-indigo-500/40 dark:via-sky-500/25 dark:to-fuchsia-500/30 dark:shadow-black/30">
                     <div class="mx-auto h-14 w-14 rounded-full bg-white/20 ring-2 ring-white/30"></div>
                     <div class="mx-auto mt-3 h-2.5 w-24 rounded-full bg-white/60"></div>
                     <div class="mx-auto mt-2 h-2 w-32 rounded-full bg-white/25"></div>
                     <div class="mt-5 space-y-2.5">
                         @foreach (['Latest video', 'My shop', 'Podcast', 'Contact'] as $l)
-                            <div class="rounded-xl border border-white/15 bg-white/10 px-3 py-2.5 text-center text-xs font-medium text-white/90 backdrop-blur">{{ $l }}</div>
+                            <div class="rounded-xl border border-white/15 bg-white/10 px-3 py-2.5 text-center text-xs font-medium text-white/90 backdrop-blur-sm">{{ $l }}</div>
                         @endforeach
                     </div>
                 </div>
@@ -146,7 +146,7 @@
                 <a href="https://github.com/navi-crwn/hel.ink" target="_blank" rel="noopener" class="{{ $btnSecondary }}">GitHub</a>
             </div>
         </div>
-        <a href="https://p.hel.ink" target="_blank" rel="noopener" class="{{ $card }} group block p-6 transition hover:bg-white dark:hover:bg-white/[0.08]">
+        <a href="https://p.hel.ink" target="_blank" rel="noopener" class="{{ $card }} group block p-6 transition hover:bg-white dark:hover:bg-white/8">
             <p class="text-xs font-semibold uppercase tracking-wider text-cyan-700 dark:text-cyan-200/80">HEL.ink family</p>
             <h2 class="mt-2 text-xl font-semibold">PixelHop</h2>
             <p class="mt-2 text-sm text-slate-600 dark:text-white/60">Free image hosting with compress, resize, convert, OCR and background removal.</p>
