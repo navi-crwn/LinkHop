@@ -13,9 +13,11 @@ class AutoLogout
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()) {
-            $timeout = config('session.inactivity_logout', 60);
+            // Same limit as the session itself (SESSION_LIFETIME), so there is one setting to tune.
+            $timeout = (int) config('session.lifetime', 120);
             $lastActivity = session('last_activity_time');
-            if ($lastActivity && now()->diffInMinutes(Carbon::parse($lastActivity)) >= $timeout) {
+            // Carbon 3 diffs are signed: measure from the last activity forward to now.
+            if ($lastActivity && Carbon::parse($lastActivity)->diffInMinutes(now()) >= $timeout) {
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
