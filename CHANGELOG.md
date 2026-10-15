@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Public bio pages: header, FAQ and contact-card text follows the theme color, so it stays readable on dark themes
 
 ### Changed
+- `storage/framework/disposable_domains.json` (written by `disposable:update`) is git-ignored
+- README: why Cloudflare Email Obfuscation and Rocket Loader fill the CSP report log, and what to do about it
 - Guest links are deleted at 00:00 (in `GUEST_LINK_TIMEZONE`) after 14 full days in a row without a click, and after day 30 at most; the server `.env` can no longer stretch the idle limit past 14 days. `links:prune-guest` now runs at midnight
 - Home page: the Cloudflare security check sits to the right of the Shorten button on wide screens and only takes room when Cloudflare asks for a click
 
@@ -20,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Slugs of deleted guest links stay blocked for 90 days (`RETIRED_SLUG_DAYS`) and show a "Link Expired" page (HTTP 410), so nobody can take over a link that is still shared somewhere
 
 ### Security
+- `npm audit fix` (no `--force`): 21 advisories (2 critical) down to 7, all from Tailwind CSS 3 build tooling; axios 1.20, vite 7.3 and concurrently 9.2.5 within their ranges. CI now fails on critical npm advisories
 - Bio shortlink endpoints (`/api/bio/shorten`, `/api/shorten-web`) now enforce the domain blacklist, quota and rate limits
 - Bio blocks reject `javascript:`/`data:` URLs and blocked domains; public bio pages sanitize HTML/text blocks, custom CSS and background styles
 - Users can no longer edit or delete bio blocks that belong to another page (scoped route bindings)

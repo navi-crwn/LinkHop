@@ -134,6 +134,8 @@ GOOGLE_REDIRECT_URI=https://yourdomain.com/auth/google/callback
 
 **Domain sendiri:** isi `APP_URL` dengan domainmu, maka semua link pendek dan halaman bio memakainya.
 
+**Di belakang Cloudflare:** HEL.ink mengirim Content Security Policy ketat dalam mode report-only yang hanya memercayai script dengan nonce halaman, dan mencatat apa yang akan diblokir ke `storage/logs/csp-*.log`. Fitur Cloudflare **Email Address Obfuscation** (Scrape Shield) dan **Rocket Loader** (Speed → Optimization) menyuntikkan script sendiri dari `/cdn-cgi/scripts/.../cloudflare-static/` tanpa nonce itu, sehingga memenuhi log. Matikan keduanya di dashboard Cloudflare (disarankan: HEL.ink tidak membutuhkannya, dan policy tetap siap diberlakukan), atau lewati hanya di path tertentu dengan Configuration Rule Cloudflare. Mengizinkannya di policy tidak bisa dengan policy nonce (`'strict-dynamic'` mengabaikan daftar host dan `'self'`); caranya harus membuang nonce, yang melemahkan policy untuk semua script lain.
+
 **Production:** biarkan queue worker tetap berjalan.
 ```bash
 php artisan queue:work
