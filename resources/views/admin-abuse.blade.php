@@ -47,7 +47,7 @@
             <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-xs font-bold text-amber-600 dark:text-amber-300">!</span>
             <p class="text-ink">
                 The hourly scan has not run in the last 3 hours, so new links are not being checked.
-                Make sure the server cron runs <code class="rounded bg-slate-500/15 px-1 font-mono text-xs">* * * * * php artisan schedule:run</code>,
+                Make sure the server cron runs <code class="rounded-sm bg-slate-500/15 px-1 font-mono text-xs">* * * * * php artisan schedule:run</code>,
                 or use <strong>Scan now</strong>.
             </p>
         </div>
@@ -162,7 +162,7 @@
                                     <form method="POST" action="{{ route('admin.abuse.update', $report) }}" class="inline-flex items-center gap-1.5">
                                         @csrf
                                         @method('PATCH')
-                                        <select name="status" aria-label="Report status" class="input !w-auto !py-1.5 text-xs">
+                                        <select name="status" aria-label="Report status" class="input w-auto! py-1.5! text-xs">
                                             @foreach (['open', 'investigating', 'closed'] as $option)
                                                 <option value="{{ $option }}" @selected($report->status === $option)>{{ ucfirst($option) }}</option>
                                             @endforeach

@@ -47,7 +47,7 @@
                 </div>
                 <div>
                     <label class="label" for="redirect_type">Redirect type</label>
-                    <select id="redirect_type" name="redirect_type" class="input sm:!w-60">
+                    <select id="redirect_type" name="redirect_type" class="input sm:w-60!">
                         <option value="302" @selected($redirect === '302')>302 · temporary</option>
                         <option value="301" @selected($redirect === '301')>301 · permanent</option>
                         <option value="307" @selected($redirect === '307')>307 · temporary, keeps method</option>
@@ -74,7 +74,7 @@
                     <div class="flex items-center justify-between gap-2">
                         <span class="label">Tags</span>
                         @if (count($tags) > 12)
-                            <input type="search" x-model="search" placeholder="Filter tags" aria-label="Filter tags" class="input !w-40 !py-1 text-xs">
+                            <input type="search" x-model="search" placeholder="Filter tags" aria-label="Filter tags" class="input w-40! py-1! text-xs">
                         @endif
                     </div>
                     @if (count($tags) === 0)
@@ -104,7 +104,7 @@
                     <input id="flinked-1" type="password" name="password" class="input" placeholder="Leave blank to keep" autocomplete="new-password">
                     @if ($link->requiresPassword())
                         <label class="mt-2 flex items-center gap-2 text-xs text-muted">
-                            <input type="checkbox" name="remove_password" value="1" class="rounded border-slate-400/50 text-indigo-600 focus:ring-indigo-500">
+                            <input type="checkbox" name="remove_password" value="1" class="rounded-sm border-slate-400/50 text-indigo-600 focus:ring-indigo-500">
                             Remove the current password
                         </label>
                     @endif

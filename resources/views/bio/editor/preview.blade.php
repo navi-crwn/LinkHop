@@ -571,10 +571,10 @@
         .shadow-none .countdown-block {
             box-shadow: none !important;
         }
-        .shadow-sm .link-block,
-        .shadow-sm .text-block-styled,
-        .shadow-sm .image-block,
-        .shadow-sm .countdown-block {
+        .shadow-xs .link-block,
+        .shadow-xs .text-block-styled,
+        .shadow-xs .image-block,
+        .shadow-xs .countdown-block {
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important;
         }
         .shadow-md .link-block,
@@ -941,7 +941,7 @@
             </div>
         </template>
         <!-- Link Blocks -->
-        <div class="blocks-container" :class="'shape-' + (design.buttonShape || 'rounded') + ' shadow-' + (design.buttonShadow || 'md')" x-ref="blocksContainer">
+        <div class="blocks-container" :class="'shape-' + (design.buttonShape || 'rounded-sm') + ' shadow-' + (design.buttonShadow || 'md')" x-ref="blocksContainer">
             <template x-for="(block, blockIndex) in blocks.filter(b => b.is_active)" :key="block.id">
                 <div>
                     <!-- Link Block -->
@@ -1198,7 +1198,7 @@
                     bioColor: '#1e293b',
                     buttonBgColor: '#6366f1',
                     buttonTextColor: '#ffffff',
-                    buttonShape: 'rounded',
+                    buttonShape: 'rounded-sm',
                     buttonShadow: 'medium',
                     avatarShape: 'circle',
                     fontFamily: 'inter',
@@ -1298,7 +1298,7 @@
                 },
                 get buttonRadius() {
                     const shapes = {
-                        'rounded': '12px',
+                        'rounded-sm': '12px',
                         'pill': '9999px',
                         'square': '0',
                         'soft': '6px'

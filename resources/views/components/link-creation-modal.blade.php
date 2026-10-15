@@ -13,7 +13,7 @@
     class="fixed inset-0 z-40 flex items-center justify-center p-4"
     @keydown.escape.window="if (!showOgEditor && !showFolderModal && !showTagModal && !showQrEditor) { panel = false; }"
 >
-    <div @click="if (!showOgEditor && !showFolderModal && !showTagModal && !showQrEditor) { closePanel(); }" class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"></div>
+    <div @click="if (!showOgEditor && !showFolderModal && !showTagModal && !showQrEditor) { closePanel(); }" class="absolute inset-0 bg-slate-950/60 backdrop-blur-xs"></div>
     <div
         x-show="!showOgEditor && !showFolderModal && !showTagModal && !showQrEditor"
         x-transition:enter="transition ease-out duration-200"
@@ -61,7 +61,7 @@
                     <div class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900" x-show="createdLink?.qr_code_url">
                         <h4 class="text-sm font-semibold text-slate-900 dark:text-white mb-3">QR Code</h4>
                         <div class="flex items-start gap-4">
-                            <div class="flex-shrink-0">
+                            <div class="shrink-0">
                                 <img :src="createdLink?.qr_code_url" alt="QR Code" class="w-[150px] h-[150px] object-contain rounded-lg border border-slate-200 dark:border-slate-700 bg-white">
                             </div>
                             <div class="flex-1 space-y-4">
@@ -213,7 +213,7 @@
                                                 x-model="tagSearch"
                                                 autocomplete="new-password"
                                                 placeholder="Search tags..."
-                                                class="w-full px-3 py-1.5 text-sm rounded border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white focus:border-blue-500 focus:ring-blue-500"
+                                                class="w-full px-3 py-1.5 text-sm rounded-sm border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white focus:border-blue-500 focus:ring-blue-500"
                                                 @click.stop
                                             >
                                         </div>
@@ -235,7 +235,7 @@
                                                                 formData.tags = formData.tags.filter(id => id !== tag.id);
                                                             }
                                                         "
-                                                        class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 dark:border-slate-600"
+                                                        class="rounded-sm border-slate-300 text-blue-600 focus:ring-blue-500 dark:border-slate-600"
                                                     >
                                                 </label>
                                             </template>
@@ -362,7 +362,7 @@
                                                 x-model="folderSearch"
                                                 autocomplete="new-password"
                                                 placeholder="Search folders..."
-                                                class="w-full px-3 py-1.5 text-sm rounded border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white focus:border-blue-500 focus:ring-blue-500"
+                                                class="w-full px-3 py-1.5 text-sm rounded-sm border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white focus:border-blue-500 focus:ring-blue-500"
                                                 @click.stop
                                             >
                                         </div>
@@ -425,7 +425,7 @@
                                             <img :src="qrPreviewUrl" alt="QR Preview" class="w-32 h-32 mx-auto rounded-lg border border-slate-200 dark:border-slate-700">
                                             <div x-show="qrSettings.showLogo && qrSettings.logo" class="absolute inset-0 flex items-center justify-center pointer-events-none">
                                                 <div class="w-11 h-11 rounded-lg bg-white dark:bg-slate-900 p-1 shadow-lg border border-slate-200 dark:border-slate-700">
-                                                    <img :src="qrSettings.logo" alt="Logo" class="w-full h-full object-contain rounded">
+                                                    <img :src="qrSettings.logo" alt="Logo" class="w-full h-full object-contain rounded-sm">
                                                 </div>
                                             </div>
                                         </div>
@@ -459,7 +459,7 @@
                                     <button 
                                         type="button"
                                         @click="previewPlatform = 'default'"
-                                        :class="previewPlatform === 'default' ? 'bg-blue-600 text-white shadow' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'"
+                                        :class="previewPlatform === 'default' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'"
                                         class="flex-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors"
                                     >
                                         🌐 Default
@@ -467,7 +467,7 @@
                                     <button 
                                         type="button"
                                         @click="previewPlatform = 'twitter'"
-                                        :class="previewPlatform === 'twitter' ? 'bg-blue-600 text-white shadow' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'"
+                                        :class="previewPlatform === 'twitter' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'"
                                         class="flex-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors"
                                     >
                                         𝕏 Twitter
@@ -475,7 +475,7 @@
                                     <button 
                                         type="button"
                                         @click="previewPlatform = 'linkedin'"
-                                        :class="previewPlatform === 'linkedin' ? 'bg-blue-600 text-white shadow' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'"
+                                        :class="previewPlatform === 'linkedin' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'"
                                         class="flex-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors"
                                     >
                                         💼 LinkedIn
@@ -483,7 +483,7 @@
                                     <button 
                                         type="button"
                                         @click="previewPlatform = 'facebook'"
-                                        :class="previewPlatform === 'facebook' ? 'bg-blue-600 text-white shadow' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'"
+                                        :class="previewPlatform === 'facebook' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'"
                                         class="flex-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors"
                                     >
                                         📘 Facebook
@@ -524,14 +524,14 @@
     <div
         x-show="showOgEditor"
         x-transition
-        class="fixed inset-0 z-[200] flex items-center justify-center p-4"
+        class="fixed inset-0 z-200 flex items-center justify-center p-4"
         @click="showOgEditor = false"
         style="display: none;"
     >
-        <div class="absolute inset-0 bg-black/90 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-xs"></div>
         <div 
             @click.stop
-            class="relative z-[210] w-full max-w-4xl rounded-xl bg-white dark:bg-slate-800 shadow-2xl max-h-[85vh] overflow-hidden"
+            class="relative z-210 w-full max-w-4xl rounded-xl bg-white dark:bg-slate-800 shadow-2xl max-h-[85vh] overflow-hidden"
         >
             <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-4 bg-white dark:bg-slate-800">
                 <h4 class="text-lg font-semibold text-slate-900 dark:text-white">Custom Link Preview</h4>
@@ -625,14 +625,14 @@
     <div
         x-show="showFolderModal"
         x-transition
-        class="fixed inset-0 z-[200] flex items-center justify-center p-4"
+        class="fixed inset-0 z-200 flex items-center justify-center p-4"
         @click="showFolderModal = false"
         style="display: none;"
     >
-        <div class="absolute inset-0 bg-black/90 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-xs"></div>
         <div 
             @click.stop
-            class="relative z-[210] w-full rounded-xl bg-white dark:bg-slate-800 shadow-2xl p-5"
+            class="relative z-210 w-full rounded-xl bg-white dark:bg-slate-800 shadow-2xl p-5"
             style="max-width: 400px;"
         >
             <h4 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Create New Folder</h4>
@@ -665,14 +665,14 @@
     <div
         x-show="showTagModal"
         x-transition
-        class="fixed inset-0 z-[200] flex items-center justify-center p-4"
+        class="fixed inset-0 z-200 flex items-center justify-center p-4"
         @click="showTagModal = false"
         style="display: none;"
     >
-        <div class="absolute inset-0 bg-black/90 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-xs"></div>
         <div 
             @click.stop
-            class="relative z-[210] w-full rounded-xl bg-white dark:bg-slate-800 shadow-2xl p-5"
+            class="relative z-210 w-full rounded-xl bg-white dark:bg-slate-800 shadow-2xl p-5"
             style="max-width: 400px;"
         >
             <h4 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Create New Tag</h4>
@@ -705,14 +705,14 @@
     <div
         x-show="showQrEditor"
         x-transition
-        class="fixed inset-0 z-[200] flex items-center justify-center p-4"
+        class="fixed inset-0 z-200 flex items-center justify-center p-4"
         @click="showQrEditor = false"
         style="display: none;"
     >
-        <div class="absolute inset-0 bg-black/90 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-xs"></div>
         <div 
             @click.stop
-            class="relative z-[210] w-full max-w-md rounded-2xl bg-white dark:bg-slate-800 shadow-2xl overflow-hidden max-h-[85vh]"
+            class="relative z-210 w-full max-w-md rounded-2xl bg-white dark:bg-slate-800 shadow-2xl overflow-hidden max-h-[85vh]"
         >
             <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-4">
                 <div>
@@ -742,7 +742,7 @@
                                 </div>
                                 <div x-show="qrSettings.showLogo && qrSettings.logo" class="absolute inset-0 flex items-center justify-center pointer-events-none">
                                     <div class="w-10 h-10 rounded-lg bg-white dark:bg-slate-900 p-1 shadow-lg border border-slate-200 dark:border-slate-700">
-                                        <img :src="qrSettings.logo" alt="Logo" class="w-full h-full object-contain rounded">
+                                        <img :src="qrSettings.logo" alt="Logo" class="w-full h-full object-contain rounded-sm">
                                     </div>
                                 </div>
                             </div>
@@ -777,7 +777,7 @@
                         <input 
                             type="color" 
                             x-model="qrSettings.fgColor"
-                            class="h-10 w-20 rounded border border-slate-300 dark:border-slate-600 cursor-pointer"
+                            class="h-10 w-20 rounded-sm border border-slate-300 dark:border-slate-600 cursor-pointer"
                         >
                         <input 
                             type="text" 
@@ -795,7 +795,7 @@
                         <input 
                             type="color" 
                             x-model="qrSettings.bgColor"
-                            class="h-10 w-20 rounded border border-slate-300 dark:border-slate-600 cursor-pointer"
+                            class="h-10 w-20 rounded-sm border border-slate-300 dark:border-slate-600 cursor-pointer"
                         >
                         <input 
                             type="text" 

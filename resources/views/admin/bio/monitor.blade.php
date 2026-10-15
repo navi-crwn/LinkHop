@@ -2,7 +2,7 @@
     <x-slot name="pageTitle">HEL.ink - Bio monitoring</x-slot>
     <x-page-header title="Bio monitoring" subtitle="Views and clicks across every link-in-bio page.">
         <x-slot name="actions">
-            <select name="period" aria-label="Period" class="input !w-auto !py-1.5 text-sm" data-nav="?period={value}">
+            <select name="period" aria-label="Period" class="input w-auto! py-1.5! text-sm" data-nav="?period={value}">
                 @foreach ([7, 14, 30, 60, 90] as $days)
                     <option value="{{ $days }}" @selected((int) $period === $days)>Last {{ $days }} days</option>
                 @endforeach
@@ -68,11 +68,11 @@
                     <tbody>
                         @forelse ($topBioPages as $bio)
                             <tr>
-                                <td class="max-w-[12rem]">
+                                <td class="max-w-48">
                                     <a href="{{ route('admin.bio.show', $bio) }}" class="block truncate text-sm font-semibold text-ink hover:underline">{{ $bio->title }}</a>
                                     <p class="truncate text-xs text-muted">/b/{{ $bio->slug }}</p>
                                 </td>
-                                <td class="hidden max-w-[10rem] truncate text-sm text-muted sm:table-cell">{{ $bio->user->name ?? '—' }}</td>
+                                <td class="hidden max-w-40 truncate text-sm text-muted sm:table-cell">{{ $bio->user->name ?? '—' }}</td>
                                 <td class="text-right tabular-nums text-muted">{{ number_format($bio->links_count) }}</td>
                                 <td class="text-right font-semibold tabular-nums text-ink">{{ number_format($bio->view_count) }}</td>
                             </tr>

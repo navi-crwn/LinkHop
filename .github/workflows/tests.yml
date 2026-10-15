@@ -25,3 +25,4 @@ jobs:
       - run: vendor/bin/pint --test
       - run: php artisan test
       - run: composer audit
+      - run: npm audit

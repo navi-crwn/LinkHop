@@ -65,13 +65,13 @@
                 <p class="text-xs text-muted">Latest {{ $recentClicks->count() }} clicks</p>
             </div>
             <div class="flex flex-wrap gap-2">
-                <input x-model="searchQuery" @input="filterClicks" type="search" placeholder="Country, device, referrer" aria-label="Search clicks" class="input !w-52 !py-1.5 text-xs">
-                <select aria-label="Filter by device" x-model="deviceFilter" @change="filterClicks" class="input !w-auto !py-1.5 text-xs">
+                <input x-model="searchQuery" @input="filterClicks" type="search" placeholder="Country, device, referrer" aria-label="Search clicks" class="input w-52! py-1.5! text-xs">
+                <select aria-label="Filter by device" x-model="deviceFilter" @change="filterClicks" class="input w-auto! py-1.5! text-xs">
                     <option value="">All devices</option>
                     <option value="Mobile">Mobile</option>
                     <option value="Desktop">Desktop</option>
                 </select>
-                <select aria-label="Filter by connection type" x-model="proxyFilter" @change="filterClicks" class="input !w-auto !py-1.5 text-xs">
+                <select aria-label="Filter by connection type" x-model="proxyFilter" @change="filterClicks" class="input w-auto! py-1.5! text-xs">
                     <option value="">All traffic</option>
                     <option value="clean">Clean IPs</option>
                     <option value="proxy">Proxy / VPN</option>
@@ -94,9 +94,9 @@
                     <template x-for="click in paginatedClicks" :key="click.id">
                         <tr>
                             <td class="whitespace-nowrap text-xs text-ink" x-text="click.time"></td>
-                            <td class="text-xs text-ink [&_img]:inline [&_img]:rounded-sm" x-html="click.location"></td>
+                            <td class="text-xs text-ink [&_img]:inline [&_img]:rounded-xs" x-html="click.location"></td>
                             <td class="hidden text-xs text-muted sm:table-cell" x-text="click.device"></td>
-                            <td class="hidden max-w-[12rem] truncate text-xs text-muted md:table-cell" :title="click.referrer" x-text="click.referrer"></td>
+                            <td class="hidden max-w-48 truncate text-xs text-muted md:table-cell" :title="click.referrer" x-text="click.referrer"></td>
                             <td class="text-right" x-html="click.proxy_badge"></td>
                         </tr>
                     </template>
