@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- A short link or bio slug can no longer be the first part of an app route (`analytics`, `api-docs`, `goodbye`, `up`, ...): the route always won, so such a link never opened. The list is read from the router, so new routes are covered automatically; matching ignores case. Links that already have such a slug can still be edited
+- The example short link for the API reference is now `hel.ink/documentation`; `hel.ink/api-docs` is the app's API page for members. `ExampleBioSeeder` removes its old `api-docs` link only when the example owner still has it pointing at the docs
 - Admin bio page: text, divider, embed, FAQ and contact-card blocks no longer show as blank rows
 - Public bio pages: header, FAQ and contact-card text follows the theme color, so it stays readable on dark themes
 
