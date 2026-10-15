@@ -11,15 +11,15 @@
                 <div class="relative group">
                     <button @click="bioPage.theme = id; applyTheme(id)" 
                             :class="bioPage.theme === id ? 'ring-2 ring-blue-500' : ''"
-                            class="w-full p-1.5 rounded-lg border border-slate-200 dark:[border-color:var(--editor-border)] hover:border-blue-500 transition-all">
-                        <div class="w-full aspect-[3/4] rounded-lg overflow-hidden" 
+                            class="w-full p-1.5 rounded-lg border border-slate-200 dark:border-(--editor-border) hover:border-blue-500 transition-all">
+                        <div class="w-full aspect-3/4 rounded-lg overflow-hidden" 
                              :style="{ background: theme.background }">
                             <div class="h-full flex flex-col items-center justify-center p-2">
                                 <div class="w-5 h-5 rounded-full bg-white/30 mb-1"></div>
-                                <div class="w-8 h-1 rounded" :style="{ backgroundColor: theme.text }"></div>
+                                <div class="w-8 h-1 rounded-sm" :style="{ backgroundColor: theme.text }"></div>
                                 <div class="w-full mt-2 space-y-1">
-                                    <div class="w-full h-2 rounded" :style="{ backgroundColor: theme.link_bg }"></div>
-                                    <div class="w-full h-2 rounded" :style="{ backgroundColor: theme.link_bg }"></div>
+                                    <div class="w-full h-2 rounded-sm" :style="{ backgroundColor: theme.link_bg }"></div>
+                                    <div class="w-full h-2 rounded-sm" :style="{ backgroundColor: theme.link_bg }"></div>
                                 </div>
                             </div>
                         </div>
@@ -29,7 +29,7 @@
                     <template x-if="id !== 'default'">
                         <div x-data="{ showCopyMenu: false }" class="absolute top-1 right-1 z-10">
                             <button :aria-label="'Copy style from ' + theme.name + ' to Default theme'" @click.stop="showCopyMenu = !showCopyMenu" 
-                                    class="w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80 transition-colors"
+                                    class="w-6 h-6 rounded-full bg-black/60 backdrop-blur-xs flex items-center justify-center text-white hover:bg-black/80 transition-colors"
                                     title="Copy style to Default theme">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
@@ -74,7 +74,7 @@
         </div>
         <div class="space-y-5">
             <!-- Font Section -->
-            <div class="pb-4 border-b border-slate-200 dark:[border-color:var(--editor-border)]">
+            <div class="pb-4 border-b border-slate-200 dark:border-(--editor-border)">
                 <div class="flex items-center gap-2 mb-3">
                     <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16"/></svg>
                     <h4 class="text-sm font-semibold">Font</h4>
@@ -113,7 +113,7 @@
                 </div>
             </div>
             <!-- Buttons Section -->
-            <div class="pb-4 border-b border-slate-200 dark:[border-color:var(--editor-border)]">
+            <div class="pb-4 border-b border-slate-200 dark:border-(--editor-border)">
                 <div class="flex items-center gap-2 mb-3">
                     <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>
                     <h4 class="text-sm font-semibold">Buttons</h4>
@@ -123,16 +123,16 @@
                     <div>
                         <label class="form-label text-xs mb-2">Button Shape</label>
                         <div class="grid grid-cols-3 gap-2">
-                            <button @click="bioPage.block_shape = 'rounded'" :class="bioPage.block_shape === 'rounded' || !bioPage.block_shape ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:[border-color:var(--editor-border)]'" class="p-2 rounded-lg border flex flex-col items-center gap-1">
+                            <button @click="bioPage.block_shape = 'rounded-sm'" :class="bioPage.block_shape === 'rounded-sm' || !bioPage.block_shape ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:border-(--editor-border)'" class="p-2 rounded-lg border flex flex-col items-center gap-1">
                                 <div class="w-full h-4 bg-slate-300 dark:bg-slate-600 rounded-lg"></div>
                                 <span class="text-[10px] font-medium">Rounded</span>
                             </button>
-                            <button @click="bioPage.block_shape = 'pill'" :class="bioPage.block_shape === 'pill' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:[border-color:var(--editor-border)]'" class="p-2 rounded-lg border flex flex-col items-center gap-1">
+                            <button @click="bioPage.block_shape = 'pill'" :class="bioPage.block_shape === 'pill' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:border-(--editor-border)'" class="p-2 rounded-lg border flex flex-col items-center gap-1">
                                 <div class="w-full h-4 bg-slate-300 dark:bg-slate-600 rounded-full"></div>
                                 <span class="text-[10px] font-medium">Pill</span>
                             </button>
-                            <button @click="bioPage.block_shape = 'square'" :class="bioPage.block_shape === 'square' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:[border-color:var(--editor-border)]'" class="p-2 rounded-lg border flex flex-col items-center gap-1">
-                                <div class="w-full h-4 bg-slate-300 dark:bg-slate-600 rounded-sm"></div>
+                            <button @click="bioPage.block_shape = 'square'" :class="bioPage.block_shape === 'square' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:border-(--editor-border)'" class="p-2 rounded-lg border flex flex-col items-center gap-1">
+                                <div class="w-full h-4 bg-slate-300 dark:bg-slate-600 rounded-xs"></div>
                                 <span class="text-[10px] font-medium">Square</span>
                             </button>
                         </div>
@@ -141,24 +141,24 @@
                     <div>
                         <label class="form-label text-xs mb-2">Button Shadow</label>
                         <div class="grid grid-cols-5 gap-1">
-                            <button @click="bioPage.block_shadow = 'none'" :class="bioPage.block_shadow === 'none' ? 'ring-2 ring-blue-500' : ''" class="p-2 rounded-lg border border-slate-200 dark:[border-color:var(--editor-border)] text-center">
-                                <div class="w-full h-3 bg-slate-300 dark:bg-slate-600 rounded mx-auto"></div>
+                            <button @click="bioPage.block_shadow = 'none'" :class="bioPage.block_shadow === 'none' ? 'ring-2 ring-blue-500' : ''" class="p-2 rounded-lg border border-slate-200 dark:border-(--editor-border) text-center">
+                                <div class="w-full h-3 bg-slate-300 dark:bg-slate-600 rounded-sm mx-auto"></div>
                                 <span class="text-[9px] font-medium block mt-1">None</span>
                             </button>
-                            <button @click="bioPage.block_shadow = 'sm'" :class="bioPage.block_shadow === 'sm' ? 'ring-2 ring-blue-500' : ''" class="p-2 rounded-lg border border-slate-200 dark:[border-color:var(--editor-border)] text-center">
-                                <div class="w-full h-3 bg-slate-300 dark:bg-slate-600 rounded shadow-sm mx-auto"></div>
+                            <button @click="bioPage.block_shadow = 'sm'" :class="bioPage.block_shadow === 'sm' ? 'ring-2 ring-blue-500' : ''" class="p-2 rounded-lg border border-slate-200 dark:border-(--editor-border) text-center">
+                                <div class="w-full h-3 bg-slate-300 dark:bg-slate-600 rounded-sm shadow-xs mx-auto"></div>
                                 <span class="text-[9px] font-medium block mt-1">S</span>
                             </button>
-                            <button @click="bioPage.block_shadow = 'md'" :class="bioPage.block_shadow === 'md' ? 'ring-2 ring-blue-500' : ''" class="p-2 rounded-lg border border-slate-200 dark:[border-color:var(--editor-border)] text-center">
-                                <div class="w-full h-3 bg-slate-300 dark:bg-slate-600 rounded shadow-md mx-auto"></div>
+                            <button @click="bioPage.block_shadow = 'md'" :class="bioPage.block_shadow === 'md' ? 'ring-2 ring-blue-500' : ''" class="p-2 rounded-lg border border-slate-200 dark:border-(--editor-border) text-center">
+                                <div class="w-full h-3 bg-slate-300 dark:bg-slate-600 rounded-sm shadow-md mx-auto"></div>
                                 <span class="text-[9px] font-medium block mt-1">M</span>
                             </button>
-                            <button @click="bioPage.block_shadow = 'lg'" :class="bioPage.block_shadow === 'lg' ? 'ring-2 ring-blue-500' : ''" class="p-2 rounded-lg border border-slate-200 dark:[border-color:var(--editor-border)] text-center">
-                                <div class="w-full h-3 bg-slate-300 dark:bg-slate-600 rounded shadow-lg mx-auto"></div>
+                            <button @click="bioPage.block_shadow = 'lg'" :class="bioPage.block_shadow === 'lg' ? 'ring-2 ring-blue-500' : ''" class="p-2 rounded-lg border border-slate-200 dark:border-(--editor-border) text-center">
+                                <div class="w-full h-3 bg-slate-300 dark:bg-slate-600 rounded-sm shadow-lg mx-auto"></div>
                                 <span class="text-[9px] font-medium block mt-1">L</span>
                             </button>
-                            <button @click="bioPage.block_shadow = 'xl'" :class="bioPage.block_shadow === 'xl' ? 'ring-2 ring-blue-500' : ''" class="p-2 rounded-lg border border-slate-200 dark:[border-color:var(--editor-border)] text-center">
-                                <div class="w-full h-3 bg-slate-300 dark:bg-slate-600 rounded shadow-xl mx-auto"></div>
+                            <button @click="bioPage.block_shadow = 'xl'" :class="bioPage.block_shadow === 'xl' ? 'ring-2 ring-blue-500' : ''" class="p-2 rounded-lg border border-slate-200 dark:border-(--editor-border) text-center">
+                                <div class="w-full h-3 bg-slate-300 dark:bg-slate-600 rounded-sm shadow-xl mx-auto"></div>
                                 <span class="text-[9px] font-medium block mt-1">XL</span>
                             </button>
                         </div>
@@ -188,37 +188,37 @@
                         </style>
                         <div class="grid grid-cols-3 gap-2">
                             <button @click="bioPage.hover_effect = 'none'" 
-                                    :class="(bioPage.hover_effect === 'none' || !bioPage.hover_effect) ? 'ring-2 ring-blue-500 border-blue-500 selected' : 'border-slate-200 dark:[border-color:var(--editor-border)]'" 
+                                    :class="(bioPage.hover_effect === 'none' || !bioPage.hover_effect) ? 'ring-2 ring-blue-500 border-blue-500 selected' : 'border-slate-200 dark:border-(--editor-border)'" 
                                     class="hover-btn p-2 rounded-lg border flex flex-col items-center gap-1 transition-all">
                                 <div class="w-full h-4 bg-slate-300 dark:bg-slate-600 rounded-lg"></div>
                                 <span class="text-[9px] font-medium">None</span>
                             </button>
                             <button @click="bioPage.hover_effect = 'scale'" 
-                                    :class="bioPage.hover_effect === 'scale' ? 'ring-2 ring-blue-500 border-blue-500 selected' : 'border-slate-200 dark:[border-color:var(--editor-border)]'" 
+                                    :class="bioPage.hover_effect === 'scale' ? 'ring-2 ring-blue-500 border-blue-500 selected' : 'border-slate-200 dark:border-(--editor-border)'" 
                                     class="hover-btn p-2 rounded-lg border flex flex-col items-center gap-1 transition-all">
                                 <div class="hover-preview-item scale-item w-full h-4 bg-slate-400 dark:bg-slate-500 rounded-lg"></div>
                                 <span class="text-[9px] font-medium">Scale</span>
                             </button>
                             <button @click="bioPage.hover_effect = 'glow'" 
-                                    :class="bioPage.hover_effect === 'glow' ? 'ring-2 ring-blue-500 border-blue-500 selected' : 'border-slate-200 dark:[border-color:var(--editor-border)]'" 
+                                    :class="bioPage.hover_effect === 'glow' ? 'ring-2 ring-blue-500 border-blue-500 selected' : 'border-slate-200 dark:border-(--editor-border)'" 
                                     class="hover-btn p-2 rounded-lg border flex flex-col items-center gap-1 transition-all">
                                 <div class="hover-preview-item glow-item w-full h-4 bg-slate-400 dark:bg-slate-500 rounded-lg"></div>
                                 <span class="text-[9px] font-medium">Glow</span>
                             </button>
                             <button @click="bioPage.hover_effect = 'lift'" 
-                                    :class="bioPage.hover_effect === 'lift' ? 'ring-2 ring-blue-500 border-blue-500 selected' : 'border-slate-200 dark:[border-color:var(--editor-border)]'" 
+                                    :class="bioPage.hover_effect === 'lift' ? 'ring-2 ring-blue-500 border-blue-500 selected' : 'border-slate-200 dark:border-(--editor-border)'" 
                                     class="hover-btn p-2 rounded-lg border flex flex-col items-center gap-1 transition-all">
                                 <div class="hover-preview-item lift-item w-full h-4 bg-slate-400 dark:bg-slate-500 rounded-lg"></div>
                                 <span class="text-[9px] font-medium">Lift</span>
                             </button>
                             <button @click="bioPage.hover_effect = 'glossy'" 
-                                    :class="bioPage.hover_effect === 'glossy' ? 'ring-2 ring-blue-500 border-blue-500 selected' : 'border-slate-200 dark:[border-color:var(--editor-border)]'" 
+                                    :class="bioPage.hover_effect === 'glossy' ? 'ring-2 ring-blue-500 border-blue-500 selected' : 'border-slate-200 dark:border-(--editor-border)'" 
                                     class="hover-btn p-2 rounded-lg border flex flex-col items-center gap-1 transition-all">
                                 <div class="hover-preview-item glossy-item w-full h-4 rounded-lg bg-slate-400 dark:bg-slate-500"></div>
                                 <span class="text-[9px] font-medium">Glossy</span>
                             </button>
                             <button @click="bioPage.hover_effect = 'color-shift'" 
-                                    :class="bioPage.hover_effect === 'color-shift' ? 'ring-2 ring-blue-500 border-blue-500 selected' : 'border-slate-200 dark:[border-color:var(--editor-border)]'" 
+                                    :class="bioPage.hover_effect === 'color-shift' ? 'ring-2 ring-blue-500 border-blue-500 selected' : 'border-slate-200 dark:border-(--editor-border)'" 
                                     class="hover-btn p-2 rounded-lg border flex flex-col items-center gap-1 transition-all">
                                 <div class="hover-preview-item color-item w-full h-4 rounded-lg bg-slate-400 dark:bg-slate-500"></div>
                                 <span class="text-[9px] font-medium">Color Shift</span>
@@ -237,13 +237,13 @@
                     <!-- Background Type Tabs -->
                     <div class="flex gap-1 bg-slate-100 dark:bg-slate-700 rounded-lg p-1">
                         <button @click="bioPage.background_type = 'solid'; if(!bioPage.background_value || bioPage.background_value.includes('gradient') || bioPage.background_value.includes('/')) bioPage.background_value = '#ffffff';" 
-                                :class="bioPage.background_type === 'solid' ? 'bg-white dark:bg-slate-600 shadow-sm' : ''"
+                                :class="bioPage.background_type === 'solid' ? 'bg-white dark:bg-slate-600 shadow-xs' : ''"
                                 class="flex-1 py-1.5 px-3 rounded-md text-xs font-medium transition-all">Color</button>
                         <button @click="bioPage.background_type = 'gradient'; if(!bioPage.background_value || !bioPage.background_value.includes('gradient')) bioPage.background_value = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';" 
-                                :class="bioPage.background_type === 'gradient' ? 'bg-white dark:bg-slate-600 shadow-sm' : ''"
+                                :class="bioPage.background_type === 'gradient' ? 'bg-white dark:bg-slate-600 shadow-xs' : ''"
                                 class="flex-1 py-1.5 px-3 rounded-md text-xs font-medium transition-all">Gradient</button>
                         <button @click="bioPage.background_type = 'image'" 
-                                :class="bioPage.background_type === 'image' ? 'bg-white dark:bg-slate-600 shadow-sm' : ''"
+                                :class="bioPage.background_type === 'image' ? 'bg-white dark:bg-slate-600 shadow-xs' : ''"
                                 class="flex-1 py-1.5 px-3 rounded-md text-xs font-medium transition-all">Image</button>
                     </div>
                     <!-- Solid Color -->
@@ -294,7 +294,7 @@
                 </div>
                 <div class="grid grid-cols-4 gap-2">
                     <button @click="bioPage.background_animation = 'none'" 
-                            :class="(bioPage.background_animation === 'none' || !bioPage.background_animation) ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:[border-color:var(--editor-border)]'" 
+                            :class="(bioPage.background_animation === 'none' || !bioPage.background_animation) ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:border-(--editor-border)'" 
                             class="p-3 rounded-lg border flex flex-col items-center gap-1.5 transition-all">
                         <div class="w-8 h-8 flex items-center justify-center text-slate-400">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
@@ -302,49 +302,49 @@
                         <span class="text-xs font-medium">None</span>
                     </button>
                     <button @click="bioPage.background_animation = 'snow'" 
-                            :class="bioPage.background_animation === 'snow' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:[border-color:var(--editor-border)]'" 
+                            :class="bioPage.background_animation === 'snow' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:border-(--editor-border)'" 
                             class="p-3 rounded-lg border flex flex-col items-center gap-1.5 transition-all">
                         <div class="w-8 h-8 flex items-center justify-center text-xl">❄️</div>
                         <span class="text-xs font-medium">Snow</span>
                     </button>
                     <button @click="bioPage.background_animation = 'leaves'" 
-                            :class="bioPage.background_animation === 'leaves' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:[border-color:var(--editor-border)]'" 
+                            :class="bioPage.background_animation === 'leaves' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:border-(--editor-border)'" 
                             class="p-3 rounded-lg border flex flex-col items-center gap-1.5 transition-all">
                         <div class="w-8 h-8 flex items-center justify-center text-xl">🍂</div>
                         <span class="text-xs font-medium">Leaves</span>
                     </button>
                     <button @click="bioPage.background_animation = 'rain'" 
-                            :class="bioPage.background_animation === 'rain' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:[border-color:var(--editor-border)]'" 
+                            :class="bioPage.background_animation === 'rain' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:border-(--editor-border)'" 
                             class="p-3 rounded-lg border flex flex-col items-center gap-1.5 transition-all">
                         <div class="w-8 h-8 flex items-center justify-center text-xl">🌧️</div>
                         <span class="text-xs font-medium">Rain</span>
                     </button>
                     <button @click="bioPage.background_animation = 'stars'" 
-                            :class="bioPage.background_animation === 'stars' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:[border-color:var(--editor-border)]'" 
+                            :class="bioPage.background_animation === 'stars' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:border-(--editor-border)'" 
                             class="p-3 rounded-lg border flex flex-col items-center gap-1.5 transition-all">
                         <div class="w-8 h-8 flex items-center justify-center text-xl">✨</div>
                         <span class="text-xs font-medium">Stars</span>
                     </button>
                     <button @click="bioPage.background_animation = 'hearts'" 
-                            :class="bioPage.background_animation === 'hearts' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:[border-color:var(--editor-border)]'" 
+                            :class="bioPage.background_animation === 'hearts' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:border-(--editor-border)'" 
                             class="p-3 rounded-lg border flex flex-col items-center gap-1.5 transition-all">
                         <div class="w-8 h-8 flex items-center justify-center text-xl">💕</div>
                         <span class="text-xs font-medium">Hearts</span>
                     </button>
                     <button @click="bioPage.background_animation = 'confetti'" 
-                            :class="bioPage.background_animation === 'confetti' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:[border-color:var(--editor-border)]'" 
+                            :class="bioPage.background_animation === 'confetti' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:border-(--editor-border)'" 
                             class="p-3 rounded-lg border flex flex-col items-center gap-1.5 transition-all">
                         <div class="w-8 h-8 flex items-center justify-center text-xl">🎊</div>
                         <span class="text-xs font-medium">Confetti</span>
                     </button>
                     <button @click="bioPage.background_animation = 'particles'" 
-                            :class="bioPage.background_animation === 'particles' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:[border-color:var(--editor-border)]'" 
+                            :class="bioPage.background_animation === 'particles' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:border-(--editor-border)'" 
                             class="p-3 rounded-lg border flex flex-col items-center gap-1.5 transition-all">
                         <div class="w-8 h-8 flex items-center justify-center text-xl">🔮</div>
                         <span class="text-xs font-medium">Particles</span>
                     </button>
                     <button @click="bioPage.background_animation = 'matrix'" 
-                            :class="bioPage.background_animation === 'matrix' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:[border-color:var(--editor-border)]'" 
+                            :class="bioPage.background_animation === 'matrix' ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 dark:border-(--editor-border)'" 
                             class="p-3 rounded-lg border flex flex-col items-center gap-1.5 transition-all"
                             x-show="bioPage.theme === 'neon' || bioPage.theme === 'matrix'">
                         <div class="w-8 h-8 flex items-center justify-center text-green-500 font-mono font-bold text-lg">01</div>
@@ -355,7 +355,7 @@
             <!-- Theme Background Info (for non-default themes) -->
             <div x-show="bioPage.theme !== 'default'" x-transition class="pt-2">
                 <div class="flex items-start gap-2 text-xs text-slate-500 dark:text-slate-400 p-2 rounded-lg bg-slate-100 dark:bg-slate-800">
-                    <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                     <span>Background is locked for this theme. Click the <strong>copy icon</strong> on any theme to copy its style to Default for full customization.</span>

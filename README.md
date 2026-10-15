@@ -20,7 +20,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Laravel-12-FF2D20?style=flat-square&logo=laravel&logoColor=white" alt="Laravel 12"/>
   <img src="https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat-square&logo=php&logoColor=white" alt="PHP 8.2+"/>
-  <img src="https://img.shields.io/badge/Tailwind-3.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS"/>
+  <img src="https://img.shields.io/badge/Tailwind-4.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS"/>
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="MIT License"/>
   <img src="https://img.shields.io/github/stars/navi-crwn/hel.ink?style=flat-square&color=yellow" alt="Stars"/>
 </p>
@@ -195,7 +195,7 @@ Use the report form on hel.ink. Reports land on the admin Abuse page, next to th
 | Layer | Technologies |
 |---|---|
 | **Backend** | Laravel 12, PHP 8.2+, MySQL / PostgreSQL / SQLite |
-| **Frontend** | Tailwind CSS 3, Alpine.js 3, Vite 7 |
+| **Frontend** | Tailwind CSS 4, Alpine.js 3, Vite 7 |
 | **Charts & maps** | Chart.js 4, Leaflet 1.9 |
 | **Icons** | Heroicons, Simple Icons (150+ brands) |
 | **Auth** | Laravel Breeze, Socialite, Google2FA |

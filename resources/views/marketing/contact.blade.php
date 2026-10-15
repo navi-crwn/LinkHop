@@ -45,7 +45,7 @@
         </div>
         <div class="mt-8 rounded-3xl border border-blue-500/30 bg-blue-500/10 p-6">
             <div class="flex items-start gap-3">
-                <svg class="h-6 w-6 flex-shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="h-6 w-6 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
                 <div>

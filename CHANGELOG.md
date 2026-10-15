@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Public bio pages: header, FAQ and contact-card text follows the theme color, so it stays readable on dark themes
 
 ### Changed
+- Tailwind CSS 3 → 4 (`@tailwindcss/vite`, CSS-first config in `resources/css/app.css`; `tailwind.config.js`, `postcss.config.js`, `autoprefixer` and `postcss` removed). The v3 look is kept: v3 border color, button cursor and `space-x/y` rule are put back, and the component classes keep their v3 order. `npm audit` is clean and CI now runs it in full. `scripts/ui-screenshots.mjs` compares the main pages before and after a styling change
 - `storage/framework/disposable_domains.json` (written by `disposable:update`) is git-ignored
 - README: why Cloudflare Email Obfuscation and Rocket Loader fill the CSP report log, and what to do about it
 - Guest links are deleted at 00:00 (in `GUEST_LINK_TIMEZONE`) after 14 full days in a row without a click, and after day 30 at most; the server `.env` can no longer stretch the idle limit past 14 days. `links:prune-guest` now runs at midnight
