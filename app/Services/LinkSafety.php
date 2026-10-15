@@ -82,10 +82,10 @@ class LinkSafety
                 if (str_contains($host, 'xn--')) {
                     $signals[] = 'punycode';
                 }
-                if (in_array($host, config('abuse.shorteners', []), true)) {
+                if ($this->hostInList($host, config('abuse.shorteners', []))) {
                     $signals[] = 'chained_shortener';
                 }
-                if (in_array($host, config('abuse.file_hosts', []), true)) {
+                if ($this->hostInList($host, config('abuse.file_hosts', []))) {
                     $signals[] = 'file_host';
                 }
                 $tld = substr((string) strrchr($host, '.'), 1);
@@ -115,6 +115,21 @@ class LinkSafety
         $score = array_sum(array_map(fn ($s) => (int) ($weights[$s] ?? 0), $signals));
 
         return ['score' => $score, 'signals' => $signals];
+    }
+
+    /**
+     * True when the host is one of the listed domains or a subdomain of one
+     * (cdn.mediafire.com matches mediafire.com).
+     */
+    private function hostInList(string $host, array $domains): bool
+    {
+        foreach ($domains as $domain) {
+            if ($host === $domain || str_ends_with($host, '.'.$domain)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function host(?string $url): ?string

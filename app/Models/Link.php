@@ -74,6 +74,26 @@ class Link extends Model
         return $query->where('status', self::STATUS_ACTIVE);
     }
 
+    /**
+     * Links that still resolve: active, not past expires_at, not guest-expired.
+     */
+    public function scopeLive($query)
+    {
+        return $query->where('links.status', self::STATUS_ACTIVE)
+            ->where(fn ($q) => $q->whereNull('links.expires_at')->orWhere('links.expires_at', '>', now()))
+            ->whereNot(fn ($q) => $q->guestExpired());
+    }
+
+    /**
+     * The opposite of live(): disabled, expired or guest-expired links.
+     */
+    public function scopeEnded($query)
+    {
+        return $query->where(fn ($q) => $q->where('links.status', '!=', self::STATUS_ACTIVE)
+            ->orWhere('links.expires_at', '<=', now())
+            ->orWhere(fn ($g) => $g->guestExpired()));
+    }
+
     public function getShortUrlAttribute(): string
     {
         return str_replace('www.', '', url($this->slug));

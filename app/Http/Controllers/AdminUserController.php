@@ -17,7 +17,7 @@ class AdminUserController extends Controller
 
     public function index(Request $request)
     {
-        $query = User::query()->latest();
+        $query = User::query()->withCount('links')->withSum('links', 'clicks');
         $search = $request->string('q')->trim()->toString();
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
@@ -25,24 +25,65 @@ class AdminUserController extends Controller
                     ->orWhere('email', 'like', "%{$search}%");
             });
         }
-        $users = $query->paginate(15)->withQueryString();
+        $status = $request->string('status')->toString();
+        if (in_array($status, [User::STATUS_ACTIVE, User::STATUS_SUSPENDED], true)) {
+            $query->where('status', $status);
+        }
+        match ($request->string('sort')->toString()) {
+            'links' => $query->orderByDesc('links_count'),
+            'login' => $query->orderByRaw('last_login_at IS NULL')->orderByDesc('last_login_at'),
+            'name' => $query->orderBy('name'),
+            default => $query->latest('id'),
+        };
+        $users = $query->paginate(20)->withQueryString();
 
         return view('admin-users', [
             'users' => $users,
             'search' => $search,
+            'status' => $status,
+            'sort' => $request->string('sort')->toString(),
+            'counts' => [
+                'all' => User::count(),
+                'active' => User::where('status', User::STATUS_ACTIVE)->count(),
+                'suspended' => User::where('status', User::STATUS_SUSPENDED)->count(),
+                'new' => User::where('created_at', '>=', now()->subDays(7))->count(),
+            ],
             'viewerIsSuperAdmin' => $request->user()->isSuperAdmin(),
         ]);
     }
 
+    /**
+     * Owner picker for admin filters: the first matches by name or email.
+     */
+    public function lookup(Request $request)
+    {
+        $term = $request->string('q')->trim()->toString();
+        $users = User::query()
+            ->when($term !== '', fn ($q) => $q->where(fn ($w) => $w->where('name', 'like', "%{$term}%")->orWhere('email', 'like', "%{$term}%")))
+            ->orderBy('name')
+            ->limit(10)
+            ->get(['id', 'name', 'email']);
+
+        return response()->json($users);
+    }
+
     public function inspect(Request $request, User $user)
     {
-        $user->load(['links' => function ($query) {
-            $query->latest()->with(['folder', 'tags']);
-        }, 'folders', 'tags']);
+        $user->loadCount(['links', 'folders', 'tags']);
+        $links = $user->links()
+            ->with(['folder:id,name', 'tags:id,name'])
+            ->latest('id')
+            ->paginate(20)
+            ->withQueryString();
 
         return view('admin-user-inspect', [
             'user' => $user,
-            'totalClicks' => $user->links->sum('clicks'),
+            'links' => $links,
+            'folders' => $user->folders()->withCount('links')->orderByDesc('is_default')->orderBy('name')->limit(50)->get(),
+            'tags' => $user->tags()->withCount('links')->orderByDesc('links_count')->limit(50)->get(),
+            'totalClicks' => (int) $user->links()->sum('clicks'),
+            'activeLinks' => $user->links()->live()->count(),
+            'bioPages' => $user->bioPages()->get(['id', 'slug', 'title', 'is_published']),
             'viewerIsSuperAdmin' => $request->user()->isSuperAdmin(),
         ]);
     }

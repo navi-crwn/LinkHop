@@ -21,7 +21,15 @@ class AdminAnalyticsController extends Controller
         $totalClicks = Link::sum('clicks');
         $activeLinks = Link::where('status', 'active')->count();
         $performanceData = $this->getPerformanceData($period);
+        // Ranking only lists links that still work; expired/disabled ones get their own list.
         $topLinks = Link::with('user')
+            ->live()
+            ->orderBy('clicks', 'desc')
+            ->limit(20)
+            ->get();
+        $endedLinks = Link::with('user')
+            ->ended()
+            ->where('clicks', '>', 0)
             ->orderBy('clicks', 'desc')
             ->limit(10)
             ->get();
@@ -74,9 +82,20 @@ class AdminAnalyticsController extends Controller
                 'priority' => $detector['priority'] ?? 50,
             ];
         });
-        $recentClicks = LinkClick::with(['link.user'])
+        $recentClicks = LinkClick::with(['link:id,slug'])
             ->latest()
-            ->limit(20)
+            ->limit(12)
+            ->get();
+        $devices = LinkClick::selectRaw("
+                CASE
+                    WHEN user_agent LIKE '%Tablet%' OR user_agent LIKE '%iPad%' THEN 'Tablet'
+                    WHEN user_agent LIKE '%Mobile%' OR user_agent LIKE '%Android%' OR user_agent LIKE '%iPhone%' THEN 'Mobile'
+                    ELSE 'Desktop'
+                END as device_type,
+                COUNT(*) as total
+            ")
+            ->groupBy('device_type')
+            ->orderByDesc('total')
             ->get();
 
         return view('admin-analytics-global', compact(
@@ -86,6 +105,7 @@ class AdminAnalyticsController extends Controller
             'activeLinks',
             'performanceData',
             'topLinks',
+            'endedLinks',
             'topCountries',
             'topCities',
             'topIsps',
@@ -96,6 +116,8 @@ class AdminAnalyticsController extends Controller
             'geoipProviders',
             'proxyDetectors',
             'recentClicks',
+            'devices',
+            'totalClicksCount',
             'period'
         ));
     }

@@ -15,9 +15,8 @@ class TagController extends Controller
         $tags = $request->user()
             ->tags()
             ->withCount('links')
-            ->with(['links' => function ($query) {
-                $query->orderByDesc('links.created_at');
-            }])
+            ->withSum('links', 'clicks')
+            ->with(['links' => fn ($query) => $query->latest('links.created_at')->limit(3)])
             ->orderBy('name')
             ->paginate(20);
 

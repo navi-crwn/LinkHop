@@ -1,109 +1,82 @@
 <x-app-layout>
-    <x-slot name="pageTitle">My Links</x-slot>
-    <div class="py-4">
-        <div class="mx-auto max-w-7xl space-y-4 px-4 md:px-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-2xl font-bold text-slate-900 dark:text-white">My Links</h1>
-                <p class="text-sm text-slate-500 dark:text-slate-400">Manage your personal shortened links</p>
-            </div>
+    <x-slot name="pageTitle">HEL.ink - My links</x-slot>
+    <x-page-header title="My links" subtitle="Links on your own admin account." />
+
+    <form method="GET" class="glass-card flex flex-col gap-2 !p-3 md:flex-row">
+        <div class="relative flex-1">
+            <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
+            <input type="search" name="q" value="{{ $search }}" placeholder="Search slug or destination" aria-label="Search links" class="input !py-2 pl-9">
         </div>
-        <form method="GET" class="flex flex-wrap gap-3">
-            <input type="text" 
-                   name="q" 
-                   value="{{ $search }}" 
-                   placeholder="Search links..." 
-                   class="flex-1 min-w-[200px] rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
-            <select name="folder_id" class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
-                <option value="">All Folders</option>
-                @foreach($folders as $folder)
-                    <option value="{{ $folder->id }}" {{ $folderId == $folder->id ? 'selected' : '' }}>{{ $folder->name }}</option>
-                @endforeach
-            </select>
-            <select name="tag_id" class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
-                <option value="">All Tags</option>
-                @foreach($tags as $tag)
-                    <option value="{{ $tag->id }}" {{ $tagId == $tag->id ? 'selected' : '' }}>{{ $tag->name }}</option>
-                @endforeach
-            </select>
-            <button type="submit" class="rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white hover:bg-blue-500">
-                Filter
-            </button>
-        </form>
-        <div class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <div class="overflow-x-auto">
-                <table class="w-full text-xs">
-                    <thead class="bg-slate-50 dark:bg-slate-800">
+        <select name="folder_id" aria-label="Folder" class="input !py-2 md:!w-44" data-autosubmit>
+            <option value="">All folders</option>
+            @foreach ($folders as $folder)
+                <option value="{{ $folder->id }}" @selected($folderId == $folder->id)>{{ $folder->name }}</option>
+            @endforeach
+        </select>
+        <select name="tag_id" aria-label="Tag" class="input !py-2 md:!w-44" data-autosubmit>
+            <option value="">All tags</option>
+            @foreach ($tags as $tag)
+                <option value="{{ $tag->id }}" @selected($tagId == $tag->id)>{{ $tag->name }}</option>
+            @endforeach
+        </select>
+        <button type="submit" class="btn-primary btn-sm">Filter</button>
+    </form>
+
+    <section class="glass overflow-hidden rounded-2xl">
+        <div class="overflow-x-auto">
+            <table class="table-glass">
+                <thead>
+                    <tr>
+                        <th>Link</th>
+                        <th class="hidden md:table-cell">Folder · tags</th>
+                        <th class="text-right">Clicks</th>
+                        <th class="hidden sm:table-cell">Status</th>
+                        <th class="text-right"><span class="sr-only">Actions</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($links as $link)
                         <tr>
-                            <th class="px-3 py-2 text-left text-[10px] font-medium text-slate-500 dark:text-slate-400 uppercase">Short URL</th>
-                            <th class="px-3 py-2 text-left text-[10px] font-medium text-slate-500 dark:text-slate-400 uppercase">Destination</th>
-                            <th class="px-3 py-2 text-left text-[10px] font-medium text-slate-500 dark:text-slate-400 uppercase">Folder</th>
-                            <th class="px-3 py-2 text-left text-[10px] font-medium text-slate-500 dark:text-slate-400 uppercase">Tags</th>
-                            <th class="px-3 py-2 text-left text-[10px] font-medium text-slate-500 dark:text-slate-400 uppercase">Clicks</th>
-                            <th class="px-3 py-2 text-left text-[10px] font-medium text-slate-500 dark:text-slate-400 uppercase">Status</th>
-                            <th class="px-3 py-2 text-left text-[10px] font-medium text-slate-500 dark:text-slate-400 uppercase">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
-                        @forelse($links as $link)
-                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                                <td class="px-3 py-2 whitespace-nowrap">
-                                    <a href="{{ $link->short_url }}" target="_blank" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">
-                                        {{ $link->slug }}
-                                    </a>
-                                </td>
-                                <td class="px-3 py-2">
-                                    <div class="text-xs text-slate-900 dark:text-white truncate max-w-xs" title="{{ $link->target_url }}">
-                                        {{ Str::limit($link->target_url, 40) }}
-                                    </div>
-                                </td>
-                                <td class="px-3 py-2 whitespace-nowrap">
-                                    @if($link->folder)
-                                        <span class="inline-flex items-center rounded-full bg-purple-100 dark:bg-purple-900/30 px-2.5 py-0.5 text-xs font-medium text-purple-800 dark:text-purple-300">
-                                            {{ $link->folder->name }}
-                                        </span>
+                            <td class="max-w-[14rem] sm:max-w-sm">
+                                <a href="{{ $link->short_url }}" target="_blank" rel="noopener" class="block truncate text-sm font-semibold text-ink hover:underline">/{{ $link->slug }}</a>
+                                <p class="truncate text-xs text-muted" title="{{ $link->target_url }}">{{ $link->target_url }}</p>
+                            </td>
+                            <td class="hidden md:table-cell">
+                                <div class="flex flex-wrap gap-1">
+                                    @if ($link->folder)
+                                        <span class="chip-blue">{{ $link->folder->name }}</span>
                                     @endif
-                                </td>
-                                <td class="px-3 py-2">
-                                    <div class="flex flex-wrap gap-1">
-                                        @foreach($link->tags as $tag)
-                                            <span class="inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium" style="background-color: {{ $tag->color }}20; color: {{ $tag->color }}">
-                                                {{ $tag->name }}
-                                            </span>
-                                        @endforeach
-                                    </div>
-                                </td>
-                                <td class="px-3 py-2 whitespace-nowrap text-xs text-slate-900 dark:text-white">
-                                    {{ number_format($link->clicks) }}
-                                </td>
-                                <td class="px-3 py-2 whitespace-nowrap">
-                                    <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium {{ $link->status === 'active' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' }}">
-                                        {{ ucfirst($link->status) }}
-                                    </span>
-                                </td>
-                                <td class="px-3 py-2 whitespace-nowrap text-xs">
-                                    <div class="flex items-center gap-2">
-                                        <a href="{{ route('links.show', $link) }}" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">Analytics</a>
-                                        <a href="{{ route('links.edit', $link) }}" class="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">Edit</a>
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="px-3 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
-                                    No links found
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-            @if($links->hasPages())
-                <div class="border-t border-slate-200 px-3 py-2 dark:border-slate-800">
-                    {{ $links->links() }}
-                </div>
-            @endif
+                                    @foreach ($link->tags as $tag)
+                                        <span class="chip-gray">#{{ $tag->name }}</span>
+                                    @endforeach
+                                    @if (! $link->folder && $link->tags->isEmpty())
+                                        <span class="text-muted">—</span>
+                                    @endif
+                                </div>
+                            </td>
+                            <td class="text-right tabular-nums text-ink">{{ number_format($link->clicks) }}</td>
+                            <td class="hidden sm:table-cell"><span class="{{ $link->status === 'active' ? 'chip-green' : 'chip-red' }}">{{ ucfirst($link->status) }}</span></td>
+                            <td class="whitespace-nowrap text-right">
+                                <div class="inline-flex items-center gap-0.5">
+                                    <a href="{{ route('links.show', $link) }}" class="icon-btn !h-8 !w-8" title="Analytics" aria-label="Analytics for {{ $link->slug }}">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                                    </a>
+                                    <a href="{{ route('links.edit', $link) }}" class="icon-btn !h-8 !w-8" title="Edit" aria-label="Edit {{ $link->slug }}">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="py-10 text-center text-sm text-muted">No links found.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
-        </div>
-    </div>
+        @if ($links->hasPages())
+            <div class="border-t border-slate-500/10 px-4 py-3">{{ $links->links() }}</div>
+        @endif
+    </section>
 </x-app-layout>

@@ -1,17 +1,14 @@
 <x-app-layout>
-    <x-slot name="header">
-        <x-page-header title="API Documentation" subtitle="Integrate hel.ink with ShareX, CLI tools, and custom apps">
-            <x-slot name="actions">
-                <a href="{{ route('settings') }}#api" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
-                    Manage API Tokens
-                </a>
-            </x-slot>
-        </x-page-header>
-    </x-slot>
-    <div class="py-8">
-        <div class="mx-auto max-w-4xl space-y-6 sm:px-6 lg:px-8">
+    <x-slot name="pageTitle">HEL.ink - API</x-slot>
+    <x-page-header title="API documentation" subtitle="Use hel.ink from ShareX, the command line or your own apps.">
+        <x-slot name="actions">
+            <a href="{{ route('settings') }}#api" class="btn-soft btn-sm">Manage API tokens</a>
+        </x-slot>
+    </x-page-header>
+    <div>
+        <div class="mx-auto w-full max-w-4xl space-y-3">
             <!-- Quick Start -->
-            <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div class="glass-card">
                 <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-3">🚀 Quick Start</h2>
                 <ol class="space-y-3 text-sm text-slate-600 dark:text-slate-400">
                     <li><strong>1.</strong> Go to <a href="{{ route('settings') }}#api" class="text-blue-600 hover:underline dark:text-blue-400">Settings → API & Integrations</a></li>
@@ -46,7 +43,7 @@
                 </div>
             </div>
             <!-- API Endpoint -->
-            <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div class="glass-card">
                 <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-3">🔗 API Endpoint</h2>
                 <div class="space-y-4">
                     <div>
@@ -102,7 +99,7 @@ Content-Type: application/json</code></pre>
                 </div>
             </div>
             <!-- cURL Example -->
-            <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div class="glass-card">
                 <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-3">💻 cURL Example</h2>
                 <div class="rounded-lg bg-slate-50 p-4 dark:bg-slate-800">
                     <pre class="overflow-x-auto text-xs"><code>curl -X POST {{ url('/api/shorten') }} \
@@ -125,7 +122,7 @@ Content-Type: application/json</code></pre>
                 </ul>
             </div>
             <!-- Other Tools -->
-            <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div class="glass-card">
                 <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-3">🛠️ Compatible Tools</h2>
                 <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
                     The same API works with these screenshot and automation tools:

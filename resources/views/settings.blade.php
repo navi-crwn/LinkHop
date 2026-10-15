@@ -1,130 +1,103 @@
 <x-app-layout>
-    <x-slot name="header">
-        <x-page-header title="Settings" subtitle="Manage your account and preferences">
-            <x-slot name="actions">
-                <a href="{{ route('dashboard') }}" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">Dashboard</a>
-            </x-slot>
-        </x-page-header>
-    </x-slot>
-    <div class="py-8" x-data="{ 
+    <x-slot name="pageTitle">HEL.ink - Settings</x-slot>
+    @php
+        $settingsTabs = [
+            'account' => ['Account', 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'],
+            '2fa' => ['Two-factor', 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z'],
+            'backup' => ['Backup & export', 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4'],
+            'notifications' => ['Notifications', 'M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9'],
+            'activity' => ['Activity log', 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01'],
+            'login' => ['Login history', 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'],
+            'api' => ['API tokens', 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4'],
+        ];
+    @endphp
+
+    <x-page-header title="Settings" subtitle="Your account, security and data." />
+
+    <div class="grid gap-4 lg:grid-cols-[13rem_minmax(0,1fr)]" x-data="{
         tab: '{{ session('active_tab', 'account') }}',
         init() {
-            // Check URL hash for tab
-            if (window.location.hash) {
-                const hashTab = window.location.hash.substring(1);
-                if (['account', '2fa', 'backup', 'notifications', 'activity', 'login', 'api'].includes(hashTab)) {
-                    this.tab = hashTab;
-                }
+            const hashTab = window.location.hash.substring(1);
+            if (@js(array_keys($settingsTabs)).includes(hashTab)) {
+                this.tab = hashTab;
             }
+            this.$watch('tab', value => history.replaceState(null, '', '#' + value));
         }
     }" @tab-changed.window="tab = $event.detail">
-        <div class="mx-auto max-w-5xl space-y-4 sm:px-6 lg:px-8">
-            @if (session('status'))
-                <div class="rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-emerald-900 dark:border-emerald-900/30 dark:bg-emerald-900/20 dark:text-emerald-200">
-                    {{ session('status') }}
-                </div>
-            @endif
-            @if ($errors->any())
-                <div class="rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-red-900 dark:border-red-900/30 dark:bg-red-900/10 dark:text-red-200">
-                    <ul class="list-disc pl-4 space-y-1 text-sm">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-            <div class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <div class="flex overflow-x-auto border-b border-slate-200 dark:border-slate-800">
-                    <button @click="tab = 'account'" :class="tab === 'account' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'" class="whitespace-nowrap border-b-2 px-6 py-3 text-sm font-medium">
-                        Account
-                    </button>
-                    <button @click="tab = '2fa'" :class="tab === '2fa' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'" class="whitespace-nowrap border-b-2 px-6 py-3 text-sm font-medium">
-                        2FA Security
-                    </button>
-                    <button @click="tab = 'backup'" :class="tab === 'backup' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'" class="whitespace-nowrap border-b-2 px-6 py-3 text-sm font-medium">
-                        Backup & Export
-                    </button>
-                    <button @click="tab = 'notifications'" :class="tab === 'notifications' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'" class="whitespace-nowrap border-b-2 px-6 py-3 text-sm font-medium">
-                        Notifications
-                    </button>
-                    <button @click="tab = 'activity'" :class="tab === 'activity' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'" class="whitespace-nowrap border-b-2 px-6 py-3 text-sm font-medium">
-                        Activity Logs
-                    </button>
-                    <button @click="tab = 'login'" :class="tab === 'login' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'" class="whitespace-nowrap border-b-2 px-6 py-3 text-sm font-medium">
-                        Login History
-                    </button>
-                    <button @click="tab = 'api'" :class="tab === 'api' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'" class="whitespace-nowrap border-b-2 px-6 py-3 text-sm font-medium">
-                        API & Integrations
-                    </button>
-                </div>
-                <div x-show="tab === 'account'" class="p-6 space-y-6">
-                    <div>
-                        <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Account Information</h3>
-                        <p class="text-sm text-slate-600 dark:text-slate-400">Update your name and email address</p>
-                    </div>
-                    <form method="POST" action="{{ route('profile.update') }}" class="space-y-4">
-                        @csrf
-                        @method('PATCH')
+        <nav class="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1 lg:sticky lg:top-24 lg:mx-0 lg:flex-col lg:self-start lg:overflow-visible lg:px-0" aria-label="Settings sections">
+            @foreach ($settingsTabs as $key => [$label, $icon])
+                <button type="button" @click="tab = '{{ $key }}'" class="nav-item shrink-0 whitespace-nowrap" :class="tab === '{{ $key }}' && 'nav-item-active'">
+                    <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $icon }}"/></svg>
+                    {{ $label }}
+                </button>
+            @endforeach
+        </nav>
+        <div class="min-w-0 space-y-4">
+            <x-flash />
+            <div class="glass rounded-2xl">
+                <div x-show="tab === 'account'" class="divide-glass">
+                    {{-- Each setting is a row: what it is on the left, the fields on the right. --}}
+                    <section class="grid gap-4 p-5 md:grid-cols-3 md:gap-8">
                         <div>
-                            <label for="fsettin-1" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Name</label>
-                            <input id="fsettin-1" type="text" name="name" value="{{ old('name', auth()->user()->name) }}" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
+                            <h3 class="section-title">Profile</h3>
+                            <p class="mt-1 text-xs text-muted">Your name and the email you sign in with. Changing the email asks you to verify it again.</p>
                         </div>
-                        <div>
-                            <label for="fsettin-2" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Email</label>
-                            <input id="fsettin-2" type="email" name="email" value="{{ old('email', auth()->user()->email) }}" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
-                        </div>
-                        <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">
-                            Update Account
-                        </button>
-                    </form>
-                    <hr class="border-slate-200 dark:border-slate-800">
-                    <div>
-                        <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Change Password</h3>
-                        <p class="text-sm text-slate-600 dark:text-slate-400">Ensure your account is using a long, random password</p>
-                    </div>
-                    <form method="POST" action="{{ route('password.update') }}" class="space-y-4">
-                        @csrf
-                        @method('PUT')
-                        @if ($errors->updatePassword->any())
-                            <div class="rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
-                                <div class="flex items-start">
-                                    <svg class="h-5 w-5 text-red-600 dark:text-red-400 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                    <div class="flex-1">
-                                        <h3 class="text-sm font-semibold text-red-800 dark:text-red-200">
-                                            There were some errors with your submission
-                                        </h3>
-                                        <ul class="mt-2 list-disc list-inside text-sm text-red-700 dark:text-red-300">
-                                            @foreach ($errors->updatePassword->all() as $error)
-                                                <li>{{ $error }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
+                        <form method="POST" action="{{ route('profile.update') }}" class="space-y-4 md:col-span-2">
+                            @csrf
+                            @method('PATCH')
+                            <div class="grid gap-4 sm:grid-cols-2">
+                                <div>
+                                    <label for="fsettin-1" class="label">Name</label>
+                                    <input id="fsettin-1" type="text" name="name" value="{{ old('name', auth()->user()->name) }}" class="input" required autocomplete="name">
+                                </div>
+                                <div>
+                                    <label for="fsettin-2" class="label">Email</label>
+                                    <input id="fsettin-2" type="email" name="email" value="{{ old('email', auth()->user()->email) }}" class="input" required autocomplete="email">
                                 </div>
                             </div>
-                        @endif
+                            <div class="flex justify-end">
+                                <button type="submit" class="btn-primary btn-sm">Save profile</button>
+                            </div>
+                        </form>
+                    </section>
+                    <section class="grid gap-4 p-5 md:grid-cols-3 md:gap-8">
                         <div>
-                            <label for="fsettin-3" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Current Password</label>
-                            <input id="fsettin-3" type="password" name="current_password" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
+                            <h3 class="section-title">Password</h3>
+                            <p class="mt-1 text-xs text-muted">Use a long, random password you don't use anywhere else.</p>
                         </div>
-                        <div>
-                            <label for="fsettin-4" class="block text-sm font-medium text-slate-700 dark:text-slate-300">New Password</label>
-                            <input id="fsettin-4" type="password" name="password" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
-                        </div>
-                        <div>
-                            <label for="fsettin-5" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Confirm New Password</label>
-                            <input id="fsettin-5" type="password" name="password_confirmation" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
-                        </div>
-                        <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">
-                            Update Password
-                        </button>
-                    </form>
+                        <form method="POST" action="{{ route('password.update') }}" class="space-y-4 md:col-span-2">
+                            @csrf
+                            @method('PUT')
+                            @if ($errors->updatePassword->any())
+                                <ul class="glass-inset list-disc space-y-0.5 border-rose-400/40 py-2.5 pl-8 pr-3 text-sm text-rose-700 dark:text-rose-300">
+                                    @foreach ($errors->updatePassword->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            @endif
+                            <div>
+                                <label for="fsettin-3" class="label">Current password</label>
+                                <input id="fsettin-3" type="password" name="current_password" class="input sm:max-w-[calc(50%-0.5rem)]" required autocomplete="current-password">
+                            </div>
+                            <div class="grid gap-4 sm:grid-cols-2">
+                                <div>
+                                    <label for="fsettin-4" class="label">New password</label>
+                                    <input id="fsettin-4" type="password" name="password" class="input" required autocomplete="new-password">
+                                </div>
+                                <div>
+                                    <label for="fsettin-5" class="label">Confirm new password</label>
+                                    <input id="fsettin-5" type="password" name="password_confirmation" class="input" required autocomplete="new-password">
+                                </div>
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="submit" class="btn-primary btn-sm">Update password</button>
+                            </div>
+                        </form>
+                    </section>
                     @unless(auth()->user()->isSuperAdmin())
-                        <hr class="border-slate-200 dark:border-slate-800">
-                        <div x-data="{ 
-                            showModal: false, 
-                            password: '', 
+                        <section class="grid gap-4 p-5 md:grid-cols-3 md:gap-8" x-data="{
+                            showModal: false,
+                            password: '',
                             countdown: 10,
                             canDelete: false,
                             startCountdown() {
@@ -139,82 +112,41 @@
                                 }, 1000);
                             }
                         }">
-                            <div class="flex items-start justify-between">
-                                <div>
-                                    <h3 class="text-lg font-semibold text-red-600 dark:text-red-400">Danger Zone</h3>
-                                    <p class="text-sm text-slate-600 dark:text-slate-400">Permanently delete your account and all data</p>
-                                </div>
-                                <button 
-                                    @click="showModal = true; $nextTick(() => startCountdown())" 
-                                    class="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 transition"
-                                >
-                                    Delete My Account
-                                </button>
+                            <div>
+                                <h3 class="section-title text-rose-600 dark:text-rose-400">Delete account</h3>
+                                <p class="mt-1 text-xs text-muted">Removes your links, bio pages, folders, tags and analytics for good.</p>
                             </div>
-                            <div x-show="showModal" 
-                                x-cloak
-                                class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-                                @click.self="showModal = false; password = ''"
-                            >
-                                <div class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl dark:bg-slate-800" @click.away="showModal = false; password = ''">
-                                    <div class="flex items-start gap-3">
-                                        <div class="flex-shrink-0 text-3xl">⚠️</div>
-                                        <div class="flex-1">
-                                            <h3 class="text-lg font-bold text-red-600 dark:text-red-400">Delete Account</h3>
-                                            <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">
-                                                This action is <strong>permanent and cannot be undone</strong>. All your links, folders, tags, and analytics data will be permanently deleted.
-                                            </p>
-                                            <form method="POST" action="{{ route('profile.destroy') }}" class="mt-4 space-y-4">
-                                                @csrf
-                                                @method('DELETE')
-                                                <div>
-                                                    <label for="fsettin-6" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Confirm your password</label>
-                                                    <input id="fsettin-6" 
-                                                        type="password" 
-                                                        name="password" 
-                                                        x-model="password"
-                                                        class="mt-1 w-full rounded-lg border-slate-200 focus:border-red-500 focus:ring-red-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white" 
-                                                        required
-                                                    >
-                                                </div>
-                                                <div class="rounded-lg bg-red-50 p-3 dark:bg-red-900/20">
-                                                    <p class="text-center text-sm font-medium text-red-800 dark:text-red-200">
-                                                        <span x-show="!canDelete">
-                                                            Please wait <span x-text="countdown" class="font-bold text-lg"></span> seconds before deleting
-                                                        </span>
-                                                        <span x-show="canDelete" class="text-red-600 dark:text-red-400">
-                                                            You can now proceed with deletion
-                                                        </span>
-                                                    </p>
-                                                </div>
-                                                <div class="flex gap-3">
-                                                    <button 
-                                                        type="button" 
-                                                        @click="showModal = false; password = ''" 
-                                                        class="flex-1 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
-                                                    >
-                                                        Cancel
-                                                    </button>
-                                                    <button 
-                                                        type="submit" 
-                                                        :disabled="!canDelete || !password"
-                                                        :class="canDelete && password ? 'bg-red-600 hover:bg-red-700' : 'bg-red-400 cursor-not-allowed'"
-                                                        class="flex-1 rounded-lg px-4 py-2 text-sm font-semibold text-white transition"
-                                                    >
-                                                        Yes, Delete My Account
-                                                    </button>
-                                                </div>
-                                            </form>
+                            <div class="flex items-start md:col-span-2 md:justify-end">
+                                <button type="button" @click="showModal = true; $nextTick(() => startCountdown())" class="btn-danger btn-sm">Delete my account</button>
+                            </div>
+                            <div x-show="showModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-sm" @click.self="showModal = false; password = ''">
+                                <div class="glass-strong w-full max-w-md rounded-2xl p-5">
+                                    <h3 class="text-base font-semibold text-rose-600 dark:text-rose-400">Delete account</h3>
+                                    <p class="mt-1 text-sm text-muted">This is <strong class="text-ink">permanent</strong>. All your links, folders, tags and analytics are deleted.</p>
+                                    <form method="POST" action="{{ route('profile.destroy') }}" class="mt-4 space-y-3">
+                                        @csrf
+                                        @method('DELETE')
+                                        <div>
+                                            <label for="fsettin-6" class="label">Confirm your password</label>
+                                            <input id="fsettin-6" type="password" name="password" x-model="password" class="input" required autocomplete="current-password">
                                         </div>
-                                    </div>
+                                        <p class="text-center text-xs text-muted">
+                                            <span x-show="!canDelete">You can confirm in <span x-text="countdown" class="font-semibold text-ink"></span> s</span>
+                                            <span x-show="canDelete">You can now delete your account.</span>
+                                        </p>
+                                        <div class="flex gap-2">
+                                            <button type="button" @click="showModal = false; password = ''" class="btn-soft flex-1">Cancel</button>
+                                            <button type="submit" :disabled="!canDelete || !password" class="btn-danger flex-1">Delete forever</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
-                        </div>
+                        </section>
                     @endunless
                 </div>
-                <div x-show="tab === '2fa'" class="p-6 space-y-6">
+                <div x-show="tab === '2fa'" x-cloak class="space-y-6 p-5">
                     <div>
-                        <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Two-Factor Authentication</h3>
+                        <h3 class="text-base font-semibold text-ink">Two-Factor Authentication</h3>
                         <p class="text-sm text-slate-600 dark:text-slate-400">Add an extra layer of security to your account</p>
                     </div>
                     @if(!auth()->user()->two_factor_secret)
@@ -227,9 +159,9 @@
                                 @csrf
                                 <div>
                                     <label for="fsettin-7" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Confirm your password</label>
-                                    <input id="fsettin-7" type="password" name="password" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
+                                    <input id="fsettin-7" type="password" name="password" class="input mt-1" required>
                                 </div>
-                                <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">
+                                <button type="submit" class="btn-primary btn-sm">
                                     Enable 2FA
                                 </button>
                             </form>
@@ -261,9 +193,9 @@
                                     @csrf
                                     <div>
                                         <label for="fsettin-8" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Enter 6-digit code from your app</label>
-                                        <input id="fsettin-8" type="text" name="code" maxlength="6" pattern="[0-9]{6}" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
+                                        <input id="fsettin-8" type="text" name="code" maxlength="6" pattern="[0-9]{6}" class="input mt-1" required>
                                     </div>
-                                    <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">
+                                    <button type="submit" class="btn-primary btn-sm">
                                         Confirm & Activate
                                     </button>
                                 </form>
@@ -318,9 +250,9 @@
                         @endif
                     @endif
                 </div>
-                <div x-show="tab === 'backup'" class="p-6 space-y-6" x-data="{ showFilters: false }">
+                <div x-show="tab === 'backup'" x-cloak class="space-y-6 p-5" x-data="{ showFilters: false }">
                     <div>
-                        <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Backup & Export</h3>
+                        <h3 class="text-base font-semibold text-ink">Backup & Export</h3>
                         <p class="text-sm text-slate-600 dark:text-slate-400">Download your complete link data with analytics in CSV format</p>
                     </div>
                     <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
@@ -341,20 +273,20 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label for="fsettin-9" class="block text-sm font-medium text-slate-700 dark:text-slate-300">From Date</label>
-                                        <input id="fsettin-9" type="date" name="date_from" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                                        <input id="fsettin-9" type="date" name="date_from" class="input mt-1">
                                     </div>
                                     <div>
                                         <label for="fsettin-10" class="block text-sm font-medium text-slate-700 dark:text-slate-300">To Date</label>
-                                        <input id="fsettin-10" type="date" name="date_to" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                                        <input id="fsettin-10" type="date" name="date_to" class="input mt-1">
                                     </div>
                                     <div>
                                         <label for="fsettin-11" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Minimum Clicks</label>
-                                        <input id="fsettin-11" type="number" name="min_clicks" min="0" placeholder="e.g., 10" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                                        <input id="fsettin-11" type="number" name="min_clicks" min="0" placeholder="e.g., 10" class="input mt-1">
                                         <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Only links with this many clicks or more</p>
                                     </div>
                                     <div>
                                         <label for="fsettin-12" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Sort By</label>
-                                        <select id="fsettin-12" name="sort_by" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                                        <select id="fsettin-12" name="sort_by" class="input mt-1">
                                             <option value="newest">Newest First</option>
                                             <option value="oldest">Oldest First</option>
                                             <option value="most_clicked">Most Clicked First</option>
@@ -363,7 +295,7 @@
                                     </div>
                                     <div>
                                         <label for="fsettin-13" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Folder</label>
-                                        <select id="fsettin-13" name="folder_id" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                                        <select id="fsettin-13" name="folder_id" class="input mt-1">
                                             <option value="">All Folders</option>
                                             <option value="default">Default (No Folder)</option>
                                             @foreach($folders as $folder)
@@ -373,7 +305,7 @@
                                     </div>
                                     <div>
                                         <label for="fsettin-14" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Tag</label>
-                                        <select id="fsettin-14" name="tag_id" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                                        <select id="fsettin-14" name="tag_id" class="input mt-1">
                                             <option value="">All Tags</option>
                                             @foreach($tags as $tag)
                                                 <option value="{{ $tag->id }}">{{ $tag->name }}</option>
@@ -383,7 +315,7 @@
                                 </div>
                             </div>
                             <div class="flex gap-2">
-                                <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">
+                                <button type="submit" class="btn-primary btn-sm">
                                     <svg class="inline-block w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                     </svg>
@@ -410,14 +342,14 @@
                             </div>
                             <form method="POST" action="{{ route('settings.export.account') }}">
                                 @csrf
-                                <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">Download JSON</button>
+                                <button type="submit" class="btn-primary btn-sm">Download JSON</button>
                             </form>
                         </div>
                     </div>
                 </div>
-                <div x-show="tab === 'notifications'" class="p-6 space-y-6">
+                <div x-show="tab === 'notifications'" x-cloak class="space-y-6 p-5">
                     <div>
-                        <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Notification Preferences</h3>
+                        <h3 class="text-base font-semibold text-ink">Notification Preferences</h3>
                         <p class="text-sm text-slate-600 dark:text-slate-400">Manage how you receive notifications</p>
                     </div>
                     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-900/30 dark:bg-yellow-900/20">
@@ -432,10 +364,10 @@
                         </ul>
                     </div>
                 </div>
-                <div x-show="tab === 'activity'" class="p-6 space-y-6">
+                <div x-show="tab === 'activity'" x-cloak class="space-y-6 p-5">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Activity Logs</h3>
+                            <h3 class="text-base font-semibold text-ink">Activity Logs</h3>
                             <p class="text-sm text-slate-600 dark:text-slate-400">Recent actions performed on your account (max 1 month)</p>
                         </div>
                     </div>
@@ -444,15 +376,15 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label for="fsettin-15" class="block text-sm font-medium text-slate-700 dark:text-slate-300">From Date</label>
-                                <input id="fsettin-15" type="date" name="activity_from" value="{{ request('activity_from') }}" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                                <input id="fsettin-15" type="date" name="activity_from" value="{{ request('activity_from') }}" class="input mt-1">
                             </div>
                             <div>
                                 <label for="fsettin-16" class="block text-sm font-medium text-slate-700 dark:text-slate-300">To Date</label>
-                                <input id="fsettin-16" type="date" name="activity_to" value="{{ request('activity_to') }}" class="mt-1 w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                                <input id="fsettin-16" type="date" name="activity_to" value="{{ request('activity_to') }}" class="input mt-1">
                             </div>
                         </div>
                         <div class="mt-3 flex gap-2">
-                            <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">
+                            <button type="submit" class="btn-primary btn-sm">
                                 Apply Filter
                             </button>
                             <a href="{{ route('settings') }}#activity" class="inline-flex items-center rounded-lg border border-slate-300 bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
@@ -478,9 +410,9 @@
                         @endforelse
                     </div>
                 </div>
-                <div x-show="tab === 'login'" class="p-6 space-y-6">
+                <div x-show="tab === 'login'" x-cloak class="space-y-6 p-5">
                     <div>
-                        <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Login History</h3>
+                        <h3 class="text-base font-semibold text-ink">Login History</h3>
                         <p class="text-sm text-slate-600 dark:text-slate-400">Last 5 login sessions to your account</p>
                     </div>
                     @forelse($loginHistories as $index => $history)
@@ -549,9 +481,9 @@
                 </div>
                 </div>
                 <!-- API & Integrations Tab -->
-                <div x-show="tab === 'api'" x-data="apiSettings()" class="p-6 space-y-6">
+                <div x-show="tab === 'api'" x-cloak x-data="apiSettings()" class="space-y-6 p-5">
                     <div>
-                        <h3 class="text-lg font-semibold text-slate-900 dark:text-white">API Tokens</h3>
+                        <h3 class="text-base font-semibold text-ink">API Tokens</h3>
                         <p class="text-sm text-slate-600 dark:text-slate-400">Create API tokens for ShareX, CLI tools, and custom integrations</p>
                     </div>
                     <!-- Create New Token Form -->
@@ -567,11 +499,11 @@
                                     x-model="newTokenName"
                                     placeholder="ShareX Desktop, My CLI Tool, etc." 
                                     required
-                                    class="w-full rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white text-sm"
+                                    class="input"
                                 >
                                 <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Give your token a memorable name</p>
                             </div>
-                            <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">
+                            <button type="submit" class="btn-primary btn-sm">
                                 <span x-show="!isCreating">🔑 Generate Token</span>
                                 <span x-show="isCreating">⏳ Generating...</span>
                             </button>
@@ -632,7 +564,7 @@
                     <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
                         <h4 class="text-sm font-semibold text-blue-900 dark:text-blue-200 mb-2">📚 API Documentation</h4>
                         <p class="text-sm text-blue-800 dark:text-blue-300 mb-3">Learn how to integrate hel.ink with ShareX, CLI tools, and more.</p>
-                        <a href="{{ route('api-docs') }}" class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">
+                        <a href="{{ route('api-docs') }}" class="btn-primary btn-sm">
                             View API Docs →
                         </a>
                     </div>
