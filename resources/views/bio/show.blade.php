@@ -197,6 +197,8 @@
         .bio-container {
             {!! \App\Support\SafeContent::css($bgStyle) !!}
             font-family: {!! $fontFamily !!};
+            /* Headers, FAQ and contact cards inherit this, so they stay readable on dark themes. */
+            color: {{ $titleColor }};
             min-height: 100vh;
             scrollbar-width: none;
             -ms-overflow-style: none;
