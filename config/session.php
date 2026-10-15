@@ -4,7 +4,8 @@ use Illuminate\Support\Str;
 
 return [
     'driver' => env('SESSION_DRIVER', 'database'),
-    'lifetime' => (int) env('SESSION_LIFETIME', 30),
+    // Minutes of inactivity before a session ends; AutoLogout uses the same value.
+    'lifetime' => (int) env('SESSION_LIFETIME', 120),
     'expire_on_close' => env('SESSION_EXPIRE_ON_CLOSE', true),
     'encrypt' => env('SESSION_ENCRYPT', false),
     'files' => storage_path('framework/sessions'),
@@ -22,5 +23,4 @@ return [
     'http_only' => env('SESSION_HTTP_ONLY', true),
     'same_site' => env('SESSION_SAME_SITE', 'lax'),
     'partitioned' => env('SESSION_PARTITIONED_COOKIE', false),
-    'inactivity_logout' => env('SESSION_INACTIVITY_LOGOUT', 60),
 ];

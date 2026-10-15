@@ -195,6 +195,9 @@ Route::middleware('ip.ban')->group(function () {
             Route::post('/bio/{bioPage}/toggle', [AdminBioController::class, 'togglePublish'])->name('bio.toggle');
             Route::post('/bio/bulk-delete', [AdminBioController::class, 'bulkDelete'])->name('bio.bulk-delete');
         });
+    // Pages left open past the session lifetime fetch a new token before submitting (resources/js/app.js).
+    Route::get('/csrf-token', fn () => response()->json(['token' => csrf_token()])->header('Cache-Control', 'no-store, private'))
+        ->middleware('throttle:30,1,csrf-token')->name('csrf.token');
     Route::get('/check', LinkCheckController::class)->middleware('throttle:30,1,link-check')->name('link.check');
     Route::get('/report-abuse', [AbuseReportController::class, 'create'])->name('report.create');
     Route::post('/report-abuse', [AbuseReportController::class, 'store'])->middleware('throttle:5,10,report-abuse')->name('report.store');

@@ -39,6 +39,7 @@
     </head>
     @if ($themed)
     <body class="min-h-full bg-slate-50 font-sans text-slate-900 antialiased dark:bg-[#0e1322] dark:text-slate-100">
+        <x-session-expired-notice />
         <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
             <div class="absolute -left-40 -top-48 h-136 w-136 rounded-full bg-indigo-300/40 blur-[120px] dark:bg-indigo-500/20"></div>
             <div class="absolute -right-32 top-10 h-112 w-md rounded-full bg-sky-200/50 blur-[120px] dark:bg-sky-500/10"></div>
