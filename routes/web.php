@@ -22,6 +22,7 @@ use App\Http\Controllers\LinkCheckController;
 use App\Http\Controllers\LinkCommentController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\MarketingPageController;
+use App\Http\Controllers\PixelHopSsoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProxyMonitorController;
 use App\Http\Controllers\PublicBioController;
@@ -74,6 +75,9 @@ Route::middleware('ip.ban')->group(function () {
         Route::post('/two-factor-challenge', [TwoFactorController::class, 'verify'])->middleware('throttle:5,1,two-factor')->name('two-factor.verify');
     });
     Route::middleware(['auth', '2fa'])->group(function () {
+        Route::get('/sso/pixelhop', [PixelHopSsoController::class, 'ticket'])->middleware('throttle:30,1,pixelhop-sso')->name('sso.pixelhop');
+        // Not /images: public/images/ is a real directory, so nginx would answer 301/403 itself.
+        Route::get('/pixelhop', [PixelHopSsoController::class, 'open'])->name('images.open');
         Route::get('/dashboard', [LinkController::class, 'index'])->name('dashboard');
         Route::get('/links', [LinkController::class, 'myLinks'])->name('links.index');
         Route::get('/analytics', AnalyticsController::class)->name('analytics');

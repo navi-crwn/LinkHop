@@ -57,7 +57,7 @@ Semua fitur sudah termasuk untuk setiap akun. Tanpa paket premium, tanpa fitur y
 | [hel.ink/github](https://hel.ink/github) | Kode sumber |
 | [hel.ink/website](https://hel.ink/website) | Website |
 | [hel.ink/selfhost](https://hel.ink/selfhost) | Panduan self-host |
-| [hel.ink/api-docs](https://hel.ink/api-docs) | Referensi API |
+| [hel.ink/documentation](https://hel.ink/documentation) | Referensi API |
 | [hel.ink/changelog](https://hel.ink/changelog) | Perubahan di setiap rilis |
 
 Untuk memuat contoh yang sama di instalasi kamu sendiri, jalankan `php artisan db:seed --class=ExampleBioSeeder`.
