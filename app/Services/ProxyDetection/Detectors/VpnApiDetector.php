@@ -30,7 +30,7 @@ class VpnApiDetector extends BaseProxyDetector
         $security = $data['security'] ?? [];
 
         return [
-            'is_proxy' => $security['vpn'] ?? false || $security['proxy'] ?? false || $security['tor'] ?? false,
+            'is_proxy' => ($security['vpn'] ?? false) || ($security['proxy'] ?? false) || ($security['tor'] ?? false),
             'type' => $this->determineType($security),
             'confidence' => 85,
             'details' => [

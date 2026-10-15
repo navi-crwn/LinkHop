@@ -22,6 +22,7 @@ use App\Http\Controllers\LinkCheckController;
 use App\Http\Controllers\LinkCommentController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\MarketingPageController;
+use App\Http\Controllers\PixelHopSsoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProxyMonitorController;
 use App\Http\Controllers\PublicBioController;
@@ -30,7 +31,6 @@ use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TagController;
-use App\Http\Controllers\PixelHopSsoController;
 use App\Http\Controllers\TwoFactorController;
 use App\Support\CspReport;
 use Illuminate\Http\Request;
@@ -76,7 +76,8 @@ Route::middleware('ip.ban')->group(function () {
     });
     Route::middleware(['auth', '2fa'])->group(function () {
         Route::get('/sso/pixelhop', [PixelHopSsoController::class, 'ticket'])->middleware('throttle:30,1,pixelhop-sso')->name('sso.pixelhop');
-        Route::get('/images', [PixelHopSsoController::class, 'open'])->name('images.open');
+        // Not /images: public/images/ is a real directory, so nginx would answer 301/403 itself.
+        Route::get('/pixelhop', [PixelHopSsoController::class, 'open'])->name('images.open');
         Route::get('/dashboard', [LinkController::class, 'index'])->name('dashboard');
         Route::get('/links', [LinkController::class, 'myLinks'])->name('links.index');
         Route::get('/analytics', AnalyticsController::class)->name('analytics');
