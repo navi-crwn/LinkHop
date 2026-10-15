@@ -227,6 +227,11 @@
             transform: scale(1.02);
             box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.15);
         }
+        /* Same frame as the editor preview's .avatar-wrapper. */
+        .bio-avatar {
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
         .social-icon-btn {
             background: {{ $socialBg }};
         }
@@ -662,10 +667,10 @@
                     @if($bioPage->avatar_url)
                         <img src="{{ Storage::disk('public')->url($bioPage->avatar_url) }}" 
                              alt="{{ $bioPage->title }}" 
-                             class="mx-auto mb-4 h-24 w-24 object-cover" width="96" height="96" fetchpriority="high"
+                             class="bio-avatar mx-auto mb-4 h-24 w-24 object-cover" width="96" height="96" fetchpriority="high"
                              style="border-radius: {{ $bioPage->avatar_shape === 'rounded' ? '16px' : ($bioPage->avatar_shape === 'square' ? '0' : '50%') }};">
                     @else
-                        <div class="mx-auto mb-4 flex h-24 w-24 items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-3xl font-bold text-white"
+                        <div class="bio-avatar mx-auto mb-4 flex h-24 w-24 items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-3xl font-bold text-white"
                              style="border-radius: {{ $bioPage->avatar_shape === 'rounded' ? '16px' : ($bioPage->avatar_shape === 'square' ? '0' : '50%') }};">
                             {{ substr($bioPage->title, 0, 1) }}
                         </div>
@@ -696,8 +701,9 @@
                     <div class="mt-4 flex justify-center gap-3 flex-wrap">
                         @foreach($bioPage->social_links as $socialLink)
                             @php
-                                $isEnabled = $socialLink['enabled'] ?? $socialLink['is_active'] ?? false;
-                                $linkValue = $socialLink['value'] ?? $socialLink['url'] ?? '';
+                                // Shown unless switched off, as in the editor preview; older rows have no "enabled" key.
+                                $isEnabled = is_array($socialLink) && ! in_array($socialLink['enabled'] ?? $socialLink['is_active'] ?? true, [false, 0, '0', 'false'], true);
+                                $linkValue = is_array($socialLink) ? trim((string) (($socialLink['value'] ?? '') ?: ($socialLink['url'] ?? ''))) : '';
                             @endphp
                             @if(is_array($socialLink) && $isEnabled && !empty($linkValue))
                                 @php
@@ -953,8 +959,9 @@
                     <div class="mt-8 flex justify-center gap-3 flex-wrap">
                         @foreach($bioPage->social_links as $socialLink)
                             @php
-                                $isEnabled = $socialLink['enabled'] ?? $socialLink['is_active'] ?? false;
-                                $linkValue = $socialLink['value'] ?? $socialLink['url'] ?? '';
+                                // Shown unless switched off, as in the editor preview; older rows have no "enabled" key.
+                                $isEnabled = is_array($socialLink) && ! in_array($socialLink['enabled'] ?? $socialLink['is_active'] ?? true, [false, 0, '0', 'false'], true);
+                                $linkValue = is_array($socialLink) ? trim((string) (($socialLink['value'] ?? '') ?: ($socialLink['url'] ?? ''))) : '';
                             @endphp
                             @if(is_array($socialLink) && $isEnabled && !empty($linkValue))
                                 @php
