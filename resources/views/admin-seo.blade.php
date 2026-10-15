@@ -1,110 +1,110 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - SEO Configuration</x-slot>
-    <div class="mb-6">
-        <h1 class="text-3xl font-bold text-slate-900 dark:text-white">SEO Settings</h1>
-        <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Meta tags configuration</p>
-    </div>
-    <div class="py-4">
-        <div class="mx-auto max-w-4xl space-y-4 px-4 md:px-6">
-            @if (session('status'))
-                <div class="rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-emerald-900 dark:border-emerald-900/40 dark:bg-emerald-900/20 dark:text-emerald-200">
-                    {{ session('status') }}
-                </div>
-            @endif
-            @if ($errors->any())
-                <div class="rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-red-900 dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-200">
-                    <ul class="list-disc pl-4 space-y-1 text-sm">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-            <form method="POST" action="{{ route('admin.seo.update') }}" class="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 space-y-4"
-                x-data="{
-                    siteTitle: @js(old('site_title', $seo->site_title ?? config('app.name'))),
-                    metaDescription: @js(old('meta_description', $seo->meta_description ?? 'A fast shortlink studio for campaigns, QR codes, and analytics.')),
-                    favicon: @js(old('favicon', $seo->favicon ?? '')),
-                    logo: @js(old('logo', $seo->logo ?? '')),
-                    ogTitle: @js(old('og_title', $seo->og_title ?? 'Share smarter with HEL.ink')),
-                    ogDescription: @js(old('og_description', $seo->og_description ?? 'Track clicks, protect links, manage QR codes, and keep abuse away.'))
-                }">
-                @csrf
-                <div class="rounded-2xl border border-gray-100 bg-white/80 p-4 shadow-inner dark:border-gray-800 dark:bg-slate-900/70">
-                    <p class="text-sm font-semibold text-gray-700 dark:text-gray-200">SERP preview</p>
-                    <div class="mt-4 space-y-4">
-                        <div class="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
-                            <div class="flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-300">
-                                <div class="h-4 w-4 overflow-hidden rounded" x-show="favicon">
-                                    <img :src="favicon" alt="Favicon preview" class="h-full w-full object-contain">
-                                </div>
-                                <span>{{ url('/') }}</span>
-                            </div>
-                            <p class="mt-1 text-lg font-semibold text-blue-700 dark:text-blue-300" x-text="siteTitle || 'HEL.ink · Shortlink workspace'"></p>
-                            <p class="text-sm text-gray-600 dark:text-gray-300" x-text="metaDescription || 'Type a helpful description so search engines know what HEL.ink offers.'"></p>
-                        </div>
-                        <div class="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900 flex gap-4">
-                            <div class="h-16 w-16 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden">
-                                <img x-show="logo" :src="logo" alt="Logo preview" class="h-full w-full object-contain">
-                                <span x-show="!logo" class="text-xs text-gray-400">Logo</span>
-                            </div>
-                            <div>
-                                <p class="text-xs uppercase tracking-[0.3em] text-gray-400">Social preview</p>
-                                <p class="text-base font-semibold text-gray-900 dark:text-white" x-text="ogTitle || siteTitle"></p>
-                                <p class="text-sm text-gray-500 dark:text-gray-400" x-text="ogDescription || metaDescription"></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="grid gap-4 md:grid-cols-2">
+    <x-slot name="pageTitle">HEL.ink - SEO</x-slot>
+    <x-page-header title="SEO" subtitle="Meta tags, social previews and site icons." />
+
+    <x-flash />
+
+    <form method="POST" action="{{ route('admin.seo.update') }}" class="grid items-start gap-3 lg:grid-cols-3"
+        x-data="{
+            siteTitle: @js(old('site_title', $seo->site_title ?? config('app.name'))),
+            metaDescription: @js(old('meta_description', $seo->meta_description ?? 'A fast shortlink studio for campaigns, QR codes, and analytics.')),
+            favicon: @js(old('favicon', $seo->favicon ?? '')),
+            logo: @js(old('logo', $seo->logo ?? '')),
+            ogTitle: @js(old('og_title', $seo->og_title ?? 'Share smarter with HEL.ink')),
+            ogDescription: @js(old('og_description', $seo->og_description ?? 'Track clicks, protect links, manage QR codes, and keep abuse away.'))
+        }">
+        @csrf
+
+        <div class="space-y-3 lg:col-span-2">
+            <section class="glass-card space-y-3">
+                <h2 class="section-title">Search engines</h2>
+                <div class="grid gap-3 md:grid-cols-2">
                     <div>
-                        <label for="fadmins-1" class="text-sm text-gray-600 dark:text-gray-300">Site Title</label>
-                        <input id="fadmins-1" type="text" name="site_title" x-model="siteTitle" value="{{ old('site_title', $seo->site_title ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
-                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Aim for 55–60 characters to avoid truncation.</p>
+                        <div class="flex items-baseline justify-between">
+                            <label for="fadmins-1" class="label">Site title</label>
+                            <span class="text-[11px] tabular-nums" :class="siteTitle.length > 60 ? 'text-rose-500' : 'text-muted'" x-text="siteTitle.length + '/60'"></span>
+                        </div>
+                        <input id="fadmins-1" type="text" name="site_title" x-model="siteTitle" class="input">
                     </div>
                     <div>
-                        <label for="fadmins-2" class="text-sm text-gray-600 dark:text-gray-300">Keywords</label>
-                        <input id="fadmins-2" type="text" name="meta_keywords" value="{{ old('meta_keywords', $seo->meta_keywords ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="shortlink, url shortener, hel.ink">
-                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Optional, but useful for internal searching.</p>
+                        <label for="fadmins-2" class="label">Keywords</label>
+                        <input id="fadmins-2" type="text" name="meta_keywords" value="{{ old('meta_keywords', $seo->meta_keywords ?? '') }}" class="input" placeholder="shortlink, url shortener, hel.ink">
                     </div>
                 </div>
                 <div>
-                    <label for="fadmins-3" class="text-sm text-gray-600 dark:text-gray-300">Meta Description</label>
-                    <textarea id="fadmins-3" name="meta_description" rows="3" x-model="metaDescription" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">{{ old('meta_description', $seo->meta_description ?? '') }}</textarea>
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Keep between 150–160 characters for the best preview.</p>
+                    <div class="flex items-baseline justify-between">
+                        <label for="fadmins-3" class="label">Meta description</label>
+                        <span class="text-[11px] tabular-nums" :class="metaDescription.length > 160 ? 'text-rose-500' : 'text-muted'" x-text="metaDescription.length + '/160'"></span>
+                    </div>
+                    <textarea id="fadmins-3" name="meta_description" rows="3" x-model="metaDescription" class="input"></textarea>
                 </div>
-                <div class="grid gap-4 md:grid-cols-2">
+            </section>
+
+            <section class="glass-card space-y-3">
+                <h2 class="section-title">Social sharing</h2>
+                <div class="grid gap-3 md:grid-cols-2">
                     <div>
-                        <label for="fadmins-4" class="text-sm text-gray-600 dark:text-gray-300">Open Graph Title</label>
-                        <input id="fadmins-4" type="text" name="og_title" x-model="ogTitle" value="{{ old('og_title', $seo->og_title ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                        <label for="fadmins-4" class="label">Open Graph title</label>
+                        <input id="fadmins-4" type="text" name="og_title" x-model="ogTitle" class="input">
                     </div>
                     <div>
-                        <label for="fadmins-5" class="text-sm text-gray-600 dark:text-gray-300">Open Graph Description</label>
-                        <input id="fadmins-5" type="text" name="og_description" x-model="ogDescription" value="{{ old('og_description', $seo->og_description ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
-                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Displayed whenever links are shared to social media.</p>
-                    </div>
-                </div>
-                <div class="grid gap-4 md:grid-cols-2">
-                    <div>
-                        <label for="fadmins-6" class="text-sm text-gray-600 dark:text-gray-300">OG Image URL</label>
-                        <input id="fadmins-6" type="url" name="og_image" value="{{ old('og_image', $seo->og_image ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="https://">
-                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Use 1200×630px JPG/PNG for rich previews.</p>
-                    </div>
-                    <div>
-                        <label for="fadmins-7" class="text-sm text-gray-600 dark:text-gray-300">Favicon / Icon URL</label>
-                        <input id="fadmins-7" type="url" name="favicon" x-model="favicon" value="{{ old('favicon', $seo->favicon ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
-                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Supply a square PNG (at least 96×96; 512×512 works best).</p>
+                        <label for="fadmins-5" class="label">Open Graph description</label>
+                        <input id="fadmins-5" type="text" name="og_description" x-model="ogDescription" class="input">
                     </div>
                 </div>
                 <div>
-                    <label for="fadmins-8" class="text-sm text-gray-600 dark:text-gray-300">Website logo URL</label>
-                    <input id="fadmins-8" type="url" name="logo" x-model="logo" value="{{ old('logo', $seo->logo ?? '') }}" class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="https://">
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Ideal for headers/emails; use a transparent PNG (min 256×256).</p>
+                    <label for="fadmins-6" class="label">OG image URL</label>
+                    <input id="fadmins-6" type="url" name="og_image" value="{{ old('og_image', $seo->og_image ?? '') }}" class="input" placeholder="https://">
+                    <p class="mt-1 text-xs text-muted">1200×630 JPG or PNG.</p>
                 </div>
-                <div class="flex justify-end gap-3">
-                    <button type="submit" class="rounded-xl bg-blue-600 px-6 py-2 text-sm font-semibold text-white hover:bg-blue-500">Save SEO</button>
+            </section>
+
+            <section class="glass-card space-y-3">
+                <h2 class="section-title">Brand assets</h2>
+                <div class="grid gap-3 md:grid-cols-2">
+                    <div>
+                        <label for="fadmins-7" class="label">Favicon URL</label>
+                        <input id="fadmins-7" type="url" name="favicon" x-model="favicon" class="input" placeholder="https://">
+                        <p class="mt-1 text-xs text-muted">Square PNG, 512×512 works best.</p>
+                    </div>
+                    <div>
+                        <label for="fadmins-8" class="label">Logo URL</label>
+                        <input id="fadmins-8" type="url" name="logo" x-model="logo" class="input" placeholder="https://">
+                        <p class="mt-1 text-xs text-muted">Transparent PNG, at least 256×256.</p>
+                    </div>
                 </div>
-            </form>
+            </section>
+
+            <div class="flex justify-end">
+                <button type="submit" class="btn-primary">Save SEO</button>
+            </div>
         </div>
-    </div>
+
+        <aside class="space-y-3 lg:sticky lg:top-24">
+            <section class="glass-card space-y-2">
+                <p class="eyebrow">Search preview</p>
+                <div class="glass-inset rounded-xl p-3">
+                    <div class="flex items-center gap-2 text-xs text-muted">
+                        <img x-show="favicon" :src="favicon" alt="" class="h-4 w-4 rounded object-contain">
+                        <span class="truncate">{{ url('/') }}</span>
+                    </div>
+                    <p class="mt-1 line-clamp-1 text-base font-semibold text-indigo-600 dark:text-indigo-300" x-text="siteTitle || 'HEL.ink'"></p>
+                    <p class="line-clamp-2 text-xs text-muted" x-text="metaDescription || 'Add a description so search engines know what HEL.ink offers.'"></p>
+                </div>
+            </section>
+            <section class="glass-card space-y-2">
+                <p class="eyebrow">Social preview</p>
+                <div class="glass-inset flex gap-3 rounded-xl p-3">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-500/10">
+                        <img x-show="logo" :src="logo" alt="" class="h-full w-full object-contain">
+                        <span x-show="!logo" class="text-[11px] text-muted">Logo</span>
+                    </div>
+                    <div class="min-w-0">
+                        <p class="line-clamp-1 text-sm font-semibold text-ink" x-text="ogTitle || siteTitle"></p>
+                        <p class="line-clamp-2 text-xs text-muted" x-text="ogDescription || metaDescription"></p>
+                    </div>
+                </div>
+            </section>
+        </aside>
+    </form>
 </x-app-layout>

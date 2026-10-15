@@ -20,7 +20,7 @@ class BioPageController extends Controller
 {
     private const ANALYTICS_RANGES = [7, 30];
 
-    private const MAX_PAGES = 3;
+    public const MAX_PAGES = 3;
 
     public function index()
     {
@@ -39,20 +39,27 @@ class BioPageController extends Controller
         // Same rules as store() and update(), so "available" here means saving will accept it.
         $current = $request->filled('current') ? $request->user()->bioPages()->where('slug', $request->input('current'))->first() : null;
         $slug = strtolower((string) $request->input('slug'));
-        $valid = validator(['slug' => $slug], ['slug' => $this->slugRules($current)])->passes();
+        $validator = validator(['slug' => $slug], ['slug' => $this->slugRules($current)]);
 
-        return response()->json(['available' => $valid]);
+        return response()->json(['available' => $validator->passes(), 'message' => $validator->errors()->first('slug')]);
     }
 
-    /** Validation for a bio page slug; $current is the page being renamed, if any. */
+    /**
+     * Validation for a bio page slug; $current is the page being renamed, if any.
+     * Members need at least `shortener.bio_slug_min_length` characters; HEL.ink's
+     * own admin accounts may keep shorter brand slugs. Existing short slugs stay valid.
+     */
     private function slugRules(?BioPage $current = null): array
     {
+        $min = auth()->user()?->isAdmin() ? 3 : (int) config('shortener.bio_slug_min_length', 5);
+
         return [
             'required',
             'string',
-            'min:3',
             'max:20',
             'regex:/^[a-z0-9]+$/',
+            fn ($attribute, $value, $fail) => $value !== $current?->slug && strlen((string) $value) < $min
+                ? $fail("The slug must be at least {$min} letters or numbers.") : null,
             Rule::unique('bio_pages', 'slug')->ignore($current?->id),
             // Reserved words are refused for new slugs; an existing slug is left alone.
             fn ($attribute, $value, $fail) => $value !== $current?->slug && in_array($value, config('shortener.reserved_slugs', []), true)

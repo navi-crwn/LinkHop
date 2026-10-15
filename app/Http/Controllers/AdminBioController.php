@@ -73,8 +73,8 @@ class AdminBioController extends Controller
             ->get();
         // Bio Pages by User (top creators)
         $topCreators = User::select('users.*')
+            ->has('bioPages')
             ->withCount('bioPages')
-            ->having('bio_pages_count', '>', 0)
             ->orderByDesc('bio_pages_count')
             ->limit(10)
             ->get();
@@ -220,7 +220,7 @@ class AdminBioController extends Controller
     public function show(BioPage $bioPage)
     {
         $bioPage->load(['user', 'links', 'clicks' => function ($query) {
-            $query->latest()->limit(50);
+            $query->with('bioLink')->latest('bio_clicks.created_at')->limit(50);
         }]);
         $recentClicks = $bioPage->clicks;
 

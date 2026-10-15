@@ -1,139 +1,168 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - Manage users</x-slot>
-    <div class="mb-6">
-        <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Manage Users</h1>
-        <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">User accounts and permissions</p>
-    </div>
-    <div class="py-4">
-        <div class="mx-auto max-w-7xl space-y-4 px-4 md:px-6">
-            @if (session('status'))
-                <div class="rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-emerald-900">
-                    {{ session('status') }}
-                </div>
-            @endif
-            @if ($errors->any())
-                <div class="rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-red-900">
-                    <ul class="list-disc pl-5 space-y-1 text-sm">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-            <form method="GET" class="flex flex-wrap items-center gap-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <input type="text" name="q" value="{{ $search }}" placeholder="Search name or email..." class="flex-1 rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" />
-                <button class="rounded-xl bg-blue-600 px-4 py-2 text-white hover:bg-blue-500">Search</button>
-                <a href="{{ route('admin.users.index') }}" class="text-sm text-gray-500 hover:underline">Reset</a>
-            </form>
-            @if ($viewerIsSuperAdmin)
-                <div class="rounded-2xl border border-emerald-200 bg-white p-6 shadow-sm dark:border-emerald-900/40 dark:bg-gray-900">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Create User</h3>
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Create a regular user account without going through registration.</p>
-                    <form method="POST" action="{{ route('admin.users.store') }}" class="mt-4 grid gap-4 md:grid-cols-2">
-                        @csrf
-                        <div class="md:col-span-1">
-                            <label for="fadminu-1" class="text-sm text-gray-600 dark:text-gray-300">Name</label>
-                            <input id="fadminu-1" type="text" name="name" value="{{ old('name') }}" required class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" autocomplete="off">
-                            @error('name')
-                                <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div class="md:col-span-1">
-                            <label for="fadminu-2" class="text-sm text-gray-600 dark:text-gray-300">Email</label>
-                            <input id="fadminu-2" type="email" name="email" value="{{ old('email') }}" required class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" autocomplete="off">
-                            @error('email')
-                                <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div class="md:col-span-1">
-                            <label for="fadminu-3" class="text-sm text-gray-600 dark:text-gray-300">Password</label>
-                            <input id="fadminu-3" type="password" name="password" required class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" autocomplete="new-password">
-                            @error('password')
-                                <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div class="md:col-span-1">
-                            <label for="fadminu-4" class="text-sm text-gray-600 dark:text-gray-300">Confirm password</label>
-                            <input id="fadminu-4" type="password" name="password_confirmation" required class="mt-1 w-full rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" autocomplete="new-password">
-                        </div>
-                        <div class="md:col-span-2 flex justify-end">
-                            <button type="submit" class="rounded-full bg-emerald-700 px-6 py-2 text-sm font-semibold text-white hover:bg-emerald-600">Create User</button>
-                        </div>
-                    </form>
-                </div>
-            @endif
-            <div class="rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800 text-sm">
-                        <thead class="bg-gray-50 text-left text-gray-600 dark:bg-gray-900 dark:text-gray-300">
-                            <tr>
-                                <th class="px-4 py-3">User</th>
-                                <th class="px-4 py-3">Role</th>
-                                <th class="px-4 py-3">Status</th>
-                                <th class="px-4 py-3">Activity</th>
-                                <th class="px-4 py-3 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 dark:divide-gray-800 text-gray-700 dark:text-gray-200">
-                            @forelse ($users as $user)
-                                @php
-                                    $isSuperAdminRow = $user->isSuperAdmin();
-                                @endphp
-                                <tr>
-                                    <td class="px-4 py-3">
-                                        <p class="font-semibold">{{ $user->name }}</p>
-                                        <p class="text-xs text-gray-500">{{ $user->email }}</p>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        @if ($isSuperAdminRow)
-                                            <span class="inline-flex items-center rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">Superadmin</span>
-                                        @else
-                                            <span class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">User</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-4 py-3">{{ ucfirst($user->status) }}</td>
-                                    <td class="px-4 py-3">
-                                        <p class="text-xs text-gray-500">Last login: {{ $user->last_login_at?->diffForHumans() ?? 'Never' }}</p>
-                                        @if ($user->last_login_ip)
-                                            <p class="text-xs text-gray-500">IP: {{ $user->last_login_ip }} {{ $user->last_login_country ? '('.$user->last_login_country.')' : '' }}</p>
-                                        @endif
-                                    </td>
-                                    <td class="px-4 py-3 text-right space-y-2">
-                                        <div class="flex flex-col items-end gap-2">
-                                            <a href="{{ route('admin.users.inspect', $user) }}" class="rounded-lg bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600">
-                                                👁️ Inspect
-                                            </a>
-                                        @if ($viewerIsSuperAdmin && ! $isSuperAdminRow)
-                                            <form method="POST" action="{{ route('admin.users.status', $user) }}" class="inline-flex items-center gap-2">
-                                                @csrf
-                                                @method('PATCH')
-                                                <select name="status" aria-label="Account status" class="rounded-lg border-gray-200 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
-                                                    <option value="active" @selected($user->status === 'active')>Active</option>
-                                                    <option value="suspended" @selected($user->status === 'suspended')>Suspended</option>
-                                                </select>
-                                                <button class="rounded-lg bg-indigo-600 px-3 py-1 text-xs font-semibold text-white hover:bg-indigo-500">Update status</button>
-                                            </form>
-                                            <form method="POST" action="{{ route('admin.users.destroy', $user) }}" data-confirm="Delete this account and all links?" class="inline-flex items-center gap-2">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="rounded-lg border border-rose-200 px-3 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:border-rose-900/30 dark:text-rose-200 dark:hover:bg-rose-900/30">Delete user</button>
-                                            </form>
-                                        @endif
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" class="px-4 py-6 text-center text-gray-500 dark:text-gray-400">No users found.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-                <div class="border-t border-gray-100 px-4 py-3 dark:border-gray-800">
-                    {{ $users->links() }}
-                </div>
+    <x-slot name="pageTitle">HEL.ink - Users</x-slot>
+    @php
+        $tabs = ['' => ['All', $counts['all']], 'active' => ['Active', $counts['active']], 'suspended' => ['Suspended', $counts['suspended']]];
+        $query = fn (array $extra) => route('admin.users.index', array_filter(array_merge(['q' => $search, 'status' => $status, 'sort' => $sort], $extra), fn ($v) => $v !== '' && $v !== null));
+    @endphp
+
+    <x-page-header title="Users" subtitle="{{ number_format($counts['all']) }} accounts · {{ number_format($counts['new']) }} new this week">
+        @if ($viewerIsSuperAdmin)
+            <x-slot name="actions">
+                <button type="button" class="btn-primary btn-sm" x-data @click="$dispatch('open-modal', 'create-user')">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                    Add user
+                </button>
+            </x-slot>
+        @endif
+    </x-page-header>
+
+    <x-flash />
+
+    <div class="glass-card flex flex-col gap-3 !p-3 md:flex-row md:items-center">
+        <nav class="flex shrink-0 gap-1" aria-label="Filter by status">
+            @foreach ($tabs as $value => [$label, $count])
+                <a href="{{ $query(['status' => $value, 'page' => null]) }}"
+                   class="rounded-lg px-3 py-1.5 text-sm font-medium transition {{ $status === $value ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'text-muted hover:text-ink' }}">
+                    {{ $label }} <span class="ml-0.5 text-xs opacity-70">{{ number_format($count) }}</span>
+                </a>
+            @endforeach
+        </nav>
+        <form method="GET" class="flex flex-1 gap-2">
+            <input type="hidden" name="status" value="{{ $status }}">
+            <div class="relative flex-1">
+                <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
+                <input type="search" name="q" value="{{ $search }}" placeholder="Search name or email" aria-label="Search users" class="input !py-2 pl-9">
             </div>
-        </div>
+            <select name="sort" aria-label="Sort" class="input !w-auto !py-2" data-autosubmit>
+                <option value="">Newest</option>
+                <option value="login" @selected($sort === 'login')>Last login</option>
+                <option value="links" @selected($sort === 'links')>Most links</option>
+                <option value="name" @selected($sort === 'name')>Name A–Z</option>
+            </select>
+        </form>
     </div>
+
+    <section class="glass overflow-hidden rounded-2xl">
+        <div class="overflow-x-auto">
+            <table class="table-glass">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th class="hidden text-right sm:table-cell">Links</th>
+                        <th class="hidden text-right sm:table-cell">Clicks</th>
+                        <th class="hidden sm:table-cell">Status</th>
+                        <th class="hidden lg:table-cell">Last login</th>
+                        <th class="hidden xl:table-cell">Joined</th>
+                        <th class="text-right"><span class="sr-only">Actions</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($users as $user)
+                        @php $isSuperAdminRow = $user->isSuperAdmin(); @endphp
+                        <tr>
+                            <td class="max-w-[13rem] sm:max-w-[18rem]">
+                                <a href="{{ route('admin.users.inspect', $user) }}" class="flex items-center gap-3">
+                                    <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-indigo-500/15 text-xs font-semibold text-indigo-600 dark:text-indigo-300">{{ strtoupper(mb_substr($user->name, 0, 1)) }}</span>
+                                    <span class="min-w-0">
+                                        <span class="flex items-center gap-1.5">
+                                            <span class="truncate text-sm font-semibold text-ink">{{ $user->name }}</span>
+                                            @if ($isSuperAdminRow)
+                                                <span class="chip-amber">Admin</span>
+                                            @endif
+                                            @if ($user->status !== 'active')
+                                                <span class="chip-red sm:hidden">Suspended</span>
+                                            @endif
+                                        </span>
+                                        <span class="block truncate text-xs text-muted">{{ $user->email }}</span>
+                                    </span>
+                                </a>
+                            </td>
+                            <td class="hidden text-right tabular-nums text-ink sm:table-cell">{{ number_format($user->links_count) }}</td>
+                            <td class="hidden text-right tabular-nums text-ink sm:table-cell">{{ number_format((int) $user->links_sum_clicks) }}</td>
+                            <td class="hidden sm:table-cell"><span class="{{ $user->status === 'active' ? 'chip-green' : 'chip-red' }}">{{ ucfirst($user->status) }}</span></td>
+                            <td class="hidden whitespace-nowrap lg:table-cell">
+                                <p class="text-xs text-ink">{{ $user->last_login_at?->diffForHumans() ?? 'Never' }}</p>
+                                @if ($user->last_login_ip)
+                                    <p class="font-mono text-[11px] text-muted">{{ $user->last_login_ip }}{{ $user->last_login_country ? ' · '.$user->last_login_country : '' }}</p>
+                                @endif
+                            </td>
+                            <td class="hidden whitespace-nowrap text-xs text-muted xl:table-cell">{{ $user->created_at?->format('d M Y') }}</td>
+                            <td class="whitespace-nowrap text-right">
+                                <div class="inline-flex items-center gap-0.5">
+                                    <a href="{{ route('admin.users.inspect', $user) }}" class="icon-btn !h-8 !w-8" title="Inspect" aria-label="Inspect {{ $user->name }}">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                    </a>
+                                    @if ($viewerIsSuperAdmin && ! $isSuperAdminRow)
+                                        <form method="POST" action="{{ route('admin.users.status', $user) }}" @if ($user->status === 'active') data-confirm="Suspend {{ $user->email }}?" @endif>
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="status" value="{{ $user->status === 'active' ? 'suspended' : 'active' }}">
+                                            <button class="icon-btn !h-8 !w-8" title="{{ $user->status === 'active' ? 'Suspend' : 'Activate' }}" aria-label="{{ $user->status === 'active' ? 'Suspend' : 'Activate' }} {{ $user->name }}">
+                                                @if ($user->status === 'active')
+                                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                                                @else
+                                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                                @endif
+                                            </button>
+                                        </form>
+                                        <form method="POST" action="{{ route('admin.users.destroy', $user) }}" data-confirm="Delete {{ $user->email }} and all their links?">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="icon-btn !h-8 !w-8 hover:!text-rose-500" title="Delete" aria-label="Delete {{ $user->name }}">
+                                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="py-10 text-center text-sm text-muted">No users found.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        @if ($users->hasPages())
+            <div class="border-t border-slate-500/10 px-4 py-3">{{ $users->links() }}</div>
+        @endif
+    </section>
+
+    @if ($viewerIsSuperAdmin)
+        <x-modal name="create-user" :show="$errors->hasAny(['name', 'email', 'password'])" maxWidth="md" focusable>
+            <form method="POST" action="{{ route('admin.users.store') }}" class="space-y-4 p-5">
+                @csrf
+                <div>
+                    <h2 class="section-title text-base">Add user</h2>
+                    <p class="mt-0.5 text-xs text-muted">Creates a verified regular account without the sign-up flow.</p>
+                </div>
+                <div>
+                    <label for="new-user-name" class="label">Name</label>
+                    <input id="new-user-name" type="text" name="name" value="{{ old('name') }}" required autocomplete="off" class="input">
+                    @error('name')<p class="mt-1 text-xs text-rose-500">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label for="new-user-email" class="label">Email</label>
+                    <input id="new-user-email" type="email" name="email" value="{{ old('email') }}" required autocomplete="off" class="input">
+                    @error('email')<p class="mt-1 text-xs text-rose-500">{{ $message }}</p>@enderror
+                </div>
+                <div class="grid gap-3 sm:grid-cols-2">
+                    <div>
+                        <label for="new-user-password" class="label">Password</label>
+                        <input id="new-user-password" type="password" name="password" required autocomplete="new-password" class="input">
+                    </div>
+                    <div>
+                        <label for="new-user-password2" class="label">Confirm</label>
+                        <input id="new-user-password2" type="password" name="password_confirmation" required autocomplete="new-password" class="input">
+                    </div>
+                    @error('password')<p class="text-xs text-rose-500 sm:col-span-2">{{ $message }}</p>@enderror
+                </div>
+                <div class="flex justify-end gap-2 pt-1">
+                    <button type="button" class="btn-ghost btn-sm" @click="$dispatch('close-modal', 'create-user')">Cancel</button>
+                    <button type="submit" class="btn-primary btn-sm">Create user</button>
+                </div>
+            </form>
+        </x-modal>
+    @endif
 </x-app-layout>

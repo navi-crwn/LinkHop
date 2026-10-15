@@ -15,9 +15,8 @@ class FolderController extends Controller
         $folders = $request->user()
             ->folders()
             ->withCount('links')
-            ->with(['links' => function ($query) {
-                $query->orderByDesc('created_at');
-            }])
+            ->withSum('links', 'clicks')
+            ->with(['links' => fn ($query) => $query->latest('links.created_at')->limit(3)])
             ->orderBy('name')
             ->paginate(12);
 

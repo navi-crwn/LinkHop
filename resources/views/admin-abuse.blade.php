@@ -1,131 +1,183 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - Abuse reports</x-slot>
-    <div class="mb-6">
-        <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Abuse Reports</h1>
-        <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Review reported links</p>
-    </div>
-    <div class="py-4">
-        <div class="mx-auto max-w-7xl space-y-4 px-4 md:px-6">
-            @if (session('status'))
-                <div class="rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-emerald-900 dark:border-emerald-900/40 dark:bg-emerald-900/20 dark:text-emerald-200">
-                    {{ session('status') }}
-                </div>
+    <x-slot name="pageTitle">HEL.ink - Abuse</x-slot>
+    @php
+        $lastAt = isset($lastRun['at']) ? \Illuminate\Support\Carbon::parse($lastRun['at']) : null;
+        // Hourly schedule: more than 3h without a run means the scheduler is not running.
+        $stale = ! $lastAt || $lastAt->lt(now()->subHours(3));
+    @endphp
+
+    <x-page-header title="Abuse" subtitle="Automated findings from abuse:scan and reports from visitors.">
+        <x-slot name="actions">
+            <form method="POST" action="{{ route('admin.abuse.scan') }}">
+                @csrf
+                <button type="submit" class="btn-primary btn-sm">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    Scan now
+                </button>
+            </form>
+        </x-slot>
+    </x-page-header>
+
+    <x-flash />
+
+    <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div class="stat">
+            <p class="stat-label">Open findings</p>
+            <p class="stat-value">{{ number_format($counts['open_flags']) }}</p>
+        </div>
+        <div class="stat">
+            <p class="stat-label">Auto-disabled</p>
+            <p class="stat-value">{{ number_format($counts['disabled']) }}</p>
+        </div>
+        <div class="stat">
+            <p class="stat-label">Open reports</p>
+            <p class="stat-value">{{ number_format($counts['open_reports']) }}</p>
+        </div>
+        <div class="stat {{ $stale ? 'border-amber-400/50' : '' }}">
+            <p class="stat-label">Last scan</p>
+            <p class="stat-value {{ $stale ? 'text-amber-600 dark:text-amber-300' : '' }}">{{ $lastAt ? $lastAt->diffForHumans(null, true) : 'Never' }}</p>
+            @if ($lastRun)
+                <p class="text-[11px] text-muted">{{ $lastRun['mode'] ?? '' }} · {{ $lastRun['stats']['scanned'] ?? 0 }} scanned</p>
             @endif
-            <div class="rounded-3xl border border-gray-100 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <div class="mb-3 flex items-center justify-between">
-                    <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Automated findings</h2>
-                    <span class="text-xs text-gray-500">From <code>abuse:scan</code>. Restore = false positive (won't be re-flagged).</span>
-                </div>
-                @if ($flags->isEmpty())
-                    <p class="px-4 py-6 text-sm text-gray-500">No open findings.</p>
-                @else
-                <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800 text-sm">
-                    <thead class="text-left text-gray-500 dark:text-gray-300">
+        </div>
+    </div>
+
+    @if ($stale)
+        <div class="glass flex items-start gap-3 rounded-2xl border-amber-400/40 px-4 py-3 text-sm">
+            <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-xs font-bold text-amber-600 dark:text-amber-300">!</span>
+            <p class="text-ink">
+                The hourly scan has not run in the last 3 hours, so new links are not being checked.
+                Make sure the server cron runs <code class="rounded bg-slate-500/15 px-1 font-mono text-xs">* * * * * php artisan schedule:run</code>,
+                or use <strong>Scan now</strong>.
+            </p>
+        </div>
+    @endif
+
+    <section class="glass overflow-hidden rounded-2xl">
+        <div class="flex flex-wrap items-center justify-between gap-2 px-4 pb-2 pt-4">
+            <h2 class="section-title">Automated findings</h2>
+            <span class="text-xs text-muted">Restore = false positive, it won't be flagged again.</span>
+        </div>
+        @if ($flags->isEmpty())
+            <p class="px-4 pb-8 pt-4 text-center text-sm text-muted">No open findings.</p>
+        @else
+            <div class="overflow-x-auto">
+                <table class="table-glass">
+                    <thead>
                         <tr>
-                            <th class="px-4 py-3">Item</th>
-                            <th class="px-4 py-3">Signals</th>
-                            <th class="px-4 py-3">Action</th>
-                            <th class="px-4 py-3">Owner</th>
-                            <th class="px-4 py-3 text-right"></th>
+                            <th>Item</th>
+                            <th>Signals</th>
+                            <th>Action</th>
+                            <th class="hidden md:table-cell">Owner</th>
+                            <th></th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+                    <tbody>
                         @foreach ($flags as $flag)
                             <tr>
-                                <td class="px-4 py-3">
-                                    <p class="font-semibold">{{ str_replace('_', ' ', $flag->subject_type) }} #{{ $flag->subject_id }}</p>
-                                    <p class="text-xs text-gray-500 break-all">{{ $flag->summary }}</p>
-                                    <p class="text-xs text-gray-400">{{ $flag->created_at->diffForHumans() }}</p>
+                                <td class="max-w-sm">
+                                    <p class="text-sm font-semibold text-ink">{{ ucfirst(str_replace('_', ' ', $flag->subject_type)) }} #{{ $flag->subject_id }}</p>
+                                    <p class="truncate text-xs text-muted" title="{{ $flag->summary }}">{{ $flag->summary }}</p>
+                                    <p class="text-[11px] text-muted">{{ $flag->created_at?->diffForHumans() }}</p>
                                 </td>
-                                <td class="px-4 py-3">
+                                <td>
                                     @if ($flag->isCsam())
-                                        <span class="mb-1 inline-block rounded-full bg-red-600 px-2 py-0.5 text-xs font-bold text-white">CSAM — do not open, report</span>
+                                        <span class="chip bg-rose-600 text-white">CSAM: do not open, report</span>
                                     @endif
                                     <div class="flex flex-wrap gap-1">
                                         @foreach ($flag->signals ?? [] as $signal)
-                                            <span class="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-200">{{ $signal }}</span>
+                                            <span class="chip-amber">{{ str_replace('_', ' ', $signal) }}</span>
                                         @endforeach
                                     </div>
-                                    <p class="mt-1 text-xs text-gray-400">score {{ $flag->score }}</p>
+                                    <p class="mt-1 text-[11px] text-muted">score {{ $flag->score }}</p>
                                 </td>
-                                <td class="px-4 py-3">
-                                    <span class="rounded-full px-3 py-1 text-xs font-semibold {{ $flag->action === 'flagged' ? 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-200' }}">{{ ucfirst($flag->action) }}</span>
+                                <td class="whitespace-nowrap">
+                                    <span class="{{ $flag->action === 'flagged' ? 'chip-gray' : 'chip-red' }}">{{ ucfirst($flag->action) }}</span>
                                     @if ($flag->status === 'confirmed')
-                                        <span class="ml-1 text-xs text-emerald-600">confirmed</span>
+                                        <span class="chip-green">Confirmed</span>
                                     @endif
                                 </td>
-                                <td class="px-4 py-3 text-xs">
+                                <td class="hidden text-xs md:table-cell">
                                     @if ($flag->user)
-                                        <a href="{{ route('admin.users.inspect', $flag->user) }}" class="text-blue-600 hover:underline">{{ $flag->user->email }}</a>
-                                        <span class="block text-gray-400">{{ $flag->user->status }}</span>
+                                        <a href="{{ route('admin.users.inspect', $flag->user) }}" class="text-indigo-600 hover:underline dark:text-indigo-300">{{ $flag->user->email }}</a>
+                                        <span class="block text-muted">{{ $flag->user->status }}</span>
                                     @else
-                                        <span class="text-gray-400">guest</span>
+                                        <span class="text-muted">guest</span>
                                     @endif
                                 </td>
-                                <td class="px-4 py-3 text-right whitespace-nowrap">
-                                    @if ($flag->status === 'open')
-                                        <form method="POST" action="{{ route('admin.abuse.flags.confirm', $flag) }}" class="inline">
+                                <td class="whitespace-nowrap text-right">
+                                    <div class="inline-flex gap-1.5">
+                                        @if ($flag->status === 'open')
+                                            <form method="POST" action="{{ route('admin.abuse.flags.confirm', $flag) }}">
+                                                @csrf
+                                                <button class="btn-primary btn-sm">Confirm</button>
+                                            </form>
+                                        @endif
+                                        <form method="POST" action="{{ route('admin.abuse.flags.restore', $flag) }}" data-confirm="Restore this item and stop flagging it?">
                                             @csrf
-                                            <button class="rounded-full bg-slate-800 px-3 py-1 text-xs font-semibold text-white hover:bg-slate-700">Confirm</button>
+                                            <button class="btn-soft btn-sm">Restore</button>
                                         </form>
-                                    @endif
-                                    <form method="POST" action="{{ route('admin.abuse.flags.restore', $flag) }}" class="inline" data-confirm="Restore this item and stop flagging it?">
-                                        @csrf
-                                        <button class="rounded-full border border-gray-300 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800">Restore</button>
-                                    </form>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
-                </div>
-                <div class="mt-4">{{ $flags->links() }}</div>
-                @endif
             </div>
-            <div class="rounded-3xl border border-gray-100 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <h2 class="mb-3 text-lg font-semibold text-slate-900 dark:text-white">User reports</h2>
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800 text-sm">
-                    <thead class="text-left text-gray-500 dark:text-gray-300">
+            @if ($flags->hasPages())
+                <div class="border-t border-slate-500/10 px-4 py-3">{{ $flags->links() }}</div>
+            @endif
+        @endif
+    </section>
+
+    <section class="glass overflow-hidden rounded-2xl">
+        <div class="px-4 pb-2 pt-4">
+            <h2 class="section-title">Visitor reports</h2>
+        </div>
+        @if ($reports->isEmpty())
+            <p class="px-4 pb-8 pt-4 text-center text-sm text-muted">No reports yet.</p>
+        @else
+            <div class="overflow-x-auto">
+                <table class="table-glass">
+                    <thead>
                         <tr>
-                            <th class="px-4 py-3">Slug / URL</th>
-                            <th class="px-4 py-3">Reason</th>
-                            <th class="px-4 py-3">Status</th>
-                            <th class="px-4 py-3 text-right">Action</th>
+                            <th>Link</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th class="text-right">Update</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+                    <tbody>
                         @foreach ($reports as $report)
+                            @php $chip = ['open' => 'chip-red', 'investigating' => 'chip-amber', 'closed' => 'chip-gray'][$report->status] ?? 'chip-gray'; @endphp
                             <tr>
-                                <td class="px-4 py-3">
-                                    <p class="font-semibold">{{ $report->slug ?? 'n/a' }}</p>
-                                    <p class="text-xs text-gray-500 break-all">{{ $report->url }}</p>
-                                    <p class="text-xs text-gray-400">IP: {{ $report->ip_address }}</p>
+                                <td class="max-w-xs">
+                                    <p class="font-mono text-sm font-semibold text-ink">{{ $report->slug ? '/'.$report->slug : 'n/a' }}</p>
+                                    <p class="truncate text-xs text-muted" title="{{ $report->url }}">{{ $report->url }}</p>
+                                    <p class="text-[11px] text-muted">{{ $report->created_at?->diffForHumans() }} · {{ $report->ip_address }}</p>
                                 </td>
-                                <td class="px-4 py-3 text-gray-700 dark:text-gray-200">{{ $report->reason }}</td>
-                                <td class="px-4 py-3">
-                                    <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200">{{ ucfirst($report->status) }}</span>
-                                </td>
-                                <td class="px-4 py-3 text-right">
-                                    <form method="POST" action="{{ route('admin.abuse.update', $report) }}" class="inline-flex gap-2">
+                                <td class="max-w-sm text-sm text-ink">{{ \Illuminate\Support\Str::limit($report->reason, 160) }}</td>
+                                <td><span class="{{ $chip }}">{{ ucfirst($report->status) }}</span></td>
+                                <td class="text-right">
+                                    <form method="POST" action="{{ route('admin.abuse.update', $report) }}" class="inline-flex items-center gap-1.5">
                                         @csrf
                                         @method('PATCH')
-                                        <select name="status" class="rounded-full border-gray-200 bg-white px-3 py-1 text-xs dark:border-gray-700 dark:bg-gray-800 dark:text-white">
-                                            @foreach (['open','investigating','closed'] as $option)
+                                        <select name="status" aria-label="Report status" class="input !w-auto !py-1.5 text-xs">
+                                            @foreach (['open', 'investigating', 'closed'] as $option)
                                                 <option value="{{ $option }}" @selected($report->status === $option)>{{ ucfirst($option) }}</option>
                                             @endforeach
                                         </select>
-                                        <button class="rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white hover:bg-blue-500">Update</button>
+                                        <button class="btn-soft btn-sm">Save</button>
                                     </form>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
-                <div class="mt-4">
-                    {{ $reports->links() }}
-                </div>
             </div>
-        </div>
-    </div>
+            @if ($reports->hasPages())
+                <div class="border-t border-slate-500/10 px-4 py-3">{{ $reports->links() }}</div>
+            @endif
+        @endif
+    </section>
 </x-app-layout>

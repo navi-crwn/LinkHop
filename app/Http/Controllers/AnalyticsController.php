@@ -52,8 +52,19 @@ class AnalyticsController extends Controller
             ->mapWithKeys(fn ($row) => [
                 Carbon::parse($row->bucket)->format('H:i') => (int) $row->total,
             ]);
+        // Top links only ranks links that still work; expired/disabled ones are listed separately.
         $topLinks = $clicksQuery
             ->clone()
+            ->whereHas('link', fn ($q) => $q->live())
+            ->selectRaw('link_id, COUNT(*) as total')
+            ->groupBy('link_id')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->with('link')
+            ->get();
+        $endedLinks = $clicksQuery
+            ->clone()
+            ->whereHas('link', fn ($q) => $q->ended())
             ->selectRaw('link_id, COUNT(*) as total')
             ->groupBy('link_id')
             ->orderByDesc('total')
@@ -191,6 +202,7 @@ class AnalyticsController extends Controller
 
         return view('analytics', compact(
             'topLinks',
+            'endedLinks',
             'referers',
             'countries',
             'cities',

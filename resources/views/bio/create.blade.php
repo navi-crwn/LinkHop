@@ -1,15 +1,11 @@
 <x-app-layout>
-    <x-slot name="pageTitle">Create Link in Bio Page</x-slot>
-    <x-slot name="header">
-        <x-page-header title="Create Your Bio Page" subtitle="Share all your important links in one place">
-            <x-slot name="actions">
-                <a href="{{ route('bio.index') }}" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
-                    Back to Bio Pages
-                </a>
-            </x-slot>
-        </x-page-header>
-    </x-slot>
-    <div class="py-10" x-data="{ notification: { show: false, message: '', type: 'success' } }" @notify="notification.show = true; notification.message = $event.detail.message; notification.type = $event.detail.type || 'success'; setTimeout(() => notification.show = false, 3000)">
+    <x-slot name="pageTitle">HEL.ink - New bio page</x-slot>
+    <x-page-header title="New bio page" subtitle="Share all your important links from one page.">
+        <x-slot name="actions">
+            <a href="{{ route('bio.index') }}" class="btn-ghost btn-sm">All bio pages</a>
+        </x-slot>
+    </x-page-header>
+    <div x-data="{ notification: { show: false, message: '', type: 'success' } }" @notify="notification.show = true; notification.message = $event.detail.message; notification.type = $event.detail.type || 'success'; setTimeout(() => notification.show = false, 3000)">
         <!-- Notification Toast -->
         <div x-show="notification.show" x-transition 
              x-cloak
@@ -21,9 +17,9 @@
                 <span x-text="notification.message" class="font-medium"></span>
             </div>
         </div>
-        <div class="mx-auto max-w-6xl sm:px-6 lg:px-8">
-            <div class="grid gap-8 lg:grid-cols-2">
-                <div class="rounded-2xl border border-slate-200 bg-white p-8 dark:border-slate-800 dark:bg-slate-900">
+        <div>
+            <div class="grid items-start gap-3 lg:grid-cols-2">
+                <div class="glass-card !p-6">
                     <form action="{{ route('bio.store') }}" method="POST" x-data="slugChecker()">
                         @csrf
                         <input type="hidden" name="qr_settings" id="qr_settings_input">
@@ -42,14 +38,14 @@
                                         value="{{ old('slug') }}"
                                         placeholder="yourname"
                                         pattern="[a-zA-Z0-9]+"
-                                        minlength="3"
+                                        minlength="{{ auth()->user()->isAdmin() ? 3 : config('shortener.bio_slug_min_length', 5) }}"
                                         maxlength="20"
                                         x-model="slug"
                                         @input.debounce.500ms="checkSlug()"
                                         class="flex-1 rounded-lg border border-slate-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                                     >
                                 </div>
-                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Only letters and numbers (3-20 characters)</p>
+                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Only letters and numbers ({{ auth()->user()->isAdmin() ? 3 : config('shortener.bio_slug_min_length', 5) }}-20 characters)</p>
                                 <div class="mt-2 text-sm" x-show="checking">
                                     <span class="text-blue-600 dark:text-blue-400">Checking availability...</span>
                                 </div>
@@ -57,7 +53,7 @@
                                     <span class="text-green-600 dark:text-green-400">✓ Available!</span>
                                 </div>
                                 <div class="mt-2 text-sm" x-show="!checking && available === false" x-cloak>
-                                    <span class="text-red-600 dark:text-red-400">✗ Already taken</span>
+                                    <span class="text-red-600 dark:text-red-400" x-text="'✗ ' + (message || 'Already taken')">✗ Already taken</span>
                                 </div>
                                 @error('slug')
                                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -106,14 +102,14 @@
                             <button 
                                 type="submit" 
                                 :disabled="available === false"
-                                class="rounded-lg bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700 disabled:bg-slate-400 disabled:cursor-not-allowed transition-all"
+                                class="btn-primary disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 Create Bio Page
                             </button>
                         </div>
                     </form>
                 </div>
-                <div class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+                <div class="glass-card !p-6 lg:sticky lg:top-24">
                     <h2 class="mb-4 text-lg font-semibold text-slate-900 dark:text-white">QR Code Preview</h2>
                     <div x-data="qrGenerator()">
                         <div class="relative flex items-center justify-center rounded-lg bg-slate-50 p-4 dark:bg-slate-800 mb-4">
@@ -309,8 +305,9 @@
                 slug: '',
                 checking: false,
                 available: null,
+                message: '',
                 checkSlug() {
-                    if (this.slug.length < 3) {
+                    if (this.slug.length < {{ auth()->user()->isAdmin() ? 3 : (int) config('shortener.bio_slug_min_length', 5) }}) {
                         this.available = null;
                         return;
                     }
@@ -319,6 +316,7 @@
                         .then(response => response.json())
                         .then(data => {
                             this.available = data.available;
+                            this.message = data.message || '';
                             this.checking = false;
                             if (data.available) {
                                 window.dispatchEvent(new CustomEvent('slug-available', { 
