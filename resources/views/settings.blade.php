@@ -119,7 +119,7 @@
                             <div class="flex items-start md:col-span-2 md:justify-end">
                                 <button type="button" @click="showModal = true; $nextTick(() => startCountdown())" class="btn-danger btn-sm">Delete my account</button>
                             </div>
-                            <div x-show="showModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-sm" @click.self="showModal = false; password = ''">
+                            <div x-show="showModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-xs" @click.self="showModal = false; password = ''">
                                 <div class="glass-strong w-full max-w-md rounded-2xl p-5">
                                     <h3 class="text-base font-semibold text-rose-600 dark:text-rose-400">Delete account</h3>
                                     <p class="mt-1 text-sm text-muted">This is <strong class="text-ink">permanent</strong>. All your links, folders, tags and analytics are deleted.</p>

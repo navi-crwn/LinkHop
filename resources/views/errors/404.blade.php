@@ -12,7 +12,7 @@
             body {font-family: 'Inter', sans-serif;}
         </style>
     </head>
-    <body class="min-h-full bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+    <body class="min-h-full bg-linear-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
         <div class="flex min-h-screen flex-col items-center justify-center px-6 text-center">
             <div class="flex flex-col items-center">
                 <img src="{{ route('brand.logo') }}" alt="HEL.ink logo" class="h-16 w-16 rounded-full shadow-lg">
