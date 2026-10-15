@@ -30,6 +30,7 @@ use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\PixelHopSsoController;
 use App\Http\Controllers\TwoFactorController;
 use App\Support\CspReport;
 use Illuminate\Http\Request;
@@ -74,6 +75,8 @@ Route::middleware('ip.ban')->group(function () {
         Route::post('/two-factor-challenge', [TwoFactorController::class, 'verify'])->middleware('throttle:5,1,two-factor')->name('two-factor.verify');
     });
     Route::middleware(['auth', '2fa'])->group(function () {
+        Route::get('/sso/pixelhop', [PixelHopSsoController::class, 'ticket'])->middleware('throttle:30,1,pixelhop-sso')->name('sso.pixelhop');
+        Route::get('/images', [PixelHopSsoController::class, 'open'])->name('images.open');
         Route::get('/dashboard', [LinkController::class, 'index'])->name('dashboard');
         Route::get('/links', [LinkController::class, 'myLinks'])->name('links.index');
         Route::get('/analytics', AnalyticsController::class)->name('analytics');

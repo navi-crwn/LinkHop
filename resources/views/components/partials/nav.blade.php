@@ -9,7 +9,10 @@
         'shield' => 'M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6l-8-3Z',
         'flag' => 'M5 21V4m0 0h11l-1.5 4L16 12H5',
         'globe' => 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0c2.5-2.5 3.5-5.5 3.5-9S14.5 5.5 12 3m0 18c-2.5-2.5-3.5-5.5-3.5-9S9.5 5.5 12 3M3.5 9h17m-17 6h17',
+        'image' => 'M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm4.5 6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM21 15l-5-5-9 9',
     ];
+    // Image hosting lives in PixelHop (p.hel.ink), signed in with this account.
+    $images = config('services.pixelhop.url') ? [['label' => 'Images', 'icon' => 'image', 'route' => 'images.open', 'active' => 'images.open']] : [];
     if ($isAdmin) {
         $groups = [
             ['label' => 'Dashboard', 'icon' => 'home', 'route' => 'dashboard', 'active' => 'dashboard'],
@@ -28,6 +31,7 @@
                 ['label' => 'Monitor', 'route' => 'admin.bio.monitor', 'active' => 'admin.bio.monitor'],
                 ['label' => 'My bio pages', 'route' => 'bio.index', 'active' => 'bio*'],
             ]],
+            ...$images,
             ['label' => 'Abuse', 'icon' => 'flag', 'route' => 'admin.abuse.index', 'active' => 'admin.abuse*', 'badge' => $abuseCount],
             ['label' => 'Security', 'icon' => 'shield', 'active' => ['admin.users*', 'admin.ip-*', 'admin.domain-*', 'admin.geoip*', 'admin.proxy*'], 'children' => [
                 ['label' => 'Users', 'route' => 'admin.users.index', 'active' => 'admin.users*'],
@@ -50,6 +54,7 @@
                 ['label' => 'Tags', 'route' => 'tags.index', 'active' => 'tags*'],
             ]],
             ['label' => 'Link in Bio', 'icon' => 'bio', 'route' => 'bio.index', 'active' => 'bio*'],
+            ...$images,
             ['label' => 'Settings', 'icon' => 'settings', 'route' => 'settings', 'active' => 'settings'],
         ];
     }

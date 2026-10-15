@@ -18,6 +18,11 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    // PixelHop image hosting (p.hel.ink) signs in with HEL.ink accounts.
+    'pixelhop' => [
+        'url' => env('PIXELHOP_URL'),
+        'sso_secret' => env('PIXELHOP_SSO_SECRET'),
+    ],
     'turnstile' => [
         'site_key' => env('TURNSTILE_SITE_KEY'),
         'secret' => env('TURNSTILE_SECRET_KEY'),
