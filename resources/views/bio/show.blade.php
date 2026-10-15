@@ -96,7 +96,7 @@
         $fontName = str_replace(' ', '+', trim(explode(',', $fontFamily)[0], "' "));
         $fontQuery = collect(explode('&', 'family=DM+Sans:wght@400;500;700&family=Inter:wght@400;500;600;700&family=Lato:wght@400;700&family=Lexend:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Merriweather:wght@400;700&family=Montserrat:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&family=Raleway:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Source+Sans+Pro:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Ubuntu:wght@400;500;700&family=Work+Sans:wght@400;500;600;700'))
             ->first(fn ($family) => str_starts_with($family, "family={$fontName}:"));
-        $blockShape = match($bioPage->block_shape ?? 'rounded') {
+        $blockShape = match($bioPage->block_shape ?? 'rounded-sm') {
             'square' => 'border-radius: 0;',
             'pill' => 'border-radius: 9999px;',
             default => 'border-radius: 0.75rem;'
@@ -335,10 +335,10 @@
         .shadow-none .countdown-block {
             box-shadow: none !important;
         }
-        .shadow-sm .link-block,
-        .shadow-sm .text-block-styled,
-        .shadow-sm .image-block,
-        .shadow-sm .countdown-block {
+        .shadow-xs .link-block,
+        .shadow-xs .text-block-styled,
+        .shadow-xs .image-block,
+        .shadow-xs .countdown-block {
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important;
         }
         .shadow-md .link-block,
@@ -592,13 +592,13 @@
 <body class="bio-container {{ $hoverEffect && $hoverEffect !== 'none' ? 'hover-' . $hoverEffect : '' }}" data-theme="{{ $bioPage->theme }}" data-bg-animation="{{ $bgAnimation }}">
     <div class="bg-animation-container" id="bg-animation"></div>
     <button aria-label="Share this page" data-show="#share-modal" 
-            class="fixed top-4 right-4 z-40 w-10 h-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center hover:bg-white dark:hover:bg-slate-700 transition-all">
+            class="fixed top-4 right-4 z-40 w-10 h-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xs rounded-full shadow-lg flex items-center justify-center hover:bg-white dark:hover:bg-slate-700 transition-all">
         <svg class="w-5 h-5 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
         </svg>
     </button>
     <div id="share-modal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index: 999999;" data-hide-self-on-backdrop>
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-xs"></div>
         <div class="share-modal-content relative rounded-2xl p-4 max-w-xs w-full shadow-2xl" style="background: {{ $isDarkTheme ? '#1e293b' : '#ffffff' }}; color: {{ $isDarkTheme ? '#f1f5f9' : '#1e293b' }}; max-height: 90vh; overflow-y: auto;">
             <div class="flex items-center justify-between mb-3">
                 <h3 class="text-base font-semibold" style="color: {{ $isDarkTheme ? '#f1f5f9' : '#1e293b' }};">Share this Page</h3>
@@ -607,9 +607,9 @@
                 </button>
             </div>
             <div class="flex items-center gap-2 p-2 rounded-lg mb-3" style="background: {{ $isDarkTheme ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }};">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: {{ $isDarkTheme ? '#94a3b8' : '#64748b' }};"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
-                <input type="text" value="{{ url()->current() }}" readonly class="flex-1 bg-transparent border-none text-xs focus:outline-none min-w-0" style="color: {{ $isDarkTheme ? '#e2e8f0' : '#334155' }};" id="share-url">
-                <button data-copy-from="#share-url" class="px-2 py-1 text-xs font-medium rounded-md transition-colors flex-shrink-0" style="background: #3b82f6; color: #ffffff;">Copy</button>
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: {{ $isDarkTheme ? '#94a3b8' : '#64748b' }};"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                <input type="text" value="{{ url()->current() }}" readonly class="flex-1 bg-transparent border-none text-xs focus:outline-hidden min-w-0" style="color: {{ $isDarkTheme ? '#e2e8f0' : '#334155' }};" id="share-url">
+                <button data-copy-from="#share-url" class="px-2 py-1 text-xs font-medium rounded-md transition-colors shrink-0" style="background: #3b82f6; color: #ffffff;">Copy</button>
             </div>
             <div class="grid grid-cols-4 gap-2 mb-3">
                 <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->current()) }}" target="_blank" class="flex flex-col items-center gap-1 p-2 rounded-lg transition-colors hover:bg-black/5" title="Facebook">
@@ -640,7 +640,7 @@
             <div class="border-t pt-3" style="border-color: {{ $isDarkTheme ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' }};">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-medium" style="color: {{ $isDarkTheme ? '#94a3b8' : '#64748b' }};">QR Code</span>
-                    <button data-call="downloadShareQR" class="px-2 py-1 text-[10px] font-medium rounded transition-colors flex items-center gap-1" style="background: {{ $isDarkTheme ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }}; color: {{ $isDarkTheme ? '#e2e8f0' : '#334155' }};">
+                    <button data-call="downloadShareQR" class="px-2 py-1 text-[10px] font-medium rounded-sm transition-colors flex items-center gap-1" style="background: {{ $isDarkTheme ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }}; color: {{ $isDarkTheme ? '#e2e8f0' : '#334155' }};">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                         Save
                     </button>
@@ -668,10 +668,10 @@
                         <img src="{{ Storage::disk('public')->url($bioPage->avatar_url) }}" 
                              alt="{{ $bioPage->title }}" 
                              class="bio-avatar mx-auto mb-4 h-24 w-24 object-cover" width="96" height="96" fetchpriority="high"
-                             style="border-radius: {{ $bioPage->avatar_shape === 'rounded' ? '16px' : ($bioPage->avatar_shape === 'square' ? '0' : '50%') }};">
+                             style="border-radius: {{ $bioPage->avatar_shape === 'rounded-sm' ? '16px' : ($bioPage->avatar_shape === 'square' ? '0' : '50%') }};">
                     @else
-                        <div class="bio-avatar mx-auto mb-4 flex h-24 w-24 items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-3xl font-bold text-white"
-                             style="border-radius: {{ $bioPage->avatar_shape === 'rounded' ? '16px' : ($bioPage->avatar_shape === 'square' ? '0' : '50%') }};">
+                        <div class="bio-avatar mx-auto mb-4 flex h-24 w-24 items-center justify-center bg-linear-to-br from-blue-500 to-indigo-600 text-3xl font-bold text-white"
+                             style="border-radius: {{ $bioPage->avatar_shape === 'rounded-sm' ? '16px' : ($bioPage->avatar_shape === 'square' ? '0' : '50%') }};">
                             {{ substr($bioPage->title, 0, 1) }}
                         </div>
                     @endif
@@ -725,7 +725,7 @@
                         @endforeach
                     </div>
                 @endif
-                <div class="mt-8 flex-grow blocks-container shape-{{ $bioPage->block_shape ?? 'rounded' }} shadow-{{ $bioPage->block_shadow ?? 'md' }}">
+                <div class="mt-8 grow blocks-container shape-{{ $bioPage->block_shape ?? 'rounded-sm' }} shadow-{{ $bioPage->block_shadow ?? 'md' }}">
                     @forelse($bioPage->links->where('is_active', true)->sortBy('order') as $link)
                         @if($link->type === 'link')
                             @php
@@ -1040,7 +1040,7 @@ END:VCARD`;
         const qrSettings = @json($bioPage->qr_settings ?? []);
         const qrColor = qrSettings.dotsOptions?.color || qrSettings.color || '#000000';
         const qrBgColor = qrSettings.backgroundOptions?.color || qrSettings.bg_color || '#ffffff';
-        const qrDotStyle = qrSettings.dotsOptions?.type || qrSettings.dot_style || 'rounded';
+        const qrDotStyle = qrSettings.dotsOptions?.type || qrSettings.dot_style || 'rounded-sm';
         const qrCornerSquareType = qrSettings.cornersSquareOptions?.type || qrSettings.corner_style || 'extra-rounded';
         const qrCornerSquareColor = qrSettings.cornersSquareOptions?.color || qrColor;
         const qrCornerDotType = qrSettings.cornersDotOptions?.type || (qrCornerSquareType === 'extra-rounded' ? 'dot' : qrCornerSquareType);

@@ -81,7 +81,7 @@
             <div class="stat">
                 <p class="stat-label">Top country</p>
                 <div class="mt-0.5 flex items-center gap-2">
-                    @if ($topCountryCode)<span class="[&_img]:rounded-sm">{!! country_flag($topCountryCode) !!}</span>@endif
+                    @if ($topCountryCode)<span class="[&_img]:rounded-xs">{!! country_flag($topCountryCode) !!}</span>@endif
                     <p class="stat-value truncate">{{ $topCountryCode ? country_name($topCountryCode) : '—' }}</p>
                 </div>
             </div>
@@ -111,8 +111,8 @@
         {{-- Geography: map + one ranked list (countries / cities / regions) --}}
         <section class="glass grid overflow-hidden rounded-2xl lg:grid-cols-5">
             <div class="relative lg:col-span-3">
-                <div id="world-map" class="h-64 w-full sm:h-80 lg:h-full lg:min-h-[22rem]"></div>
-                <div class="glass-strong pointer-events-none absolute bottom-3 left-3 z-[400] rounded-xl px-3 py-2">
+                <div id="world-map" class="h-64 w-full sm:h-80 lg:h-full lg:min-h-88"></div>
+                <div class="glass-strong pointer-events-none absolute bottom-3 left-3 z-400 rounded-xl px-3 py-2">
                     <p id="map-country-name" class="text-xs font-semibold text-ink">Tap a country</p>
                     <p id="map-country-clicks" class="text-[11px] text-muted">—</p>
                 </div>
@@ -214,7 +214,7 @@
                     <tbody>
                         @forelse ($recentIps as $hit)
                             <tr>
-                                <td class="text-ink"><span class="inline-flex items-center gap-2 [&_img]:rounded-sm">{!! country_flag($hit->country) !!} {{ country_name($hit->country) }}</span></td>
+                                <td class="text-ink"><span class="inline-flex items-center gap-2 [&_img]:rounded-xs">{!! country_flag($hit->country) !!} {{ country_name($hit->country) }}</span></td>
                                 <td class="text-right text-xs text-muted">{{ \Carbon\Carbon::parse($hit->created_at)->diffForHumans() }}</td>
                             </tr>
                         @empty
