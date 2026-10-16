@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
 class PixelHopSsoTest extends TestCase
@@ -90,7 +91,7 @@ class PixelHopSsoTest extends TestCase
     public function test_new_account_from_pixelhop_goes_back_after_verifying(): void
     {
         $user = User::factory()->unverified()->create();
-        $url = \Illuminate\Support\Facades\URL::temporarySignedRoute('verification.verify', now()->addHour(),
+        $url = URL::temporarySignedRoute('verification.verify', now()->addHour(),
             ['id' => $user->id, 'hash' => sha1($user->email)]);
         $res = $this->actingAs($user)->withSession(['2fa_verified' => true, 'url.intended' => 'https://hel.example.com'.$this->authorizeUrl()])->get($url);
         $res->assertRedirect(route('images.open', ['to' => 'upload']));
