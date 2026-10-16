@@ -63,13 +63,39 @@ class PixelHopSsoController extends Controller
         return redirect()->away($returnTo.'?'.http_build_query(['ticket' => $ticket]));
     }
 
-    /** The "Images" item in the dashboard menu: open PixelHop, signed in. */
-    public function open(): RedirectResponse
+    /**
+     * The "Images" item in the dashboard menu: open PixelHop, signed in.
+     * ?to=upload lands on PixelHop's upload page instead of the gallery.
+     */
+    public function open(Request $request): RedirectResponse
     {
         $base = $this->baseUrl();
         abort_if($base === null, 404);
+        $next = $request->query('to') === 'upload' ? '%2F' : '%2Fdashboard';
 
-        return redirect()->away($base.'/auth/helink?next=%2Fdashboard');
+        return redirect()->away($base.'/auth/helink?next='.$next);
+    }
+
+    /**
+     * True when the visitor came from PixelHop's "Sign in" and hasn't gone
+     * back yet (Laravel keeps that address as the "intended" URL while they
+     * register, verify their email or finish onboarding).
+     */
+    public static function cameFromPixelHop(Request $request): bool
+    {
+        return str_contains((string) $request->session()->get('url.intended', ''), '/sso/pixelhop');
+    }
+
+    /**
+     * Where to send someone who signed up on their way to PixelHop. A fresh
+     * sign-in round trip is used instead of the old ticket URL, whose state
+     * cookie on PixelHop may have expired while they read the email.
+     */
+    public static function continueToPixelHop(Request $request): RedirectResponse
+    {
+        $request->session()->forget('url.intended');
+
+        return redirect()->route('images.open', ['to' => 'upload']);
     }
 
     private function baseUrl(): ?string
