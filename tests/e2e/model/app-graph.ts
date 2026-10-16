@@ -50,9 +50,13 @@ async function nav(page: Page, path: string) {
   if (await link.isVisible().catch(() => false)) {
     await link.click();
     // The bio editor asks before leaving with unsaved changes; a person confirms.
+    // isVisible() looks only once (its timeout is ignored), so wait for either the
+    // new page or the dialog, whichever comes first.
+    const arrived = page.waitForURL(u => u.pathname.endsWith(path), { waitUntil: 'domcontentloaded' });
     const discard = page.getByRole('button', { name: 'Discard Changes' });
-    if (await discard.isVisible({ timeout: 500 }).catch(() => false)) await discard.click();
-    await page.waitForURL(u => u.pathname.endsWith(path), { waitUntil: 'domcontentloaded' });
+    const confirmed = discard.waitFor({ state: 'visible' }).then(() => discard.click()).catch(() => {});
+    await Promise.race([arrived, confirmed]);
+    await arrived;
   } else {
     await page.goto(path);
   }
