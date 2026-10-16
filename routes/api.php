@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\LinkController;
+use App\Http\Controllers\Api\PixelHopAccountController;
 use App\Http\Controllers\Api\ShortenController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,4 +26,9 @@ Route::middleware(['web', 'auth', '2fa'])->group(function () {
     Route::post('/bio/shorten', [LinkController::class, 'shortenForBio'])->middleware(['verified', 'throttle:shorten', 'quota']);
     // Utility to fetch title from URL
     Route::post('/utils/fetch-title', [LinkController::class, 'fetchTitle']);
+});
+// PixelHop's own sign-in/sign-up forms use HEL.ink accounts (signed server-to-server calls).
+Route::middleware('throttle:60,1,pixelhop-account')->group(function () {
+    Route::post('/pixelhop/login', [PixelHopAccountController::class, 'login']);
+    Route::post('/pixelhop/register', [PixelHopAccountController::class, 'register']);
 });
