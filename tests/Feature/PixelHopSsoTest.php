@@ -86,4 +86,24 @@ class PixelHopSsoTest extends TestCase
         $this->actingAs($user)->withSession(['2fa_verified' => true])->get('/pixelhop')
             ->assertRedirect('https://p.example.com/auth/helink?next=%2Fdashboard');
     }
+
+    public function test_new_account_from_pixelhop_goes_back_after_verifying(): void
+    {
+        $user = User::factory()->unverified()->create();
+        $url = \Illuminate\Support\Facades\URL::temporarySignedRoute('verification.verify', now()->addHour(),
+            ['id' => $user->id, 'hash' => sha1($user->email)]);
+        $res = $this->actingAs($user)->withSession(['2fa_verified' => true, 'url.intended' => 'https://hel.example.com'.$this->authorizeUrl()])->get($url);
+        $res->assertRedirect(route('images.open', ['to' => 'upload']));
+        $this->get(route('images.open', ['to' => 'upload']))->assertRedirect('https://p.example.com/auth/helink?next=%2F');
+    }
+
+    public function test_onboarding_offers_the_way_back_to_pixelhop(): void
+    {
+        $this->withoutVite();
+        $user = User::factory()->create(['email_verified_at' => now()]);
+        $this->actingAs($user)->withSession(['2fa_verified' => true, 'url.intended' => 'https://hel.example.com'.$this->authorizeUrl()])
+            ->get('/onboarding')->assertSee('Continue to PixelHop');
+        $this->flushSession();
+        $this->actingAs($user)->withSession(['2fa_verified' => true])->get('/onboarding')->assertDontSee('Continue to PixelHop');
+    }
 }
