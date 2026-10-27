@@ -18,10 +18,16 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-    // PixelHop image hosting (p.hel.ink) signs in with HEL.ink accounts.
+    // HEL.ink apps that sign in with HEL.ink accounts (AppSsoController).
+    // PixelHop: image hosting (p.hel.ink).
     'pixelhop' => [
         'url' => env('PIXELHOP_URL'),
         'sso_secret' => env('PIXELHOP_SSO_SECRET'),
+    ],
+    // NoteHop: encrypted notes (note.hel.ink).
+    'notehop' => [
+        'url' => env('NOTEHOP_URL'),
+        'sso_secret' => env('NOTEHOP_SSO_SECRET'),
     ],
     'turnstile' => [
         'site_key' => env('TURNSTILE_SITE_KEY'),
