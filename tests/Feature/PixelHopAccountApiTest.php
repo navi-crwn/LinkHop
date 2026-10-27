@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\HopApp;
 use App\Models\IpBan;
 use App\Models\IpWatchlist;
 use App\Models\LoginHistory;
@@ -21,7 +22,7 @@ class PixelHopAccountApiTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        config(['services.pixelhop.url' => 'https://p.example.com', 'services.pixelhop.sso_secret' => self::SECRET]);
+        HopApp::factory()->pixelhop(self::SECRET)->create();
         Mail::fake();
         Notification::fake();
     }

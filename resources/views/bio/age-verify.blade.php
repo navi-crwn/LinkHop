@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HEL.ink - Age Verification</title>
+    <title>LinkHop - Age Verification</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" href="{{ route('brand.favicon') }}">
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -218,7 +218,7 @@
         <div class="card">
             <div class="logo-container">
                 <a href="{{ url('/') }}" class="logo">
-                    <img src="{{ route('brand.logo') }}" alt="HEL.ink">
+                    <img src="{{ route('brand.logo') }}" alt="LinkHop">
                     HEL<span class="logo-dot">.</span>ink
                 </a>
             </div>
@@ -256,7 +256,7 @@
             </p>
         </div>
         <div class="branding">
-            <p>Powered by <a href="{{ url('/') }}">HEL.ink</a></p>
+            <p>Powered by <a href="{{ url('/') }}">LinkHop</a></p>
         </div>
     </div>
 </body>

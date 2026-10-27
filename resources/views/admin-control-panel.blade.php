@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - Admin Control Panel</x-slot>
+    <x-slot name="pageTitle">LinkHop - Admin Control Panel</x-slot>
     @php
         $s = $adminStats;
         $heartbeat = $s['queue_heartbeat'] ? \Illuminate\Support\Carbon::parse($s['queue_heartbeat']) : null;

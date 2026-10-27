@@ -6,13 +6,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $bioPage->seo_title ?? $bioPage->title }} | By HEL.ink</title>
+    <title>{{ $bioPage->seo_title ?? $bioPage->title }} | By LinkHop</title>
     <meta name="description" content="{{ $bioPage->seo_description ?? $bioPage->bio ?? 'Check out my links' }}">
     @if(!($bioPage->allow_indexing ?? true))
         <meta name="robots" content="noindex, nofollow">
     @endif
     <link rel="icon" href="{{ route('brand.favicon') }}">
-    <meta property="og:title" content="{{ $bioPage->seo_title ?? $bioPage->title }} | By HEL.ink">
+    <meta property="og:title" content="{{ $bioPage->seo_title ?? $bioPage->title }} | By LinkHop">
     <meta property="og:description" content="{{ $bioPage->seo_description ?? $bioPage->bio ?? 'Check out my links' }}">
     @if($bioPage->avatar_url)
         <meta property="og:image" content="{{ Storage::disk('public')->url($bioPage->avatar_url) }}">
@@ -988,7 +988,7 @@
                         <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                         </svg>
-                        Powered by HEL.ink
+                        Powered by LinkHop
                     </a>
                 </div>
             </div>

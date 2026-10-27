@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - Abuse</x-slot>
+    <x-slot name="pageTitle">LinkHop - Abuse</x-slot>
     @php
         $lastAt = isset($lastRun['at']) ? \Illuminate\Support\Carbon::parse($lastRun['at']) : null;
         // Hourly schedule: more than 3h without a run means the scheduler is not running.

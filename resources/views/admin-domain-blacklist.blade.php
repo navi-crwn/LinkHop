@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - Domain blacklist</x-slot>
+    <x-slot name="pageTitle">LinkHop - Domain blacklist</x-slot>
     @php
         $categoryChip = ['phishing' => 'chip-red', 'malware' => 'chip-red', 'scam' => 'chip-amber', 'porn' => 'chip-amber', 'spam' => 'chip-gray'];
     @endphp

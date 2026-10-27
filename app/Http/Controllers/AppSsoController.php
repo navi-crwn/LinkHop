@@ -2,60 +2,35 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HopApp;
 use App\Models\User;
+use App\Services\LoginRecorder;
+use App\Support\HopSignature;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 /**
- * One HEL.ink account for every HEL.ink app.
+ * One HOP ID for every app in the HOP family.
  *
- * The apps (PixelHop at p.hel.ink, NoteHop at note.hel.ink) have no sign-in
- * of their own: they send the visitor here, HEL.ink signs them in as usual
- * (password, Google, 2FA, Turnstile, email verification, password reset all
- * live here), and this controller hands back a short-lived signed ticket that
- * the app verifies with its own shared secret.
+ * The apps (rows in `apps`: PixelHop, NoteHop, …) have no sign-in of their
+ * own: they send the visitor here, HOP ID signs them in as usual (password,
+ * Google, 2FA, Turnstile, email verification, password reset all live here),
+ * and this controller hands back a short-lived signed ticket that the app
+ * verifies with its own shared secret.
  *
  * Ticket: base64url(json payload) "." base64url(HMAC-SHA256(secret, first part)).
  * It expires after two minutes, names the app it is for (aud) and carries the
  * state the app sent, which the app matches against a cookie, so a ticket
  * can't be replayed elsewhere. Each app has its own secret, so a ticket for
- * one app is useless at another.
+ * one app is useless at another. Version 2 adds the HOP profile (username,
+ * roles, profile_version, …); the v1 fields are unchanged.
  */
 class AppSsoController extends Controller
 {
-    private const TICKET_TTL = 120;
-
-    /**
-     * The apps: where their settings live, where tickets go, where a fresh
-     * sign-in round trip starts, and the pages "open" can land on.
-     */
-    private const APPS = [
-        'pixelhop' => [
-            'name' => 'PixelHop',
-            'config' => 'services.pixelhop',
-            'callback' => '/auth/helink/callback',
-            'start' => '/auth/helink',
-            'pages' => ['default' => '/dashboard', 'upload' => '/'],
-            'continue' => 'upload',
-            'route' => 'images.open',
-            'ticket' => 'sso.pixelhop',
-        ],
-        'notehop' => [
-            'name' => 'NoteHop',
-            'config' => 'services.notehop',
-            'callback' => '/auth/sso/callback',
-            'start' => '/auth/sso',
-            'pages' => ['default' => '/dashboard', 'new' => '/'],
-            'continue' => 'default',
-            'route' => 'notes.open',
-            'ticket' => 'sso.notehop',
-        ],
-    ];
-
     /** GET /sso/{app}: sign the current user in to the app. */
     public function ticket(Request $request, string $app): RedirectResponse
     {
-        [$state, $returnTo, $secret] = $this->checked($request, $app);
+        [$hopApp, $state, $returnTo] = $this->checked($request, $app);
 
         /** @var User $user */
         $user = $request->user();
@@ -66,22 +41,23 @@ class AppSsoController extends Controller
         if (! $user->hasVerifiedEmail() && ! $user->google_id) {
             return redirect()->route('verification.notice');
         }
+        if ($hopApp->status === HopApp::STATUS_MAINTENANCE) {
+            return redirect()->route('dashboard')->with('error', $hopApp->name.' is under maintenance right now. Please try again later.');
+        }
 
         $now = time();
-        $payload = [
-            'sub' => (string) $user->id,
-            'aud' => $app,
-            'email' => $user->email,
-            'name' => $user->name,
-            'avatar' => $user->avatar ?: '',
-            'admin' => $user->isSuperAdmin(),
+        $payload = $user->hopProfile() + [
+            'aud' => $hopApp->slug,
+            'admin' => $user->isAdminOf($hopApp->slug),
             'state' => $state,
             'iat' => $now,
-            'exp' => $now + self::TICKET_TTL,
+            'exp' => $now + (int) config('hop.ticket_ttl', 120),
             'jti' => bin2hex(random_bytes(16)),
+            'v' => 2,
         ];
-        $body = self::b64(json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
-        $ticket = $body.'.'.self::b64(hash_hmac('sha256', $body, $secret, true));
+        $body = HopSignature::b64(json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+        $ticket = $body.'.'.HopSignature::b64(hash_hmac('sha256', $body, $hopApp->secrets()[0], true));
+        app(LoginRecorder::class)->record($user, $request->ip(), $request->userAgent(), $hopApp->name);
 
         return redirect()->away($returnTo.'?'.http_build_query(['ticket' => $ticket]));
     }
@@ -91,13 +67,13 @@ class AppSsoController extends Controller
      * in already: straight on to the ticket. Otherwise Google first (new
      * accounts are made on the spot, Google has verified the address), then
      * back to the ticket step through Laravel's intended URL, so the visitor
-     * ends up in the app and not on HEL.ink's dashboard or onboarding.
+     * ends up in the app and not on the dashboard or onboarding.
      */
     public function viaGoogle(Request $request, string $app): RedirectResponse
     {
-        [$state, $returnTo] = $this->checked($request, $app);
+        [$hopApp, $state, $returnTo] = $this->checked($request, $app);
         abort_if(! config('services.google.client_id'), 404);
-        $ticket = route(self::APPS[$app]['ticket'], ['state' => $state, 'return_to' => $returnTo]);
+        $ticket = route('sso.ticket', ['app' => $hopApp->slug, 'state' => $state, 'return_to' => $returnTo]);
         if ($request->user()) {
             return redirect()->to($ticket);
         }
@@ -107,36 +83,33 @@ class AppSsoController extends Controller
     }
 
     /**
-     * The state and return address an app sent, checked, and its secret.
+     * The app, and the state and return address it sent, checked.
      *
-     * @return array{string, string, string}
+     * @return array{HopApp, string, string}
      */
-    private function checked(Request $request, string $app): array
+    private function checked(Request $request, string $slug): array
     {
-        $base = self::baseUrl($app);
-        $secret = (string) config(self::APPS[$app]['config'].'.sso_secret');
-        abort_if($base === null || strlen($secret) < 32, 404);
+        $app = HopApp::find_($slug);
+        abort_if(! $app || ! $app->isConfigured(), 404);
         $state = (string) $request->query('state', '');
         $returnTo = (string) $request->query('return_to', '');
         abort_unless(preg_match('/^[A-Za-z0-9_-]{16,128}$/', $state) === 1, 400, 'Invalid state.');
         // Only ever send tickets to the app's own callback.
-        abort_unless($returnTo === $base.self::APPS[$app]['callback'], 400, 'Invalid return address.');
+        abort_unless($returnTo === $app->callbackUrl(), 400, 'Invalid return address.');
 
-        return [$state, $returnTo, $secret];
+        return [$app, $state, $returnTo];
     }
 
     /**
      * Menu items ("Images", "Notes"): open the app, signed in. ?to= picks one
-     * of the app's pages; anything else lands on its dashboard.
+     * of the app's pages; anything else lands on its default page.
      */
     public function open(Request $request, string $app): RedirectResponse
     {
-        $base = self::baseUrl($app);
-        abort_if($base === null, 404);
-        $pages = self::APPS[$app]['pages'];
-        $page = $pages[(string) $request->query('to')] ?? $pages['default'];
+        $hopApp = HopApp::find_($app);
+        abort_if(! $hopApp || ! $hopApp->isConfigured(), 404);
 
-        return redirect()->away($base.self::APPS[$app]['start'].'?next='.rawurlencode($page));
+        return redirect()->away($hopApp->baseUrl().$hopApp->start_path.'?next='.rawurlencode($hopApp->page($request->query('to'))));
     }
 
     /**
@@ -144,16 +117,15 @@ class AppSsoController extends Controller
      * their email or finish onboarding (Laravel keeps the /sso/{app} address
      * as the "intended" URL meanwhile), or null.
      */
-    public static function cameFrom(Request $request): ?string
+    public static function cameFrom(Request $request): ?HopApp
     {
         $intended = (string) $request->session()->get('url.intended', '');
-        foreach (array_keys(self::APPS) as $app) {
-            if (str_contains($intended, '/sso/'.$app) && self::baseUrl($app) !== null) {
-                return $app;
-            }
+        if (preg_match('#/sso/([a-z0-9-]{1,32})(?:[/?]|$)#', $intended, $m) !== 1) {
+            return null;
         }
+        $app = HopApp::find_($m[1]);
 
-        return null;
+        return $app && $app->isConfigured() ? $app : null;
     }
 
     /**
@@ -161,23 +133,17 @@ class AppSsoController extends Controller
      * sign-in round trip is used instead of the old ticket URL, whose state
      * cookie in the app may have expired while they read the email.
      */
-    public static function continueTo(Request $request, string $app): RedirectResponse
+    public static function continueTo(Request $request, HopApp $app): RedirectResponse
     {
         $request->session()->forget('url.intended');
 
         return redirect()->to(self::continueUrl($app));
     }
 
-    /** The app's display name ("Continue to NoteHop"). */
-    public static function name(string $app): string
-    {
-        return self::APPS[$app]['name'];
-    }
-
     /** The continue link for an app, for views. */
-    public static function continueUrl(string $app): string
+    public static function continueUrl(HopApp $app): string
     {
-        return route(self::APPS[$app]['route'], ['to' => self::APPS[$app]['continue']]);
+        return route('apps.open', ['app' => $app->slug, 'to' => $app->continue_page]);
     }
 
     /**
@@ -190,26 +156,27 @@ class AppSsoController extends Controller
     public static function origins(): array
     {
         $out = [];
-        foreach (array_keys(self::APPS) as $app) {
-            $base = self::baseUrl($app);
-            $p = $base === null ? false : parse_url($base);
-            if ($p && isset($p['scheme'], $p['host'])) {
-                $out[] = $p['scheme'].'://'.$p['host'].(isset($p['port']) ? ':'.$p['port'] : '');
+        foreach (self::apps() as $app) {
+            if ($o = $app->origin()) {
+                $out[] = $o;
             }
         }
 
         return array_values(array_unique($out));
     }
 
-    private static function baseUrl(string $app): ?string
+    /**
+     * The configured apps, for menus. Empty when the table does not exist yet
+     * (first deploy before migrations).
+     *
+     * @return list<HopApp>
+     */
+    public static function apps(): array
     {
-        $url = rtrim((string) config(self::APPS[$app]['config'].'.url'), '/');
-
-        return str_starts_with($url, 'https://') || str_starts_with($url, 'http://') ? $url : null;
-    }
-
-    private static function b64(string $bytes): string
-    {
-        return rtrim(strtr(base64_encode($bytes), '+/', '-_'), '=');
+        try {
+            return HopApp::active()->get()->filter->isConfigured()->values()->all();
+        } catch (\Throwable) {
+            return [];
+        }
     }
 }

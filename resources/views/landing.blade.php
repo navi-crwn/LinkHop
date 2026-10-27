@@ -1,4 +1,4 @@
-<x-marketing-layout title="HEL.ink - Modern URL Shortener" :themed="true">
+<x-marketing-layout title="LinkHop - Modern URL Shortener" :themed="true">
     @php
         $idleDays = config('shortener.guest_idle_days', 14);
         $maxDays = config('shortener.guest_max_days', 30);
@@ -147,13 +147,13 @@
             </div>
         </div>
         <a href="https://p.hel.ink" target="_blank" rel="noopener" class="{{ $card }} group block p-6 transition hover:bg-white dark:hover:bg-white/8">
-            <p class="text-xs font-semibold uppercase tracking-wider text-cyan-700 dark:text-cyan-200/80">HEL.ink family</p>
+            <p class="text-xs font-semibold uppercase tracking-wider text-cyan-700 dark:text-cyan-200/80">LinkHop family</p>
             <h2 class="mt-2 text-xl font-semibold">PixelHop</h2>
             <p class="mt-2 text-sm text-slate-600 dark:text-white/60">Free image hosting with compress, resize, convert, OCR and background removal.</p>
             <p class="mt-4 text-sm font-medium text-cyan-700 group-hover:underline dark:text-cyan-200">p.hel.ink →</p>
         </a>
         <a href="https://note.hel.ink" target="_blank" rel="noopener" class="{{ $card }} group block p-6 transition hover:bg-white dark:hover:bg-white/8">
-            <p class="text-xs font-semibold uppercase tracking-wider text-cyan-700 dark:text-cyan-200/80">HEL.ink family</p>
+            <p class="text-xs font-semibold uppercase tracking-wider text-cyan-700 dark:text-cyan-200/80">LinkHop family</p>
             <h2 class="mt-2 text-xl font-semibold">NoteHop</h2>
             <p class="mt-2 text-sm text-slate-600 dark:text-white/60">Encrypted notes you share with a link: delete after reading, write together, polls and checklists.</p>
             <p class="mt-4 text-sm font-medium text-cyan-700 group-hover:underline dark:text-cyan-200">note.hel.ink →</p>

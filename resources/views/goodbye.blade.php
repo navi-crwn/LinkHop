@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Deleted - HEL.ink</title>
+    <title>Account Deleted - LinkHop</title>
     <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>[x-cloak]{display:none !important;}</style>
@@ -22,9 +22,9 @@
     <div class="flex min-h-screen flex-col items-center justify-center px-4 py-8">
         <div class="w-full max-w-2xl space-y-8 text-center">
             <div class="flex flex-col items-center">
-                <img x-show="!darkMode" src="{{ route('brand.logo.dark') }}" alt="HEL.ink" class="h-20 w-20 rounded-full shadow-lg">
-                <img x-show="darkMode" x-cloak src="{{ route('brand.logo') }}" alt="HEL.ink" class="h-20 w-20 rounded-full shadow-lg">
-                <p class="mt-3 text-sm font-semibold text-slate-700 dark:text-slate-300">HEL.ink</p>
+                <img x-show="!darkMode" src="{{ route('brand.logo.dark') }}" alt="LinkHop" class="h-20 w-20 rounded-full shadow-lg">
+                <img x-show="darkMode" x-cloak src="{{ route('brand.logo') }}" alt="LinkHop" class="h-20 w-20 rounded-full shadow-lg">
+                <p class="mt-3 text-sm font-semibold text-slate-700 dark:text-slate-300">LinkHop</p>
             </div>
             <div class="space-y-4">
                 <h1 class="text-4xl font-bold text-slate-900 dark:text-white">Your account has been deleted</h1>
@@ -57,7 +57,7 @@
                 </a>
             </div>
             <div class="pt-8 text-xs text-slate-400">
-                <p>Thank you for using HEL.ink. We hope to see you again someday.</p>
+                <p>Thank you for using LinkHop. We hope to see you again someday.</p>
             </div>
         </div>
     </div>
