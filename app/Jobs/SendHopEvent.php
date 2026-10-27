@@ -43,7 +43,7 @@ class SendHopEvent implements ShouldQueue
     public static function broadcast(string $type, array $data): void
     {
         try {
-            $apps = HopApp::active()->get();
+            $apps = HopApp::registered()->get(); // hidden apps (Imperium) may listen too
         } catch (\Throwable) {
             return; // table missing on a fresh install
         }

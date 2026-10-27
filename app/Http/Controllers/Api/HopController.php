@@ -47,13 +47,20 @@ class HopController extends Controller
         return response()->json(['ok' => true, 'data' => $data, 'page' => ['next' => $rows->count() === 200 ? (string) $rows->last()->id : null]]);
     }
 
-    /** GET /api/hop/apps: the registry (no secrets), for Imperium's menu and health checks. */
-    public function apps(): JsonResponse
+    /**
+     * GET /api/hop/apps: the registry, for Imperium's menu and health checks.
+     * An admin client (Imperium) also gets each app's secret, so it can sign
+     * its own calls to the apps; everyone else gets the registry without secrets.
+     */
+    public function apps(Request $request): JsonResponse
     {
+        /** @var HopApp $caller */
+        $caller = $request->attributes->get('hop_app');
+        $withSecret = $caller->can('admin_client');
         $apps = HopApp::query()->orderBy('sort_order')->orderBy('name')->get()->map(fn (HopApp $a) => [
             'slug' => $a->slug, 'name' => $a->name, 'url' => $a->url, 'status' => $a->status, 'icon' => $a->icon,
-            'color' => $a->color, 'capabilities' => $a->capabilities ?? [], 'menu_label' => $a->label(),
-        ]);
+            'color' => $a->color, 'capabilities' => $a->capabilities ?? [], 'menu_label' => $a->label(), 'hidden' => (bool) $a->getAttribute('hidden'),
+        ] + ($withSecret ? ['secret' => $a->secret] : []));
 
         return response()->json(['ok' => true, 'data' => $apps]);
     }

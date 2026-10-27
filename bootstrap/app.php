@@ -10,6 +10,7 @@ use App\Http\Middleware\ContentSecurityPolicyMiddleware;
 use App\Http\Middleware\EnsureGoogleUserHasPassword;
 use App\Http\Middleware\EnsureTwoFactorAuthenticated;
 use App\Http\Middleware\RemoveWwwPrefix;
+use App\Http\Middleware\RequireHopAdminClient;
 use App\Http\Middleware\VerifyHopSignature;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -44,6 +45,7 @@ return Application::configure(basePath: dirname(__DIR__))
             '2fa' => EnsureTwoFactorAuthenticated::class,
             'api.auth' => ApiAuthenticate::class,
             'hop.signed' => VerifyHopSignature::class,
+            'hop.admin_client' => RequireHopAdminClient::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

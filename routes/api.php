@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AppAccountController;
+use App\Http\Controllers\Api\HopAdminController;
 use App\Http\Controllers\Api\HopController;
 use App\Http\Controllers\Api\LinkController;
 use App\Http\Controllers\Api\ShortenController;
@@ -41,9 +42,20 @@ Route::middleware('throttle:300,1,app-account')->group(function () {
         Route::post('/register', [AppAccountController::class, 'register']);
     });
 });
-// HOP ID for the apps and Imperium: profiles and the app registry (HOP App Protocol).
+// HOP ID for the apps and Imperium: profiles, the app registry and the admin API (HOP App Protocol).
 Route::middleware(['hop.signed', 'throttle:600,1,hop'])->prefix('hop')->group(function () {
     Route::get('/profile/{user}', [HopController::class, 'profile']);
     Route::get('/profiles', [HopController::class, 'profiles']);
     Route::get('/apps', [HopController::class, 'apps']);
+    Route::get('/health', [HopAdminController::class, 'health']);
+    // The admin API: only for an app registered with the admin_client capability (Imperium).
+    Route::middleware('hop.admin_client')->group(function () {
+        Route::get('/stats', [HopAdminController::class, 'stats']);
+        Route::get('/users', [HopAdminController::class, 'users']);
+        $missing = fn () => response()->json(['ok' => false, 'error' => 'not_found', 'message' => 'No such user.'], 404);
+        Route::get('/users/{user}', [HopAdminController::class, 'user'])->missing($missing);
+        Route::post('/users/{user}/actions', [HopAdminController::class, 'act'])->missing($missing);
+        Route::get('/audit', [HopAdminController::class, 'audit']);
+        Route::get('/search', [HopAdminController::class, 'search']);
+    });
 });

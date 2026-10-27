@@ -29,6 +29,15 @@ return [
         'url' => env('NOTEHOP_URL'),
         'sso_secret' => env('NOTEHOP_SSO_SECRET'),
     ],
+    // Imperium: the HOP control center (admin_client; hidden from the sidebar).
+    'imperium' => [
+        'url' => env('IMPERIUM_URL'),
+        'sso_secret' => env('IMPERIUM_SSO_SECRET'),
+    ],
+    'citadel' => [
+        'url' => env('CITADEL_URL'),
+        'sso_secret' => env('CITADEL_SSO_SECRET'),
+    ],
     'turnstile' => [
         'site_key' => env('TURNSTILE_SITE_KEY'),
         'secret' => env('TURNSTILE_SECRET_KEY'),
