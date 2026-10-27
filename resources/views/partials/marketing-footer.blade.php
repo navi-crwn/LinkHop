@@ -33,6 +33,7 @@
             'items' => [
                 ['label' => 'PixelHop - Image Hosting', 'route' => 'https://p.hel.ink', 'external' => true],
                 ['label' => 'Image Tools', 'route' => 'https://p.hel.ink/features.php', 'external' => true],
+                ['label' => 'NoteHop - Encrypted Notes', 'route' => 'https://note.hel.ink', 'external' => true],
             ],
         ],
     ];
