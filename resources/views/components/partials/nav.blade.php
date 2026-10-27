@@ -19,51 +19,24 @@
         $images[] = ['label' => $hopApp->label(), 'icon' => isset($icons[$hopApp->icon]) ? $hopApp->icon : 'globe',
             'href' => route('apps.open', ['app' => $hopApp->slug]), 'active' => 'apps.open'];
     }
-    if ($isAdmin) {
-        $groups = [
-            ['label' => 'Dashboard', 'icon' => 'home', 'route' => 'dashboard', 'active' => 'dashboard'],
-            ['label' => 'Analytics', 'icon' => 'chart', 'active' => ['analytics', 'admin.analytics*'], 'children' => [
-                ['label' => 'Platform', 'route' => 'admin.analytics.global', 'active' => 'admin.analytics.global'],
-                ['label' => 'My links', 'route' => 'analytics', 'active' => 'analytics'],
-            ]],
-            ['label' => 'Links', 'icon' => 'link', 'active' => ['admin.links*', 'links*', 'folders*', 'tags*'], 'children' => [
-                ['label' => 'All links', 'route' => 'admin.links.index', 'active' => 'admin.links.index'],
-                ['label' => 'My links', 'route' => 'admin.links.my', 'active' => 'admin.links.my'],
-                ['label' => 'Folders', 'route' => 'folders.index', 'active' => 'folders*'],
-                ['label' => 'Tags', 'route' => 'tags.index', 'active' => 'tags*'],
-            ]],
-            ['label' => 'Link in Bio', 'icon' => 'bio', 'active' => ['admin.bio*', 'bio*'], 'children' => [
-                ['label' => 'All bio pages', 'route' => 'admin.bio.index', 'active' => ['admin.bio.index', 'admin.bio.show']],
-                ['label' => 'Monitor', 'route' => 'admin.bio.monitor', 'active' => 'admin.bio.monitor'],
-                ['label' => 'My bio pages', 'route' => 'bio.index', 'active' => 'bio*'],
-            ]],
-            ...$images,
-            ['label' => 'Abuse', 'icon' => 'flag', 'route' => 'admin.abuse.index', 'active' => 'admin.abuse*', 'badge' => $abuseCount],
-            ['label' => 'Security', 'icon' => 'shield', 'active' => ['admin.users*', 'admin.ip-*', 'admin.domain-*', 'admin.geoip*', 'admin.proxy*'], 'children' => [
-                ['label' => 'Users', 'route' => 'admin.users.index', 'active' => 'admin.users*'],
-                ['label' => 'IP bans', 'route' => 'admin.ip-bans.index', 'active' => 'admin.ip-bans*'],
-                ['label' => 'IP watchlist', 'route' => 'admin.ip-watchlist.index', 'active' => 'admin.ip-watchlist*'],
-                ['label' => 'Domain blacklist', 'route' => 'admin.domain-blacklist.index', 'active' => 'admin.domain-blacklist*'],
-                ['label' => 'GeoIP monitor', 'route' => 'admin.geoip.monitor', 'active' => 'admin.geoip*'],
-                ['label' => 'Proxy monitor', 'route' => 'admin.proxy.monitor', 'active' => 'admin.proxy*'],
-            ]],
-            ['label' => 'Site & SEO', 'icon' => 'globe', 'route' => 'admin.seo.edit', 'active' => 'admin.seo*'],
-            ['label' => 'Settings', 'icon' => 'settings', 'route' => 'settings', 'active' => 'settings'],
-        ];
-    } else {
-        $groups = [
-            ['label' => 'Dashboard', 'icon' => 'home', 'route' => 'dashboard', 'active' => 'dashboard'],
-            ['label' => 'Analytics', 'icon' => 'chart', 'route' => 'analytics', 'active' => 'analytics'],
-            ['label' => 'Links', 'icon' => 'link', 'active' => ['links*', 'folders*', 'tags*'], 'children' => [
-                ['label' => 'My links', 'route' => 'links.index', 'active' => 'links*'],
-                ['label' => 'Folders', 'route' => 'folders.index', 'active' => 'folders*'],
-                ['label' => 'Tags', 'route' => 'tags.index', 'active' => 'tags*'],
-            ]],
-            ['label' => 'Link in Bio', 'icon' => 'bio', 'route' => 'bio.index', 'active' => 'bio*'],
-            ...$images,
-            ['label' => 'Settings', 'icon' => 'settings', 'route' => 'settings', 'active' => 'settings'],
-        ];
-    }
+    // Admins get the same menu plus the HOP control center (Imperium), where the
+    // admin pages went. Needs HOP_CONTROL_URL; without it the item stays hidden.
+    $control = $isAdmin && config('hop.control_url')
+        ? [['label' => config('hop.control_name'), 'icon' => 'shield', 'href' => config('hop.control_url'), 'active' => 'admin.control', 'badge' => $abuseCount]]
+        : [];
+    $groups = [
+        ['label' => 'Dashboard', 'icon' => 'home', 'route' => 'dashboard', 'active' => 'dashboard'],
+        ['label' => 'Analytics', 'icon' => 'chart', 'route' => 'analytics', 'active' => 'analytics'],
+        ['label' => 'Links', 'icon' => 'link', 'active' => ['links*', 'folders*', 'tags*'], 'children' => [
+            ['label' => 'My links', 'route' => 'links.index', 'active' => 'links*'],
+            ['label' => 'Folders', 'route' => 'folders.index', 'active' => 'folders*'],
+            ['label' => 'Tags', 'route' => 'tags.index', 'active' => 'tags*'],
+        ]],
+        ['label' => 'Link in Bio', 'icon' => 'bio', 'route' => 'bio.index', 'active' => 'bio*'],
+        ...$images,
+        ...$control,
+        ['label' => 'Settings', 'icon' => 'settings', 'route' => 'settings', 'active' => 'settings'],
+    ];
     $is = fn ($patterns) => request()->routeIs(...(array) $patterns);
 @endphp
 <ul class="space-y-1">

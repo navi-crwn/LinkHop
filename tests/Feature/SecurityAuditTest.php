@@ -37,15 +37,16 @@ test('csv cells that look like formulas are neutralised', function () {
 test('client ip comes from cloudflare forwarded headers only when cloudflare proxies are trusted', function () {
     config(['app.trusted_proxies' => 'cloudflare']);
     (new AppServiceProvider(app()))->boot();
-    Route::get('/admin/__ip', fn (Request $r) => $r->ip());
+    // A path the /{slug} catch-all and the /admin/* control-center route both leave alone.
+    Route::get('/email/__ip', fn (Request $r) => $r->ip());
 
     $this->withServerVariables(['REMOTE_ADDR' => '172.70.1.1'])
         ->withHeader('X-Forwarded-For', '203.0.113.9')
-        ->get('/admin/__ip')->assertSee('203.0.113.9');
+        ->get('/email/__ip')->assertSee('203.0.113.9');
     // A spoofed header from a non-Cloudflare address is ignored.
     $this->withServerVariables(['REMOTE_ADDR' => '198.51.100.4'])
         ->withHeader('X-Forwarded-For', '203.0.113.9')
-        ->get('/admin/__ip')->assertSee('198.51.100.4');
+        ->get('/email/__ip')->assertSee('198.51.100.4');
 
     TrustProxies::flushState();
 });
