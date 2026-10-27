@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Mail\WelcomeEmail;
 use App\Models\Folder;
+use App\Models\IpBan;
+use App\Models\IpWatchlist;
+use App\Models\LoginHistory;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
@@ -16,6 +19,8 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules;
 
+use function Illuminate\Support\defer;
+
 /**
  * Lets PixelHop's own sign-in and sign-up forms use HEL.ink accounts, so an
  * account made in either app works in both without visiting the other.
@@ -23,11 +28,14 @@ use Illuminate\Validation\Rules;
  * Server to server only: every call is signed by PixelHop with the shared
  * SSO secret (X-PixelHop-Timestamp + X-PixelHop-Signature =
  * base64url(HMAC-SHA256(secret, "pixelhop-api|{timestamp}|{body}"))) and
- * must be under two minutes old. Turnstile and per-IP limits run on
- * PixelHop; this side also limits attempts per email address.
+ * must be under two minutes old. Turnstile runs on PixelHop. PixelHop also
+ * sends the visitor's IP in the signed body, so this side applies the same IP
+ * bans as the web sign-in and limits failed attempts per email and per
+ * visitor IP (not per PixelHop server, which every visitor shares).
  *
- * Accounts with two-factor codes are not signed in here: PixelHop sends
- * those people through the normal /sso/pixelhop flow instead (AppSsoController).
+ * Accounts with two-factor codes, and accounts whose email is not confirmed
+ * yet, are not signed in here: PixelHop sends those people through the
+ * normal /sso/pixelhop flow instead (AppSsoController), like the web.
  */
 class PixelHopAccountController extends Controller
 {
@@ -35,36 +43,51 @@ class PixelHopAccountController extends Controller
 
     public function login(Request $request): JsonResponse
     {
-        if ($denied = $this->verifySignature($request)) {
+        if ($denied = $this->verifySignature($request) ?? $this->bannedIp($request)) {
             return $denied;
         }
         $email = strtolower(trim((string) $request->json('email', '')));
         $password = (string) $request->json('password', '');
-        $key = 'pixelhop-login:'.sha1($email);
-        if (RateLimiter::tooManyAttempts($key, 10)) {
+        $ip = $this->visitorIp($request);
+        $emailKey = 'pixelhop-login:'.sha1($email);
+        $ipKey = 'pixelhop-login-ip:'.$ip;
+        if (RateLimiter::tooManyAttempts($emailKey, 10) || ($ip !== '' && RateLimiter::tooManyAttempts($ipKey, 30))) {
             return response()->json(['error' => 'too_many_attempts'], 429);
         }
         $user = User::where('email', $email)->first();
         if (! $user || ! $user->password || ! Hash::check($password, $user->password)) {
-            RateLimiter::hit($key, 15 * 60);
+            RateLimiter::hit($emailKey, 15 * 60);
+            if ($ip !== '') {
+                RateLimiter::hit($ipKey, 15 * 60);
+            }
 
             return response()->json(['error' => 'bad_credentials'], 401);
         }
-        RateLimiter::clear($key);
+        RateLimiter::clear($emailKey);
         if ($user->isSuspended()) {
+            if ($ip !== '') {
+                IpWatchlist::addOrUpdate($ip, $user->id, 'PixelHop login attempt by suspended user: '.$user->email);
+            }
+
             return response()->json(['error' => 'suspended'], 403);
         }
         if ($user->two_factor_secret && $user->two_factor_confirmed_at) {
             return response()->json(['error' => 'two_factor'], 409);
         }
-        $user->forceFill(['last_login_at' => now(), 'last_login_ip' => (string) $request->json('ip', '')])->saveQuietly();
+        // Same rule as the /sso/pixelhop ticket: confirm the address first.
+        if (! $user->hasVerifiedEmail() && ! $user->google_id) {
+            return response()->json(['error' => 'unverified'], 403);
+        }
+        $user->forceFill(['last_login_at' => now(), 'last_login_ip' => $ip])->saveQuietly();
+        LoginHistory::create(['user_id' => $user->id, 'ip_address' => $ip ?: null, 'browser' => 'PixelHop', 'logged_in_at' => now()]);
+        LoginHistory::keepLatest($user->id);
 
         return response()->json(['user' => $this->payload($user)]);
     }
 
     public function register(Request $request): JsonResponse
     {
-        if ($denied = $this->verifySignature($request)) {
+        if ($denied = $this->verifySignature($request) ?? $this->bannedIp($request)) {
             return $denied;
         }
         $data = [
@@ -93,12 +116,15 @@ class PixelHopAccountController extends Controller
             'role' => User::ROLE_USER,
         ]);
         Folder::create(['name' => 'Default', 'user_id' => $user->id, 'is_default' => true]);
-        event(new Registered($user)); // sends the "confirm your email" message
-        try {
-            Mail::to($user->email)->send(new WelcomeEmail($user, false));
-        } catch (\Exception $e) {
-            Log::error('Failed to send welcome email', ['error' => $e->getMessage(), 'user_id' => $user->id]);
-        }
+        // SMTP can take seconds per message: send both after the response.
+        defer(function () use ($user) {
+            event(new Registered($user)); // sends the "confirm your email" message
+            try {
+                Mail::to($user->email)->send(new WelcomeEmail($user, false));
+            } catch (\Exception $e) {
+                Log::error('Failed to send welcome email', ['error' => $e->getMessage(), 'user_id' => $user->id]);
+            }
+        });
 
         return response()->json(['user' => $this->payload($user)], 201);
     }
@@ -114,6 +140,26 @@ class PixelHopAccountController extends Controller
             'admin' => $user->isSuperAdmin(),
             'verified' => $user->hasVerifiedEmail() || (bool) $user->google_id,
         ];
+    }
+
+    /** The visitor's IP as PixelHop saw it (signed with the body), or ''. */
+    private function visitorIp(Request $request): string
+    {
+        $ip = (string) $request->json('ip', '');
+
+        return filter_var($ip, FILTER_VALIDATE_IP) ? $ip : '';
+    }
+
+    /** The web's IP bans (CheckIpBan) apply to the visitor behind PixelHop too. */
+    private function bannedIp(Request $request): ?JsonResponse
+    {
+        $ip = $this->visitorIp($request);
+        $ban = $ip === '' ? null : IpBan::where('ip_address', $ip)->first();
+        if ($ban && ! $ban->isExpired()) {
+            return response()->json(['error' => 'banned'], 403);
+        }
+
+        return null;
     }
 
     private function verifySignature(Request $request): ?JsonResponse
