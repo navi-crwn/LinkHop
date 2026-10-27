@@ -11,7 +11,7 @@
             <div class="space-y-1">
                 <p class="text-sm text-blue-700 dark:text-blue-400 truncate" x-text="'{{ url("/") }}/' + bioPage.slug"></p>
                 <h4 class="text-lg text-blue-800 dark:text-blue-300 font-medium truncate hover:underline cursor-pointer" 
-                    x-text="(bioPage.seo_title || bioPage.title || 'Your Page Title') + ' | By HEL.ink'"></h4>
+                    x-text="(bioPage.seo_title || bioPage.title || 'Your Page Title') + ' | By LinkHop'"></h4>
                 <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2" 
                    x-text="bioPage.seo_description || bioPage.bio || 'Your page description will appear here. Write a compelling description to improve click-through rates from search results.'"></p>
             </div>
@@ -20,7 +20,7 @@
             <label for="bfsettin-1" class="form-label">Page Title</label>
             <input id="bfsettin-1" type="text" x-model="bioPage.seo_title" class="form-input" placeholder="Leave empty to use display name" maxlength="47" autocomplete="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
             <div class="flex justify-between mt-1">
-                <p class="text-xs editor-text-muted">Appears in browser tab and search results (+ " | By HEL.ink")</p>
+                <p class="text-xs editor-text-muted">Appears in browser tab and search results (+ " | By LinkHop")</p>
                 <p class="text-xs" :class="(bioPage.seo_title || '').length > 40 ? 'text-orange-500' : 'editor-text-muted'" x-text="(bioPage.seo_title || '').length + '/47'"></p>
             </div>
         </div>

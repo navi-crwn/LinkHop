@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - Global links</x-slot>
+    <x-slot name="pageTitle">LinkHop - Global links</x-slot>
     @php
         $activeFilters = collect([$search, $status, $filters['user_id'], $filters['tag'], $filters['guest']])->filter()->count();
     @endphp

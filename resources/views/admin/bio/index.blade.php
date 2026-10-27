@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - Bio pages</x-slot>
+    <x-slot name="pageTitle">LinkHop - Bio pages</x-slot>
     <x-page-header title="Bio pages" subtitle="Every link-in-bio page on the platform.">
         <x-slot name="actions">
             <a href="{{ route('admin.bio.monitor') }}" class="btn-soft btn-sm">Monitoring</a>

@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - Settings</x-slot>
+    <x-slot name="pageTitle">LinkHop - Settings</x-slot>
     @php
         $settingsTabs = [
             'account' => ['Account', 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'],
@@ -39,26 +39,83 @@
                     {{-- Each setting is a row: what it is on the left, the fields on the right. --}}
                     <section class="grid gap-4 p-5 md:grid-cols-3 md:gap-8">
                         <div>
-                            <h3 class="section-title">Profile</h3>
-                            <p class="mt-1 text-xs text-muted">Your name and the email you sign in with. Changing the email asks you to verify it again.</p>
+                            <h3 class="section-title">HOP ID profile</h3>
+                            <p class="mt-1 text-xs text-muted">One profile for every HOP app: {{ config('app.name') }}{{ count(\App\Http\Controllers\AppSsoController::apps()) ? ', '.collect(\App\Http\Controllers\AppSsoController::apps())->pluck('name')->join(', ') : '' }}. Changing the email asks you to verify it again.</p>
                         </div>
-                        <form method="POST" action="{{ route('profile.update') }}" class="space-y-4 md:col-span-2">
-                            @csrf
-                            @method('PATCH')
-                            <div class="grid gap-4 sm:grid-cols-2">
-                                <div>
-                                    <label for="fsettin-1" class="label">Name</label>
-                                    <input id="fsettin-1" type="text" name="name" value="{{ old('name', auth()->user()->name) }}" class="input" required autocomplete="name">
-                                </div>
-                                <div>
-                                    <label for="fsettin-2" class="label">Email</label>
-                                    <input id="fsettin-2" type="email" name="email" value="{{ old('email', auth()->user()->email) }}" class="input" required autocomplete="email">
-                                </div>
+                        <div class="space-y-5 md:col-span-2">
+                            @php $u = auth()->user(); @endphp
+                            <div class="flex items-center gap-4">
+                                @if ($u->avatarUrl())
+                                    <img src="{{ $u->avatarUrl() }}" alt="" class="h-16 w-16 rounded-full object-cover ring-1 ring-slate-500/20">
+                                @else
+                                    <div class="flex h-16 w-16 items-center justify-center rounded-full bg-slate-500/15 text-xl font-semibold text-ink">{{ strtoupper(substr($u->name, 0, 1)) }}</div>
+                                @endif
+                                <form method="POST" action="{{ route('profile.avatar') }}" enctype="multipart/form-data" class="flex flex-wrap items-center gap-2">
+                                    @csrf
+                                    <label class="btn-soft btn-sm cursor-pointer">
+                                        <input type="file" name="avatar" accept="image/png,image/jpeg,image/webp,image/gif" class="sr-only" @change="$el.form.requestSubmit()">
+                                        Change photo
+                                    </label>
+                                    <span class="text-xs text-muted">JPG, PNG or WebP, up to 6 MB. Shown as a 400×400 square.</span>
+                                </form>
+                                @if ($u->avatar_path)
+                                    <form method="POST" action="{{ route('profile.avatar.destroy') }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-ghost btn-sm">Remove</button>
+                                    </form>
+                                @endif
                             </div>
-                            <div class="flex justify-end">
-                                <button type="submit" class="btn-primary btn-sm">Save profile</button>
-                            </div>
-                        </form>
+                            @error('avatar')<p class="text-sm text-rose-600">{{ $message }}</p>@enderror
+                            <form method="POST" action="{{ route('profile.update') }}" class="space-y-4" x-data="usernameCheck(@js($u->username))">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="_profile_form" value="1">
+                                <input type="hidden" name="_back" value="{{ route('settings') }}#account">
+                                <div class="grid gap-4 sm:grid-cols-2">
+                                    <div>
+                                        <label for="fsettin-1" class="label">Name</label>
+                                        <input id="fsettin-1" type="text" name="name" value="{{ old('name', $u->name) }}" class="input" required autocomplete="name">
+                                        @error('name')<p class="mt-1 text-xs text-rose-600">{{ $message }}</p>@enderror
+                                    </div>
+                                    <div>
+                                        <label for="fsettin-3" class="label">Username</label>
+                                        <div class="relative">
+                                            <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted">@</span>
+                                            <input id="fsettin-3" type="text" name="username" value="{{ old('username', $u->username) }}" class="input pl-7" required autocomplete="username" minlength="3" maxlength="30" x-model="value" @input.debounce.400ms="check()" spellcheck="false">
+                                        </div>
+                                        <p class="mt-1 text-xs" :class="ok === false ? 'text-rose-600' : 'text-muted'" x-text="message">Your handle in every HOP app: 3 to 30 lowercase letters, numbers, dots, dashes or underscores.</p>
+                                        @error('username')<p class="mt-1 text-xs text-rose-600">{{ $message }}</p>@enderror
+                                    </div>
+                                    <div>
+                                        <label for="fsettin-2" class="label">Email</label>
+                                        <input id="fsettin-2" type="email" name="email" value="{{ old('email', $u->email) }}" class="input" required autocomplete="email">
+                                        @error('email')<p class="mt-1 text-xs text-rose-600">{{ $message }}</p>@enderror
+                                    </div>
+                                    <div>
+                                        <label for="fsettin-4" class="label">Location <span class="text-muted">(optional)</span></label>
+                                        <input id="fsettin-4" type="text" name="location" value="{{ old('location', $u->location) }}" class="input" maxlength="100" autocomplete="address-level2">
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <label for="fsettin-5" class="label">Website <span class="text-muted">(optional)</span></label>
+                                        <input id="fsettin-5" type="text" name="website" value="{{ old('website', $u->website) }}" class="input" maxlength="200" placeholder="https://" autocomplete="url">
+                                        @error('website')<p class="mt-1 text-xs text-rose-600">{{ $message }}</p>@enderror
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <label for="fsettin-6" class="label">Bio <span class="text-muted">(optional)</span></label>
+                                        <textarea id="fsettin-6" name="bio" rows="3" maxlength="300" class="input">{{ old('bio', $u->bio) }}</textarea>
+                                        @error('bio')<p class="mt-1 text-xs text-rose-600">{{ $message }}</p>@enderror
+                                    </div>
+                                    <label class="flex items-start gap-3 sm:col-span-2">
+                                        <input type="checkbox" name="show_owner" value="1" class="mt-0.5 rounded" @checked(old('show_owner', $u->show_owner))>
+                                        <span class="text-sm text-ink">Show my name and photo on what I share in the apps<span class="block text-xs text-muted">Off: images, notes and pages you share don't say who made them.</span></span>
+                                    </label>
+                                </div>
+                                <div class="flex justify-end">
+                                    <button type="submit" class="btn-primary btn-sm">Save profile</button>
+                                </div>
+                            </form>
+                        </div>
                     </section>
                     <section class="grid gap-4 p-5 md:grid-cols-3 md:gap-8">
                         <div>
@@ -621,3 +678,22 @@
     }
     </script>
 </x-app-layout>
+
+@push('scripts')
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('usernameCheck', (current) => ({
+        value: current || '', ok: null, message: 'Your handle in every HOP app: 3 to 30 lowercase letters, numbers, dots, dashes or underscores.',
+        async check() {
+            const v = (this.value || '').trim().toLowerCase().replace(/^@/, '');
+            if (v === (current || '')) { this.ok = null; this.message = 'This is your current username.'; return; }
+            try {
+                const r = await fetch(`{{ route('profile.username-check') }}?u=${encodeURIComponent(v)}`, { headers: { 'Accept': 'application/json' } });
+                const d = await r.json();
+                this.ok = d.ok; this.message = d.ok ? `@${d.username} is available.` : d.message;
+            } catch (e) { this.ok = null; }
+        },
+    }));
+});
+</script>
+@endpush

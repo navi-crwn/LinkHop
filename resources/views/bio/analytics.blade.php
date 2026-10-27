@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - {{ $bioPage->title }} analytics</x-slot>
+    <x-slot name="pageTitle">LinkHop - {{ $bioPage->title }} analytics</x-slot>
     <x-page-header :title="$bioPage->title" subtitle="hel.ink/b/{{ $bioPage->slug }} · last {{ $days }} days">
         <x-slot name="actions">
             <nav class="glass-inset flex rounded-xl p-0.5" aria-label="Period">

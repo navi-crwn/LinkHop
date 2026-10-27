@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - Account</x-slot>
+    <x-slot name="pageTitle">LinkHop - Account</x-slot>
     <x-page-header title="Account" subtitle="Profile, password and account removal.">
         <x-slot name="actions">
             <a href="{{ route('settings') }}" class="btn-soft btn-sm">All settings</a>

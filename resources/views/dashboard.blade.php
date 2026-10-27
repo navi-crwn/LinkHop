@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - Dashboard</x-slot>
+    <x-slot name="pageTitle">LinkHop - Dashboard</x-slot>
     @php
         $pct = fn ($q) => $q['limit'] > 0 ? min(100, round($q['used'] / $q['limit'] * 100)) : 0;
         $flag = function (?string $code) {

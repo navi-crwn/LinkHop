@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - IP watchlist</x-slot>
+    <x-slot name="pageTitle">LinkHop - IP watchlist</x-slot>
     <x-page-header title="IP watchlist" subtitle="Addresses that are logged and flagged but not blocked." />
 
     <x-flash />

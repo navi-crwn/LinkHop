@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - SEO</x-slot>
+    <x-slot name="pageTitle">LinkHop - SEO</x-slot>
     <x-page-header title="SEO" subtitle="Meta tags, social previews and site icons." />
 
     <x-flash />
@@ -10,7 +10,7 @@
             metaDescription: @js(old('meta_description', $seo->meta_description ?? 'A fast shortlink studio for campaigns, QR codes, and analytics.')),
             favicon: @js(old('favicon', $seo->favicon ?? '')),
             logo: @js(old('logo', $seo->logo ?? '')),
-            ogTitle: @js(old('og_title', $seo->og_title ?? 'Share smarter with HEL.ink')),
+            ogTitle: @js(old('og_title', $seo->og_title ?? 'Share smarter with LinkHop')),
             ogDescription: @js(old('og_description', $seo->og_description ?? 'Track clicks, protect links, manage QR codes, and keep abuse away.'))
         }">
         @csrf
@@ -88,8 +88,8 @@
                         <img x-show="favicon" :src="favicon" alt="" class="h-4 w-4 rounded-sm object-contain">
                         <span class="truncate">{{ url('/') }}</span>
                     </div>
-                    <p class="mt-1 line-clamp-1 text-base font-semibold text-indigo-600 dark:text-indigo-300" x-text="siteTitle || 'HEL.ink'"></p>
-                    <p class="line-clamp-2 text-xs text-muted" x-text="metaDescription || 'Add a description so search engines know what HEL.ink offers.'"></p>
+                    <p class="mt-1 line-clamp-1 text-base font-semibold text-indigo-600 dark:text-indigo-300" x-text="siteTitle || 'LinkHop'"></p>
+                    <p class="line-clamp-2 text-xs text-muted" x-text="metaDescription || 'Add a description so search engines know what LinkHop offers.'"></p>
                 </div>
             </section>
             <section class="glass-card space-y-2">

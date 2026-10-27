@@ -1,6 +1,6 @@
 <p align="center"><b>English</b> · <a href="README.id.md">Bahasa Indonesia</a></p>
 
-<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/hero-en-light.webp"><img src="docs/readme/hero-en-dark.webp" alt="HEL.ink: short links, beautiful bio pages" width="100%"></picture></p>
+<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/hero-en-light.webp"><img src="docs/readme/hero-en-dark.webp" alt="LinkHop: short links, beautiful bio pages" width="100%"></picture></p>
 
 <p align="center">
   <b>Shorten links, count every click, and get a link in bio page.<br>Free, open source, and yours to host.</b>
@@ -27,9 +27,11 @@
 
 ---
 
-## What is HEL.ink?
+## What is LinkHop?
 
-Long links are hard to share and you never know who clicks them. HEL.ink makes them **short** (with your own slug if you like), **counts every click** by country, device and referrer, and gives you one **link in bio page** at `hel.ink/b/you` for everything you want people to find.
+**LinkHop** is the link shortener of the HOP family, at **hel.ink** ("Hop Easy Link"). One HOP ID signs you in to LinkHop, [PixelHop](https://github.com/navi-crwn/pixelhop) (images) and [NoteHop](https://github.com/navi-crwn/NoteHop) (notes).
+
+Long links are hard to share and you never know who clicks them. LinkHop makes them **short** (with your own slug if you like), **counts every click** by country, device and referrer, and gives you one **link in bio page** at `hel.ink/b/you` for everything you want people to find.
 
 Everything is included for every account. No premium tier, no locked features. And because it's open source, you can also run the whole thing on your own server and your own domain.
 
@@ -38,7 +40,7 @@ Everything is included for every account. No premium tier, no locked features. A
 - need one tidy page for all your links, shop, music and videos,
 - want a link shortener you control, on your own server.
 
-<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/features-en-light.webp"><img src="docs/readme/features-en-dark.webp" alt="Everything HEL.ink can do" width="100%"></picture></p>
+<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/features-en-light.webp"><img src="docs/readme/features-en-dark.webp" alt="Everything LinkHop can do" width="100%"></picture></p>
 
 <p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/bio-en-light.webp"><img src="docs/readme/bio-en-dark.webp" alt="Link in Bio: one page, every link" width="100%"></picture></p>
 
@@ -48,7 +50,7 @@ Everything is included for every account. No premium tier, no locked features. A
 
 <img src="docs/readme/example-bio.webp" alt="The example bio page at hel.ink/b/hel" width="280" align="right">
 
-**Bio page:** [hel.ink/b/hel](https://hel.ink/b/hel), HEL.ink's own page with the Galaxy theme, link buttons with brand icons, a text block, an FAQ and a contact card.
+**Bio page:** [hel.ink/b/hel](https://hel.ink/b/hel), LinkHop's own page with the Galaxy theme, link buttons with brand icons, a text block, an FAQ and a contact card.
 
 **Short links:**
 
@@ -134,7 +136,7 @@ GOOGLE_REDIRECT_URI=https://yourdomain.com/auth/google/callback
 
 **Your own domain:** set `APP_URL` to it, and every short link and bio page uses it.
 
-**Behind Cloudflare:** HEL.ink sends a strict, report-only Content Security Policy that only trusts scripts carrying the page's nonce, and logs what it would block to `storage/logs/csp-*.log`. Cloudflare's **Email Address Obfuscation** (Scrape Shield) and **Rocket Loader** (Speed → Optimization) inject their own scripts from `/cdn-cgi/scripts/.../cloudflare-static/` without that nonce, so they fill the log. Either turn them off in the Cloudflare dashboard (recommended: HEL.ink doesn't need them, and it keeps the policy ready to enforce), or skip them only where needed with a Cloudflare Configuration Rule. Allowing them in the policy doesn't work with a nonce policy (`'strict-dynamic'` ignores host and `'self'` allowlists); it would mean dropping the nonce, which weakens the policy for everything else.
+**Behind Cloudflare:** LinkHop sends a strict, report-only Content Security Policy that only trusts scripts carrying the page's nonce, and logs what it would block to `storage/logs/csp-*.log`. Cloudflare's **Email Address Obfuscation** (Scrape Shield) and **Rocket Loader** (Speed → Optimization) inject their own scripts from `/cdn-cgi/scripts/.../cloudflare-static/` without that nonce, so they fill the log. Either turn them off in the Cloudflare dashboard (recommended: LinkHop doesn't need them, and it keeps the policy ready to enforce), or skip them only where needed with a Cloudflare Configuration Rule. Allowing them in the policy doesn't work with a nonce policy (`'strict-dynamic'` ignores host and `'self'` allowlists); it would mean dropping the nonce, which weakens the policy for everything else.
 
 **Production:** keep a queue worker running.
 ```bash

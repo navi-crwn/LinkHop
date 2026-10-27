@@ -1,14 +1,14 @@
-<x-marketing-layout title="About - HEL.ink">
+<x-marketing-layout title="About - LinkHop">
     <section class="mx-auto max-w-5xl px-6 py-16 lg:px-8">
         <p class="text-xs uppercase tracking-[0.4em] text-white/60">About</p>
-        <h1 class="mt-4 text-4xl font-semibold text-white">Why we built HEL.ink</h1>
+        <h1 class="mt-4 text-4xl font-semibold text-white">Why we built LinkHop</h1>
         <p class="mt-4 max-w-3xl text-lg text-white/70">
-            HEL.ink is a modern, open-source URL shortener for people who want simple link management without the bloat. 
+            LinkHop is a modern, open-source URL shortener for people who want simple link management without the bloat. 
             Clean redirects, solid analytics, and features that actually make sense.
         </p>
         <p class="mt-6 max-w-3xl text-base text-white/70">
             Whether you're running campaigns, sharing resources with your team, or building a Link in Bio page for social media, 
-            HEL.ink has you covered: folders and tags for organization, QR codes, password protection, expiration dates, 
+            LinkHop has you covered: folders and tags for organization, QR codes, password protection, expiration dates, 
             geographic analytics, REST API for automation, and more.
         </p>
         <p class="mt-4 max-w-3xl text-base text-white/70">
@@ -35,7 +35,7 @@
             </p>
             <h2 class="mt-10 text-2xl font-semibold text-white">Open Source</h2>
             <p class="text-white/70">
-                HEL.ink is 100% open source on GitHub. Self-host on your own server or use our hosted version. 
+                LinkHop is 100% open source on GitHub. Self-host on your own server or use our hosted version. 
                 Fork it, customize it, contribute improvements. Built by 
                 <a href="https://github.com/navi-crwn" class="text-blue-400 hover:text-blue-300" target="_blank">@navi-crwn</a>, 
                 maintained with love.

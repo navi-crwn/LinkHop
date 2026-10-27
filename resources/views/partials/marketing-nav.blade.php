@@ -12,7 +12,7 @@
     <nav class="mx-auto flex h-14 max-w-6xl items-center justify-between rounded-2xl border border-slate-200/80 bg-white/70 px-3 shadow-xs shadow-slate-900/5 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/50 dark:shadow-none sm:px-4">
         <a href="{{ route('home') }}" class="flex items-center gap-2.5 text-slate-900 dark:text-white">
             <x-application-logo class="h-7 w-7" />
-            <span class="text-[15px] font-semibold tracking-tight">HEL.ink</span>
+            <span class="text-[15px] font-semibold tracking-tight">LinkHop</span>
         </a>
         <div class="hidden items-center gap-1 text-sm text-slate-600 md:flex dark:text-white/70">
             @foreach ($marketingLinks as $item)

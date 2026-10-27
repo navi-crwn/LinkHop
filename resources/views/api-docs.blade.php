@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - API</x-slot>
+    <x-slot name="pageTitle">LinkHop - API</x-slot>
     <x-page-header title="API documentation" subtitle="Use hel.ink from ShareX, the command line or your own apps.">
         <x-slot name="actions">
             <a href="{{ route('settings') }}#api" class="btn-soft btn-sm">Manage API tokens</a>

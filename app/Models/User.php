@@ -51,6 +51,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
 
+    protected $attributes = [
+        'show_owner' => true,
+        'profile_version' => 1,
+    ];
+
     protected function casts(): array
     {
         return [
@@ -79,7 +84,7 @@ class User extends Authenticatable implements MustVerifyEmail
         // and deletions too. saveQuietly() (last_login_*) skips all of this.
         static::updating(function (User $user) {
             if ($user->isDirty(self::PROFILE_FIELDS)) {
-                $user->profile_version = (int) $user->profile_version + 1;
+                $user->profile_version = max(1, (int) $user->profile_version) + 1;
             }
         });
         static::updated(function (User $user) {
@@ -227,7 +232,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'status' => $this->status,
             'verified' => $this->hasVerifiedEmail() || (bool) $this->google_id,
             'mfa' => (bool) ($this->two_factor_secret && $this->two_factor_confirmed_at),
-            'profile_version' => (int) $this->profile_version,
+            'profile_version' => max(1, (int) $this->profile_version),
             'created_at' => $this->created_at?->toIso8601String(),
         ];
     }

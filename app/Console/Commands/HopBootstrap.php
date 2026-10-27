@@ -27,7 +27,7 @@ class HopBootstrap extends Command
             $owner = User::query()->whereRaw('LOWER(email) = ?', [strtolower($email)])->first();
             if (! $owner) {
                 $this->warn("SUPERADMIN_EMAIL {$email}: no such user yet; the owner role is granted on first sign-in instead.");
-            } elseif ($owner->hasRole(Role::OWNER)) {
+            } elseif ($owner->roles()->where('role', Role::OWNER)->whereNull('app_slug')->exists()) {
                 $this->line("owner: {$owner->email} already has the role.");
             } else {
                 $this->info("owner: granting to {$owner->email}");
