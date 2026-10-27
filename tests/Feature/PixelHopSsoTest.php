@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\HopApp;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\URL;
@@ -18,7 +19,7 @@ class PixelHopSsoTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        config(['services.pixelhop.url' => 'https://p.example.com', 'services.pixelhop.sso_secret' => self::SECRET]);
+        HopApp::factory()->pixelhop(self::SECRET)->create();
     }
 
     private function authorizeUrl(array $over = []): string
@@ -76,7 +77,7 @@ class PixelHopSsoTest extends TestCase
 
     public function test_disabled_without_configuration(): void
     {
-        config(['services.pixelhop.sso_secret' => '']);
+        HopApp::query()->delete();
         $user = User::factory()->create(['email_verified_at' => now()]);
         $this->actingAs($user)->withSession(['2fa_verified' => true])->get($this->authorizeUrl())->assertStatus(404);
     }
@@ -85,6 +86,8 @@ class PixelHopSsoTest extends TestCase
     {
         $user = User::factory()->create(['email_verified_at' => now()]);
         $this->actingAs($user)->withSession(['2fa_verified' => true])->get('/pixelhop')
+            ->assertRedirect(route('apps.open', ['app' => 'pixelhop']));
+        $this->actingAs($user)->withSession(['2fa_verified' => true])->get('/apps/pixelhop')
             ->assertRedirect('https://p.example.com/auth/helink?next=%2Fdashboard');
     }
 
@@ -94,8 +97,8 @@ class PixelHopSsoTest extends TestCase
         $url = URL::temporarySignedRoute('verification.verify', now()->addHour(),
             ['id' => $user->id, 'hash' => sha1($user->email)]);
         $res = $this->actingAs($user)->withSession(['2fa_verified' => true, 'url.intended' => 'https://hel.example.com'.$this->authorizeUrl()])->get($url);
-        $res->assertRedirect(route('images.open', ['to' => 'upload']));
-        $this->get(route('images.open', ['to' => 'upload']))->assertRedirect('https://p.example.com/auth/helink?next=%2F');
+        $res->assertRedirect(route('apps.open', ['app' => 'pixelhop', 'to' => 'upload']));
+        $this->get(route('apps.open', ['app' => 'pixelhop', 'to' => 'upload']))->assertRedirect('https://p.example.com/auth/helink?next=%2F');
     }
 
     public function test_onboarding_offers_the_way_back_to_pixelhop(): void

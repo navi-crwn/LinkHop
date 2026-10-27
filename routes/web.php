@@ -71,19 +71,18 @@ Route::middleware('ip.ban')->group(function () {
         ->middleware(['throttle:shorten', 'quota'])
         ->name('shorten.store');
     // "Continue with Google" in the apps: works for guests too (see AppSsoController::viaGoogle).
-    Route::get('/sso/pixelhop/google', [AppSsoController::class, 'viaGoogle'])->defaults('app', 'pixelhop')->middleware('throttle:30,1,pixelhop-sso-google')->name('sso.pixelhop.google');
-    Route::get('/sso/notehop/google', [AppSsoController::class, 'viaGoogle'])->defaults('app', 'notehop')->middleware('throttle:30,1,notehop-sso-google')->name('sso.notehop.google');
+    Route::get('/sso/{app}/google', [AppSsoController::class, 'viaGoogle'])->where('app', '[a-z0-9-]{1,32}')->middleware('throttle:30,1,sso-google')->name('sso.google');
     Route::middleware(['auth'])->group(function () {
         Route::get('/two-factor-challenge', [TwoFactorController::class, 'show'])->name('two-factor.show');
         Route::post('/two-factor-challenge', [TwoFactorController::class, 'verify'])->middleware('throttle:5,1,two-factor')->name('two-factor.verify');
     });
     Route::middleware(['auth', '2fa'])->group(function () {
-        // HEL.ink apps sign in here (AppSsoController): PixelHop and NoteHop.
-        Route::get('/sso/pixelhop', [AppSsoController::class, 'ticket'])->defaults('app', 'pixelhop')->middleware('throttle:30,1,pixelhop-sso')->name('sso.pixelhop');
-        Route::get('/sso/notehop', [AppSsoController::class, 'ticket'])->defaults('app', 'notehop')->middleware('throttle:30,1,notehop-sso')->name('sso.notehop');
-        // Not /images: public/images/ is a real directory, so nginx would answer 301/403 itself.
-        Route::get('/pixelhop', [AppSsoController::class, 'open'])->defaults('app', 'pixelhop')->name('images.open');
-        Route::get('/notehop', [AppSsoController::class, 'open'])->defaults('app', 'notehop')->name('notes.open');
+        // The HOP apps (rows in `apps`: PixelHop, NoteHop, …) sign in here with HOP ID.
+        Route::get('/sso/{app}', [AppSsoController::class, 'ticket'])->where('app', '[a-z0-9-]{1,32}')->middleware('throttle:30,1,sso')->name('sso.ticket');
+        // Menu items open an app signed in. Not /images: public/images/ is a real directory.
+        Route::get('/apps/{app}', [AppSsoController::class, 'open'])->where('app', '[a-z0-9-]{1,32}')->name('apps.open');
+        Route::get('/pixelhop', fn (Request $r) => redirect()->route('apps.open', ['app' => 'pixelhop'] + $r->query()));
+        Route::get('/notehop', fn (Request $r) => redirect()->route('apps.open', ['app' => 'notehop'] + $r->query()));
         Route::get('/dashboard', [LinkController::class, 'index'])->name('dashboard');
         Route::get('/links', [LinkController::class, 'myLinks'])->name('links.index');
         Route::get('/analytics', AnalyticsController::class)->name('analytics');
@@ -151,7 +150,7 @@ Route::middleware('ip.ban')->group(function () {
             });
         });
     });
-    Route::middleware(['auth', 'admin'])
+    Route::middleware(['auth', '2fa', 'admin'])
         ->prefix('admin')
         ->name('admin.')
         ->group(function () {

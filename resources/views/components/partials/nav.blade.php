@@ -12,11 +12,12 @@
         'image' => 'M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm4.5 6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM21 15l-5-5-9 9',
         'note' => 'M6 3h9l4 4v14H6V3Zm8 0v5h5M9 12h6m-6 4h4',
     ];
-    // Image hosting lives in PixelHop (p.hel.ink) and notes in NoteHop
-    // (note.hel.ink), both signed in with this account.
-    $images = config('services.pixelhop.url') ? [['label' => 'Images', 'icon' => 'image', 'route' => 'images.open', 'active' => 'images.open']] : [];
-    if (config('services.notehop.url')) {
-        $images[] = ['label' => 'Notes', 'icon' => 'note', 'route' => 'notes.open', 'active' => 'notes.open'];
+    // The other HOP apps (PixelHop, NoteHop, …) from the registry, each opened
+    // signed in with this HOP ID.
+    $images = [];
+    foreach (\App\Http\Controllers\AppSsoController::apps() as $hopApp) {
+        $images[] = ['label' => $hopApp->label(), 'icon' => isset($icons[$hopApp->icon]) ? $hopApp->icon : 'globe',
+            'href' => route('apps.open', ['app' => $hopApp->slug]), 'active' => 'apps.open'];
     }
     if ($isAdmin) {
         $groups = [
@@ -83,7 +84,7 @@
             </li>
         @else
             <li>
-                <a href="{{ route($item['route']) }}" class="nav-item {{ $active ? 'nav-item-active' : '' }}">
+                <a href="{{ $item['href'] ?? route($item['route']) }}" class="nav-item {{ $active ? 'nav-item-active' : '' }}">
                     <svg class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ $icons[$item['icon']] }}"/></svg>
                     <span class="flex-1">{{ $item['label'] }}</span>
                     @if (! empty($item['badge']))

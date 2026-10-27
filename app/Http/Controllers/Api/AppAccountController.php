@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Mail\WelcomeEmail;
 use App\Models\Folder;
+use App\Models\HopApp;
 use App\Models\IpBan;
 use App\Models\IpWatchlist;
 use App\Models\LoginHistory;
 use App\Models\User;
+use App\Support\HopSignature;
+use App\Support\Username;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,35 +25,38 @@ use Illuminate\Validation\Rules;
 use function Illuminate\Support\defer;
 
 /**
- * Lets PixelHop's own sign-in and sign-up forms use HEL.ink accounts, so an
- * account made in either app works in both without visiting the other.
+ * Lets a HOP app's own sign-in and sign-up forms use HOP ID accounts, so an
+ * account made in either place works everywhere without visiting HOP ID.
  *
- * Server to server only: every call is signed by PixelHop with the shared
- * SSO secret (X-PixelHop-Timestamp + X-PixelHop-Signature =
- * base64url(HMAC-SHA256(secret, "pixelhop-api|{timestamp}|{body}"))) and
- * must be under two minutes old. Turnstile runs on PixelHop. PixelHop also
+ * Server to server only. New apps call /api/apps/{app}/login|register signed
+ * with the HOP App Protocol headers (HopSignature). PixelHop 3.x still calls
+ * /api/pixelhop/login|register with its older signature
+ * (X-PixelHop-Timestamp + X-PixelHop-Signature =
+ * base64url(HMAC-SHA256(secret, "pixelhop-api|{timestamp}|{body}"))); both
+ * use the app's secret from the registry. Turnstile runs in the app. The app
  * sends the visitor's IP in the signed body, so this side applies the same IP
  * bans as the web sign-in and limits failed attempts per email and per
- * visitor IP (not per PixelHop server, which every visitor shares).
+ * visitor IP (not per app server, which every visitor shares).
  *
  * Accounts with two-factor codes, and accounts whose email is not confirmed
- * yet, are not signed in here: PixelHop sends those people through the
- * normal /sso/pixelhop flow instead (AppSsoController), like the web.
+ * yet, are not signed in here: the app sends those people through the
+ * normal /sso/{app} flow instead (AppSsoController), like the web.
  */
-class PixelHopAccountController extends Controller
+class AppAccountController extends Controller
 {
     private const MAX_AGE = 120;
 
-    public function login(Request $request): JsonResponse
+    public function login(Request $request, string $app = 'pixelhop'): JsonResponse
     {
-        if ($denied = $this->verifySignature($request) ?? $this->bannedIp($request)) {
+        if ($denied = $this->verifySignature($request, $app) ?? $this->bannedIp($request)) {
             return $denied;
         }
+        $hopApp = $request->attributes->get('hop_app');
         $email = strtolower(trim((string) $request->json('email', '')));
         $password = (string) $request->json('password', '');
         $ip = $this->visitorIp($request);
-        $emailKey = 'pixelhop-login:'.sha1($email);
-        $ipKey = 'pixelhop-login-ip:'.$ip;
+        $emailKey = 'app-login:'.sha1($email);
+        $ipKey = 'app-login-ip:'.$ip;
         if (RateLimiter::tooManyAttempts($emailKey, 10) || ($ip !== '' && RateLimiter::tooManyAttempts($ipKey, 30))) {
             return response()->json(['error' => 'too_many_attempts'], 429);
         }
@@ -66,7 +72,7 @@ class PixelHopAccountController extends Controller
         RateLimiter::clear($emailKey);
         if ($user->isSuspended()) {
             if ($ip !== '') {
-                IpWatchlist::addOrUpdate($ip, $user->id, 'PixelHop login attempt by suspended user: '.$user->email);
+                IpWatchlist::addOrUpdate($ip, $user->id, $hopApp->name.' login attempt by suspended user: '.$user->email);
             }
 
             return response()->json(['error' => 'suspended'], 403);
@@ -79,17 +85,18 @@ class PixelHopAccountController extends Controller
             return response()->json(['error' => 'unverified'], 403);
         }
         $user->forceFill(['last_login_at' => now(), 'last_login_ip' => $ip])->saveQuietly();
-        LoginHistory::create(['user_id' => $user->id, 'ip_address' => $ip ?: null, 'browser' => 'PixelHop', 'logged_in_at' => now()]);
+        LoginHistory::create(['user_id' => $user->id, 'ip_address' => $ip ?: null, 'browser' => $hopApp->name, 'logged_in_at' => now()]);
         LoginHistory::keepLatest($user->id);
 
-        return response()->json(['user' => $this->payload($user)]);
+        return response()->json(['user' => $this->payload($user, $hopApp)]);
     }
 
-    public function register(Request $request): JsonResponse
+    public function register(Request $request, string $app = 'pixelhop'): JsonResponse
     {
-        if ($denied = $this->verifySignature($request) ?? $this->bannedIp($request)) {
+        if ($denied = $this->verifySignature($request, $app) ?? $this->bannedIp($request)) {
             return $denied;
         }
+        $hopApp = $request->attributes->get('hop_app');
         $data = [
             'name' => trim((string) $request->json('name', '')),
             'email' => strtolower(trim((string) $request->json('email', ''))),
@@ -115,6 +122,7 @@ class PixelHopAccountController extends Controller
             'password' => Hash::make($data['password']),
             'role' => User::ROLE_USER,
         ]);
+        $user->forceFill(['username' => Username::suggest($user->name, $user)])->saveQuietly();
         Folder::create(['name' => 'Default', 'user_id' => $user->id, 'is_default' => true]);
         // SMTP can take seconds per message: send both after the response.
         defer(function () use ($user) {
@@ -126,20 +134,13 @@ class PixelHopAccountController extends Controller
             }
         });
 
-        return response()->json(['user' => $this->payload($user)], 201);
+        return response()->json(['user' => $this->payload($user, $hopApp)], 201);
     }
 
-    /** The same facts the SSO ticket carries, plus whether the email is confirmed. */
-    private function payload(User $user): array
+    /** The same facts the SSO ticket carries (v2 profile), plus `admin` for this app. */
+    private function payload(User $user, HopApp $app): array
     {
-        return [
-            'sub' => (string) $user->id,
-            'email' => $user->email,
-            'name' => $user->name,
-            'avatar' => $user->avatar ?: '',
-            'admin' => $user->isSuperAdmin(),
-            'verified' => $user->hasVerifiedEmail() || (bool) $user->google_id,
-        ];
+        return $user->hopProfile() + ['admin' => $user->isAdminOf($app->slug)];
     }
 
     /** The visitor's IP as PixelHop saw it (signed with the body), or ''. */
@@ -162,10 +163,22 @@ class PixelHopAccountController extends Controller
         return null;
     }
 
-    private function verifySignature(Request $request): ?JsonResponse
+    /**
+     * New apps: HOP App Protocol headers (VerifyHopSignature already ran on
+     * /api/apps/{app}/…). PixelHop 3.x: the older per-app signature. Either
+     * way the app ends up in the request attributes.
+     */
+    private function verifySignature(Request $request, string $slug): ?JsonResponse
     {
-        $secret = (string) config('services.pixelhop.sso_secret');
-        if (strlen($secret) < 32) {
+        if ($hopApp = $request->attributes->get('hop_app')) {
+            if ($hopApp->slug !== $slug || ! $hopApp->can('account_api')) {
+                return response()->json(['error' => 'not_configured'], 404);
+            }
+
+            return null;
+        }
+        $hopApp = HopApp::find_($slug);
+        if (! $hopApp || ! $hopApp->isConfigured() || ! $hopApp->can('account_api')) {
             return response()->json(['error' => 'not_configured'], 404);
         }
         $ts = (string) $request->header('X-PixelHop-Timestamp', '');
@@ -173,11 +186,15 @@ class PixelHopAccountController extends Controller
         if (! ctype_digit($ts) || abs(time() - (int) $ts) > self::MAX_AGE) {
             return response()->json(['error' => 'stale_request'], 401);
         }
-        $expected = rtrim(strtr(base64_encode(hash_hmac('sha256', 'pixelhop-api|'.$ts.'|'.$request->getContent(), $secret, true)), '+/', '-_'), '=');
-        if (! hash_equals($expected, $sig)) {
-            return response()->json(['error' => 'bad_signature'], 401);
+        foreach ($hopApp->secrets() as $secret) {
+            $expected = HopSignature::b64(hash_hmac('sha256', 'pixelhop-api|'.$ts.'|'.$request->getContent(), $secret, true));
+            if (hash_equals($expected, $sig)) {
+                $request->attributes->set('hop_app', $hopApp);
+
+                return null;
+            }
         }
 
-        return null;
+        return response()->json(['error' => 'bad_signature'], 401);
     }
 }

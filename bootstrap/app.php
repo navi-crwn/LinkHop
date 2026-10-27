@@ -10,6 +10,7 @@ use App\Http\Middleware\ContentSecurityPolicyMiddleware;
 use App\Http\Middleware\EnsureGoogleUserHasPassword;
 use App\Http\Middleware\EnsureTwoFactorAuthenticated;
 use App\Http\Middleware\RemoveWwwPrefix;
+use App\Http\Middleware\VerifyHopSignature;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -42,6 +43,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'quota' => CheckLinkQuota::class,
             '2fa' => EnsureTwoFactorAuthenticated::class,
             'api.auth' => ApiAuthenticate::class,
+            'hop.signed' => VerifyHopSignature::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
