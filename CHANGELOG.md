@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **HOP App Protocol.** Signed server-to-server API for the apps and the Imperium control center: `GET /api/hop/profile/{id}`, `/api/hop/profiles`, `/api/hop/apps`, and `/api/apps/{app}/login|register` for an app's own forms (the old `/api/pixelhop/*` endpoints keep working for PixelHop 3.x). Secrets can be rotated with a grace period
 - **Events.** Apps that declare the `events` capability are told about profile changes, status changes (suspend) and account deletion (`POST /hop/events`, signed, retried with backoff)
 - Sign-ins with Google and into the apps are now recorded in the login history like password sign-ins
+- Sign-in, sign-up, forgot- and reset-password forms: one full-width HOP button, the Cloudflare check as wide as the form, and the secondary links (forgot password, join, log in) as small text underneath; the header shows a HOP ID chip. Mails get a HOP ID header (dark band with the logo) and a footer naming every HOP app
 - Password reset speaks HOP ID: the mail (with the logo) says the new password works on every HOP app, the form shows the address the link is for without letting it be edited (the token was always bound to that address), and opening the link while signed in as another account signs that session out instead of bouncing to the dashboard
 
 

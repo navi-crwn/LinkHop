@@ -29,6 +29,7 @@
                     <x-application-logo class="h-8 w-auto" />
                     <span class="text-base font-semibold tracking-tight text-ink">{{ config('app.name') }}</span>
                     <span class="hidden text-xs text-muted sm:inline">hel.ink</span>
+                    <span class="chip-blue ml-1">HOP ID</span>
                 </a>
                 <button type="button" class="icon-btn" aria-label="Toggle theme"
                     data-toggle-dark>
