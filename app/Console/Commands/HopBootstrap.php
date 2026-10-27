@@ -47,6 +47,11 @@ class HopBootstrap extends Command
             'imperium' => ['name' => 'Imperium', 'menu_label' => null, 'callback_path' => '/auth/sso/callback',
                 'start_path' => '/auth/sso', 'pages' => ['default' => '/'], 'continue_page' => 'default',
                 'capabilities' => ['admin_client'], 'sort_order' => 1, 'hidden' => true],
+            // Imperium's second door (Cloudflare Access): a ticket may only return to one
+            // URL, so the second hostname is its own registry entry with its own secret.
+            'citadel' => ['name' => 'Imperium (citadel)', 'menu_label' => null, 'callback_path' => '/auth/sso/callback',
+                'start_path' => '/auth/sso', 'pages' => ['default' => '/'], 'continue_page' => 'default',
+                'capabilities' => [], 'sort_order' => 2, 'hidden' => true],
         ] as $slug => $row) {
             $url = (string) config("services.$slug.url");
             $secret = (string) config("services.$slug.sso_secret");
