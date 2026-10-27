@@ -1,6 +1,6 @@
 <p align="center"><a href="README.md">English</a> · <b>Bahasa Indonesia</b></p>
 
-<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/hero-id-light.webp"><img src="docs/readme/hero-id-dark.webp" alt="HEL.ink: link pendek, halaman bio yang cantik" width="100%"></picture></p>
+<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/hero-id-light.webp"><img src="docs/readme/hero-id-dark.webp" alt="LinkHop: link pendek, halaman bio yang cantik" width="100%"></picture></p>
 
 <p align="center">
   <b>Pendekkan link, hitung setiap klik, dan punya halaman link in bio.<br>Gratis, open source, dan bisa kamu host sendiri.</b>
@@ -27,9 +27,11 @@
 
 ---
 
-## Apa itu HEL.ink?
+## Apa itu LinkHop?
 
-Link yang panjang susah dibagikan, dan kamu tidak pernah tahu siapa yang mengkliknya. HEL.ink membuatnya **pendek** (bisa dengan slug pilihanmu), **menghitung setiap klik** per negara, perangkat, dan referrer, dan memberi kamu satu **halaman link in bio** di `hel.ink/b/namamu` untuk semua yang ingin kamu tunjukkan.
+**LinkHop** adalah pemendek link dari keluarga HOP, di **hel.ink** ("Hop Easy Link"). Satu HOP ID untuk masuk ke LinkHop, [PixelHop](https://github.com/navi-crwn/pixelhop) (gambar) dan [NoteHop](https://github.com/navi-crwn/NoteHop) (catatan).
+
+Link yang panjang susah dibagikan, dan kamu tidak pernah tahu siapa yang mengkliknya. LinkHop membuatnya **pendek** (bisa dengan slug pilihanmu), **menghitung setiap klik** per negara, perangkat, dan referrer, dan memberi kamu satu **halaman link in bio** di `hel.ink/b/namamu` untuk semua yang ingin kamu tunjukkan.
 
 Semua fitur sudah termasuk untuk setiap akun. Tanpa paket premium, tanpa fitur yang dikunci. Dan karena open source, kamu juga bisa menjalankan semuanya di server dan domain sendiri.
 
@@ -38,7 +40,7 @@ Semua fitur sudah termasuk untuk setiap akun. Tanpa paket premium, tanpa fitur y
 - butuh satu halaman rapi untuk semua link, toko, musik, dan video,
 - ingin pemendek link yang kamu kendalikan sendiri, di server sendiri.
 
-<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/features-id-light.webp"><img src="docs/readme/features-id-dark.webp" alt="Semua yang bisa dilakukan HEL.ink" width="100%"></picture></p>
+<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/features-id-light.webp"><img src="docs/readme/features-id-dark.webp" alt="Semua yang bisa dilakukan LinkHop" width="100%"></picture></p>
 
 <p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/bio-id-light.webp"><img src="docs/readme/bio-id-dark.webp" alt="Link in Bio: satu halaman, semua link" width="100%"></picture></p>
 
@@ -48,7 +50,7 @@ Semua fitur sudah termasuk untuk setiap akun. Tanpa paket premium, tanpa fitur y
 
 <img src="docs/readme/example-bio.webp" alt="Contoh halaman bio di hel.ink/b/hel" width="280" align="right">
 
-**Halaman bio:** [hel.ink/b/hel](https://hel.ink/b/hel), halaman milik HEL.ink sendiri dengan tema Galaxy, tombol link berikon brand, blok teks, FAQ, dan kartu kontak.
+**Halaman bio:** [hel.ink/b/hel](https://hel.ink/b/hel), halaman milik LinkHop sendiri dengan tema Galaxy, tombol link berikon brand, blok teks, FAQ, dan kartu kontak.
 
 **Link pendek:**
 
@@ -134,7 +136,7 @@ GOOGLE_REDIRECT_URI=https://yourdomain.com/auth/google/callback
 
 **Domain sendiri:** isi `APP_URL` dengan domainmu, maka semua link pendek dan halaman bio memakainya.
 
-**Di belakang Cloudflare:** HEL.ink mengirim Content Security Policy ketat dalam mode report-only yang hanya memercayai script dengan nonce halaman, dan mencatat apa yang akan diblokir ke `storage/logs/csp-*.log`. Fitur Cloudflare **Email Address Obfuscation** (Scrape Shield) dan **Rocket Loader** (Speed → Optimization) menyuntikkan script sendiri dari `/cdn-cgi/scripts/.../cloudflare-static/` tanpa nonce itu, sehingga memenuhi log. Matikan keduanya di dashboard Cloudflare (disarankan: HEL.ink tidak membutuhkannya, dan policy tetap siap diberlakukan), atau lewati hanya di path tertentu dengan Configuration Rule Cloudflare. Mengizinkannya di policy tidak bisa dengan policy nonce (`'strict-dynamic'` mengabaikan daftar host dan `'self'`); caranya harus membuang nonce, yang melemahkan policy untuk semua script lain.
+**Di belakang Cloudflare:** LinkHop mengirim Content Security Policy ketat dalam mode report-only yang hanya memercayai script dengan nonce halaman, dan mencatat apa yang akan diblokir ke `storage/logs/csp-*.log`. Fitur Cloudflare **Email Address Obfuscation** (Scrape Shield) dan **Rocket Loader** (Speed → Optimization) menyuntikkan script sendiri dari `/cdn-cgi/scripts/.../cloudflare-static/` tanpa nonce itu, sehingga memenuhi log. Matikan keduanya di dashboard Cloudflare (disarankan: LinkHop tidak membutuhkannya, dan policy tetap siap diberlakukan), atau lewati hanya di path tertentu dengan Configuration Rule Cloudflare. Mengizinkannya di policy tidak bisa dengan policy nonce (`'strict-dynamic'` mengabaikan daftar host dan `'self'`); caranya harus membuang nonce, yang melemahkan policy untuk semua script lain.
 
 **Production:** biarkan queue worker tetap berjalan.
 ```bash

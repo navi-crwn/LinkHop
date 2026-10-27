@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - GeoIP providers</x-slot>
+    <x-slot name="pageTitle">LinkHop - GeoIP providers</x-slot>
     <x-page-header title="GeoIP providers" subtitle="Lookups fail over by priority, and each IP is cached for 24 hours." />
 
     @php

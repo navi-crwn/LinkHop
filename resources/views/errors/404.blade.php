@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Page not found - HEL.ink</title>
+        <title>Page not found - LinkHop</title>
         <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png">
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=inter:400,500,600&display=swap" rel="stylesheet" />
@@ -15,8 +15,8 @@
     <body class="min-h-full bg-linear-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
         <div class="flex min-h-screen flex-col items-center justify-center px-6 text-center">
             <div class="flex flex-col items-center">
-                <img src="{{ route('brand.logo') }}" alt="HEL.ink logo" class="h-16 w-16 rounded-full shadow-lg">
-                <p class="mt-4 text-sm uppercase tracking-[0.4em] text-white/60">HEL.ink</p>
+                <img src="{{ route('brand.logo') }}" alt="LinkHop logo" class="h-16 w-16 rounded-full shadow-lg">
+                <p class="mt-4 text-sm uppercase tracking-[0.4em] text-white/60">LinkHop</p>
             </div>
             <h1 class="mt-4 text-4xl font-semibold">Link not found</h1>
             <p class="mt-2 max-w-md text-white/70">The shortlink you opened doesn’t exist anymore, is disabled, or expired. Double-check the slug or head back home.</p>

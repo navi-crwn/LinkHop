@@ -17,7 +17,7 @@ return [
         '2a06:98c0::/29', '2c0f:f248::/32',
     ],
 
-    'name' => env('APP_NAME', 'HEL.ink'),
+    'name' => env('APP_NAME', 'LinkHop'),
     'env' => env('APP_ENV', 'production'),
     'debug' => (bool) env('APP_DEBUG', false),
     'url' => env('APP_URL', 'http://localhost'),

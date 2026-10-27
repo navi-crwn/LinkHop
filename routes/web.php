@@ -97,6 +97,9 @@ Route::middleware('ip.ban')->group(function () {
         Route::post('links/{link}/comments', [LinkCommentController::class, 'store'])->name('links.comments.store');
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::get('/profile/username-check', [ProfileController::class, 'usernameCheck'])->middleware('throttle:60,1,username-check')->name('profile.username-check');
+        Route::post('/profile/avatar', [ProfileController::class, 'storeAvatar'])->name('profile.avatar');
+        Route::delete('/profile/avatar', [ProfileController::class, 'destroyAvatar'])->name('profile.avatar.destroy');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
         Route::post('/settings/export', [SettingsController::class, 'exportData'])->name('settings.export');

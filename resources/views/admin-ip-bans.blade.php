@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - IP bans</x-slot>
+    <x-slot name="pageTitle">LinkHop - IP bans</x-slot>
     <x-page-header title="IP bans" subtitle="Blocked addresses can't sign up, sign in or use the public forms." />
 
     <x-flash />

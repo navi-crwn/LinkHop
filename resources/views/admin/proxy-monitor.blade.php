@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - Proxy detection</x-slot>
+    <x-slot name="pageTitle">LinkHop - Proxy detection</x-slot>
     <x-page-header title="Proxy detection" subtitle="Detectors vote on each IP, weighted by confidence.">
         <x-slot name="actions">
             <form action="{{ route('admin.proxy.reset-stats') }}" method="POST" data-confirm="Reset all detector statistics?">

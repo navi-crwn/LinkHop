@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - Users</x-slot>
+    <x-slot name="pageTitle">LinkHop - Users</x-slot>
     @php
         $tabs = ['' => ['All', $counts['all']], 'active' => ['Active', $counts['active']], 'suspended' => ['Suspended', $counts['suspended']]];
         $query = fn (array $extra) => route('admin.users.index', array_filter(array_merge(['q' => $search, 'status' => $status, 'sort' => $sort], $extra), fn ($v) => $v !== '' && $v !== null));

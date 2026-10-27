@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\HopApp;
 use App\Models\User;
+use App\Services\LoginRecorder;
 use App\Support\HopSignature;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -56,6 +57,7 @@ class AppSsoController extends Controller
         ];
         $body = HopSignature::b64(json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
         $ticket = $body.'.'.HopSignature::b64(hash_hmac('sha256', $body, $hopApp->secrets()[0], true));
+        app(LoginRecorder::class)->record($user, $request->ip(), $request->userAgent(), $hopApp->name);
 
         return redirect()->away($returnTo.'?'.http_build_query(['ticket' => $ticket]));
     }
