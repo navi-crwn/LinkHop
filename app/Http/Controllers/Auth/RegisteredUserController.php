@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
+use function Illuminate\Support\defer;
+
 class RegisteredUserController extends Controller
 {
     public function __construct(private readonly TurnstileService $turnstile) {}
@@ -50,16 +52,19 @@ class RegisteredUserController extends Controller
             'user_id' => $user->id,
             'is_default' => true,
         ]);
-        event(new Registered($user));
         Auth::login($user);
-        try {
-            \Mail::to($user->email)->send(new WelcomeEmail($user, false));
-        } catch (\Exception $e) {
-            \Log::error('Failed to send welcome email', [
-                'error' => $e->getMessage(),
-                'user_id' => $user->id,
-            ]);
-        }
+        // SMTP can take seconds per message: send both after the response.
+        defer(function () use ($user) {
+            event(new Registered($user)); // the "confirm your email" message
+            try {
+                \Mail::to($user->email)->send(new WelcomeEmail($user, false));
+            } catch (\Exception $e) {
+                \Log::error('Failed to send welcome email', [
+                    'error' => $e->getMessage(),
+                    'user_id' => $user->id,
+                ]);
+            }
+        });
 
         return redirect()->route('verification.notice');
     }

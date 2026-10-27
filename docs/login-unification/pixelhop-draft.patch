@@ -1,0 +1,544 @@
+diff --git a/internal/app/auth.go b/internal/app/auth.go
+index 6f8eed8..802960a 100644
+--- a/internal/app/auth.go
++++ b/internal/app/auth.go
+@@ -187,7 +187,20 @@ func (a *App) loginPage(w http.ResponseWriter, r *http.Request) {
+ 	a.render(w, r, "login", "Sign in", a.authForm(r))
+ }
+ 
++// helinkOnly sends password forms back to /login, which only offers HEL.ink
++// buttons when accounts come from HEL.ink: sign-in, sign-up, Google and
++// two-factor codes all live there.
++func (a *App) helinkOnly(w http.ResponseWriter, r *http.Request) bool {
++	if a.cfg.SSOEnabled() {
++		http.Redirect(w, r, "/login", http.StatusSeeOther)
++	}
++	return a.cfg.SSOEnabled()
++}
++
+ func (a *App) login(w http.ResponseWriter, r *http.Request) {
++	if a.helinkOnly(w, r) {
++		return
++	}
+ 	f := a.authForm(r)
+ 	f.Email = strings.TrimSpace(r.FormValue("email"))
+ 	if !a.limits.allow("login:"+clientIP(r), 10, 15*time.Minute) {
+@@ -208,21 +221,6 @@ func (a *App) login(w http.ResponseWriter, r *http.Request) {
+ 		CheckPassword(dummyHash, pw)
+ 	}
+ 	local := err == nil && CheckPassword(u.PassHash, pw)
+-	if !local && a.cfg.SSOEnabled() {
+-		// Not a password kept here: ask HEL.ink, where the account may live.
+-		hu, msg, redirect := a.helinkLogin(r, f.Email, pw)
+-		if redirect {
+-			http.Redirect(w, r, "/auth/helink?next="+url.QueryEscape(safeNext(f.Next)), http.StatusSeeOther)
+-			return
+-		}
+-		if hu == nil {
+-			f.Error = msg
+-			w.WriteHeader(http.StatusUnauthorized)
+-			a.render(w, r, "login", "Sign in", f)
+-			return
+-		}
+-		u, local = hu, true
+-	}
+ 	if !local {
+ 		f.Error = "That email and password don't match."
+ 		w.WriteHeader(http.StatusUnauthorized)
+@@ -265,6 +263,9 @@ func (a *App) registerPage(w http.ResponseWriter, r *http.Request) {
+ }
+ 
+ func (a *App) register(w http.ResponseWriter, r *http.Request) {
++	if a.helinkOnly(w, r) {
++		return
++	}
+ 	f := a.authForm(r)
+ 	f.Email = strings.TrimSpace(r.FormValue("email"))
+ 	f.Name = trim(strings.TrimSpace(r.FormValue("name")), 60)
+@@ -283,21 +284,6 @@ func (a *App) register(w http.ResponseWriter, r *http.Request) {
+ 		f.Error = "Use at least 8 characters for your password."
+ 	case len(pw) > 200:
+ 		f.Error = "That password is too long."
+-	case a.cfg.SSOEnabled() && r.FormValue("tos") == "":
+-		f.Error = "Please accept the terms."
+-	}
+-	if f.Error == "" && a.cfg.SSOEnabled() {
+-		// The account lives on HEL.ink, so it works in both apps.
+-		u, msg := a.helinkRegister(r, f.Name, strings.ToLower(f.Email), pw)
+-		if u != nil {
+-			if err := a.startSession(w, r, u); err != nil {
+-				a.serverError(w, r, err)
+-				return
+-			}
+-			http.Redirect(w, r, "/dashboard?welcome=1", http.StatusSeeOther)
+-			return
+-		}
+-		f.Error = msg
+ 	}
+ 	if f.Error == "" {
+ 		u := &db.User{Email: f.Email, Name: f.Name, PassHash: HashPassword(pw), QuotaBytes: a.cfg.DefaultQuota}
+diff --git a/internal/app/helink.go b/internal/app/helink.go
+index 426e19b..6f4e65c 100644
+--- a/internal/app/helink.go
++++ b/internal/app/helink.go
+@@ -26,6 +26,7 @@ const helinkCookie = "ph_helink"
+ 
+ type helinkTicket struct {
+ 	Sub    string `json:"sub"`
++	Aud    string `json:"aud"` // the app the ticket is for; HEL.ink sends "pixelhop"
+ 	Email  string `json:"email"`
+ 	Name   string `json:"name"`
+ 	Avatar string `json:"avatar"`
+diff --git a/internal/app/helink_api.go b/internal/app/helink_api.go
+deleted file mode 100644
+index 0af3783..0000000
+--- a/internal/app/helink_api.go
++++ /dev/null
+@@ -1,174 +0,0 @@
+-package app
+-
+-import (
+-	"bytes"
+-	"context"
+-	"crypto/hmac"
+-	"crypto/sha256"
+-	"encoding/base64"
+-	"encoding/json"
+-	"errors"
+-	"io"
+-	"net"
+-	"net/http"
+-	"strconv"
+-	"strings"
+-	"time"
+-
+-	"github.com/navi-crwn/pixelhop/internal/db"
+-)
+-
+-// With HEL.ink accounts switched on, PixelHop's own sign-in and sign-up
+-// forms still work: they check the password with HEL.ink (server to server,
+-// signed with the shared secret), so one account works in both apps and
+-// nobody has to visit HEL.ink first. People with two-factor codes are sent
+-// through the normal "Continue with HEL.ink" flow, which asks for the code.
+-
+-type helinkAccount struct {
+-	Sub      string `json:"sub"`
+-	Email    string `json:"email"`
+-	Name     string `json:"name"`
+-	Avatar   string `json:"avatar"`
+-	Admin    bool   `json:"admin"`
+-	Verified bool   `json:"verified"`
+-}
+-
+-type helinkAnswer struct {
+-	Status  int
+-	Account *helinkAccount
+-	Code    string // bad_credentials, two_factor, suspended, invalid, too_many_attempts…
+-	Message string
+-}
+-
+-var errHelinkDown = errors.New("HEL.ink didn't answer")
+-
+-func (a *App) helinkClient() *http.Client {
+-	t := http.DefaultTransport.(*http.Transport).Clone()
+-	if addr := a.cfg.HelinkAPIAddr; addr != "" {
+-		// Talk to HEL.ink on this machine (same certificate, no round trip
+-		// through the CDN). The TLS name stays HEL.ink's own.
+-		d := &net.Dialer{Timeout: 5 * time.Second}
+-		t.DialContext = func(ctx context.Context, network, _ string) (net.Conn, error) {
+-			return d.DialContext(ctx, network, addr)
+-		}
+-	}
+-	return &http.Client{Timeout: 15 * time.Second, Transport: t}
+-}
+-
+-func (a *App) helinkCall(ctx context.Context, path string, body any) (*helinkAnswer, error) {
+-	js, err := json.Marshal(body)
+-	if err != nil {
+-		return nil, err
+-	}
+-	ts := strconv.FormatInt(time.Now().Unix(), 10)
+-	mac := hmac.New(sha256.New, []byte(a.cfg.HelinkSecret))
+-	mac.Write([]byte("pixelhop-api|" + ts + "|"))
+-	mac.Write(js)
+-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, a.cfg.HelinkURL+path, bytes.NewReader(js))
+-	if err != nil {
+-		return nil, err
+-	}
+-	req.Header.Set("Content-Type", "application/json")
+-	req.Header.Set("Accept", "application/json")
+-	req.Header.Set("User-Agent", "PixelHop/"+Version)
+-	req.Header.Set("X-PixelHop-Timestamp", ts)
+-	req.Header.Set("X-PixelHop-Signature", base64.RawURLEncoding.EncodeToString(mac.Sum(nil)))
+-	resp, err := a.helinkClient().Do(req)
+-	if err != nil {
+-		a.log.Warn("helink api", "path", path, "err", err)
+-		return nil, errHelinkDown
+-	}
+-	defer resp.Body.Close()
+-	var out struct {
+-		User    *helinkAccount `json:"user"`
+-		Error   string         `json:"error"`
+-		Message string         `json:"message"`
+-	}
+-	raw, _ := io.ReadAll(io.LimitReader(resp.Body, 64<<10))
+-	if json.Unmarshal(raw, &out) != nil {
+-		a.log.Warn("helink api", "path", path, "status", resp.StatusCode, "body", trim(string(raw), 200))
+-		return nil, errHelinkDown
+-	}
+-	ans := &helinkAnswer{Status: resp.StatusCode, Account: out.User, Code: out.Error, Message: out.Message}
+-	if resp.StatusCode/100 == 2 && (out.User == nil || out.User.Sub == "" || out.User.Email == "") {
+-		return nil, errHelinkDown
+-	}
+-	return ans, nil
+-}
+-
+-// helinkLogin checks email and password with HEL.ink. It returns the
+-// PixelHop user to sign in, or a message for the form, or redirect=true when
+-// the person must use "Continue with HEL.ink" (two-factor codes).
+-func (a *App) helinkLogin(r *http.Request, email, password string) (u *db.User, msg string, redirect bool) {
+-	ans, err := a.helinkCall(r.Context(), "/api/pixelhop/login", map[string]string{"email": email, "password": password, "ip": clientIP(r)})
+-	if err != nil {
+-		return nil, "We couldn't reach HEL.ink to check your password. Try “Continue with HEL.ink”, or again in a minute.", false
+-	}
+-	switch {
+-	case ans.Status == http.StatusOK:
+-	case ans.Code == "two_factor":
+-		return nil, "", true
+-	case ans.Code == "suspended":
+-		return nil, "This account is suspended.", false
+-	case ans.Code == "too_many_attempts" || ans.Status == http.StatusTooManyRequests:
+-		return nil, "Too many attempts. Please wait a few minutes and try again.", false
+-	default:
+-		return nil, "That email and password don't match.", false
+-	}
+-	u, err = a.accountFromHelink(r.Context(), ans.Account)
+-	if err != nil {
+-		if errors.Is(err, errNeedsVerifiedEmail) {
+-			return nil, "Confirm your email first: open the link HEL.ink sent to " + ans.Account.Email + ", then sign in again.", false
+-		}
+-		a.log.Error("helink login", "err", err)
+-		return nil, "Sign-in failed on our side. Please try again.", false
+-	}
+-	return u, "", false
+-}
+-
+-var errNeedsVerifiedEmail = errors.New("email not confirmed")
+-
+-// accountFromHelink links a HEL.ink account to its PixelHop profile. An
+-// unconfirmed address may only reach a profile that is already linked to
+-// that HEL.ink account, or start a new one; it never takes over an existing
+-// profile with the same email.
+-func (a *App) accountFromHelink(ctx context.Context, acc *helinkAccount) (*db.User, error) {
+-	t := &helinkTicket{Sub: acc.Sub, Email: acc.Email, Name: acc.Name, Avatar: acc.Avatar, Admin: acc.Admin}
+-	if !acc.Verified {
+-		if _, err := a.db.UserByHelink(ctx, acc.Sub); errors.Is(err, db.ErrNotFound) {
+-			if _, err := a.db.UserByEmail(ctx, acc.Email); err == nil {
+-				return nil, errNeedsVerifiedEmail
+-			}
+-		}
+-		t.Admin = false // HEL.ink's owner always has a confirmed address
+-	}
+-	return a.linkHelinkUser(ctx, t)
+-}
+-
+-// helinkRegister creates the account on HEL.ink (which emails a
+-// confirmation link) and its PixelHop profile, already signed in here.
+-func (a *App) helinkRegister(r *http.Request, name, email, password string) (*db.User, string) {
+-	if _, err := a.db.UserByEmail(r.Context(), email); err == nil {
+-		return nil, "An account with this email already exists. Sign in instead."
+-	}
+-	if name == "" {
+-		name, _, _ = strings.Cut(email, "@")
+-	}
+-	ans, err := a.helinkCall(r.Context(), "/api/pixelhop/register", map[string]any{
+-		"name": name, "email": email, "password": password, "tos_accepted": true, "ip": clientIP(r)})
+-	if err != nil {
+-		return nil, "We couldn't reach HEL.ink to create your account. Please try again in a minute."
+-	}
+-	if ans.Status != http.StatusCreated {
+-		if ans.Message != "" {
+-			return nil, ans.Message
+-		}
+-		return nil, "We couldn't create that account. Please check the details and try again."
+-	}
+-	u, err := a.accountFromHelink(r.Context(), ans.Account)
+-	if err != nil {
+-		a.log.Error("helink register", "err", err)
+-		return nil, "Your account was made, but signing in failed. Please sign in."
+-	}
+-	return u, ""
+-}
+diff --git a/internal/app/helink_api_test.go b/internal/app/helink_api_test.go
+deleted file mode 100644
+index eefce8b..0000000
+--- a/internal/app/helink_api_test.go
++++ /dev/null
+@@ -1,159 +0,0 @@
+-package app
+-
+-import (
+-	"crypto/hmac"
+-	"crypto/sha256"
+-	"encoding/base64"
+-	"encoding/json"
+-	"io"
+-	"log/slog"
+-	"net/http"
+-	"net/http/httptest"
+-	"net/url"
+-	"strings"
+-	"testing"
+-
+-	"github.com/navi-crwn/pixelhop/internal/config"
+-	"github.com/navi-crwn/pixelhop/internal/db"
+-)
+-
+-// fakeHelink answers /api/pixelhop/* like HEL.ink does, after checking the signature.
+-func fakeHelink(t *testing.T, accounts map[string]map[string]any) *httptest.Server {
+-	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+-		body, _ := io.ReadAll(r.Body)
+-		m := hmac.New(sha256.New, []byte(testSecret))
+-		m.Write([]byte("pixelhop-api|" + r.Header.Get("X-PixelHop-Timestamp") + "|"))
+-		m.Write(body)
+-		if r.Header.Get("X-PixelHop-Signature") != base64.RawURLEncoding.EncodeToString(m.Sum(nil)) {
+-			w.WriteHeader(401)
+-			w.Write([]byte(`{"error":"bad_signature"}`))
+-			return
+-		}
+-		var in map[string]any
+-		json.Unmarshal(body, &in)
+-		email := in["email"].(string)
+-		switch r.URL.Path {
+-		case "/api/pixelhop/login":
+-			acc, ok := accounts[email]
+-			if !ok || acc["password"] != in["password"] {
+-				w.WriteHeader(401)
+-				w.Write([]byte(`{"error":"bad_credentials"}`))
+-				return
+-			}
+-			if acc["2fa"] == true {
+-				w.WriteHeader(409)
+-				w.Write([]byte(`{"error":"two_factor"}`))
+-				return
+-			}
+-			json.NewEncoder(w).Encode(map[string]any{"user": map[string]any{"sub": acc["sub"], "email": email, "name": "CS Team", "verified": acc["verified"]}})
+-		case "/api/pixelhop/register":
+-			if _, ok := accounts[email]; ok {
+-				w.WriteHeader(422)
+-				w.Write([]byte(`{"error":"invalid","message":"An account with this email already exists. Sign in instead."}`))
+-				return
+-			}
+-			accounts[email] = map[string]any{"sub": "500", "password": in["password"], "verified": false}
+-			w.WriteHeader(201)
+-			json.NewEncoder(w).Encode(map[string]any{"user": map[string]any{"sub": "500", "email": email, "name": in["name"], "verified": false}})
+-		}
+-	}))
+-}
+-
+-func apiSSOApp(t *testing.T, helinkURL string) (*App, http.Handler) {
+-	t.Helper()
+-	t.Setenv("PIXELHOP_DATA", t.TempDir())
+-	t.Setenv("PIXELHOP_BASE_URL", "https://p.example.com")
+-	t.Setenv("HELINK_URL", helinkURL)
+-	t.Setenv("HELINK_SSO_SECRET", testSecret)
+-	cfg, err := config.Load()
+-	if err != nil {
+-		t.Fatal(err)
+-	}
+-	d, err := db.Open(cfg.DataDir)
+-	if err != nil {
+-		t.Fatal(err)
+-	}
+-	t.Cleanup(func() { d.Close() })
+-	a, err := New(cfg, d, slog.New(slog.NewTextHandler(io.Discard, nil)))
+-	if err != nil {
+-		t.Fatal(err)
+-	}
+-	return a, a.Handler()
+-}
+-
+-func postForm(h http.Handler, path string, v url.Values) *httptest.ResponseRecorder {
+-	req := httptest.NewRequest("POST", path, strings.NewReader(v.Encode()))
+-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+-	rec := httptest.NewRecorder()
+-	h.ServeHTTP(rec, req)
+-	return rec
+-}
+-
+-func hasSession(rec *httptest.ResponseRecorder) bool {
+-	for _, c := range rec.Result().Cookies() {
+-		if c.Name == sessionCookie && c.Value != "" {
+-			return true
+-		}
+-	}
+-	return false
+-}
+-
+-func TestPasswordLoginWithHelinkAccount(t *testing.T) {
+-	accounts := map[string]map[string]any{
+-		"tim@example.com": {"sub": "99", "password": "random123", "verified": true},
+-		"tf@example.com":  {"sub": "98", "password": "random123", "verified": true, "2fa": true},
+-		"new@example.com": {"sub": "97", "password": "random123", "verified": false},
+-	}
+-	srv := fakeHelink(t, accounts)
+-	defer srv.Close()
+-	a, h := apiSSOApp(t, srv.URL)
+-
+-	rec := postForm(h, "/login", url.Values{"email": {"tim@example.com"}, "password": {"random123"}})
+-	if rec.Code != http.StatusSeeOther || !hasSession(rec) {
+-		t.Fatalf("login with HEL.ink password: %d %s", rec.Code, rec.Body.String())
+-	}
+-	u, err := a.db.UserByEmail(t.Context(), "tim@example.com")
+-	if err != nil || u.HelinkID.String != "99" {
+-		t.Fatalf("profile not linked: %+v %v", u, err)
+-	}
+-	if rec := postForm(h, "/login", url.Values{"email": {"tim@example.com"}, "password": {"nope"}}); rec.Code != http.StatusUnauthorized || hasSession(rec) {
+-		t.Fatalf("wrong password: %d", rec.Code)
+-	}
+-	if rec := postForm(h, "/login", url.Values{"email": {"tf@example.com"}, "password": {"random123"}}); rec.Code != http.StatusSeeOther || !strings.HasPrefix(rec.Header().Get("Location"), "/auth/helink") {
+-		t.Fatalf("two-factor accounts go through HEL.ink: %d %s", rec.Code, rec.Header().Get("Location"))
+-	}
+-	// An unconfirmed HEL.ink address never takes over an existing profile with that email.
+-	a.db.InsertUser(t.Context(), &db.User{Email: "new@example.com", QuotaBytes: 1 << 20})
+-	if rec := postForm(h, "/login", url.Values{"email": {"new@example.com"}, "password": {"random123"}}); hasSession(rec) || !strings.Contains(rec.Body.String(), "Confirm your email") {
+-		t.Fatalf("unconfirmed takeover: %d", rec.Code)
+-	}
+-}
+-
+-func TestRegisterCreatesHelinkAccount(t *testing.T) {
+-	accounts := map[string]map[string]any{}
+-	srv := fakeHelink(t, accounts)
+-	defer srv.Close()
+-	a, h := apiSSOApp(t, srv.URL)
+-	if rec := fetch(h, "/register"); rec.Code != 200 || !strings.Contains(rec.Body.String(), "One account, two apps") {
+-		t.Fatalf("register page: %d", rec.Code)
+-	}
+-	v := url.Values{"name": {"CS"}, "email": {"cs@example.com"}, "password": {"a-strong-pass"}}
+-	if rec := postForm(h, "/register", v); hasSession(rec) {
+-		t.Fatal("terms must be accepted")
+-	}
+-	v.Set("tos", "1")
+-	rec := postForm(h, "/register", v)
+-	if rec.Code != http.StatusSeeOther || !hasSession(rec) {
+-		t.Fatalf("register: %d %s", rec.Code, rec.Body.String())
+-	}
+-	if accounts["cs@example.com"] == nil {
+-		t.Fatal("the account must be made on HEL.ink")
+-	}
+-	if u, err := a.db.UserByEmail(t.Context(), "cs@example.com"); err != nil || u.HelinkID.String != "500" {
+-		t.Fatalf("profile: %+v %v", u, err)
+-	}
+-	// and signing in again later with the same password works
+-	if rec := postForm(h, "/login", url.Values{"email": {"cs@example.com"}, "password": {"a-strong-pass"}}); !hasSession(rec) {
+-		t.Fatalf("login after sign-up: %d", rec.Code)
+-	}
+-}
+diff --git a/internal/app/helink_only_test.go b/internal/app/helink_only_test.go
+new file mode 100644
+index 0000000..3d3590c
+--- /dev/null
++++ b/internal/app/helink_only_test.go
+@@ -0,0 +1,58 @@
++package app
++
++import (
++	"net/http"
++	"net/http/httptest"
++	"net/url"
++	"strings"
++	"testing"
++
++	"github.com/navi-crwn/pixelhop/internal/db"
++)
++
++func postForm(h http.Handler, path string, v url.Values) *httptest.ResponseRecorder {
++	req := httptest.NewRequest("POST", path, strings.NewReader(v.Encode()))
++	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
++	rec := httptest.NewRecorder()
++	h.ServeHTTP(rec, req)
++	return rec
++}
++
++func hasSession(rec *httptest.ResponseRecorder) bool {
++	for _, c := range rec.Result().Cookies() {
++		if c.Name == sessionCookie && c.Value != "" {
++			return true
++		}
++	}
++	return false
++}
++
++// With HEL.ink accounts on, HEL.ink is the only place to sign in or sign up.
++func TestHelinkIsTheOnlySignIn(t *testing.T) {
++	t.Setenv("GOOGLE_CLIENT_ID", "id")
++	t.Setenv("GOOGLE_CLIENT_SECRET", "key")
++	a, h := ssoApp(t)
++	for _, path := range []string{"/login", "/register"} {
++		body := fetch(h, path).Body.String()
++		if !strings.Contains(body, `href="/auth/helink?next=`) || !strings.Contains(body, `href="https://hel.example.com/join/pixelhop"`) {
++			t.Errorf("%s: no HEL.ink buttons", path)
++		}
++		if strings.Contains(body, `name="password"`) || strings.Contains(body, "/auth/google") {
++			t.Errorf("%s: still offers its own password or Google sign-in", path)
++		}
++	}
++	if body := fetch(h, "/").Body.String(); !strings.Contains(body, `<dialog id="helink-signin"`) || !strings.Contains(body, `data-open-dialog="#helink-signin"`) {
++		t.Error("guests get the HEL.ink sign-in popup from the menu")
++	}
++	// Old local passwords and sign-up forms no longer sign anyone in.
++	a.db.InsertUser(t.Context(), &db.User{Email: "old@example.com", PassHash: HashPassword("random123"), QuotaBytes: 1 << 20})
++	if rec := postForm(h, "/login", url.Values{"email": {"old@example.com"}, "password": {"random123"}}); hasSession(rec) {
++		t.Error("local password sign-in still works")
++	}
++	if rec := postForm(h, "/register", url.Values{"email": {"new@example.com"}, "password": {"random123"}}); hasSession(rec) {
++		t.Error("local sign-up still works")
++	}
++	if rec := fetch(h, "/auth/google"); rec.Code != http.StatusNotFound {
++		t.Errorf("own Google sign-in still on: %d", rec.Code)
++	}
++}
+diff --git a/internal/app/helink_test.go b/internal/app/helink_test.go
+index 8796889..f3e2d29 100644
+--- a/internal/app/helink_test.go
++++ b/internal/app/helink_test.go
+@@ -118,6 +118,8 @@ func TestHelinkRejectsBadTickets(t *testing.T) {
+ 	expired := ticketFor(state)
+ 	expired.Iat, expired.Exp = time.Now().Add(-10*time.Minute).Unix(), time.Now().Add(-8*time.Minute).Unix()
+ 	wrongState := ticketFor("someone-elses-state-value")
++	otherApp := ticketFor(state)
++	otherApp.Aud = "notehop"
+ 	good := signTicket(ticketFor(state), testSecret)
+ 	tampered := strings.Replace(good, good[5:9], "AAAA", 1)
+ 
+@@ -125,6 +127,7 @@ func TestHelinkRejectsBadTickets(t *testing.T) {
+ 		"wrong secret": signTicket(ticketFor(state), "another-secret-that-is-long-enough-000000"),
+ 		"expired":      signTicket(expired, testSecret),
+ 		"wrong state":  signTicket(wrongState, testSecret),
++		"other app":    signTicket(otherApp, testSecret),
+ 		"tampered":     tampered,
+ 		"garbage":      "not-a-ticket",
+ 	} {
+@@ -137,4 +140,3 @@ func TestHelinkRejectsBadTickets(t *testing.T) {
+ 		t.Errorf("missing cookie: accepted (%d)", rec.Code)
+ 	}
+ }
+-
+diff --git a/internal/config/config.go b/internal/config/config.go
+index d251755..e840849 100644
+--- a/internal/config/config.go
++++ b/internal/config/config.go
+@@ -162,8 +162,11 @@ func (c *Config) SSOEnabled() bool { return c.HelinkURL != "" && c.HelinkSecret
+ // TurnstileEnabled reports whether forms carry a Cloudflare Turnstile check.
+ func (c *Config) TurnstileEnabled() bool { return c.TurnstileSiteKey != "" && c.TurnstileSecret != "" }
+ 
+-// GoogleEnabled reports whether "Sign in with Google" is configured.
+-func (c *Config) GoogleEnabled() bool { return c.GoogleID != "" && c.GoogleKey != "" }
++// GoogleEnabled reports whether PixelHop's own "Sign in with Google" is on.
++// With HEL.ink accounts, Google sign-in happens on HEL.ink instead.
++func (c *Config) GoogleEnabled() bool {
++	return c.GoogleID != "" && c.GoogleKey != "" && !c.SSOEnabled()
++}
+ 
+ const SessionTTL = 30 * 24 * time.Hour
+ 
