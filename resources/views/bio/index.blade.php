@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - Link in bio</x-slot>
+    <x-slot name="pageTitle">LinkHop - Link in bio</x-slot>
     @php $max = \App\Http\Controllers\BioPageController::MAX_PAGES; @endphp
     <x-page-header title="Link in bio" subtitle="{{ $bioPages->count() }} of {{ $max }} pages used" />
 

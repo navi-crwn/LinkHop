@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\HopApp;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\URL;
@@ -20,10 +21,8 @@ class NoteHopSsoTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        config([
-            'services.notehop.url' => 'https://note.example.com', 'services.notehop.sso_secret' => self::SECRET,
-            'services.pixelhop.url' => 'https://p.example.com', 'services.pixelhop.sso_secret' => self::PIXELHOP_SECRET,
-        ]);
+        HopApp::factory()->notehop(self::SECRET)->create();
+        HopApp::factory()->pixelhop(self::PIXELHOP_SECRET)->create();
     }
 
     private function authorizeUrl(array $over = []): string
@@ -87,7 +86,7 @@ class NoteHopSsoTest extends TestCase
 
     public function test_disabled_without_configuration(): void
     {
-        config(['services.notehop.sso_secret' => '']);
+        HopApp::query()->where('slug', 'notehop')->delete();
         $user = User::factory()->create(['email_verified_at' => now()]);
         $this->actingAs($user)->withSession(['2fa_verified' => true])->get($this->authorizeUrl())->assertStatus(404);
     }
@@ -96,8 +95,10 @@ class NoteHopSsoTest extends TestCase
     {
         $user = User::factory()->create(['email_verified_at' => now()]);
         $this->actingAs($user)->withSession(['2fa_verified' => true])->get('/notehop')
+            ->assertRedirect(route('apps.open', ['app' => 'notehop']));
+        $this->actingAs($user)->withSession(['2fa_verified' => true])->get('/apps/notehop')
             ->assertRedirect('https://note.example.com/auth/sso?next=%2Fdashboard');
-        $this->actingAs($user)->withSession(['2fa_verified' => true])->get('/notehop?to=new')
+        $this->actingAs($user)->withSession(['2fa_verified' => true])->get('/apps/notehop?to=new')
             ->assertRedirect('https://note.example.com/auth/sso?next=%2F');
     }
 
@@ -107,8 +108,8 @@ class NoteHopSsoTest extends TestCase
         $url = URL::temporarySignedRoute('verification.verify', now()->addHour(),
             ['id' => $user->id, 'hash' => sha1($user->email)]);
         $res = $this->actingAs($user)->withSession(['2fa_verified' => true, 'url.intended' => 'https://hel.example.com'.$this->authorizeUrl()])->get($url);
-        $res->assertRedirect(route('notes.open', ['to' => 'default']));
-        $this->get(route('notes.open', ['to' => 'default']))->assertRedirect('https://note.example.com/auth/sso?next=%2Fdashboard');
+        $res->assertRedirect(route('apps.open', ['app' => 'notehop', 'to' => 'default']));
+        $this->get(route('apps.open', ['app' => 'notehop', 'to' => 'default']))->assertRedirect('https://note.example.com/auth/sso?next=%2Fdashboard');
     }
 
     public function test_onboarding_offers_the_way_back_to_notehop(): void

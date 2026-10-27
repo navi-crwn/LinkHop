@@ -47,7 +47,7 @@ class BioPageController extends Controller
 
     /**
      * Validation for a bio page slug; $current is the page being renamed, if any.
-     * Members need at least `shortener.bio_slug_min_length` characters; HEL.ink's
+     * Members need at least `shortener.bio_slug_min_length` characters; LinkHop's
      * own admin accounts may keep shorter brand slugs. Existing short slugs stay valid.
      */
     private function slugRules(?BioPage $current = null): array

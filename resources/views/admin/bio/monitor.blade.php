@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - Bio monitoring</x-slot>
+    <x-slot name="pageTitle">LinkHop - Bio monitoring</x-slot>
     <x-page-header title="Bio monitoring" subtitle="Views and clicks across every link-in-bio page.">
         <x-slot name="actions">
             <select name="period" aria-label="Period" class="input w-auto! py-1.5! text-sm" data-nav="?period={value}">

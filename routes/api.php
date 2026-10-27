@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\AppAccountController;
+use App\Http\Controllers\Api\HopController;
 use App\Http\Controllers\Api\LinkController;
-use App\Http\Controllers\Api\PixelHopAccountController;
 use App\Http\Controllers\Api\ShortenController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,10 +28,22 @@ Route::middleware(['web', 'auth', '2fa'])->group(function () {
     // Utility to fetch title from URL
     Route::post('/utils/fetch-title', [LinkController::class, 'fetchTitle']);
 });
-// PixelHop's own sign-in/sign-up forms use HEL.ink accounts (signed server-to-server calls).
-// Every call comes from PixelHop's server, so this limit is shared by all its
+// The apps' own sign-in/sign-up forms use HOP ID accounts (signed server-to-server calls).
+// Every call comes from the app's server, so this limit is shared by all its
 // visitors; per-visitor limits live in the controller.
-Route::middleware('throttle:300,1,pixelhop-account')->group(function () {
-    Route::post('/pixelhop/login', [PixelHopAccountController::class, 'login']);
-    Route::post('/pixelhop/register', [PixelHopAccountController::class, 'register']);
+Route::middleware('throttle:300,1,app-account')->group(function () {
+    // PixelHop 3.x, older signature headers.
+    Route::post('/pixelhop/login', [AppAccountController::class, 'login'])->defaults('app', 'pixelhop');
+    Route::post('/pixelhop/register', [AppAccountController::class, 'register'])->defaults('app', 'pixelhop');
+    // HOP App Protocol.
+    Route::middleware('hop.signed')->prefix('apps/{app}')->where(['app' => '[a-z0-9-]{1,32}'])->group(function () {
+        Route::post('/login', [AppAccountController::class, 'login']);
+        Route::post('/register', [AppAccountController::class, 'register']);
+    });
+});
+// HOP ID for the apps and Imperium: profiles and the app registry (HOP App Protocol).
+Route::middleware(['hop.signed', 'throttle:600,1,hop'])->prefix('hop')->group(function () {
+    Route::get('/profile/{user}', [HopController::class, 'profile']);
+    Route::get('/profiles', [HopController::class, 'profiles']);
+    Route::get('/apps', [HopController::class, 'apps']);
 });

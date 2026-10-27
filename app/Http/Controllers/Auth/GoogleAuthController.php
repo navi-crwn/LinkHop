@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Mail\WelcomeEmail;
 use App\Models\Folder;
 use App\Models\User;
+use App\Services\LoginRecorder;
 use App\Services\NotificationService;
+use App\Support\Username;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -75,6 +77,7 @@ class GoogleAuthController extends Controller
                     return redirect()->route('suspended')->with('error', 'Your account has been suspended.');
                 }
                 Auth::login($user, true);
+                app(LoginRecorder::class)->record($user, request()->ip(), request()->userAgent(), 'google');
 
                 return redirect()->intended('dashboard')->with('success', 'Welcome back, '.$user->name.'!');
             } else {
@@ -87,7 +90,7 @@ class GoogleAuthController extends Controller
                 ]);
                 // Google already verified the address. email_verified_at is not
                 // mass assignable, so create() silently dropped it before.
-                $user->forceFill(['email_verified_at' => now()])->save();
+                $user->forceFill(['email_verified_at' => now(), 'username' => Username::suggest($user->name ?: $user->email, $user)])->save();
                 try {
                     $this->notificationService->notifyNewUser([
                         'name' => $user->name,

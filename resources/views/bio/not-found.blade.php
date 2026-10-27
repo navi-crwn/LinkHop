@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Not Found - HEL.ink</title>
+    <title>Page Not Found - LinkHop</title>
     <meta name="robots" content="noindex, nofollow">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -67,8 +67,8 @@
             </form>
         </div>
         <div class="mt-8">
-            <img src="{{ asset('images/logo-light.svg') }}" alt="HEL.ink" class="h-6 mx-auto opacity-50" data-fallback="hide">
-            <p class="text-slate-500 text-sm mt-2">Powered by HEL.ink</p>
+            <img src="{{ asset('images/logo-light.svg') }}" alt="LinkHop" class="h-6 mx-auto opacity-50" data-fallback="hide">
+            <p class="text-slate-500 text-sm mt-2">Powered by LinkHop</p>
         </div>
     </div>
 </body>

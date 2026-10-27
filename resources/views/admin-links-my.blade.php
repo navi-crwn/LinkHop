@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - My links</x-slot>
+    <x-slot name="pageTitle">LinkHop - My links</x-slot>
     <x-page-header title="My links" subtitle="Links on your own admin account." />
 
     <form method="GET" class="glass-card flex flex-col gap-2 p-3! md:flex-row">

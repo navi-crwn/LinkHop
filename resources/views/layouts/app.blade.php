@@ -4,8 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>{{ trim(($pageTitle ?? '') ?: 'HEL.ink - Your Destination Is A Hop Away') }}</title>
-        <meta name="description" content="Manage every short link, analytics card, and quota from the HEL.ink workspace.">
+        <title>{{ trim(($pageTitle ?? '') ?: config('app.name').' - Your Destination Is A Hop Away') }}</title>
+        <meta name="description" content="Manage every short link, analytics card, and quota from the LinkHop workspace.">
         <link rel="icon" href="{{ route('brand.favicon') }}">
         {{-- Apply the saved theme before first paint (no light flash in dark mode) --}}
         <script nonce="{{ Vite::cspNonce() }}">
@@ -40,7 +40,7 @@
                     ? \App\Models\AbuseReport::where('status', 'open')->count()
                         + \App\Models\AbuseFlag::where('status', 'open')->count()
                     : 0;
-                $sectionTitle = trim(\Illuminate\Support\Str::after($pageTitle ?? '', ' - ')) ?: 'HEL.ink';
+                $sectionTitle = trim(\Illuminate\Support\Str::after($pageTitle ?? '', ' - ')) ?: 'LinkHop';
             @endphp
             <div x-data="{ nav: false }" @keydown.escape.window="nav = false" class="lg:pl-68">
                 {{-- Sidebar: floating glass panel on desktop, drawer on mobile --}}
@@ -52,7 +52,7 @@
                         <div class="flex h-16 items-center justify-between px-5">
                             <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5">
                                 <x-application-logo class="h-7 w-auto" />
-                                <span class="text-[15px] font-semibold tracking-tight text-ink">HEL.ink</span>
+                                <span class="text-[15px] font-semibold tracking-tight text-ink">{{ config('app.name') }}</span>
                                 @if ($isAdmin)
                                     <span class="chip-blue">Admin</span>
                                 @endif

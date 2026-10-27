@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - New link</x-slot>
+    <x-slot name="pageTitle">LinkHop - New link</x-slot>
     <x-page-header title="New link" subtitle="Shorten a destination URL.">
         <x-slot name="actions">
             <a href="{{ route('links.index') }}" class="btn-ghost btn-sm">My links</a>

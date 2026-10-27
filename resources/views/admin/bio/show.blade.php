@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - {{ $bioPage->title }}</x-slot>
+    <x-slot name="pageTitle">LinkHop - {{ $bioPage->title }}</x-slot>
     <x-page-header :title="$bioPage->title" subtitle="/b/{{ $bioPage->slug }} · created {{ $bioPage->created_at->diffForHumans() }}">
         <x-slot name="actions">
             <a href="{{ route('admin.bio.index') }}" class="btn-ghost btn-sm">All bio pages</a>

@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - New bio page</x-slot>
+    <x-slot name="pageTitle">LinkHop - New bio page</x-slot>
     <x-page-header title="New bio page" subtitle="Share all your important links from one page.">
         <x-slot name="actions">
             <a href="{{ route('bio.index') }}" class="btn-ghost btn-sm">All bio pages</a>
