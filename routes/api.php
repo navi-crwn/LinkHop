@@ -28,7 +28,9 @@ Route::middleware(['web', 'auth', '2fa'])->group(function () {
     Route::post('/utils/fetch-title', [LinkController::class, 'fetchTitle']);
 });
 // PixelHop's own sign-in/sign-up forms use HEL.ink accounts (signed server-to-server calls).
-Route::middleware('throttle:60,1,pixelhop-account')->group(function () {
+// Every call comes from PixelHop's server, so this limit is shared by all its
+// visitors; per-visitor limits live in the controller.
+Route::middleware('throttle:300,1,pixelhop-account')->group(function () {
     Route::post('/pixelhop/login', [PixelHopAccountController::class, 'login']);
     Route::post('/pixelhop/register', [PixelHopAccountController::class, 'register']);
 });
