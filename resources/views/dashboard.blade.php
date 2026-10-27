@@ -14,6 +14,19 @@
         <div class="glass rounded-2xl px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">{{ session('status') }}</div>
     @endif
 
+    @if (auth()->user()->isAdmin())
+        {{-- The admin pages moved to the HOP control center (Imperium). --}}
+        <div class="glass flex flex-wrap items-center gap-3 rounded-2xl px-4 py-3 text-sm">
+            <span class="chip-blue">Admin</span>
+            <span class="min-w-0 flex-1 text-muted">Moderation and platform settings live in {{ config('hop.control_name') }}, the HOP control center.</span>
+            @if (config('hop.control_url'))
+                <a href="{{ config('hop.control_url') }}" class="font-medium text-indigo-600 hover:underline dark:text-indigo-300">Open {{ config('hop.control_name') }} &rarr;</a>
+            @else
+                <a href="{{ route('admin.control') }}" class="font-medium text-indigo-600 hover:underline dark:text-indigo-300">Where did the admin panel go?</a>
+            @endif
+        </div>
+    @endif
+
     @if (session('shortlink'))
         @php $newLink = session('shortlink'); @endphp
         <div class="glass-card flex flex-col gap-3 sm:flex-row sm:items-center" x-data="{ copied: false }">
@@ -138,64 +151,6 @@
         </div>
     </div>
 
-    @isset($adminStats)
-        {{-- Platform overview (superadmin) --}}
-        <section class="space-y-3">
-            <div class="flex items-center justify-between">
-                <h2 class="section-title">Platform</h2>
-                <a href="{{ route('admin.analytics.global') }}" class="text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-300">Platform analytics</a>
-            </div>
-            <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
-                <div class="stat"><p class="stat-label">Users</p><p class="stat-value">{{ number_format($adminStats['total_users']) }}</p></div>
-                <div class="stat"><p class="stat-label">Links</p><p class="stat-value">{{ number_format($adminStats['total_platform_links']) }}</p></div>
-                <div class="stat"><p class="stat-label">Clicks today</p><p class="stat-value">{{ number_format($adminStats['today_platform_clicks']) }}</p></div>
-                <div class="stat">
-                    <p class="stat-label">Queue</p>
-                    <p class="stat-value text-base sm:text-lg">
-                        @if ($adminStats['queue_heartbeat'])
-                            <span class="chip-green">Running</span>
-                        @else
-                            <span class="chip-red">Stale</span>
-                        @endif
-                    </p>
-                </div>
-            </div>
-            <div class="grid gap-4 lg:grid-cols-2">
-                <div class="glass overflow-hidden rounded-2xl">
-                    <h3 class="px-4 pb-2 pt-4 text-xs font-semibold text-muted">Newest users</h3>
-                    <div class="divide-glass">
-                        @foreach ($recentUsers as $u)
-                            <a href="{{ route('admin.users.inspect', $u) }}" class="list-row">
-                                <div class="min-w-0 flex-1">
-                                    <p class="truncate text-sm font-medium text-ink">{{ $u->email }}</p>
-                                    <p class="text-[11px] text-muted">{{ $u->created_at->diffForHumans() }}</p>
-                                </div>
-                                @if ($u->status === 'suspended')
-                                    <span class="chip-red">Suspended</span>
-                                @elseif (! $u->email_verified_at)
-                                    <span class="chip-amber">Unverified</span>
-                                @endif
-                            </a>
-                        @endforeach
-                    </div>
-                </div>
-                <div class="glass overflow-hidden rounded-2xl">
-                    <h3 class="px-4 pb-2 pt-4 text-xs font-semibold text-muted">Newest links</h3>
-                    <div class="divide-glass">
-                        @foreach ($recentPlatformLinks as $l)
-                            <div class="list-row">
-                                <div class="min-w-0 flex-1">
-                                    <p class="truncate text-sm font-medium text-ink">/{{ $l->slug }}</p>
-                                    <p class="truncate text-[11px] text-muted">{{ $l->target_url }}</p>
-                                </div>
-                                <span class="text-[11px] text-muted">{{ $l->user->email ?? 'guest' }}</span>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </section>
-    @endisset
 
     <x-link-creation-modal :folders="$folders" :tags="$tags" :isAdmin="auth()->user()->isSuperAdmin()" />
 </x-app-layout>

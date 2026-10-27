@@ -90,14 +90,14 @@ class HopIdTest extends TestCase
         $this->assertFalse($appAdmin->isAdminOf('notehop'));
         $this->assertFalse($user->isAdminOf('pixelhop'));
         $this->assertSame(['admin:pixelhop'], $appAdmin->roleNames());
-        $this->actingAs($admin)->withSession(['2fa_verified' => true])->get('/admin/users')->assertOk();
-        $this->actingAs($user)->withSession(['2fa_verified' => true])->get('/admin/users')->assertForbidden();
+        $this->actingAs($admin)->withSession(['2fa_verified' => true])->get('/admin')->assertOk();
+        $this->actingAs($user)->withSession(['2fa_verified' => true])->get('/admin')->assertForbidden();
     }
 
     public function test_admin_pages_need_two_factor_when_enabled(): void
     {
         $admin = User::factory()->owner()->create(['two_factor_secret' => 'x', 'two_factor_confirmed_at' => now()]);
-        $this->actingAs($admin)->get('/admin/users')->assertRedirect(route('two-factor.show'));
+        $this->actingAs($admin)->get('/admin')->assertRedirect(route('two-factor.show'));
     }
 
     // ---- ticket v2 -------------------------------------------------------
