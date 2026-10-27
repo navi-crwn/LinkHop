@@ -38,6 +38,7 @@ class AppSsoController extends Controller
             'pages' => ['default' => '/dashboard', 'upload' => '/'],
             'continue' => 'upload',
             'route' => 'images.open',
+            'ticket' => 'sso.pixelhop',
         ],
         'notehop' => [
             'name' => 'NoteHop',
@@ -47,21 +48,14 @@ class AppSsoController extends Controller
             'pages' => ['default' => '/dashboard', 'new' => '/'],
             'continue' => 'default',
             'route' => 'notes.open',
+            'ticket' => 'sso.notehop',
         ],
     ];
 
     /** GET /sso/{app}: sign the current user in to the app. */
     public function ticket(Request $request, string $app): RedirectResponse
     {
-        $base = self::baseUrl($app);
-        $secret = (string) config(self::APPS[$app]['config'].'.sso_secret');
-        abort_if($base === null || strlen($secret) < 32, 404);
-
-        $state = (string) $request->query('state', '');
-        $returnTo = (string) $request->query('return_to', '');
-        abort_unless(preg_match('/^[A-Za-z0-9_-]{16,128}$/', $state) === 1, 400, 'Invalid state.');
-        // Only ever send tickets to the app's own callback.
-        abort_unless($returnTo === $base.self::APPS[$app]['callback'], 400, 'Invalid return address.');
+        [$state, $returnTo, $secret] = $this->checked($request, $app);
 
         /** @var User $user */
         $user = $request->user();
@@ -90,6 +84,45 @@ class AppSsoController extends Controller
         $ticket = $body.'.'.self::b64(hash_hmac('sha256', $body, $secret, true));
 
         return redirect()->away($returnTo.'?'.http_build_query(['ticket' => $ticket]));
+    }
+
+    /**
+     * GET /sso/{app}/google: the app's "Continue with Google" button. Signed
+     * in already: straight on to the ticket. Otherwise Google first (new
+     * accounts are made on the spot, Google has verified the address), then
+     * back to the ticket step through Laravel's intended URL, so the visitor
+     * ends up in the app and not on HEL.ink's dashboard or onboarding.
+     */
+    public function viaGoogle(Request $request, string $app): RedirectResponse
+    {
+        [$state, $returnTo] = $this->checked($request, $app);
+        abort_if(! config('services.google.client_id'), 404);
+        $ticket = route(self::APPS[$app]['ticket'], ['state' => $state, 'return_to' => $returnTo]);
+        if ($request->user()) {
+            return redirect()->to($ticket);
+        }
+        $request->session()->put('url.intended', $ticket);
+
+        return redirect()->route('auth.google', ['from_app' => 1]);
+    }
+
+    /**
+     * The state and return address an app sent, checked, and its secret.
+     *
+     * @return array{string, string, string}
+     */
+    private function checked(Request $request, string $app): array
+    {
+        $base = self::baseUrl($app);
+        $secret = (string) config(self::APPS[$app]['config'].'.sso_secret');
+        abort_if($base === null || strlen($secret) < 32, 404);
+        $state = (string) $request->query('state', '');
+        $returnTo = (string) $request->query('return_to', '');
+        abort_unless(preg_match('/^[A-Za-z0-9_-]{16,128}$/', $state) === 1, 400, 'Invalid state.');
+        // Only ever send tickets to the app's own callback.
+        abort_unless($returnTo === $base.self::APPS[$app]['callback'], 400, 'Invalid return address.');
+
+        return [$state, $returnTo, $secret];
     }
 
     /**
