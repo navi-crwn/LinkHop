@@ -25,7 +25,7 @@ class HopApp extends Model
 
     protected $fillable = [
         'slug', 'name', 'url', 'callback_path', 'start_path', 'pages', 'continue_page', 'menu_label',
-        'icon', 'color', 'status', 'secret', 'secret_prev', 'secret_prev_until', 'capabilities', 'sort_order',
+        'icon', 'color', 'status', 'secret', 'secret_prev', 'secret_prev_until', 'capabilities', 'sort_order', 'hidden',
     ];
 
     protected $hidden = ['secret', 'secret_prev'];
@@ -38,15 +38,24 @@ class HopApp extends Model
             'secret' => 'encrypted',
             'secret_prev' => 'encrypted',
             'secret_prev_until' => 'datetime',
+            // The `hidden` column (not Eloquent's $hidden): registered but kept out of menus.
+            'hidden' => 'boolean',
         ];
     }
 
+    /** Apps for menus: not switched off and not hidden (Imperium is registered but hidden). */
     public function scopeActive(Builder $q): Builder
+    {
+        return $q->where('status', '!=', self::STATUS_OFF)->where('hidden', false)->orderBy('sort_order')->orderBy('name');
+    }
+
+    /** Every app that is not switched off, hidden ones included (SSO, CSP origins). */
+    public function scopeRegistered(Builder $q): Builder
     {
         return $q->where('status', '!=', self::STATUS_OFF)->orderBy('sort_order')->orderBy('name');
     }
 
-    /** The app with this slug, if it is configured and not switched off. */
+    /** The app with this slug, if it is configured and not switched off (hidden apps included). */
     public static function find_(string $slug): ?self
     {
         return self::query()->where('slug', $slug)->where('status', '!=', self::STATUS_OFF)->first();
