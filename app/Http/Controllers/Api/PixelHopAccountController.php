@@ -27,7 +27,7 @@ use Illuminate\Validation\Rules;
  * PixelHop; this side also limits attempts per email address.
  *
  * Accounts with two-factor codes are not signed in here: PixelHop sends
- * those people through the normal /sso/pixelhop flow instead.
+ * those people through the normal /sso/pixelhop flow instead (AppSsoController).
  */
 class PixelHopAccountController extends Controller
 {
