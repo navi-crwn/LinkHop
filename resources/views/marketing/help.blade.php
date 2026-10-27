@@ -1,8 +1,8 @@
-<x-marketing-layout title="Help center - HEL.ink">
+<x-marketing-layout title="Help center - LinkHop">
     <section class="mx-auto max-w-5xl px-6 py-16 lg:px-8">
         <p class="text-xs uppercase tracking-[0.4em] text-white/60">Help center</p>
         <h1 class="mt-4 text-4xl font-semibold text-white">Guides and troubleshooting</h1>
-        <p class="mt-4 text-lg text-white/70 max-w-3xl">Welcome to the HEL.ink help center. Find answers to common questions, learn how to use advanced features, and troubleshoot any issues you encounter.</p>
+        <p class="mt-4 text-lg text-white/70 max-w-3xl">Welcome to the LinkHop help center. Find answers to common questions, learn how to use advanced features, and troubleshoot any issues you encounter.</p>
         <div class="mt-10 grid gap-6 md:grid-cols-2">
             <article id="usage" class="rounded-3xl border border-white/10 bg-white/5 p-6">
                 <h2 class="text-2xl font-semibold text-white">Create a link</h2>
@@ -41,7 +41,7 @@
             </article>
             <article class="rounded-3xl border border-white/10 bg-white/5 p-6">
                 <h2 class="text-2xl font-semibold text-white">Queue & Automation</h2>
-                <p class="mt-3 text-sm text-white/70">HEL.ink uses Redis + worker queues for background processing. Visit <code class="rounded-sm bg-white/10 px-2 py-1">/health/queue</code> to verify the worker is alive. If you're self-hosting, ensure your queue worker is running with <code class="rounded-sm bg-white/10 px-2 py-1">php artisan queue:work</code>.</p>
+                <p class="mt-3 text-sm text-white/70">LinkHop uses Redis + worker queues for background processing. Visit <code class="rounded-sm bg-white/10 px-2 py-1">/health/queue</code> to verify the worker is alive. If you're self-hosting, ensure your queue worker is running with <code class="rounded-sm bg-white/10 px-2 py-1">php artisan queue:work</code>.</p>
             </article>
             <article class="rounded-3xl border border-white/10 bg-white/5 p-6">
                 <h2 class="text-2xl font-semibold text-white">Account & Privacy</h2>

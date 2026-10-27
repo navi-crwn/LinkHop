@@ -29,7 +29,7 @@
             ],
         ],
         [
-            'title' => 'HEL.ink Family',
+            'title' => 'LinkHop Family',
             'items' => [
                 ['label' => 'PixelHop - Image Hosting', 'route' => 'https://p.hel.ink', 'external' => true],
                 ['label' => 'Image Tools', 'route' => 'https://p.hel.ink/features.php', 'external' => true],
@@ -44,7 +44,7 @@
             <div class="col-span-2 lg:col-span-1">
                 <div class="flex items-center gap-2.5">
                     <x-application-logo class="h-7 w-7" />
-                    <p class="font-semibold text-slate-900 dark:text-white">HEL.ink</p>
+                    <p class="font-semibold text-slate-900 dark:text-white">LinkHop</p>
                 </div>
                 <p class="mt-3 text-[13px] leading-relaxed">Short links & Link in Bio. Free and open source.</p>
             </div>
@@ -59,6 +59,6 @@
                 </div>
             @endforeach
         </div>
-        <p class="mt-8 border-t border-slate-200 pt-5 text-xs text-slate-500 dark:border-white/10 dark:text-white/60">© {{ date('Y') }} HEL.ink · <a href="https://db-ip.com" target="_blank" rel="noopener" class="hover:text-slate-900 dark:hover:text-white">IP Geolocation by DB-IP</a></p>
+        <p class="mt-8 border-t border-slate-200 pt-5 text-xs text-slate-500 dark:border-white/10 dark:text-white/60">© {{ date('Y') }} LinkHop · <a href="https://db-ip.com" target="_blank" rel="noopener" class="hover:text-slate-900 dark:hover:text-white">IP Geolocation by DB-IP</a></p>
     </div>
 </footer>

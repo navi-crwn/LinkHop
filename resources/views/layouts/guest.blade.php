@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>{{ $title ?? config('app.name', 'HEL.ink') }}</title>
+        <title>{{ $title ?? config('app.name', 'LinkHop') }}</title>
         <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png" sizes="32x32">
         <link rel="apple-touch-icon" href="{{ route('brand.favicon') }}">
         <script nonce="{{ Vite::cspNonce() }}">
@@ -27,7 +27,8 @@
             <div class="mb-6 flex w-full max-w-md items-center justify-between">
                 <a href="{{ route('home') }}" class="flex items-center gap-2.5">
                     <x-application-logo class="h-8 w-auto" />
-                    <span class="text-base font-semibold tracking-tight text-ink">HEL.ink</span>
+                    <span class="text-base font-semibold tracking-tight text-ink">{{ config('app.name') }}</span>
+                    <span class="hidden text-xs text-muted sm:inline">hel.ink</span>
                 </a>
                 <button type="button" class="icon-btn" aria-label="Toggle theme"
                     data-toggle-dark>

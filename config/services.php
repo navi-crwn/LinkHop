@@ -18,7 +18,7 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-    // HEL.ink apps that sign in with HEL.ink accounts (AppSsoController).
+    // Only read by `hop:bootstrap`, which moves these into the `apps` table (HopApp).
     // PixelHop: image hosting (p.hel.ink).
     'pixelhop' => [
         'url' => env('PIXELHOP_URL'),

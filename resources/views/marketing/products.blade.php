@@ -1,7 +1,7 @@
-<x-marketing-layout title="Products - HEL.ink">
+<x-marketing-layout title="Products - LinkHop">
     <section class="mx-auto max-w-5xl px-6 py-16 lg:px-8">
         <p class="text-xs uppercase tracking-[0.4em] text-white/60">Products</p>
-        <h1 class="mt-4 text-4xl font-semibold text-white">Tools included with HEL.ink</h1>
+        <h1 class="mt-4 text-4xl font-semibold text-white">Tools included with LinkHop</h1>
         <p class="mt-4 text-lg text-white/70 max-w-3xl">
             Everything you need to create, manage, and track your short links. All features included for free.
         </p>
@@ -71,7 +71,7 @@
             </div>
         </div>
 
-        <!-- PixelHop - HEL.ink Family -->
+        <!-- PixelHop - LinkHop Family -->
         <div class="mt-16 rounded-3xl border border-cyan-400/30 bg-linear-to-r from-cyan-500/10 to-purple-500/10 p-8">
             <div class="flex items-start gap-4 flex-wrap md:flex-nowrap">
                 <div class="w-16 h-16 rounded-2xl bg-linear-to-br from-cyan-400 to-purple-500 flex items-center justify-center shrink-0">
@@ -80,10 +80,10 @@
                     </svg>
                 </div>
                 <div class="flex-1">
-                    <p class="text-xs uppercase tracking-[0.3em] text-cyan-300/70 mb-2">HEL.ink Family</p>
+                    <p class="text-xs uppercase tracking-[0.3em] text-cyan-300/70 mb-2">LinkHop Family</p>
                     <h2 class="text-2xl font-semibold text-white">PixelHop - Image Hosting & Tools</h2>
                     <p class="mt-3 text-white/70">
-                        Part of the HEL.ink ecosystem, <strong class="text-cyan-300">PixelHop</strong> (p.hel.ink) is a free premium image hosting service 
+                        Part of the LinkHop ecosystem, <strong class="text-cyan-300">PixelHop</strong> (p.hel.ink) is a free premium image hosting service 
                         with powerful processing tools. Upload, share, and process your images with:
                     </p>
                     <div class="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3 text-sm text-white/80">
@@ -122,7 +122,7 @@
             </div>
         </div>
 
-        <!-- NoteHop - HEL.ink Family -->
+        <!-- NoteHop - LinkHop Family -->
         <div class="mt-8 rounded-3xl border border-cyan-400/30 bg-linear-to-r from-cyan-500/10 to-purple-500/10 p-8">
             <div class="flex items-start gap-4 flex-wrap md:flex-nowrap">
                 <div class="w-16 h-16 rounded-2xl bg-linear-to-br from-cyan-400 to-purple-500 flex items-center justify-center shrink-0">
@@ -131,11 +131,11 @@
                     </svg>
                 </div>
                 <div class="flex-1">
-                    <p class="text-xs uppercase tracking-[0.3em] text-cyan-300/70 mb-2">HEL.ink Family</p>
+                    <p class="text-xs uppercase tracking-[0.3em] text-cyan-300/70 mb-2">LinkHop Family</p>
                     <h2 class="text-2xl font-semibold text-white">NoteHop - Encrypted Notes</h2>
                     <p class="mt-3 text-white/70">
-                        Part of the HEL.ink ecosystem, <strong class="text-cyan-300">NoteHop</strong> (note.hel.ink) is a notepad you can share with a link.
-                        Notes are encrypted in your browser, so not even the server can read them. Sign in with your HEL.ink account to keep them together.
+                        Part of the LinkHop ecosystem, <strong class="text-cyan-300">NoteHop</strong> (note.hel.ink) is a notepad you can share with a link.
+                        Notes are encrypted in your browser, so not even the server can read them. Sign in with your LinkHop account to keep them together.
                     </p>
                     <div class="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3 text-sm text-white/80">
                         <div class="flex items-center gap-2">
@@ -179,7 +179,7 @@
                 Create a free account and get instant access to everything. No credit card, no trial period.
             </p>
             <div class="mt-6">
-                <a href="{{ route('register') }}" class="inline-block rounded-full bg-white px-6 py-3 font-semibold text-slate-900 hover:bg-white/90">Start Using HEL.ink Free</a>
+                <a href="{{ route('register') }}" class="inline-block rounded-full bg-white px-6 py-3 font-semibold text-slate-900 hover:bg-white/90">Start Using LinkHop Free</a>
             </div>
         </div>
     </section>

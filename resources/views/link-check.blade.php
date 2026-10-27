@@ -1,4 +1,4 @@
-<x-marketing-layout title="Check a link - HEL.ink">
+<x-marketing-layout title="Check a link - LinkHop">
     @php
         $card = 'rounded-3xl border border-white/10 bg-white/4 backdrop-blur-xl';
         $host = parse_url(config('app.url'), PHP_URL_HOST);

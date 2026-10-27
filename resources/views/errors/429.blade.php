@@ -8,7 +8,7 @@
 @section('content')
     <div class="mx-auto max-w-lg py-20 text-center">
         <h1 class="text-4xl font-bold text-rose-600 mb-4">429: Too Many Requests</h1>
-        <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">Too many requests or attempts came from your connection in a short time. This helps keep HEL.ink stable for everyone.</p>
+        <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">Too many requests or attempts came from your connection in a short time. This helps keep LinkHop stable for everyone.</p>
         <p class="text-sm text-gray-500 dark:text-gray-400 mb-8">
             Please wait a moment, then refresh this page or open it again.
             <span data-retry-message>You can try again in <strong data-retry-seconds>{{ $retryAfter }}</strong> seconds.</span>

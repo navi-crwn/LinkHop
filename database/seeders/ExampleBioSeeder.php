@@ -41,7 +41,7 @@ class ExampleBioSeeder extends Seeder
     {
         $owner = env('EXAMPLE_BIO_OWNER');
         $user = $owner ? User::where('email', $owner)->firstOrFail() : User::firstOrCreate(['email' => 'example@hel.ink'], [
-            'name' => 'HEL.ink',
+            'name' => 'LinkHop',
             'password' => bcrypt(str()->random(32)),
             'email_verified_at' => now(),
         ]);
@@ -68,7 +68,7 @@ class ExampleBioSeeder extends Seeder
         $page = BioPage::create([
             'user_id' => $user->id,
             'slug' => 'hel',
-            'title' => 'HEL.ink',
+            'title' => 'LinkHop',
             'bio' => 'Short links and link in bio pages. Free, open source, and yours to host.',
             'avatar_url' => 'bio/avatars/hel-example.png',
             'avatar_shape' => 'rounded',
@@ -97,9 +97,9 @@ class ExampleBioSeeder extends Seeder
             ['type' => 'text', 'content' => '<p>Every short link counts its clicks by country, device and referrer.</p>'],
             ['type' => 'faq', 'title' => 'FAQ', 'faq_items' => [
                 ['question' => 'Do I need an account?', 'answer' => 'Not to shorten a link. With an account you keep your links and get analytics, folders, the API and a bio page.'],
-                ['question' => 'Can I host it myself?', 'answer' => 'Yes. HEL.ink is open source under the MIT license; the self-host guide is on the docs site.'],
+                ['question' => 'Can I host it myself?', 'answer' => 'Yes. LinkHop is open source under the MIT license; the self-host guide is on the docs site.'],
             ]],
-            ['type' => 'vcard', 'title' => 'Save contact', 'vcard_name' => 'HEL.ink', 'vcard_email' => 'hello@hel.ink', 'vcard_company' => 'Open source'],
+            ['type' => 'vcard', 'title' => 'Save contact', 'vcard_name' => 'LinkHop', 'vcard_email' => 'hello@hel.ink', 'vcard_company' => 'Open source'],
         ];
         foreach ($blocks as $i => $block) {
             $page->links()->create($block + ['order' => $i + 1, 'is_active' => true]);

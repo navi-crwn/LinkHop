@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - My Links</x-slot>
+    <x-slot name="pageTitle">LinkHop - My Links</x-slot>
     <div x-data="linksManager()" class="space-y-4">
         <x-page-header title="My links" subtitle="{{ number_format($links->total()) }} short links" />
 

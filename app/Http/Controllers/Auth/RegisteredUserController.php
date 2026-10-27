@@ -7,6 +7,7 @@ use App\Mail\WelcomeEmail;
 use App\Models\Folder;
 use App\Models\User;
 use App\Services\TurnstileService;
+use App\Support\Username;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -47,6 +48,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'role' => User::ROLE_USER,
         ]);
+        $user->forceFill(['username' => Username::suggest($user->name, $user)])->saveQuietly();
         Folder::create([
             'name' => 'Default',
             'user_id' => $user->id,

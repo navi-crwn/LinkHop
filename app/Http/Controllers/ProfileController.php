@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\ActivityLog;
 use App\Services\LinkService;
+use App\Support\Avatar;
 use App\Support\BioUploads;
+use App\Support\Username;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,7 +35,13 @@ class ProfileController extends Controller
         $user = $request->user();
         $originalName = $user->name;
         $originalEmail = $user->email;
-        $user->fill($request->validated());
+        $originalUsername = $user->username;
+        $data = $request->validated();
+        if (array_key_exists('username', $data)) {
+            $user->changeUsername($data['username']);
+            unset($data['username']);
+        }
+        $user->fill($data);
         if ($originalEmail !== $user->email) {
             $user->email_verified_at = null;
         }
@@ -44,11 +53,49 @@ class ProfileController extends Controller
         if ($originalEmail !== $user->email) {
             $changes[] = "email: {$originalEmail} → {$user->email}";
         }
+        if ($originalUsername !== $user->username) {
+            $changes[] = "username: @{$originalUsername} → @{$user->username}";
+        }
         if (! empty($changes)) {
             ActivityLog::log('updated', 'Profile', $user->id, 'Updated profile: '.implode(', ', $changes));
         }
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::to($request->input('_back', route('profile.edit')))->with('status', 'profile-updated');
+    }
+
+    /** GET /profile/username-check?u=: live availability for the settings form. */
+    public function usernameCheck(Request $request): JsonResponse
+    {
+        $name = Username::normalize($request->query('u'));
+        $why = Username::problem($name, $request->user());
+
+        return response()->json(['username' => $name, 'ok' => $why === null, 'message' => $why ?? 'Available.']);
+    }
+
+    /** POST /profile/avatar: a new profile photo (shared with every HOP app). */
+    public function storeAvatar(Request $request): RedirectResponse
+    {
+        $request->validate(['avatar' => ['required', 'file', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:6144']]);
+        $user = $request->user();
+        try {
+            $path = Avatar::store($user, $request->file('avatar'));
+        } catch (\RuntimeException $e) {
+            return back()->withErrors(['avatar' => $e->getMessage()]);
+        }
+        $user->forceFill(['avatar_path' => $path])->save();
+        ActivityLog::log('updated', 'Profile', $user->id, 'Changed profile photo');
+
+        return back()->with('status', 'profile-updated');
+    }
+
+    /** DELETE /profile/avatar: back to the Google picture or initials. */
+    public function destroyAvatar(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+        Avatar::delete($user);
+        $user->forceFill(['avatar_path' => null])->save();
+
+        return back()->with('status', 'profile-updated');
     }
 
     public function destroy(Request $request): RedirectResponse
@@ -71,6 +118,7 @@ class ProfileController extends Controller
                 'total_clicks' => DB::table('link_clicks')->whereIn('link_id', $user->links()->pluck('id'))->count(),
             ];
             $bioFiles = BioUploads::ofUser($user);
+            Avatar::delete($user);
             DB::transaction(function () use ($user) {
                 foreach ($user->links as $link) {
                     $link->tags()->detach();
