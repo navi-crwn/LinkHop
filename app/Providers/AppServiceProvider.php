@@ -2,11 +2,14 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\AppSsoController;
 use App\Models\SeoSetting;
 use App\Services\LinkSafety;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -22,6 +25,19 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \URL::forceRootUrl(config('app.url'));
+        // The password-reset mail speaks HOP ID: one password for every HOP app.
+        ResetPassword::toMailUsing(function (object $notifiable, string $token) {
+            $url = url(route('password.reset', ['token' => $token, 'email' => $notifiable->getEmailForPasswordReset()], false));
+            $apps = collect(AppSsoController::apps())->pluck('name')->implode(', ');
+
+            return (new MailMessage)
+                ->subject('Reset your HOP ID password')
+                ->greeting('Hi '.($notifiable->name ?: 'there').',')
+                ->line('Someone asked to reset the password of your HOP ID ('.$notifiable->getEmailForPasswordReset().'). That is the one account for '.config('app.name').($apps ? ', '.$apps : '').' and every HOP app.')
+                ->action('Choose a new password', $url)
+                ->line('The link works for '.config('auth.passwords.'.config('auth.defaults.passwords').'.expire').' minutes and only for this address.')
+                ->line('If you did not ask for this, you can ignore this email: your password stays as it is.');
+        });
         if (config('app.env') === 'production') {
             \URL::forceScheme('https');
         }

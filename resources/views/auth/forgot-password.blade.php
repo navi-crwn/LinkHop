@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="mb-6">
-        <h1 class="page-title">Reset your password</h1>
-        <p class="mt-1 text-sm text-muted">Enter your account email and we'll send you a reset link.</p>
+        <h1 class="page-title">Reset your HOP ID password</h1>
+        <p class="mt-1 text-sm text-muted">Enter the email of your HOP ID and we'll send you a reset link. The new password works on {{ config('app.name') }} and every HOP app.</p>
     </div>
     <x-auth-session-status class="mb-4" :status="session('status')" />
     <form method="POST" action="{{ route('password.email') }}" class="space-y-4" x-data="turnstileForm(@js(config('services.turnstile.site_key')))" x-on:submit="handleSubmit($event)">
