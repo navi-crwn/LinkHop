@@ -33,4 +33,13 @@ class LoginHistory extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /** Keep only a user's latest few sign-ins. */
+    public static function keepLatest(int $userId, int $keep = 5): void
+    {
+        $old = static::where('user_id', $userId)->orderBy('logged_in_at', 'desc')->skip($keep)->take(1000)->pluck('id');
+        if ($old->isNotEmpty()) {
+            static::whereIn('id', $old)->delete();
+        }
+    }
 }
