@@ -67,7 +67,20 @@
                                 @endif
                             </div>
                             @error('avatar')<p class="text-sm text-rose-600">{{ $message }}</p>@enderror
-                            <form method="POST" action="{{ route('profile.update') }}" class="space-y-4" x-data="usernameCheck(@js($u->username))">
+                            <form method="POST" action="{{ route('profile.update') }}" class="space-y-4"
+                                  x-data="{
+                                      current: @js((string) $u->username), value: @js((string) $u->username), ok: null,
+                                      message: 'Your handle in every HOP app: 3 to 30 lowercase letters, numbers, dots, dashes or underscores.',
+                                      async check() {
+                                          const v = (this.value || '').trim().toLowerCase().replace(/^@/, '');
+                                          if (v === this.current) { this.ok = null; this.message = 'This is your current username.'; return; }
+                                          try {
+                                              const r = await fetch(@js(route('profile.username-check')) + '?u=' + encodeURIComponent(v), { headers: { 'Accept': 'application/json' } });
+                                              const d = await r.json();
+                                              this.ok = d.ok; this.message = d.ok ? '@' + d.username + ' is available.' : d.message;
+                                          } catch (e) { this.ok = null; }
+                                      },
+                                  }">
                                 @csrf
                                 @method('PATCH')
                                 <input type="hidden" name="_profile_form" value="1">
@@ -678,22 +691,3 @@
     }
     </script>
 </x-app-layout>
-
-@push('scripts')
-<script>
-document.addEventListener('alpine:init', () => {
-    Alpine.data('usernameCheck', (current) => ({
-        value: current || '', ok: null, message: 'Your handle in every HOP app: 3 to 30 lowercase letters, numbers, dots, dashes or underscores.',
-        async check() {
-            const v = (this.value || '').trim().toLowerCase().replace(/^@/, '');
-            if (v === (current || '')) { this.ok = null; this.message = 'This is your current username.'; return; }
-            try {
-                const r = await fetch(`{{ route('profile.username-check') }}?u=${encodeURIComponent(v)}`, { headers: { 'Accept': 'application/json' } });
-                const d = await r.json();
-                this.ok = d.ok; this.message = d.ok ? `@${d.username} is available.` : d.message;
-            } catch (e) { this.ok = null; }
-        },
-    }));
-});
-</script>
-@endpush
