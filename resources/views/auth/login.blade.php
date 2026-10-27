@@ -82,25 +82,19 @@
                 <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
             </label>
         </div>
-        <x-turnstile class="mt-4" />
-        <div class="flex items-center justify-between mt-4">
-            <div class="flex items-center gap-3">
-                @if (Route::has('password.request'))
-                    <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}">
-                        {{ __('Forgot your password?') }}
-                    </a>
-                @endif
-            </div>
-            <button
-                type="submit"
-                class="btn-primary ms-3"
-            >
-                @if ($turnstileKey)
-                    <span x-show="!waiting">{{ __('Login with HOP') }}</span><span x-cloak x-show="waiting">{{ __('Verifying…') }}</span>
-                @else
-                    {{ __('Login with HOP') }}
-                @endif
-            </button>
+        <x-turnstile class="mt-5" size="flexible" />
+        <button type="submit" class="btn-primary mt-5 w-full py-3 text-base">
+            @if ($turnstileKey)
+                <span x-show="!waiting">{{ __('Login with HOP') }}</span><span x-cloak x-show="waiting">{{ __('Verifying…') }}</span>
+            @else
+                {{ __('Login with HOP') }}
+            @endif
+        </button>
+        <div class="mt-5 flex flex-col items-center gap-2 text-sm text-muted sm:flex-row sm:justify-between">
+            @if (Route::has('password.request'))
+                <a class="hover:text-ink hover:underline" href="{{ route('password.request') }}">{{ __('Forgot your password?') }}</a>
+            @endif
+            <span>New here? <a class="font-semibold text-ink hover:underline" href="{{ route('register') }}">Join HOP</a></span>
         </div>
     </form>
 </x-guest-layout>

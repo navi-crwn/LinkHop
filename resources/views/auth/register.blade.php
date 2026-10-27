@@ -105,7 +105,6 @@
             </div>
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
-        <x-turnstile class="mt-4" />
         <input type="hidden" name="tos_accepted" x-bind:value="tosAccepted ? '1' : '0'">
         <div class="mt-4">
             <label class="flex items-start space-x-3 cursor-pointer group">
@@ -129,25 +128,20 @@
                 ⚠️ Please agree to the Terms of Service below to continue.
             </p>
         </div>
-        <div class="flex items-center justify-between mt-4">
-            <div class="flex items-center gap-3">
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                    {{ __('Already registered?') }}
-                </a>
-            </div>
-            <button
-                type="submit"
-                class="btn ms-4"
-                x-bind:class="tosAccepted ? 'btn-primary' : 'bg-slate-500/20 text-muted cursor-not-allowed'"
-                x-bind:disabled="!tosAccepted"
-            >
-                @if ($turnstileKey)
-                    <span x-show="!waiting">{{ __('Join HOP') }}</span><span x-cloak x-show="waiting">{{ __('Verifying…') }}</span>
-                @else
-                    {{ __('Join HOP') }}
-                @endif
-            </button>
-        </div>
+        <x-turnstile class="mt-5" size="flexible" />
+        <button
+            type="submit"
+            class="btn mt-5 w-full py-3 text-base"
+            x-bind:class="tosAccepted ? 'btn-primary' : 'bg-slate-500/20 text-muted cursor-not-allowed'"
+            x-bind:disabled="!tosAccepted"
+        >
+            @if ($turnstileKey)
+                <span x-show="!waiting">{{ __('Join HOP') }}</span><span x-cloak x-show="waiting">{{ __('Verifying…') }}</span>
+            @else
+                {{ __('Join HOP') }}
+            @endif
+        </button>
+        <p class="mt-5 text-center text-sm text-muted">Already have a HOP ID? <a class="font-semibold text-ink hover:underline" href="{{ route('login') }}">Login with HOP</a></p>
     </form>
     </div>
 </x-guest-layout>
