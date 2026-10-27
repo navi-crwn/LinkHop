@@ -13,6 +13,7 @@ use App\Http\Controllers\AdminQueueController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ApiTokenController;
+use App\Http\Controllers\AppSsoController;
 use App\Http\Controllers\BioLinkController;
 use App\Http\Controllers\BioPageController;
 use App\Http\Controllers\BrandAssetController;
@@ -22,7 +23,6 @@ use App\Http\Controllers\LinkCheckController;
 use App\Http\Controllers\LinkCommentController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\MarketingPageController;
-use App\Http\Controllers\PixelHopSsoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProxyMonitorController;
 use App\Http\Controllers\PublicBioController;
@@ -75,9 +75,12 @@ Route::middleware('ip.ban')->group(function () {
         Route::post('/two-factor-challenge', [TwoFactorController::class, 'verify'])->middleware('throttle:5,1,two-factor')->name('two-factor.verify');
     });
     Route::middleware(['auth', '2fa'])->group(function () {
-        Route::get('/sso/pixelhop', [PixelHopSsoController::class, 'ticket'])->middleware('throttle:30,1,pixelhop-sso')->name('sso.pixelhop');
+        // HEL.ink apps sign in here (AppSsoController): PixelHop and NoteHop.
+        Route::get('/sso/pixelhop', [AppSsoController::class, 'ticket'])->defaults('app', 'pixelhop')->middleware('throttle:30,1,pixelhop-sso')->name('sso.pixelhop');
+        Route::get('/sso/notehop', [AppSsoController::class, 'ticket'])->defaults('app', 'notehop')->middleware('throttle:30,1,notehop-sso')->name('sso.notehop');
         // Not /images: public/images/ is a real directory, so nginx would answer 301/403 itself.
-        Route::get('/pixelhop', [PixelHopSsoController::class, 'open'])->name('images.open');
+        Route::get('/pixelhop', [AppSsoController::class, 'open'])->defaults('app', 'pixelhop')->name('images.open');
+        Route::get('/notehop', [AppSsoController::class, 'open'])->defaults('app', 'notehop')->name('notes.open');
         Route::get('/dashboard', [LinkController::class, 'index'])->name('dashboard');
         Route::get('/links', [LinkController::class, 'myLinks'])->name('links.index');
         Route::get('/analytics', AnalyticsController::class)->name('analytics');
