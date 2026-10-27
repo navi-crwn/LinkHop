@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\AbuseScan;
 use App\Models\AbuseFlag;
 use App\Models\BioLink;
 use App\Models\BioPage;
@@ -7,6 +8,7 @@ use App\Models\DomainBlacklist;
 use App\Models\Link;
 use App\Models\User;
 use App\Services\LinkSafety;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 
 function bioPageFor(User $user, string $slug, array $attrs = []): BioPage
@@ -150,19 +152,19 @@ test('abuse scan respects dismissed findings and purges old disabled items', fun
         ->and($flag->fresh()->action)->toBe('purged');
 });
 
-test('admin can review and restore automated findings', function () {
-    config(['auth.superadmin_email' => 'root@example.com']);
-    $admin = User::factory()->create(['email' => 'root@example.com']);
+test('a dismissed finding restores the link and keeps the scanner away from it', function () {
+    // What the control center does through the HOP API when a finding is a false positive.
     $owner = User::factory()->create();
     $link = Link::create(['user_id' => $owner->id, 'slug' => 'falsepos', 'target_url' => 'https://example.com', 'status' => 'inactive']);
     $flag = AbuseFlag::create(['subject_type' => 'link', 'subject_id' => $link->id, 'user_id' => $owner->id, 'score' => 60, 'signals' => ['gambling'], 'action' => 'disabled', 'summary' => '/falsepos -> example.com']);
 
-    $this->actingAs($admin)->get('/admin/abuse')->assertOk()->assertSee('/falsepos -&gt; example.com', false);
-    $this->actingAs($owner)->post("/admin/abuse/flags/{$flag->id}/restore")->assertForbidden();
-    $this->actingAs($admin)->post("/admin/abuse/flags/{$flag->id}/restore")->assertRedirect();
+    $link->forceFill(['status' => 'active'])->save();
+    $flag->update(['status' => AbuseFlag::STATUS_DISMISSED]);
+    $this->artisan('abuse:scan', ['--full' => true])->assertSuccessful();
 
     expect($link->fresh()->status)->toBe('active')
-        ->and($flag->fresh()->status)->toBe('dismissed');
+        ->and($flag->fresh()->status)->toBe('dismissed')
+        ->and(AbuseFlag::where('subject_type', 'link')->where('subject_id', $link->id)->count())->toBe(1);
 });
 
 test('link password attempts are rate limited', function () {
@@ -270,12 +272,11 @@ test('video embed hosts and subdomains of listed hosts are flagged for review', 
         ->and($link->fresh()->status)->toBe('active');
 });
 
-test('the abuse page shows when the scan last ran and admins can start one', function () {
-    $admin = User::factory()->create(['email' => config('auth.superadmin_email', 'admin@hel.ink')]);
-    $this->actingAs($admin)->get(route('admin.abuse.index'))->assertOk()->assertSee('has not run');
+test('the scan records when it last ran for the control center', function () {
+    expect(Cache::get(AbuseScan::LAST_RUN_KEY))->toBeNull();
 
     $this->artisan('abuse:scan', ['--full' => true])->assertSuccessful();
-    $this->actingAs($admin)->get(route('admin.abuse.index'))->assertOk()->assertDontSee('has not run');
 
-    $this->actingAs($admin)->post(route('admin.abuse.scan'))->assertRedirect()->assertSessionHas('status');
+    expect(Cache::get(AbuseScan::LAST_RUN_KEY)['at'] ?? null)->not->toBeNull()
+        ->and(Cache::get(AbuseScan::LAST_RUN_KEY)['mode'])->toBe('full');
 });

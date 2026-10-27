@@ -6,11 +6,6 @@ use App\Models\Link;
 use App\Models\Tag;
 use App\Models\User;
 
-function smokeAdmin(): User
-{
-    return User::factory()->create(['email' => config('auth.superadmin_email', 'admin@hel.ink')]);
-}
-
 function smokeMember(): User
 {
     $user = User::factory()->create();
@@ -22,44 +17,15 @@ function smokeMember(): User
     return $user;
 }
 
-test('every admin page renders for the superadmin', function (string $path) {
-    smokeMember();
-    $this->actingAs(smokeAdmin())->get($path)->assertOk();
-})->with([
-    '/admin/abuse', '/admin/analytics/global', '/admin/bio', '/admin/bio/monitor',
-    '/admin/domain-blacklist', '/admin/geoip-monitor', '/admin/ip-bans', '/admin/ip-watchlist',
-    '/admin/links', '/admin/links/my', '/admin/proxy-monitor', '/admin/seo', '/admin/users',
-    '/dashboard', '/profile', '/settings',
-]);
-
-test('admin can inspect a user with links, folders and tags', function () {
-    $member = smokeMember();
-    $this->actingAs(smokeAdmin())->get(route('admin.users.inspect', $member))
-        ->assertOk()
-        ->assertSee('memberlink');
-});
-
 test('every member page renders', function (string $path) {
     $this->actingAs(smokeMember())->get($path)->assertOk();
 })->with(['/dashboard', '/links', '/analytics', '/folders', '/tags', '/bio', '/profile', '/settings']);
 
-test('global links filters do not render every user or tag and still filter', function () {
-    $member = smokeMember();
-    $other = User::factory()->create(['name' => 'Someone Else']);
-    Link::create(['slug' => 'otherlink', 'target_url' => 'https://example.org', 'user_id' => $other->id, 'status' => 'active']);
-    $admin = smokeAdmin();
-
-    $this->actingAs($admin)->get('/admin/links')->assertOk()
-        ->assertSee('otherlink')->assertDontSee('<option value="'.$other->id.'"', false);
-
-    $this->actingAs($admin)->get('/admin/links?user_id='.$member->id)->assertOk()
-        ->assertSee('memberlink')->assertDontSee('otherlink');
-    $this->actingAs($admin)->get('/admin/links?tag=promo')->assertOk()
-        ->assertSee('memberlink')->assertDontSee('otherlink');
-
-    $this->actingAs($admin)->getJson(route('admin.users.lookup', ['q' => 'Someone']))
-        ->assertOk()->assertJsonCount(1)->assertJsonPath('0.id', $other->id);
-});
+test('an admin gets the same member pages, not an admin panel', function (string $path) {
+    smokeMember();
+    $admin = User::factory()->create(['email' => config('auth.superadmin_email', 'admin@hel.ink')]);
+    $this->actingAs($admin)->get($path)->assertOk()->assertDontSee('Admin Control Panel');
+})->with(['/dashboard', '/links', '/analytics', '/bio', '/profile', '/settings']);
 
 test('member link, folder, tag and create pages render', function () {
     $member = smokeMember();
@@ -75,25 +41,8 @@ test('member link, folder, tag and create pages render', function () {
     $this->get('/tags')->assertOk()->assertSee('promo');
 });
 
-test('admin bio detail page renders', function () {
+test('bio analytics page renders for the owner', function () {
     $member = smokeMember();
     $page = BioPage::create(['user_id' => $member->id, 'slug' => 'memberbio', 'title' => 'Member bio', 'is_published' => true]);
-    $this->actingAs(smokeAdmin())->get(route('admin.bio.show', $page))->assertOk()->assertSee('Member bio');
     $this->actingAs($member)->get(route('bio.analytics', $page))->assertOk();
-});
-
-test('admin bio detail labels blocks that have no title or url', function () {
-    $page = BioPage::create(['user_id' => smokeMember()->id, 'slug' => 'blocksbio', 'title' => 'Blocks bio', 'is_published' => true]);
-    $page->links()->createMany([
-        ['type' => 'link', 'title' => 'My site', 'url' => 'https://example.com', 'order' => 1],
-        ['type' => 'divider', 'order' => 2],
-        ['type' => 'text', 'content' => '<p>Hello <b>world</b></p>', 'order' => 3],
-        ['type' => 'youtube', 'title' => 'Watch', 'embed_url' => 'https://www.youtube.com/watch?v=abc', 'order' => 4],
-        ['type' => 'faq', 'faq_items' => [['question' => 'Is it free?', 'answer' => 'Yes'], ['question' => 'Q2', 'answer' => 'A2']], 'order' => 5],
-        ['type' => 'vcard', 'vcard_name' => 'Ivan', 'vcard_email' => 'ivan@example.com', 'order' => 6],
-    ]);
-
-    $this->actingAs(smokeAdmin())->get(route('admin.bio.show', $page))->assertOk()
-        ->assertSeeInOrder(['My site', 'https://example.com', 'Divider', 'Hello world', 'Watch', 'YouTube · https://www.youtube.com/watch?v=abc',
-            'Is it free?', 'FAQ · 2 questions', 'Ivan', 'Contact card · ivan@example.com'], false);
 });

@@ -1,16 +1,6 @@
 <?php
 
 use App\Http\Controllers\AbuseReportController;
-use App\Http\Controllers\Admin\SeoController;
-use App\Http\Controllers\AdminAbuseController;
-use App\Http\Controllers\AdminAnalyticsController;
-use App\Http\Controllers\AdminBioController;
-use App\Http\Controllers\AdminDomainBlacklistController;
-use App\Http\Controllers\AdminIpBanController;
-use App\Http\Controllers\AdminIpWatchlistController;
-use App\Http\Controllers\AdminLinkController;
-use App\Http\Controllers\AdminQueueController;
-use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ApiTokenController;
 use App\Http\Controllers\AppSsoController;
@@ -18,13 +8,11 @@ use App\Http\Controllers\BioLinkController;
 use App\Http\Controllers\BioPageController;
 use App\Http\Controllers\BrandAssetController;
 use App\Http\Controllers\FolderController;
-use App\Http\Controllers\GeoIpMonitorController;
 use App\Http\Controllers\LinkCheckController;
 use App\Http\Controllers\LinkCommentController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\MarketingPageController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ProxyMonitorController;
 use App\Http\Controllers\PublicBioController;
 use App\Http\Controllers\PublicLinkController;
 use App\Http\Controllers\RedirectController;
@@ -153,56 +141,19 @@ Route::middleware('ip.ban')->group(function () {
             });
         });
     });
-    Route::middleware(['auth', '2fa', 'admin'])
-        ->prefix('admin')
-        ->name('admin.')
-        ->group(function () {
-            Route::get('/', function () {
-                return redirect()->route('dashboard');
-            })->name('dashboard');
-            Route::get('/analytics/global', [AdminAnalyticsController::class, 'global'])->name('analytics.global');
-            Route::post('/users', [AdminUserController::class, 'storeAdmin'])->name('users.store');
-            Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
-            Route::get('/users/lookup', [AdminUserController::class, 'lookup'])->name('users.lookup');
-            Route::get('/users/{user}/inspect', [AdminUserController::class, 'inspect'])->name('users.inspect');
-            Route::patch('/users/{user}/status', [AdminUserController::class, 'updateStatus'])->name('users.status');
-            Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
-            Route::get('/links', [AdminLinkController::class, 'index'])->name('links.index');
-            Route::get('/links/my', [AdminLinkController::class, 'my'])->name('links.my');
-            Route::patch('/links/{link}/status', [AdminLinkController::class, 'updateStatus'])->name('links.status');
-            Route::delete('/links/{link}', [AdminLinkController::class, 'destroy'])->name('links.destroy');
-            Route::post('/links/bulk', [AdminLinkController::class, 'bulk'])->name('links.bulk');
-            Route::get('/ip-bans', [AdminIpBanController::class, 'index'])->name('ip-bans.index');
-            Route::post('/ip-bans', [AdminIpBanController::class, 'store'])->name('ip-bans.store');
-            Route::delete('/ip-bans/{ipBan}', [AdminIpBanController::class, 'destroy'])->name('ip-bans.destroy');
-            Route::get('/ip-watchlist', [AdminIpWatchlistController::class, 'index'])->name('ip-watchlist.index');
-            Route::post('/ip-watchlist', [AdminIpWatchlistController::class, 'store'])->name('ip-watchlist.store');
-            Route::delete('/ip-watchlist/{watchlist}', [AdminIpWatchlistController::class, 'destroy'])->name('ip-watchlist.destroy');
-            Route::get('/domain-blacklist', [AdminDomainBlacklistController::class, 'index'])->name('domain-blacklist.index');
-            Route::post('/domain-blacklist', [AdminDomainBlacklistController::class, 'store'])->name('domain-blacklist.store');
-            Route::delete('/domain-blacklist/{blacklist}', [AdminDomainBlacklistController::class, 'destroy'])->name('domain-blacklist.destroy');
-            Route::get('/seo', [SeoController::class, 'edit'])->name('seo.edit');
-            Route::post('/seo', [SeoController::class, 'update'])->name('seo.update');
-            Route::get('/abuse', [AdminAbuseController::class, 'index'])->name('abuse.index');
-            Route::post('/abuse/scan', [AdminAbuseController::class, 'scan'])->middleware('throttle:3,10')->name('abuse.scan');
-            Route::patch('/abuse/{report}', [AdminAbuseController::class, 'update'])->name('abuse.update');
-            Route::post('/abuse/flags/{flag}/confirm', [AdminAbuseController::class, 'confirmFlag'])->name('abuse.flags.confirm');
-            Route::post('/abuse/flags/{flag}/restore', [AdminAbuseController::class, 'restoreFlag'])->name('abuse.flags.restore');
-            Route::post('/queue/restart', [AdminQueueController::class, 'restart'])->name('queue.restart');
-            Route::get('/queue/status', [AdminQueueController::class, 'status'])->name('queue.status');
-            Route::get('/geoip-monitor', [GeoIpMonitorController::class, 'index'])->name('geoip.monitor');
-            Route::post('/geoip-test', [GeoIpMonitorController::class, 'testProvider'])->name('geoip.test');
-            Route::get('/proxy-monitor', [ProxyMonitorController::class, 'index'])->name('proxy.monitor');
-            Route::post('/proxy-test', [ProxyMonitorController::class, 'test'])->name('proxy.test');
-            Route::delete('/proxy-reset-stats', [ProxyMonitorController::class, 'resetStats'])->name('proxy.reset-stats');
-            Route::get('/bio', [AdminBioController::class, 'index'])->name('bio.index');
-            Route::get('/bio/monitor', [AdminBioController::class, 'monitor'])->name('bio.monitor');
-            Route::get('/bio/export', [AdminBioController::class, 'export'])->name('bio.export');
-            Route::get('/bio/{bioPage}', [AdminBioController::class, 'show'])->name('bio.show');
-            Route::delete('/bio/{bioPage}', [AdminBioController::class, 'destroy'])->name('bio.destroy');
-            Route::post('/bio/{bioPage}/toggle', [AdminBioController::class, 'togglePublish'])->name('bio.toggle');
-            Route::post('/bio/bulk-delete', [AdminBioController::class, 'bulkDelete'])->name('bio.bulk-delete');
-        });
+    // The admin pages moved to the HOP control center (Imperium), which works
+    // through the signed /api/hop/* API. /admin/* sends admins there.
+    Route::middleware(['auth', '2fa', 'admin'])->group(function () {
+        $control = function () {
+            if ($url = config('hop.control_url')) {
+                return redirect()->away($url);
+            }
+
+            return view('admin-retired');
+        };
+        Route::get('/admin', $control)->name('admin.control');
+        Route::get('/admin/{any}', $control)->where('any', '.*');
+    });
     // Pages left open past the session lifetime fetch a new token before submitting (resources/js/app.js).
     Route::get('/csrf-token', fn () => response()->json(['token' => csrf_token()])->header('Cache-Control', 'no-store, private'))
         ->middleware('throttle:30,1,csrf-token')->name('csrf.token');

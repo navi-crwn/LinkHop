@@ -12,7 +12,7 @@ export type StateId =
   | 'user_dashboard' | 'user_links' | 'user_link_modal' | 'user_link_created' | 'user_link_show' | 'user_link_edit'
   | 'user_bio_index' | 'user_bio_editor' | 'user_bio_block_editor' | 'user_analytics' | 'user_settings'
   | 'user_folders' | 'user_folder_modal' | 'user_tags' | 'user_tag_modal'
-  | 'admin_analytics' | 'admin_links' | 'admin_abuse' | 'admin_bio';
+  | 'admin_retired';
 
 export interface Persona {
   token: string; email: string; password: string; admin: boolean;
@@ -40,7 +40,7 @@ export interface Action {
 }
 
 const USER_STATES: StateId[] = ['user_dashboard', 'user_links', 'user_link_show', 'user_link_edit', 'user_bio_index', 'user_bio_editor',
-  'user_analytics', 'user_settings', 'user_folders', 'user_tags', 'admin_analytics', 'admin_links', 'admin_abuse', 'admin_bio'];
+  'user_analytics', 'user_settings', 'user_folders', 'user_tags', 'admin_retired'];
 export const GUEST_STATES: StateId[] = ['guest_home', 'guest_login', 'guest_register', 'guest_check', 'guest_bio_public', 'guest_bio_locked'];
 export const MODAL_STATES: StateId[] = ['user_link_modal', 'user_link_created', 'user_bio_block_editor', 'user_folder_modal', 'user_tag_modal'];
 
@@ -333,10 +333,20 @@ export const ACTIONS: Action[] = [
   },
 
   // ---- admin ----
-  { id: 'admin_global_analytics', from: 'any-user', to: 'admin_analytics', adminOnly: true, run: async ({ page }) => nav(page, '/admin/analytics/global') },
-  { id: 'admin_all_links', from: 'any-user', to: 'admin_links', adminOnly: true, run: async ({ page }) => nav(page, '/admin/links') },
-  { id: 'admin_abuse', from: 'any-user', to: 'admin_abuse', adminOnly: true, run: async ({ page }) => nav(page, '/admin/abuse') },
-  { id: 'admin_bio_pages', from: 'any-user', to: 'admin_bio', adminOnly: true, run: async ({ page }) => nav(page, '/admin/bio') },
+  // The admin pages moved to the HOP control center (Imperium). Without HOP_CONTROL_URL,
+  // /admin/* shows where they went; the old pages must be gone for good.
+  {
+    id: 'admin_control_center', from: 'any-user', to: 'admin_retired', adminOnly: true,
+    run: async ({ page }) => {
+      await page.goto('/admin');
+      await page.getByRole('heading', { name: 'The admin panel moved' }).waitFor();
+      for (const path of ['/admin/users', '/admin/links', '/admin/abuse', '/admin/bio']) {
+        const res = await page.request.get(path, { maxRedirects: 0 });
+        const body = await res.text();
+        if (res.status() === 200 && !body.includes('The admin panel moved')) throw new Error(`INVARIANT ${path} still serves an admin page`);
+      }
+    },
+  },
 ];
 
 async function linkId(page: Page, slug: string): Promise<string> {
