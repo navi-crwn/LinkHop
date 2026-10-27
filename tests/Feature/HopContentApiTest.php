@@ -88,7 +88,7 @@ class HopContentApiTest extends TestCase
         $this->act('link', $link->id, 'delete')->assertOk()->assertJsonPath('data.deleted', true);
         $this->assertDatabaseMissing('links', ['id' => $link->id]);
         $this->signed('GET', '/api/hop/content/link/'.$link->id)->assertStatus(404);
-        $this->assertSame(5, HopAudit::where('target_type', 'link')->count());
+        $this->assertSame(4, HopAudit::where('target_type', 'link')->count()); // disable, enable, transfer, delete; refused actions are not audited
         $this->assertSame('7', HopAudit::first()->actor);
     }
 
