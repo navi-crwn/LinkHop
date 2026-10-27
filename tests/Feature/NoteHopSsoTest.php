@@ -78,6 +78,13 @@ class NoteHopSsoTest extends TestCase
         $this->assertStringContainsString('/sso/notehop', (string) session('url.intended'));
     }
 
+    public function test_csp_lets_the_sign_in_form_redirect_to_the_apps(): void
+    {
+        $csp = (string) $this->get('/login')->headers->get('Content-Security-Policy');
+        $this->assertMatchesRegularExpression("/form-action 'self'[^;]*https:\\/\\/note\\.example\\.com/", $csp);
+        $this->assertMatchesRegularExpression("/form-action 'self'[^;]*https:\\/\\/p\\.example\\.com/", $csp);
+    }
+
     public function test_disabled_without_configuration(): void
     {
         config(['services.notehop.sso_secret' => '']);
