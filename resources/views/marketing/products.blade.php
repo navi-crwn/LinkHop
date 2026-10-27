@@ -122,6 +122,57 @@
             </div>
         </div>
 
+        <!-- NoteHop - HEL.ink Family -->
+        <div class="mt-8 rounded-3xl border border-cyan-400/30 bg-linear-to-r from-cyan-500/10 to-purple-500/10 p-8">
+            <div class="flex items-start gap-4 flex-wrap md:flex-nowrap">
+                <div class="w-16 h-16 rounded-2xl bg-linear-to-br from-cyan-400 to-purple-500 flex items-center justify-center shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 3h9l4 4v14H6V3zm8 0v5h5M9 12h6m-6 4h4" />
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs uppercase tracking-[0.3em] text-cyan-300/70 mb-2">HEL.ink Family</p>
+                    <h2 class="text-2xl font-semibold text-white">NoteHop - Encrypted Notes</h2>
+                    <p class="mt-3 text-white/70">
+                        Part of the HEL.ink ecosystem, <strong class="text-cyan-300">NoteHop</strong> (note.hel.ink) is a notepad you can share with a link.
+                        Notes are encrypted in your browser, so not even the server can read them. Sign in with your HEL.ink account to keep them together.
+                    </p>
+                    <div class="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3 text-sm text-white/80">
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            <span>End-to-end encrypted</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            <span>Delete after reading</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            <span>Write together live</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            <span>Many links per note</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            <span>Polls & checklists</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                            <span>9 languages</span>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <a href="https://note.hel.ink" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-cyan-500 to-purple-500 px-6 py-3 font-semibold text-white hover:opacity-90 transition-opacity">
+                            Visit NoteHop
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="mt-16 rounded-3xl border border-white/10 bg-white/5 p-8">
             <h2 class="text-2xl font-semibold text-white">Ready to Try?</h2>
             <p class="mt-3 text-white/70 max-w-2xl">

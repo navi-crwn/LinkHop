@@ -123,8 +123,8 @@ class ProfileController extends Controller
         session()->forget('google_user_needs_password');
         ActivityLog::log('created', 'Password', $user->id, 'Created password from onboarding');
 
-        if (PixelHopSsoController::cameFromPixelHop($request)) {
-            return PixelHopSsoController::continueToPixelHop($request);
+        if ($app = AppSsoController::cameFrom($request)) {
+            return AppSsoController::continueTo($request, $app);
         }
 
         return redirect()->route('dashboard')->with('status', 'password-created');

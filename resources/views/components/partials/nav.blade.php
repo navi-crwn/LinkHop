@@ -10,9 +10,14 @@
         'flag' => 'M5 21V4m0 0h11l-1.5 4L16 12H5',
         'globe' => 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0c2.5-2.5 3.5-5.5 3.5-9S14.5 5.5 12 3m0 18c-2.5-2.5-3.5-5.5-3.5-9S9.5 5.5 12 3M3.5 9h17m-17 6h17',
         'image' => 'M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm4.5 6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM21 15l-5-5-9 9',
+        'note' => 'M6 3h9l4 4v14H6V3Zm8 0v5h5M9 12h6m-6 4h4',
     ];
-    // Image hosting lives in PixelHop (p.hel.ink), signed in with this account.
+    // Image hosting lives in PixelHop (p.hel.ink) and notes in NoteHop
+    // (note.hel.ink), both signed in with this account.
     $images = config('services.pixelhop.url') ? [['label' => 'Images', 'icon' => 'image', 'route' => 'images.open', 'active' => 'images.open']] : [];
+    if (config('services.notehop.url')) {
+        $images[] = ['label' => 'Notes', 'icon' => 'note', 'route' => 'notes.open', 'active' => 'notes.open'];
+    }
     if ($isAdmin) {
         $groups = [
             ['label' => 'Dashboard', 'icon' => 'home', 'route' => 'dashboard', 'active' => 'dashboard'],
