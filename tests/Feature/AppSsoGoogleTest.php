@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\HopApp;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Socialite\Facades\Socialite;
@@ -18,10 +19,8 @@ class AppSsoGoogleTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        config([
-            'services.notehop.url' => 'https://note.example.com', 'services.notehop.sso_secret' => str_repeat('n', 40),
-            'services.google.client_id' => 'test-client', 'services.google.client_secret' => 'test-secret',
-        ]);
+        HopApp::factory()->notehop(str_repeat('n', 40))->create();
+        config(['services.google.client_id' => 'test-client', 'services.google.client_secret' => 'test-secret']);
     }
 
     private function query(array $over = []): array
@@ -31,7 +30,7 @@ class AppSsoGoogleTest extends TestCase
 
     private function ticketUrl(): string
     {
-        return route('sso.notehop', $this->query());
+        return route('sso.ticket', ['app' => 'notehop'] + $this->query());
     }
 
     /** Google answers with this person. */

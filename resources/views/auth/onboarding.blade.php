@@ -138,7 +138,7 @@
                 <p class="text-sm text-slate-600 dark:text-slate-400">Please create your password to continue</p>
             @elseif($ssoApp = \App\Http\Controllers\AppSsoController::cameFrom(request()))
                 <a href="{{ \App\Http\Controllers\AppSsoController::continueUrl($ssoApp) }}" class="w-full sm:w-auto inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-xs transition hover:bg-blue-500">
-                    Continue to {{ \App\Http\Controllers\AppSsoController::name($ssoApp) }}
+                    Continue to {{ $ssoApp->name }}
                 </a>
                 <a href="{{ route('dashboard') }}" class="w-full sm:w-auto inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-xs transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
                     Go to HEL.ink dashboard
