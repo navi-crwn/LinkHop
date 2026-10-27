@@ -1,7 +1,7 @@
-<x-marketing-layout title="Privacy Policy - HEL.ink">
+<x-marketing-layout title="Privacy Policy - LinkHop">
     <section class="mx-auto max-w-4xl px-6 py-16 lg:px-8 space-y-6 text-white/80 text-sm leading-relaxed">
         <h1 class="text-4xl font-semibold text-white">Privacy policy</h1>
-        <p><strong>Short version:</strong> HEL.ink stores only the data required to keep your links online and protect the platform from abuse.</p>
+        <p><strong>Short version:</strong> LinkHop stores only the data required to keep your links online and protect the platform from abuse.</p>
         <div class="rounded-3xl border border-white/10 bg-white/5 p-6 space-y-4">
             <h2 class="text-2xl font-semibold text-white">Data we collect</h2>
             <ul class="list-disc space-y-2 pl-6">
@@ -12,7 +12,7 @@
                 <li>Activity log: what you created, changed or deleted in your account, with the IP address and browser used.</li>
                 <li>Abuse reports: the reported link, your reason and the email you give us, plus your IP address for a short time to stop report spam.</li>
                 <li>Bio page uploads: avatars, backgrounds, images and icons you upload for your bio pages.</li>
-                <li>Bio page trackers: a bio page owner can add Google Analytics, a Facebook pixel or a TikTok pixel to their page. These run only after a visitor clicks "Allow" on that page, and then send data to those companies under their own privacy policies. HEL.ink does not receive that data. The choice is stored in the visitor's browser for that page.</li>
+                <li>Bio page trackers: a bio page owner can add Google Analytics, a Facebook pixel or a TikTok pixel to their page. These run only after a visitor clicks "Allow" on that page, and then send data to those companies under their own privacy policies. LinkHop does not receive that data. The choice is stored in the visitor's browser for that page.</li>
             </ul>
         </div>
         <div class="rounded-3xl border border-white/10 bg-white/5 p-6 space-y-3">

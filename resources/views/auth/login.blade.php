@@ -1,7 +1,8 @@
 <x-guest-layout>
     <div class="mb-6">
-        <h1 class="page-title">Welcome back</h1>
-        <p class="mt-1 text-sm text-muted">Sign in to manage your links.</p>
+        @php $ssoApp = \App\Http\Controllers\AppSsoController::cameFrom(request()); @endphp
+        <h1 class="page-title">{{ $ssoApp ? 'Sign in to '.$ssoApp->name : 'Welcome back' }}</h1>
+        <p class="mt-1 text-sm text-muted">{{ $ssoApp ? 'Use your HOP ID. One account for '.config('app.name').', '.$ssoApp->name.' and every HOP app.' : 'Sign in with your HOP ID to manage your links.' }}</p>
     </div>
     <x-auth-session-status class="mb-4" :status="session('status')" />
     @if(session('error'))
@@ -95,9 +96,9 @@
                 class="btn-primary ms-3"
             >
                 @if ($turnstileKey)
-                    <span x-show="!waiting">{{ __('Log in') }}</span><span x-cloak x-show="waiting">{{ __('Verifying…') }}</span>
+                    <span x-show="!waiting">{{ __('Login with HOP') }}</span><span x-cloak x-show="waiting">{{ __('Verifying…') }}</span>
                 @else
-                    {{ __('Log in') }}
+                    {{ __('Login with HOP') }}
                 @endif
             </button>
         </div>

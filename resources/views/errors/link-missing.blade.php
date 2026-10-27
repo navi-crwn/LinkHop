@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png" sizes="32x32">
     <link rel="apple-touch-icon" href="{{ route('brand.favicon') }}">
-    <title>{{ ($expired ?? false) ? 'Link Expired' : 'Link Not Found' }} - {{ config('app.name', 'HEL.ink') }}</title>
+    <title>{{ ($expired ?? false) ? 'Link Expired' : 'Link Not Found' }} - {{ config('app.name', 'LinkHop') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50 dark:bg-gray-900">

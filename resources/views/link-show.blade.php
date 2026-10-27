@@ -1,6 +1,6 @@
 @php use Illuminate\Support\Str; use Illuminate\Support\Facades\Storage; @endphp
 <x-app-layout>
-    <x-slot name="pageTitle">HEL.ink - /{{ $link->slug }} analytics</x-slot>
+    <x-slot name="pageTitle">LinkHop - /{{ $link->slug }} analytics</x-slot>
     <x-page-header title="/{{ $link->slug }}" subtitle="Analytics for the last {{ $rangeInDays }} days">
         <x-slot name="actions">
             <a href="{{ route('links.index') }}" class="btn-ghost btn-sm">My links</a>

@@ -1,11 +1,22 @@
 # Changelog
 
-All notable changes to HEL.ink will be documented in this file.
+All notable changes to LinkHop (hel.ink) will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### HOP ID
+- **LinkHop** is the new name of this app; the domain stays hel.ink ("Hop Easy Link"). It is the account server ("HOP ID") of the HOP family: the sign-in and sign-up buttons say "Login with HOP" and "Join HOP", and the sign-in page says which app you are on your way to
+- **App registry.** The other HOP apps are rows in the new `apps` table instead of `PIXELHOP_*` / `NOTEHOP_*` keys: `/sso/{app}`, `/sso/{app}/google` and `/apps/{app}` work for any registered app, the sidebar lists them, and an app can be put in maintenance or switched off. `php artisan hop:bootstrap` moves the old keys over once (`/pixelhop` and `/notehop` redirect to `/apps/…`)
+- **Roles.** `owner`, `admin`, `moderator`, `support` and app-scoped `admin` (new `roles` table) replace the single `SUPERADMIN_EMAIL` check, which stays as a fallback so the owner is never locked out. Admin pages now also require the two-factor check when the admin has 2FA on
+- **One profile for every app.** Username (one rule everywhere: 3–30 lowercase letters, digits, dots, dashes, underscores; reserved names; a released name stays on hold 90 days), bio, website, location, a profile photo stored here, and "show my name and photo on what I share". New accounts get a username automatically; `hop:usernames` assigns one to existing accounts and can import the ones PixelHop and NoteHop already use (earliest claim wins)
+- **SSO ticket v2** carries the profile, roles, `profile_version`, `verified` and `mfa`; every v1 field is unchanged
+- **HOP App Protocol.** Signed server-to-server API for the apps and the Imperium control center: `GET /api/hop/profile/{id}`, `/api/hop/profiles`, `/api/hop/apps`, and `/api/apps/{app}/login|register` for an app's own forms (the old `/api/pixelhop/*` endpoints keep working for PixelHop 3.x). Secrets can be rotated with a grace period
+- **Events.** Apps that declare the `events` capability are told about profile changes, status changes (suspend) and account deletion (`POST /hop/events`, signed, retried with backoff)
+- Sign-ins with Google and into the apps are now recorded in the login history like password sign-ins
+
 
 ### Fixed
 - A short link or bio slug can no longer be the first part of an app route (`analytics`, `api-docs`, `goodbye`, `up`, ...): the route always won, so such a link never opened. The list is read from the router, so new routes are covered automatically; matching ignores case. Links that already have such a slug can still be edited

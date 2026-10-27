@@ -1,12 +1,12 @@
-<x-marketing-layout title="Frequently Asked Questions - HEL.ink">
+<x-marketing-layout title="Frequently Asked Questions - LinkHop">
     <section class="mx-auto max-w-5xl px-6 py-16 lg:px-8">
         <p class="text-xs uppercase tracking-[0.4em] text-white/60">FAQ</p>
         <h1 class="mt-4 text-4xl font-semibold text-white">Frequently Asked Questions</h1>
-        <p class="mt-4 text-lg text-white/70 max-w-3xl">Find quick answers to common questions about HEL.ink. If you can't find what you're looking for, feel free to reach out.</p>
+        <p class="mt-4 text-lg text-white/70 max-w-3xl">Find quick answers to common questions about LinkHop. If you can't find what you're looking for, feel free to reach out.</p>
         <div class="mt-12 space-y-8">
             <div>
-                <h2 class="text-xl font-semibold text-white">Is HEL.ink free to use?</h2>
-                <p class="mt-2 text-white/70">Yes, HEL.ink is completely free. All features, including custom slugs, analytics, QR codes, and password protection, are available to all users without any cost.</p>
+                <h2 class="text-xl font-semibold text-white">Is LinkHop free to use?</h2>
+                <p class="mt-2 text-white/70">Yes, LinkHop is completely free. All features, including custom slugs, analytics, QR codes, and password protection, are available to all users without any cost.</p>
             </div>
             <div>
                 <h2 class="text-xl font-semibold text-white">Do I need an account to create a short link?</h2>
@@ -42,7 +42,7 @@
             </div>
             <div>
                 <h2 class="text-xl font-semibold text-white">How many links can I add to my bio page?</h2>
-                <p class="mt-2 text-white/70">Unlimited! Unlike paid services that charge for more than 5-10 links, HEL.ink lets you add as many links as you need, completely free. Edit, reorder, or delete links anytime without losing analytics data.</p>
+                <p class="mt-2 text-white/70">Unlimited! Unlike paid services that charge for more than 5-10 links, LinkHop lets you add as many links as you need, completely free. Edit, reorder, or delete links anytime without losing analytics data.</p>
             </div>
         </div>
         <div class="mt-16 rounded-3xl border border-white/10 bg-white/5 p-8 text-center">

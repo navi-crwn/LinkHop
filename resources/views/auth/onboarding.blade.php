@@ -1,7 +1,7 @@
 <x-guest-layout>
     <section class="mx-auto max-w-3xl px-4 py-6">
         <div class="text-center">
-            <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Welcome to HEL.ink</h1>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Welcome to {{ config('app.name') }}</h1>
             <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Get started with your link shortening journey</p>
         </div>
         @if(session('success'))
@@ -141,7 +141,7 @@
                     Continue to {{ $ssoApp->name }}
                 </a>
                 <a href="{{ route('dashboard') }}" class="w-full sm:w-auto inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-xs transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
-                    Go to HEL.ink dashboard
+                    Go to {{ config('app.name') }} dashboard
                 </a>
             @else
                 <a href="{{ route('dashboard') }}" class="w-full sm:w-auto inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-xs transition hover:bg-blue-500">

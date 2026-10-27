@@ -68,7 +68,8 @@ class HopSignature
         if (strlen($nonce) < 16 || strlen($nonce) > 128) {
             return 'bad_signature';
         }
-        $base = self::stringToSign($slug, $ts, $nonce, $request->getMethod(), '/'.ltrim($request->path(), '/'), (string) $request->getContent());
+        // PATH is the request target with its query string, e.g. /api/hop/profiles?ids=1
+        $base = self::stringToSign($slug, $ts, $nonce, $request->getMethod(), $request->getRequestUri(), (string) $request->getContent());
         $ok = false;
         foreach ($app->secrets() as $secret) {
             $expected = self::b64(hash_hmac('sha256', $base, $secret, true));

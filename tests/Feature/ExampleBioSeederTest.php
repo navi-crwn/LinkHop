@@ -42,7 +42,7 @@ test('example bio seeder can hand the example to an existing account', function 
     }
 
     $page = BioPage::where('slug', 'hel')->first();
-    expect($page->user_id)->toBe($owner->id)->and($page->title)->toBe('HEL.ink');
+    expect($page->user_id)->toBe($owner->id)->and($page->title)->toBe('LinkHop');
     expect(Link::where('slug', 'github')->first()->user_id)->toBe($owner->id);
 });
 

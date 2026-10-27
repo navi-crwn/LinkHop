@@ -1,7 +1,8 @@
 <x-guest-layout>
     <div class="mb-6">
-        <h1 class="page-title">Create your account</h1>
-        <p class="mt-1 text-sm text-muted">Free forever. Verify your email to start creating links.</p>
+        @php $ssoApp = \App\Http\Controllers\AppSsoController::cameFrom(request()); @endphp
+        <h1 class="page-title">Create your HOP ID</h1>
+        <p class="mt-1 text-sm text-muted">One free account for {{ config('app.name') }}{{ $ssoApp ? ', '.$ssoApp->name : '' }} and every HOP app. Verify your email to get started.</p>
     </div>
     @if(session('error'))
         <div class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20">
@@ -141,9 +142,9 @@
                 x-bind:disabled="!tosAccepted"
             >
                 @if ($turnstileKey)
-                    <span x-show="!waiting">{{ __('Register') }}</span><span x-cloak x-show="waiting">{{ __('Verifying…') }}</span>
+                    <span x-show="!waiting">{{ __('Join HOP') }}</span><span x-cloak x-show="waiting">{{ __('Verifying…') }}</span>
                 @else
-                    {{ __('Register') }}
+                    {{ __('Join HOP') }}
                 @endif
             </button>
         </div>
