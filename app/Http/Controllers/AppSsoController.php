@@ -147,6 +147,27 @@ class AppSsoController extends Controller
         return route(self::APPS[$app]['route'], ['to' => self::APPS[$app]['continue']]);
     }
 
+    /**
+     * Origins of the configured apps, for the CSP form-action list: after the
+     * sign-in or 2FA form, the browser follows a redirect to the app's
+     * callback, and form-action also covers redirects after a form post.
+     *
+     * @return list<string>
+     */
+    public static function origins(): array
+    {
+        $out = [];
+        foreach (array_keys(self::APPS) as $app) {
+            $base = self::baseUrl($app);
+            $p = $base === null ? false : parse_url($base);
+            if ($p && isset($p['scheme'], $p['host'])) {
+                $out[] = $p['scheme'].'://'.$p['host'].(isset($p['port']) ? ':'.$p['port'] : '');
+            }
+        }
+
+        return array_values(array_unique($out));
+    }
+
     private static function baseUrl(string $app): ?string
     {
         $url = rtrim((string) config(self::APPS[$app]['config'].'.url'), '/');
