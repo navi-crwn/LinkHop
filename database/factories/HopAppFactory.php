@@ -39,4 +39,11 @@ class HopAppFactory extends Factory
             'url' => 'https://note.example.com', 'callback_path' => '/auth/sso/callback', 'start_path' => '/auth/sso',
             'pages' => ['default' => '/dashboard', 'new' => '/'], 'continue_page' => 'default', 'secret' => $secret, 'sort_order' => 20]);
     }
+
+    /** The control center: hidden from menus, allowed to use the admin API. */
+    public function imperium(string $secret = 'imperium-secret-that-is-long-enough-1234'): static
+    {
+        return $this->state(['slug' => 'imperium', 'name' => 'Imperium', 'menu_label' => null, 'url' => 'https://imp.example.com',
+            'pages' => ['default' => '/'], 'secret' => $secret, 'capabilities' => ['admin_client'], 'sort_order' => 1, 'hidden' => true]);
+    }
 }
