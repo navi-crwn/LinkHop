@@ -2,6 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\IpBan;
+use App\Models\IpWatchlist;
+use App\Models\LoginHistory;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -78,5 +81,49 @@ class PixelHopAccountApiTest extends TestCase
             $this->signed('/api/pixelhop/login', ['email' => 'cs@example.com', 'password' => 'wrong'.$i]);
         }
         $this->signed('/api/pixelhop/login', ['email' => 'cs@example.com', 'password' => 'random123'])->assertStatus(429);
+    }
+
+    public function test_unverified_accounts_are_not_signed_in(): void
+    {
+        User::factory()->create(['email' => 'new@example.com', 'password' => Hash::make('random123'), 'email_verified_at' => null]);
+        $this->signed('/api/pixelhop/login', ['email' => 'new@example.com', 'password' => 'random123'])
+            ->assertStatus(403)->assertJsonPath('error', 'unverified');
+        // Google already confirmed the address.
+        User::factory()->create(['email' => 'g@example.com', 'password' => Hash::make('random123'), 'email_verified_at' => null, 'google_id' => 'g-1']);
+        $this->signed('/api/pixelhop/login', ['email' => 'g@example.com', 'password' => 'random123'])->assertOk();
+    }
+
+    public function test_banned_visitor_ip_is_refused(): void
+    {
+        User::factory()->create(['email' => 'cs@example.com', 'password' => Hash::make('random123'), 'email_verified_at' => now()]);
+        IpBan::create(['ip_address' => '203.0.113.9', 'reason' => 'test']);
+        $this->signed('/api/pixelhop/login', ['email' => 'cs@example.com', 'password' => 'random123', 'ip' => '203.0.113.9'])
+            ->assertStatus(403)->assertJsonPath('error', 'banned');
+        $this->signed('/api/pixelhop/register', ['name' => 'N', 'email' => 'n@example.com', 'password' => 'a-Strong-pass-123', 'tos_accepted' => true, 'ip' => '203.0.113.9'])
+            ->assertStatus(403);
+        $this->signed('/api/pixelhop/login', ['email' => 'cs@example.com', 'password' => 'random123', 'ip' => '203.0.113.10'])->assertOk();
+    }
+
+    public function test_failed_attempts_per_visitor_ip_are_limited(): void
+    {
+        User::factory()->create(['email' => 'cs@example.com', 'password' => Hash::make('random123'), 'email_verified_at' => now()]);
+        for ($i = 0; $i < 30; $i++) {
+            $this->signed('/api/pixelhop/login', ['email' => "x{$i}@example.com", 'password' => 'wrong', 'ip' => '198.51.100.7']);
+        }
+        $this->signed('/api/pixelhop/login', ['email' => 'cs@example.com', 'password' => 'random123', 'ip' => '198.51.100.7'])->assertStatus(429);
+        // Other visitors behind the same PixelHop server are not locked out.
+        $this->signed('/api/pixelhop/login', ['email' => 'cs@example.com', 'password' => 'random123', 'ip' => '198.51.100.8'])->assertOk();
+    }
+
+    public function test_login_is_recorded_like_a_web_login(): void
+    {
+        $u = User::factory()->create(['email' => 'cs@example.com', 'password' => Hash::make('random123'), 'email_verified_at' => now()]);
+        $this->signed('/api/pixelhop/login', ['email' => 'cs@example.com', 'password' => 'random123', 'ip' => '198.51.100.7'])->assertOk();
+        $this->assertDatabaseHas('login_histories', ['user_id' => $u->id, 'ip_address' => '198.51.100.7', 'browser' => 'PixelHop']);
+        $s = User::factory()->create(['email' => 'sus@example.com', 'password' => Hash::make('random123')]);
+        $s->forceFill(['status' => User::STATUS_SUSPENDED])->save();
+        $this->signed('/api/pixelhop/login', ['email' => 'sus@example.com', 'password' => 'random123', 'ip' => '198.51.100.7'])->assertStatus(403);
+        $this->assertTrue(IpWatchlist::where('ip_address', '198.51.100.7')->where('user_id', $s->id)->exists());
+        $this->assertSame(1, LoginHistory::where('user_id', $u->id)->count());
     }
 }
