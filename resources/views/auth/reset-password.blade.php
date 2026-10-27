@@ -23,8 +23,6 @@
             <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>{{ __('Save new password') }}</x-primary-button>
-        </div>
+        <x-primary-button class="mt-6 w-full py-3 text-base">{{ __('Save new password') }}</x-primary-button>
     </form>
 </x-guest-layout>
