@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -41,5 +42,17 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    /** The HOP owner (what SUPERADMIN_EMAIL used to be). */
+    public function owner(): static
+    {
+        return $this->afterCreating(fn (User $u) => $u->roles()->create(['role' => Role::OWNER]));
+    }
+
+    /** A HOP admin (every app), or admin of one app when $app is given. */
+    public function admin(?string $app = null): static
+    {
+        return $this->afterCreating(fn (User $u) => $u->roles()->create(['role' => Role::ADMIN, 'app_slug' => $app]));
     }
 }
