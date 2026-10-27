@@ -24,7 +24,11 @@ class GoogleAuthController extends Controller
 
     public function redirectToGoogle()
     {
-        if (request()->get('from_register') == '1') {
+        if (request()->get('from_app') == '1') {
+            // From an app's "Continue with Google": sign in or sign up, then
+            // back to the app (the intended URL is its ticket step).
+            session(['google_oauth_from' => 'app']);
+        } elseif (request()->get('from_register') == '1') {
             session(['google_oauth_from' => 'register']);
         } else {
             session(['google_oauth_from' => 'login']);
@@ -62,6 +66,11 @@ class GoogleAuthController extends Controller
                         'avatar' => $googleUser->avatar,
                     ]);
                 }
+                // Google vouches for this address (checked above), and it is the
+                // account's email: accounts made before the fix below get verified here.
+                if (! $user->hasVerifiedEmail()) {
+                    $user->markEmailAsVerified();
+                }
                 if ($user->isSuspended()) {
                     return redirect()->route('suspended')->with('error', 'Your account has been suspended.');
                 }
@@ -75,8 +84,10 @@ class GoogleAuthController extends Controller
                     'google_id' => $googleUser->id,
                     'avatar' => $googleUser->avatar,
                     'password' => Hash::make('TEMPORARY_GOOGLE_OAUTH_NO_PASSWORD_'.Str::random(32)), // Temporary password
-                    'email_verified_at' => now(), // Google already verified email
                 ]);
+                // Google already verified the address. email_verified_at is not
+                // mass assignable, so create() silently dropped it before.
+                $user->forceFill(['email_verified_at' => now()])->save();
                 try {
                     $this->notificationService->notifyNewUser([
                         'name' => $user->name,
@@ -104,6 +115,10 @@ class GoogleAuthController extends Controller
                     'is_default' => true,
                 ]);
                 Auth::login($user, true);
+
+                if ($fromPage === 'app') {
+                    return redirect()->intended(route('onboarding'));
+                }
 
                 return redirect()->route('onboarding')->with('success', 'Welcome to '.config('app.name').', '.$user->name.'!');
             }

@@ -70,6 +70,9 @@ Route::middleware('ip.ban')->group(function () {
     Route::post('/shorten', [PublicLinkController::class, 'store'])
         ->middleware(['throttle:shorten', 'quota'])
         ->name('shorten.store');
+    // "Continue with Google" in the apps: works for guests too (see AppSsoController::viaGoogle).
+    Route::get('/sso/pixelhop/google', [AppSsoController::class, 'viaGoogle'])->defaults('app', 'pixelhop')->middleware('throttle:30,1,pixelhop-sso-google')->name('sso.pixelhop.google');
+    Route::get('/sso/notehop/google', [AppSsoController::class, 'viaGoogle'])->defaults('app', 'notehop')->middleware('throttle:30,1,notehop-sso-google')->name('sso.notehop.google');
     Route::middleware(['auth'])->group(function () {
         Route::get('/two-factor-challenge', [TwoFactorController::class, 'show'])->name('two-factor.show');
         Route::post('/two-factor-challenge', [TwoFactorController::class, 'verify'])->middleware('throttle:5,1,two-factor')->name('two-factor.verify');
