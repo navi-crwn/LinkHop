@@ -86,14 +86,7 @@ class AuthenticatedSessionController extends Controller
                     'proxy_confidence' => $proxyResult['confidence'],
                     'logged_in_at' => now(),
                 ]);
-                $oldHistories = LoginHistory::where('user_id', $user->id)
-                    ->orderBy('logged_in_at', 'desc')
-                    ->skip(5)
-                    ->take(1000)
-                    ->pluck('id');
-                if ($oldHistories->isNotEmpty()) {
-                    LoginHistory::whereIn('id', $oldHistories)->delete();
-                }
+                LoginHistory::keepLatest($user->id);
             });
             if (! $user->two_factor_secret || ! $user->two_factor_confirmed_at) {
                 $request->session()->put('2fa_verified', true);
