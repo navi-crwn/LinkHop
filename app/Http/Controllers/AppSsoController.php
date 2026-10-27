@@ -150,13 +150,19 @@ class AppSsoController extends Controller
      * Origins of the configured apps, for the CSP form-action list: after the
      * sign-in or 2FA form, the browser follows a redirect to the app's
      * callback, and form-action also covers redirects after a form post.
+     * Hidden apps (Imperium) sign in too, so they are included.
      *
      * @return list<string>
      */
     public static function origins(): array
     {
         $out = [];
-        foreach (self::apps() as $app) {
+        try {
+            $apps = HopApp::registered()->get()->filter->isConfigured();
+        } catch (\Throwable) {
+            return [];
+        }
+        foreach ($apps as $app) {
             if ($o = $app->origin()) {
                 $out[] = $o;
             }

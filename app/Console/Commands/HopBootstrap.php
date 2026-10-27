@@ -9,7 +9,7 @@ use Illuminate\Console\Command;
 
 /**
  * One-time move from the old settings to HOP ID: the SUPERADMIN_EMAIL account
- * becomes `owner`, and the PIXELHOP_* / NOTEHOP_* keys become rows in `apps`.
+ * becomes `owner`, and the PIXELHOP_* / NOTEHOP_* / IMPERIUM_* keys become rows in `apps`.
  * Safe to run again: it only adds what is missing.
  */
 class HopBootstrap extends Command
@@ -42,6 +42,11 @@ class HopBootstrap extends Command
             'notehop' => ['name' => 'NoteHop', 'menu_label' => 'Notes', 'icon' => 'note', 'callback_path' => '/auth/sso/callback',
                 'start_path' => '/auth/sso', 'pages' => ['default' => '/dashboard', 'new' => '/'], 'continue_page' => 'default',
                 'capabilities' => [], 'sort_order' => 20],
+            // The control center: signs in through HOP ID like any app, but stays out of
+            // the sidebar and may use the admin API.
+            'imperium' => ['name' => 'Imperium', 'menu_label' => null, 'callback_path' => '/auth/sso/callback',
+                'start_path' => '/auth/sso', 'pages' => ['default' => '/'], 'continue_page' => 'default',
+                'capabilities' => ['admin_client'], 'sort_order' => 1, 'hidden' => true],
         ] as $slug => $row) {
             $url = (string) config("services.$slug.url");
             $secret = (string) config("services.$slug.sso_secret");
@@ -56,7 +61,7 @@ class HopBootstrap extends Command
                 continue;
             }
             $this->info("$slug: registering {$url}");
-            $dry || HopApp::create($row + ['slug' => $slug, 'url' => rtrim($url, '/'), 'secret' => $secret]);
+            $dry || HopApp::create($row + ['slug' => $slug, 'url' => rtrim($url, '/'), 'secret' => $secret, 'status' => HopApp::STATUS_ACTIVE]);
         }
 
         $missing = User::query()->whereNull('username')->count();

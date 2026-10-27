@@ -4,16 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Folder;
 use App\Models\User;
-use App\Services\LinkService;
-use App\Support\BioUploads;
+use App\Services\UserDeletion;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class AdminUserController extends Controller
 {
-    public function __construct(private readonly LinkService $links) {}
+    public function __construct(private readonly UserDeletion $deletion) {}
 
     public function index(Request $request)
     {
@@ -137,21 +135,7 @@ class AdminUserController extends Controller
         if ($user->isSuperAdmin()) {
             return back()->withErrors(['delete' => 'The superadmin account cannot be deleted.']);
         }
-        $bioFiles = BioUploads::ofUser($user);
-        $user->links()->each(function ($link) {
-            if ($link->qr_code_path) {
-                Storage::disk('public')->delete($link->qr_code_path);
-            }
-            $link->tags()->detach();
-            $link->comments()->delete();
-            $link->delete();
-            $this->links->forgetCache($link);
-        });
-        $user->folders()->delete();
-        $user->tags()->delete();
-        $user->delete();
-        // Bio pages and blocks are gone with the user (cascade); remove their files too.
-        BioUploads::deleteUnused($bioFiles);
+        $this->deletion->delete($user);
 
         return back()->with('status', "{$user->email} has been removed.");
     }
