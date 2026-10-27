@@ -98,12 +98,13 @@ img {
 /* Header */
 
 .header {
-    padding: 25px 0;
+    background-color: #0b0b10;
+    padding: 22px 0;
     text-align: center;
 }
 
 .header a {
-    color: #3d4852;
+    color: #ffffff;
     font-size: 19px;
     font-weight: bold;
     text-decoration: none;
@@ -237,11 +238,11 @@ img {
 
 .button-blue,
 .button-primary {
-    background-color: #2d3748;
-    border-bottom: 8px solid #2d3748;
-    border-left: 18px solid #2d3748;
-    border-right: 18px solid #2d3748;
-    border-top: 8px solid #2d3748;
+    background-color: #0b0b10;
+    border-bottom: 8px solid #0b0b10;
+    border-left: 18px solid #0b0b10;
+    border-right: 18px solid #0b0b10;
+    border-top: 8px solid #0b0b10;
 }
 
 .button-green,
