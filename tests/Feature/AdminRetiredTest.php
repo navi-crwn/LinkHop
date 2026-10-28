@@ -29,7 +29,8 @@ test('/admin is forbidden for a normal user', function () {
 test('/admin asks a guest to sign in', function () {
     config(['hop.control_url' => 'https://imperium.example.test']);
 
-    $this->get('/admin')->assertRedirect(route('login'));
+    // hop.auth: a guest is sent through the hub's SSO and comes back to /admin.
+    $this->get('/admin')->assertRedirect(route('hop.sso.start', ['next' => '/admin']));
 });
 
 test('admins see the control center in the sidebar and a banner on the dashboard, members do not', function () {

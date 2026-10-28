@@ -3,8 +3,8 @@
 use App\Models\AbuseReport;
 use App\Models\ActivityLog;
 use App\Models\Link;
-use App\Models\LoginHistory;
 use App\Models\User;
+use App\Services\UserDeletion;
 use App\Support\CspReport;
 use Hop\Bio\Models\BioClick;
 use Hop\Bio\Models\BioLink;
@@ -29,8 +29,6 @@ test('privacy:prune deletes logs older than the policy allows and keeps recent o
     $old = BioClick::create(['bio_link_id' => $block->id, 'clicked_at' => now()->subDays(31)]);
     $recent = BioClick::create(['bio_link_id' => $block->id, 'clicked_at' => now()->subDays(29)]);
     $user = $page->user;
-    $oldLogin = LoginHistory::create(['user_id' => $user->id, 'logged_in_at' => now()->subDays(91)]);
-    $newLogin = LoginHistory::create(['user_id' => $user->id, 'logged_in_at' => now()->subDay()]);
     $oldActivity = ActivityLog::create(['user_id' => $user->id, 'action' => 'created', 'model' => 'Link', 'description' => 'x']);
     $oldActivity->forceFill(['created_at' => now()->subDays(91)])->saveQuietly();
     $closed = AbuseReport::create(['reason' => 'spam', 'status' => 'resolved', 'ip_address' => '203.0.113.9']);
@@ -42,8 +40,6 @@ test('privacy:prune deletes logs older than the policy allows and keeps recent o
 
     expect(BioClick::find($old->id))->toBeNull()
         ->and(BioClick::find($recent->id))->not->toBeNull()
-        ->and(LoginHistory::find($oldLogin->id))->toBeNull()
-        ->and(LoginHistory::find($newLogin->id))->not->toBeNull()
         ->and(ActivityLog::find($oldActivity->id))->toBeNull()
         ->and(AbuseReport::find($closed->id))->toBeNull()
         ->and(AbuseReport::find($open->id))->not->toBeNull()
@@ -61,14 +57,14 @@ test('the link checker does not reveal where an inactive, expired or suspended l
     $this->get('/check?url=suspnd1')->assertOk()->assertDontSee('example.com/sus');
 });
 
-test('deleting an account removes the files uploaded for its bio pages', function () {
+test('purging an account (the hub deleting it) removes the files uploaded for its bio pages', function () {
     Storage::fake('public');
     Storage::disk('public')->put('avatars/mine.png', 'x');
     Storage::disk('public')->put('bio-thumbnails/thumb.png', 'x');
     $page = privacyPage(['avatar_url' => 'avatars/mine.png']);
     BioLink::create(['bio_page_id' => $page->id, 'type' => 'link', 'title' => 'A', 'url' => 'https://example.com', 'thumbnail_url' => '/storage/bio-thumbnails/thumb.png', 'is_active' => true, 'order' => 0]);
 
-    $this->actingAs($page->user)->delete('/profile', ['password' => 'password'])->assertRedirect();
+    app(UserDeletion::class)->purge($page->user);
 
     expect(BioPage::find($page->id))->toBeNull();
     Storage::disk('public')->assertMissing('avatars/mine.png');
@@ -89,21 +85,6 @@ test('deleting a block removes its image unless another block still uses it', fu
 
     Storage::disk('public')->assertMissing('bio-images/only.png');
     Storage::disk('public')->assertExists('bio-images/shared.png');
-});
-
-test('the account export contains bio pages with their blocks and no secrets', function () {
-    $page = privacyPage(['password_enabled' => true, 'password' => bcrypt('secret')]);
-    BioLink::create(['bio_page_id' => $page->id, 'type' => 'link', 'title' => 'My block', 'url' => 'https://example.com', 'is_active' => true, 'order' => 0]);
-    LoginHistory::create(['user_id' => $page->user_id, 'logged_in_at' => now(), 'country' => 'ID']);
-
-    $response = $this->actingAs($page->user)->post('/settings/export-account')->assertOk();
-    $data = json_decode($response->streamedContent(), true);
-
-    expect($data['account']['email'])->toBe($page->user->email)
-        ->and($data['bio_pages'][0]['slug'])->toBe($page->slug)
-        ->and($data['bio_pages'][0]['blocks'][0]['title'])->toBe('My block')
-        ->and($data['login_history'][0]['country'])->toBe('ID')
-        ->and($response->streamedContent())->not->toContain('$2y$');
 });
 
 test('csp reports never log tokens, query strings or emails', function () {

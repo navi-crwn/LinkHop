@@ -19,7 +19,7 @@ test('logout with an expired csrf token still signs the user out instead of show
 
     $response = $this->actingAs($user)->post('/logout', ['_token' => 'stale-token-from-an-old-tab']);
 
-    $response->assertRedirect(route('login'))->assertSessionHas('status');
+    $response->assertRedirect(hub_url('logout'));
     $this->assertGuest();
 });
 

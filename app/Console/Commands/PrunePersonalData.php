@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Models\AbuseReport;
 use App\Models\ActivityLog;
-use App\Models\LoginHistory;
 use Hop\Bio\Models\BioClick;
 use Illuminate\Console\Command;
 
@@ -32,7 +31,6 @@ class PrunePersonalData extends Command
     {
         $counts = [
             'bio clicks' => bio_enabled() ? BioClick::where('clicked_at', '<', now()->subDays(self::BIO_CLICK_DAYS))->delete() : 0,
-            'sign-ins' => LoginHistory::where('logged_in_at', '<', now()->subDays(self::LOGIN_HISTORY_DAYS))->delete(),
             'activity entries' => ActivityLog::where('created_at', '<', now()->subDays(self::ACTIVITY_LOG_DAYS))->delete(),
             'closed abuse reports' => AbuseReport::where('status', '!=', 'open')
                 ->where('updated_at', '<', now()->subDays(self::CLOSED_ABUSE_REPORT_DAYS))->delete(),

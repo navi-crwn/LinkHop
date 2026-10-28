@@ -1,9 +1,9 @@
 <?php
 
 use App\Models\User;
-use App\Support\SafeContent;
 use Hop\Bio\Models\BioLink;
 use Hop\Bio\Models\BioPage;
+use Hop\Safety\SafeContent;
 use Illuminate\Support\Facades\Hash;
 
 function clickPage(array $attrs = []): BioPage

@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Link;
-use App\Services\LinkSafety;
 use App\Services\LinkService;
-use App\Services\UrlGuard;
 use GuzzleHttp\Client;
 use Hop\Bio\Contracts\ShortlinkCreator;
+use Hop\Safety\LinkSafety;
+use Hop\Safety\UrlGuard;
 use Illuminate\Http\Request;
 
 class LinkController extends Controller

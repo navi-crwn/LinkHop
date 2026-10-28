@@ -1,14 +1,14 @@
 <?php
 
-use App\Http\Requests\ShortenLinkRequest;
-use App\Models\ApiToken;
+use App\Http\Requests\ManageLinkRequest;
 use App\Models\Link;
 use App\Models\User;
 use App\Support\ReservedSlugs;
+use Hop\Auth\Models\ApiToken;
 use Illuminate\Support\Facades\Validator;
 
 test('the HOP path prefixes and the configured words are reserved, app route segments are not', function () {
-    $rules = (new ShortenLinkRequest)->rules();
+    $rules = (new ManageLinkRequest)->rules();
     $refused = fn (string $slug) => Validator::make(['target_url' => 'https://example.com', 'slug' => $slug], ['slug' => $rules['slug']])->fails();
 
     foreach (['l', 'b', 'api', 'L', 'API', 'admin', 'paypal', 'helink'] as $slug) {
@@ -21,9 +21,7 @@ test('the HOP path prefixes and the configured words are reserved, app route seg
     }
 });
 
-test('guests, members and the API are refused a reserved word as slug', function () {
-    $this->post('/shorten', ['target_url' => 'https://example.com', 'slug' => 'api'])->assertSessionHasErrors('slug');
-
+test('members and the API are refused a reserved word as slug', function () {
     $user = User::factory()->create();
     $this->actingAs($user)->post('/links', ['target_url' => 'https://example.com', 'slug' => 'Admin', 'status' => 'active'])
         ->assertSessionHasErrors('slug');
