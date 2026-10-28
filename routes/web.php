@@ -4,17 +4,16 @@ use App\Http\Controllers\AbuseReportController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ApiTokenController;
 use App\Http\Controllers\AppSsoController;
-use App\Http\Controllers\BioLinkController;
-use App\Http\Controllers\BioPageController;
 use App\Http\Controllers\BrandAssetController;
 use App\Http\Controllers\FolderController;
+use App\Http\Controllers\LegacySlugController;
 use App\Http\Controllers\LinkCheckController;
 use App\Http\Controllers\LinkCommentController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\MarketingPageController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\PublicBioController;
 use App\Http\Controllers\PublicLinkController;
+use App\Http\Controllers\QrController;
 use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SitemapController;
@@ -59,7 +58,8 @@ Route::middleware('ip.ban')->group(function () {
     Route::get('/faq', [MarketingPageController::class, 'faq'])->name('faq');
     Route::get('/products', [MarketingPageController::class, 'products'])->name('products');
     Route::get('/feature-requests', [MarketingPageController::class, 'featureRequests'])->name('feature.requests');
-    Route::get('/api/qr-generate', [BioPageController::class, 'generateQR'])->name('api.qr.generate')->middleware('throttle:60,1,qr');
+    Route::get('/api/qr-generate', QrController::class)->name('api.qr.generate')->middleware('throttle:60,1,qr');
+    Route::get('/changes/short-links', [MarketingPageController::class, 'shortLinkMove'])->name('announcements.short-links');
     Route::post('/shorten', [PublicLinkController::class, 'store'])
         ->middleware(['throttle:shorten', 'quota'])
         ->name('shorten.store');
@@ -116,35 +116,6 @@ Route::middleware('ip.ban')->group(function () {
         Route::get('/tags/{tag}/manage', [TagController::class, 'manage'])->name('tags.manage');
         Route::put('/tags/{tag}', [TagController::class, 'update'])->name('tags.update');
         Route::delete('/tags/{tag}', [TagController::class, 'destroy'])->name('tags.destroy');
-        Route::prefix('bio')->name('bio.')->group(function () {
-            Route::get('/', [BioPageController::class, 'index'])->name('index');
-            Route::get('/create', [BioPageController::class, 'create'])->name('create');
-            Route::get('/check-slug', [BioPageController::class, 'checkSlug'])->name('check-slug');
-            Route::post('/', [BioPageController::class, 'store'])->middleware('verified')->name('store');
-            Route::get('/{bioPage}/edit', [BioPageController::class, 'edit'])->name('edit');
-            Route::put('/{bioPage}', [BioPageController::class, 'update'])->middleware('verified')->name('update');
-            Route::delete('/{bioPage}', [BioPageController::class, 'destroy'])->name('destroy');
-            Route::get('/{bioPage}/analytics', [BioPageController::class, 'analytics'])->name('analytics');
-            Route::post('/{bioPage}/duplicate', [BioPageController::class, 'duplicate'])->middleware('verified')->name('duplicate');
-            Route::post('/{bioPage}/upload-image', [BioPageController::class, 'uploadImage'])->name('upload-image');
-            Route::post('/{bioPage}/upload-avatar', [BioPageController::class, 'uploadAvatar'])->name('upload-avatar');
-            Route::post('/{bioPage}/upload-thumbnail', [BioPageController::class, 'uploadThumbnail'])->name('upload-thumbnail');
-            Route::post('/{bioPage}/upload-icon', [BioPageController::class, 'uploadIcon'])->name('upload-icon');
-            Route::post('/{bioPage}/upload-qr-logo', [BioPageController::class, 'uploadQrLogo'])->name('upload-qr-logo');
-            Route::get('/{bioPage}/preview', [BioPageController::class, 'preview'])->name('preview');
-            Route::get('/links/search', [App\Http\Controllers\Api\LinkController::class, 'index'])->name('links.search');
-            Route::post('/shorten', [App\Http\Controllers\Api\LinkController::class, 'shortenForBio'])
-                ->middleware(['verified', 'throttle:shorten', 'quota'])
-                ->name('shorten');
-            // scopeBindings: {bioLink} must belong to {bioPage}, otherwise 404
-            Route::prefix('{bioPage}/links')->name('links.')->scopeBindings()->group(function () {
-                Route::post('/', [BioLinkController::class, 'store'])->middleware('verified')->name('store');
-                Route::put('/{bioLink}', [BioLinkController::class, 'update'])->middleware('verified')->name('update');
-                Route::delete('/{bioLink}', [BioLinkController::class, 'destroy'])->name('destroy');
-                Route::post('/reorder', [BioLinkController::class, 'reorder'])->middleware('verified')->name('reorder');
-                Route::post('/{bioLink}/toggle', [BioLinkController::class, 'toggle'])->middleware('verified')->name('toggle');
-            });
-        });
     });
     // The admin pages moved to the HOP control center (Imperium), which works
     // through the signed /api/hop/* API. /admin/* sends admins there.
@@ -165,11 +136,6 @@ Route::middleware('ip.ban')->group(function () {
     Route::get('/check', LinkCheckController::class)->middleware('throttle:30,1,link-check')->name('link.check');
     Route::get('/report-abuse', [AbuseReportController::class, 'create'])->name('report.create');
     Route::post('/report-abuse', [AbuseReportController::class, 'store'])->middleware('throttle:5,10,report-abuse')->name('report.store');
-    Route::prefix('b')->name('bio.public.')->group(function () {
-        Route::match(['get', 'post'], '/{slug}', [PublicBioController::class, 'show'])->name('show');
-        Route::get('/{slug}/qr', [PublicBioController::class, 'qr'])->name('qr');
-        Route::get('/click/{bioLink:public_id}', [PublicBioController::class, 'click'])->middleware('throttle:bio-click')->name('click');
-    });
 });
 // CSP violation reports (report-only policy). Logged to storage/logs/csp-*.log.
 Route::post('/csp-report', function (Request $request) {
@@ -192,5 +158,10 @@ require __DIR__.'/auth.php';
 if (env('E2E_HOOKS') === true && ! app()->isProduction()) {
     require __DIR__.'/e2e.php';
 }
-Route::middleware('ip.ban')->match(['GET', 'POST'], '/{slug}', RedirectController::class)
-    ->where('slug', '^(?!login$|logout$|register$|password.*|verify-email.*|email/.*|confirm-password.*|admin.*|dashboard$|settings$|links/|folders|tags|shorten$|about$|contact$|privacy$|terms$|plans$|help$|faq$|products$|feature-requests$|report-abuse$|b/).*[A-Za-z0-9-]+$');
+// Short links: hel.ink/l/{slug}. GET opens the link, POST submits a link password.
+Route::middleware('ip.ban')->match(['GET', 'POST'], '/l/{slug}', RedirectController::class)
+    ->where('slug', '[A-Za-z0-9-]+')->name('links.open');
+// The old form hel.ink/{slug}: 301 to /l/{slug} until shortener.legacy_slug_until (LegacySlugController).
+// Registered last, so every app route above wins; a path that is not a slug is a 404.
+Route::middleware('ip.ban')->get('/{slug}', LegacySlugController::class)
+    ->where('slug', '[A-Za-z0-9-]+')->name('links.legacy');

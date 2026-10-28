@@ -24,7 +24,7 @@
     $control = $isAdmin && config('hop.control_url')
         ? [['label' => config('hop.control_name'), 'icon' => 'shield', 'href' => config('hop.control_url'), 'active' => 'admin.control', 'badge' => $abuseCount]]
         : [];
-    $groups = [
+    $groups = array_filter([
         ['label' => 'Dashboard', 'icon' => 'home', 'route' => 'dashboard', 'active' => 'dashboard'],
         ['label' => 'Analytics', 'icon' => 'chart', 'route' => 'analytics', 'active' => 'analytics'],
         ['label' => 'Links', 'icon' => 'link', 'active' => ['links*', 'folders*', 'tags*'], 'children' => [
@@ -32,11 +32,11 @@
             ['label' => 'Folders', 'route' => 'folders.index', 'active' => 'folders*'],
             ['label' => 'Tags', 'route' => 'tags.index', 'active' => 'tags*'],
         ]],
-        ['label' => 'Link in Bio', 'icon' => 'bio', 'route' => 'bio.index', 'active' => 'bio*'],
+        bio_enabled() ? ['label' => 'Link in Bio', 'icon' => 'bio', 'route' => 'bio.index', 'active' => 'bio*'] : null,
         ...$images,
         ...$control,
         ['label' => 'Settings', 'icon' => 'settings', 'route' => 'settings', 'active' => 'settings'],
-    ];
+    ]);
     $is = fn ($patterns) => request()->routeIs(...(array) $patterns);
 @endphp
 <ul class="space-y-1">

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Jobs\SendHopEvent;
+use Hop\Bio\Models\BioPage;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;

@@ -5,12 +5,12 @@
 | E2E_HOOKS=true and never in production (see routes/web.php).
 */
 
-use App\Models\BioLink;
-use App\Models\BioPage;
 use App\Models\Folder;
 use App\Models\Link;
 use App\Models\Tag;
 use App\Models\User;
+use Hop\Bio\Models\BioLink;
+use Hop\Bio\Models\BioPage;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

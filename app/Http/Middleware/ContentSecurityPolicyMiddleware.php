@@ -3,8 +3,8 @@
 namespace App\Http\Middleware;
 
 use App\Http\Controllers\AppSsoController;
-use App\Support\BioEmbed;
 use Closure;
+use Hop\Bio\Support\BioEmbed;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Vite;
 use Symfony\Component\HttpFoundation\Response;

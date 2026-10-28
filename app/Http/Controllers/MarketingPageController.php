@@ -44,6 +44,12 @@ class MarketingPageController extends Controller
         return view('marketing.products');
     }
 
+    /** The notice about short links moving to hel.ink/l/{slug} (linked from the dashboard banner). */
+    public function shortLinkMove()
+    {
+        return view('announcements.short-links');
+    }
+
     public function featureRequests()
     {
         return view('marketing.feature-requests');

@@ -1,11 +1,11 @@
 <?php
 
 use App\Models\AbuseFlag;
-use App\Models\BioLink;
-use App\Models\BioPage;
 use App\Models\DomainBlacklist;
 use App\Models\Link;
 use App\Models\User;
+use Hop\Bio\Models\BioLink;
+use Hop\Bio\Models\BioPage;
 
 function takedown(string $type, int $id, int $userId): AbuseFlag
 {

@@ -8,6 +8,7 @@ use App\Services\LinkSafety;
 use App\Services\LinkService;
 use App\Services\UrlGuard;
 use GuzzleHttp\Client;
+use Hop\Bio\Contracts\ShortlinkCreator;
 use Illuminate\Http\Request;
 
 class LinkController extends Controller
@@ -76,9 +77,9 @@ class LinkController extends Controller
     }
 
     /**
-     * Create shortlink for bio pages (no limits applied)
+     * Create a shortlink for a bio block (the hop/bio package's ShortlinkCreator door; kept for API clients).
      */
-    public function shortenForBio(Request $request, LinkService $linkService)
+    public function shortenForBio(Request $request, ShortlinkCreator $shortlinks)
     {
         $user = $request->user();
         if (! $user) {
@@ -93,45 +94,16 @@ class LinkController extends Controller
             return response()->json(['message' => $reason, 'errors' => ['url' => [$reason]]], 422);
         }
         try {
-            // Check if user already has a shortlink for this URL (prevent duplicates)
-            $existing = Link::where('user_id', $user->id)
-                ->where('target_url', $url)
-                ->first();
-            if ($existing) {
-                return response()->json([
-                    'id' => $existing->id,
-                    'title' => $existing->custom_title,
-                    'url' => $existing->target_url,
-                    'short_url' => $existing->short_url,
-                    'reused' => true,
-                ], 200);
-            }
-            // Create shortlink directly without any limit checks
-            $link = $linkService->createShortlink(
-                $user,
-                $url,
-                $data['title'] ?? 'Bio Link',
-                false // is_public
-            );
-
-            return response()->json([
-                'id' => $link->id,
-                'title' => $link->custom_title,
-                'url' => $link->target_url,
-                'short_url' => $link->short_url,
-            ], 201);
+            $link = $shortlinks->findOrCreate($user, $url, $data['title'] ?? null);
         } catch (\Exception $e) {
-            \Log::error('Bio shorten error: '.$e->getMessage());
+            report($e);
 
-            return response()->json([
-                'message' => 'Failed to create shortlink.',
-            ], 500);
+            return response()->json(['message' => 'Failed to create shortlink'], 500);
         }
+
+        return response()->json($link, $link['reused'] ? 200 : 201);
     }
 
-    /**
-     * Add https:// when no scheme is given; keeps http:// as is.
-     */
     private function normalizeUrl(string $url): string
     {
         $url = trim($url);

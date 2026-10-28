@@ -33,7 +33,7 @@
                     <div class="sm:col-span-2">
                         <label class="label" for="slug">Slug</label>
                         <div class="flex items-center gap-2">
-                            <span class="shrink-0 text-sm text-muted">{{ parse_url(config('app.url'), PHP_URL_HOST) }}/</span>
+                            <span class="shrink-0 text-sm text-muted">{{ public_host() }}/l/</span>
                             <input id="slug" type="text" name="slug" value="{{ old('slug', $link->slug) }}" class="input">
                         </div>
                     </div>

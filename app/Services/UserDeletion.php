@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
-use App\Support\BioUploads;
+use Hop\Bio\Support\BioUploads;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -17,7 +17,7 @@ class UserDeletion
 
     public function delete(User $user): void
     {
-        $bioFiles = BioUploads::ofUser($user);
+        $bioFiles = bio_enabled() ? BioUploads::ofUser($user) : [];
         $user->links()->each(function ($link) {
             if ($link->qr_code_path) {
                 Storage::disk('public')->delete($link->qr_code_path);

@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\BioClick;
 use App\Models\Link;
 use App\Models\LinkClick;
 use App\Models\User;
 use App\Support\VisitorHash;
+use Hop\Bio\Models\BioClick;
 use Illuminate\Support\Facades\DB;
 
 function ownedLinkWithVisit(): array
