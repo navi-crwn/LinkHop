@@ -7,6 +7,32 @@ $guestMaxDays = min(30, max(1, (int) env('GUEST_LINK_MAX_DAYS', 30)));
 return [
     /*
     |--------------------------------------------------------------------------
+    | Public URL
+    |--------------------------------------------------------------------------
+    |
+    | Where short links and bio pages are reached by the public (hel.ink), which
+    | can differ from APP_URL once the dashboard lives on link.hel.ink. Every
+    | public URL (short_url, QR codes, og:url, the sitemap, the API) is built
+    | from it through the public_url() helper. Defaults to APP_URL.
+    |
+    */
+    'public_url' => rtrim((string) (env('PUBLIC_URL') ?: env('APP_URL', 'http://localhost')), '/'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Legacy short link form
+    |--------------------------------------------------------------------------
+    |
+    | Short links moved from hel.ink/{slug} to hel.ink/l/{slug}. Until this date
+    | the old form answers with a 301 to the new one and the dashboard shows the
+    | announcement; after it the old form is retired (the redirect rule is
+    | removed at the router). ISO date, in APP_TIMEZONE.
+    |
+    */
+    'legacy_slug_until' => env('LEGACY_SLUG_UNTIL', '2026-11-27'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Guest (anonymous) links
     |--------------------------------------------------------------------------
     |
@@ -35,12 +61,11 @@ return [
     | Includes single/double characters and common system routes.
     |
     */
-    // Link-in-bio slugs (hel.ink/b/{slug}) for members; admin accounts may go down to 3.
-    'bio_slug_min_length' => (int) env('BIO_SLUG_MIN_LENGTH', 5),
-
     'reserved_slugs' => [
+        // Path prefixes of the HOP family: hel.ink/l/ (short links), /b/ (bio), /api/.
+        'l', 'b', 'api',
         // Single characters (reserved for future use)
-        'a', 'b', 'i', 'x', 'v',
+        'a', 'i', 'x', 'v',
         // Two characters - Common brands & abbreviations
         'fb', 'ig', 'tw', 'yt', 'go', 'my', 'id', 'us', 'uk', 'cn',
         'ai', 'io', 'js', 'db', 'ui', 'ux', 'qa', 'hr', 'pr', 'pm',

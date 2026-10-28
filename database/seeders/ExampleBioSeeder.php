@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\BioPage;
 use App\Models\Link;
 use App\Models\User;
+use Hop\Bio\Models\BioPage;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -57,6 +57,11 @@ class ExampleBioSeeder extends Seeder
             Link::updateOrCreate(['slug' => $slug], ['user_id' => $user->id, 'target_url' => $target, 'status' => 'active']);
         }
 
+        if (! bio_enabled()) {
+            $this->command?->warn('Bio is off (BIO_ENABLED): the example short links were seeded, the example bio page was not.');
+
+            return;
+        }
         $existing = BioPage::where('slug', 'hel')->first();
         if ($this->takenByOthers($existing, $user, 'bio page /b/hel')) {
             return;

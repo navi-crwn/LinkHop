@@ -94,9 +94,16 @@ class Link extends Model
             ->orWhere(fn ($g) => $g->guestExpired()));
     }
 
+    /** The public form of the link: PUBLIC_URL/l/{slug} (see config/shortener.php). */
     public function getShortUrlAttribute(): string
     {
-        return str_replace('www.', '', url($this->slug));
+        return str_replace('www.', '', public_url('l/'.$this->slug));
+    }
+
+    /** The form used before the move to /l/, answered with a 301 until shortener.legacy_slug_until. */
+    public function getLegacyUrlAttribute(): string
+    {
+        return str_replace('www.', '', public_url($this->slug));
     }
 
     protected static function booted(): void

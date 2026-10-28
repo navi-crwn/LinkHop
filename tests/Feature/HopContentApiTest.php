@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\AbuseFlag;
 use App\Models\AbuseReport;
-use App\Models\BioPage;
 use App\Models\DomainBlacklist;
 use App\Models\HopApp;
 use App\Models\HopAudit;
@@ -13,10 +12,13 @@ use App\Models\Link;
 use App\Models\SeoSetting;
 use App\Models\User;
 use App\Support\HopSignature;
+use Hop\Bio\Models\BioPage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
 /** The content side of the HOP admin API: links, bio pages, the abuse queue, IP, domains, settings. */
+#[Group('bio')]
 class HopContentApiTest extends TestCase
 {
     use RefreshDatabase;

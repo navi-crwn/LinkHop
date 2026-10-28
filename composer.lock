@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "623e90b667a792002ad40d0378d1b298",
+    "content-hash": "c184986ba992b46e6552566fd46907a5",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1368,6 +1368,40 @@
                 }
             ],
             "time": "2026-08-24T09:15:32+00:00"
+        },
+        {
+            "name": "hop/bio",
+            "version": "dev-claude/unruffled-hermann-00dd4d",
+            "dist": {
+                "type": "path",
+                "url": "packages/bio",
+                "reference": "ba32bf07fedb8ff15ab7ce96d421b18c6ea215bb"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Hop\\Bio\\BioServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Hop\\Bio\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Link in bio pages for the HOP apps (hel.ink/b/{slug}). Used by LinkHop today, by BioHop once it has its own app.",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "jean85/pretty-package-versions",
@@ -11860,12 +11894,14 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "hop/bio": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }

@@ -2,19 +2,17 @@
 
 namespace App\Support;
 
-use Illuminate\Support\Facades\Route;
-
 /**
- * Words that cannot be a short link or bio slug: `shortener.reserved_slugs` plus the first
- * path segment of every app route (hel.ink/api-docs, /analytics, /up, ...). An app route
- * wins over the /{slug} catch-all, so a link with such a slug would never open. The route
- * part is read from the router, so a route added later is covered without editing config.
+ * Words that cannot be a short link or bio slug: `shortener.reserved_slugs`,
+ * which includes the path prefixes of the HOP family (`l`, `b`, `api`). Short
+ * links live under /l/ and bio pages under /b/, so app routes (hel.ink/analytics,
+ * /api-docs, ...) no longer compete with slugs and need not be reserved.
  * Matching ignores case.
  */
 class ReservedSlugs
 {
-    /** @var array<string, true>|null */
-    private static ?array $routeSegments = null;
+    /** Always reserved, whatever the config says: the prefixes the router hands to the apps. */
+    public const PREFIXES = ['l', 'b', 'api'];
 
     public static function isReserved(?string $slug): bool
     {
@@ -23,7 +21,7 @@ class ReservedSlugs
             return false;
         }
 
-        return isset(self::routeSegments()[$slug])
+        return in_array($slug, self::PREFIXES, true)
             || in_array($slug, array_map('strtolower', config('shortener.reserved_slugs', [])), true);
     }
 
@@ -35,28 +33,5 @@ class ReservedSlugs
                 $fail($message);
             }
         };
-    }
-
-    /** @return array<string, true> */
-    public static function routeSegments(): array
-    {
-        if (self::$routeSegments !== null) {
-            return self::$routeSegments;
-        }
-        $segments = [];
-        foreach (Route::getRoutes()->getRoutes() as $route) {
-            $first = strtolower(explode('/', trim($route->uri(), '/'))[0]);
-            if ($first !== '' && ! str_contains($first, '{')) {
-                $segments[$first] = true;
-            }
-        }
-
-        // Routes are registered once per process (and cached by route:cache), so keep the result.
-        return self::$routeSegments = $segments;
-    }
-
-    public static function flush(): void
-    {
-        self::$routeSegments = null;
     }
 }

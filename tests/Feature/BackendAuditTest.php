@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\BioLink;
-use App\Models\BioPage;
 use App\Models\User;
 use App\Services\GeoIpService;
-use App\Support\BioThemes;
 use App\Support\QrPng;
+use Hop\Bio\Models\BioLink;
+use Hop\Bio\Models\BioPage;
+use Hop\Bio\Support\BioThemes;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;

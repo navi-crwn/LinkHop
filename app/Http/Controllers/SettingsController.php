@@ -144,7 +144,7 @@ class SettingsController extends Controller
                     + ['folder' => $link->folder?->name, 'tags' => $link->tags->pluck('name')]),
             'folders' => $user->folders()->pluck('name'),
             'tags' => $user->tags()->pluck('name'),
-            'bio_pages' => $user->bioPages()->with('links')->get()->map(fn ($page) => collect($page->makeHidden(['links', 'id', 'user_id'])->toArray())
+            'bio_pages' => ! bio_enabled() ? [] : $user->bioPages()->with('links')->get()->map(fn ($page) => collect($page->makeHidden(['links', 'id', 'user_id'])->toArray())
                 ->put('blocks', $page->links->map->makeHidden(['id', 'bio_page_id'])->values())),
             'login_history' => $user->loginHistories()->latest('logged_in_at')->get(['logged_in_at', 'ip_address', 'country', 'city', 'device', 'browser']),
             'activity_log' => $user->activityLogs()->latest()->get(['created_at', 'action', 'model', 'description']),

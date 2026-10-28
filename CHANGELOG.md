@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Short links moved to hel.ink/l/{slug} (28 October 2026)
+hel.ink is becoming the home of several HOP apps (the hub, LinkHop, BioHop, PixelHop), so short links got their own path. This is the first step of that split, released on its own so the 30-day clock starts now.
+- **Short links** are `hel.ink/l/{slug}` (new route, GET and POST for link passwords). The dashboard, link lists, QR codes, `short_url` in the API, the HOP admin API and the account export show the new form; the slug inputs say `hel.ink/l/`
+- **The old form** `hel.ink/{slug}` answers with a 301 to `/l/{slug}` for a slug that is or was a link, and 404 otherwise, until `LEGACY_SLUG_UNTIL` (27 November 2026). After that date it is a 404 here too; at cutover the router stops forwarding it. The `hel.ink/{slug}` alias for bio pages is gone: bio pages are only at `hel.ink/b/{slug}`
+- **`PUBLIC_URL`** (default `APP_URL`) is where the public reaches short links and bio pages; `public_url()` and `public_host()` build every public URL (short links, QR codes, `og:url`, the sitemap, the API). `url()` and `route()` keep pointing at `APP_URL`, so the dashboard can move to `link.hel.ink` later without touching links
+- **Reserved slugs** no longer include every app route segment (there is no collision under `/l/`); `l`, `b` and `api` are always reserved, plus the configured words
+- **Notice to users:** a banner on the dashboard with the date, the page `/changes/short-links` explaining what to do, and `php artisan links:announce-migration` which queues an email to every account that owns links listing them in the new form (`--reminder` on day 23, `--dry-run`, `--user=`). The Terms of Service gain section 11A: the service is free, changes to it are announced on the dashboard beforehand and must be followed
+- **Session cookie** is `linkhop_session` (`SESSION_COOKIE`), so the HOP apps on `*.hel.ink` never share a cookie name
+- **Link in Bio is the `hop/bio` package** in `packages/bio` (Composer path repository, namespace `Hop\Bio`): controllers, models, policy, support classes, views (`bio::`), migrations, themes config and tests. It reaches the app only through four contracts bound in `AppServiceProvider` (`ShortlinkCreator`, `UrlSafety`, `GeoLookup`, `UserAgentParser`). `BIO_ENABLED=false` switches it off: no `/bio` or `/b/` routes, no bio menu or quota, and `abuse:scan`, `privacy:prune`, the account export, account deletion, the sitemap, the link checker and the HOP admin API work without the bio tables (CI runs the suite both ways). `BIO_SLUG_MIN_LENGTH` moved from `shortener` to `bio.slug_min_length`; the generic QR endpoint `/api/qr-generate` is `QrController` in the app
+- The link checker understands `hel.ink/l/slug`, the old form and the public host
+- The plan behind this: `docs-planning/PLAN-pemisahan-aplikasi.md`
+
 ### HOP ID
 - Content side of the HOP admin API for Imperium: `/api/hop/manifest`, `/content` (links, bio pages: list, detail, disable/enable/unpublish/publish/delete/transfer/rescan, owner's content protected), `/reports` (people's reports and scanner findings in one queue with investigate/close/confirm/restore), `/x/ip` (bans incl. expiry, watchlist), `/x/domains` (blacklist), `/x/queue` (worker heartbeat, backlog, last abuse scan), `/settings` (Site & SEO editable, .env facts read-only). Every change lands in `hop_audit`
 - **LinkHop** is the new name of this app; the domain stays hel.ink ("Hop Easy Link"). It is the account server ("HOP ID") of the HOP family: the sign-in and sign-up buttons say "Login with HOP" and "Join HOP", and the sign-in page says which app you are on your way to

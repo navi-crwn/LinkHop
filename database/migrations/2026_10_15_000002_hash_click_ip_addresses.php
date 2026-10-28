@@ -3,6 +3,7 @@
 use App\Support\VisitorHash;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * The privacy policy promises hashed IPs, but click logs stored them raw.
@@ -12,7 +13,8 @@ return new class extends Migration
 {
     public function up(): void
     {
-        foreach (['link_clicks', 'bio_clicks'] as $table) {
+        // bio_clicks belongs to the hop/bio package and is absent when bio is off.
+        foreach (array_filter(['link_clicks', 'bio_clicks'], fn ($t) => Schema::hasTable($t)) as $table) {
             DB::table($table)
                 ->whereNotNull('ip_address')
                 ->select('id', 'ip_address')
