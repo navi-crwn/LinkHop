@@ -26,8 +26,8 @@
                 action="{{ route('shorten.store') }}"
             >
                 @csrf
-                {{-- Row 1: link + Shorten. Row 2: custom slug, sign-up hint. Row 3: the security check, full width,
-                     shown only when Cloudflare asks for a click (interaction-only). --}}
+                {{-- Row 1: link + Shorten. Row 2: custom slug and sign-up hint on the left; the security check
+                     (normal size) right under Shorten, shown only when Cloudflare asks for a click. --}}
                 <div class="flex flex-col gap-2 sm:flex-row">
                     <label for="target_url" class="sr-only">Long URL</label>
                     <input id="target_url" type="url" name="target_url" value="{{ old('target_url') }}" required
@@ -38,20 +38,23 @@
                         <span x-show="!waiting">Shorten</span><span x-cloak x-show="waiting">Verifying…</span>
                     </button>
                 </div>
-                <div class="px-2 pb-1 pt-2">
-                    <div x-show="!custom" class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs">
-                        <button type="button" class="text-slate-500 hover:text-slate-900 dark:text-white/55 dark:hover:text-white" @click="custom = true">+ Custom slug</button>
-                        <a href="{{ route('register') }}" class="font-medium text-indigo-600 hover:underline dark:text-indigo-300">Join LinkHop for more features →</a>
+                <div class="flex flex-col-reverse px-2 pb-1 pt-2 sm:flex-row sm:items-start sm:gap-4">
+                    <div class="min-w-0 flex-1">
+                        <div x-show="!custom" class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs"
+                            x-bind:class="challenge && 'sm:flex-col sm:items-start sm:pt-2 sm:gap-y-3'">
+                            <button type="button" class="text-slate-500 hover:text-slate-900 dark:text-white/55 dark:hover:text-white" @click="custom = true">+ Custom slug</button>
+                            <a href="{{ route('register') }}" class="font-medium text-indigo-600 hover:underline dark:text-indigo-300">Join LinkHop for more features →</a>
+                        </div>
+                        <div x-show="custom" x-cloak class="flex items-center gap-2">
+                            <span class="text-sm text-slate-400 dark:text-white/45">{{ parse_url(config('app.url'), PHP_URL_HOST) }}/</span>
+                            <input id="slug" type="text" name="slug" value="{{ old('slug') }}" placeholder="my-link" pattern="[A-Za-z0-9\-]+"
+                                class="min-w-0 flex-1 rounded-xl border-0 bg-slate-100 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-400/50 dark:bg-white/6 dark:text-white dark:placeholder-white/30">
+                        </div>
                     </div>
-                    <div x-show="custom" x-cloak class="flex items-center gap-2">
-                        <span class="text-sm text-slate-400 dark:text-white/45">{{ parse_url(config('app.url'), PHP_URL_HOST) }}/</span>
-                        <input id="slug" type="text" name="slug" value="{{ old('slug') }}" placeholder="my-link" pattern="[A-Za-z0-9\-]+"
-                            class="min-w-0 flex-1 rounded-xl border-0 bg-slate-100 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-400/50 dark:bg-white/6 dark:text-white dark:placeholder-white/30">
-                    </div>
+                    {{-- Kept rendered but collapsed (Turnstile needs a live container). --}}
+                    <x-turnstile class="flex-none self-center sm:self-auto"
+                        x-bind:class="challenge || status === 'error' ? 'mb-2 sm:mb-0' : 'h-0 w-0 overflow-hidden'" />
                 </div>
-                {{-- Kept rendered but collapsed (Turnstile needs a live container). --}}
-                <x-turnstile size="flexible" class="px-2"
-                    x-bind:class="challenge || status === 'error' ? 'mt-2 w-full' : 'h-0 w-full overflow-hidden'" />
                 @if (session('link_error') || $errors->any())
                     <div class="m-2 rounded-xl bg-rose-500/10 px-3 py-2 text-sm text-rose-700 dark:bg-rose-500/15 dark:text-rose-100">
                         {{ session('link_error') }}
