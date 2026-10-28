@@ -135,51 +135,30 @@
         </div>
     </section>
 
-    {{-- Link in Bio --}}
-    <section id="bio" class="mx-auto max-w-6xl scroll-mt-24 px-4 py-10">
-        <div class="{{ $card }} grid items-center gap-8 overflow-hidden p-6 sm:p-10 md:grid-cols-2">
-            <div>
-                <p class="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-200/80">Link in Bio</p>
-                <h2 class="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">All your links on one page.</h2>
-                <p class="mt-3 text-slate-600 dark:text-white/60">20+ themes, social icons, music and video embeds, countdowns, FAQ blocks and per-link click stats. Drag to reorder, publish instantly.</p>
-                <div class="mt-6 flex flex-wrap gap-2">
-                    <a href="{{ route('register') }}" class="{{ $btnPrimary }}">Create yours</a>
-                    <a href="/b/hel" class="{{ $btnSecondary }}">See an example</a>
-                </div>
-            </div>
-            <div class="mx-auto w-full max-w-[260px]">
-                <div class="rounded-4xl border border-white/40 bg-linear-to-b from-indigo-500 via-sky-500 to-fuchsia-500 p-5 shadow-2xl shadow-indigo-500/25 dark:border-white/15 dark:from-indigo-500/40 dark:via-sky-500/25 dark:to-fuchsia-500/30 dark:shadow-black/30">
-                    <div class="mx-auto h-14 w-14 rounded-full bg-white/20 ring-2 ring-white/30"></div>
-                    <div class="mx-auto mt-3 h-2.5 w-24 rounded-full bg-white/60"></div>
-                    <div class="mx-auto mt-2 h-2 w-32 rounded-full bg-white/25"></div>
-                    <div class="mt-5 space-y-2.5">
-                        @foreach (['Latest video', 'My shop', 'Podcast', 'Contact'] as $l)
-                            <div class="rounded-xl border border-white/15 bg-white/10 px-3 py-2.5 text-center text-xs font-medium text-white/90 backdrop-blur-sm">{{ $l }}</div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     {{-- Call to action + family --}}
-    <section class="mx-auto grid max-w-6xl gap-3 px-4 pb-6 md:grid-cols-4">
-        <div class="{{ $card }} p-6 md:col-span-2">
+    <section class="mx-auto grid max-w-6xl gap-3 px-4 pb-6 md:grid-cols-3">
+        <div class="{{ $card }} p-6 md:col-span-3">
             <h2 class="text-xl font-semibold">Open source, free forever</h2>
             <p class="mt-2 text-sm text-slate-600 dark:text-white/60">Built with Laravel, Tailwind and Alpine.js. Use hel.ink or host it yourself.</p>
             <div class="mt-5 flex flex-wrap gap-2">
                 <a href="{{ route('register') }}" class="{{ $btnPrimary }}">Create free account</a>
-                <a href="https://github.com/navi-crwn/hel.ink" target="_blank" rel="noopener" class="{{ $btnSecondary }}">GitHub</a>
+                <a href="https://github.com/navi-crwn/LinkHop" target="_blank" rel="noopener" class="{{ $btnSecondary }}">GitHub</a>
             </div>
         </div>
+        <a href="{{ config('hop.apps.biohop.url', 'https://bio.hel.ink') }}" class="{{ $card }} group block p-6 transition hover:bg-white dark:hover:bg-white/8">
+            <p class="text-xs font-semibold uppercase tracking-wider text-cyan-700 dark:text-cyan-200/80">HOP family</p>
+            <h2 class="mt-2 text-xl font-semibold">BioHop</h2>
+            <p class="mt-2 text-sm text-slate-600 dark:text-white/60">All your links on one page: themes, social icons, embeds and click stats.</p>
+            <p class="mt-4 text-sm font-medium text-cyan-700 group-hover:underline dark:text-cyan-200">bio.hel.ink →</p>
+        </a>
         <a href="https://p.hel.ink" target="_blank" rel="noopener" class="{{ $card }} group block p-6 transition hover:bg-white dark:hover:bg-white/8">
-            <p class="text-xs font-semibold uppercase tracking-wider text-cyan-700 dark:text-cyan-200/80">LinkHop family</p>
+            <p class="text-xs font-semibold uppercase tracking-wider text-cyan-700 dark:text-cyan-200/80">HOP family</p>
             <h2 class="mt-2 text-xl font-semibold">PixelHop</h2>
             <p class="mt-2 text-sm text-slate-600 dark:text-white/60">Free image hosting with compress, resize, convert, OCR and background removal.</p>
             <p class="mt-4 text-sm font-medium text-cyan-700 group-hover:underline dark:text-cyan-200">p.hel.ink →</p>
         </a>
         <a href="https://note.hel.ink" target="_blank" rel="noopener" class="{{ $card }} group block p-6 transition hover:bg-white dark:hover:bg-white/8">
-            <p class="text-xs font-semibold uppercase tracking-wider text-cyan-700 dark:text-cyan-200/80">LinkHop family</p>
+            <p class="text-xs font-semibold uppercase tracking-wider text-cyan-700 dark:text-cyan-200/80">HOP family</p>
             <h2 class="mt-2 text-xl font-semibold">NoteHop</h2>
             <p class="mt-2 text-sm text-slate-600 dark:text-white/60">Encrypted notes you share with a link: delete after reading, write together, polls and checklists.</p>
             <p class="mt-4 text-sm font-medium text-cyan-700 group-hover:underline dark:text-cyan-200">note.hel.ink →</p>
