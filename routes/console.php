@@ -19,7 +19,6 @@ Schedule::command('abuse:scan --since=75m')->hourly()->withoutOverlapping();
 Schedule::command('abuse:scan --full --purge')->dailyAt('04:30')->withoutOverlapping();
 // Guest links expire at 00:00 in the guest timezone; delete them right then.
 Schedule::command('links:prune-guest')->dailyAt('00:00')->timezone(config('shortener.guest_timezone'))->withoutOverlapping();
-Schedule::command('disposable:update')->weeklyOn(1, '03:00');
 Schedule::command('abuse:feeds')->dailyAt('03:45')->withoutOverlapping();
 // Database + uploads + .env backup (spatie/laravel-backup); needs mysqldump on the server.
 Schedule::command('backup:clean')->dailyAt('02:30');

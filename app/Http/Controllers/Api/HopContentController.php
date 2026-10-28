@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\AbuseFlag;
 use App\Models\AbuseReport;
-use App\Models\DomainBlacklist;
 use App\Models\HopApp;
 use App\Models\HopAudit;
 use App\Models\IpBan;
@@ -18,6 +17,7 @@ use Carbon\Carbon;
 use Hop\Bio\Models\BioLink;
 use Hop\Bio\Models\BioPage;
 use Hop\Bio\Support\BioUploads;
+use Hop\Safety\Models\DomainBlacklist;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -430,10 +430,10 @@ class HopContentController extends Controller
         $env = [
             'guest_link_max_days' => config('shortener.guest_link_max_days'), 'guest_link_idle_days' => config('shortener.guest_link_idle_days'),
             'retired_slug_days' => config('shortener.retired_slug_days'), 'bio_slug_min_length' => config('bio.slug_min_length'),
-            'abuse.threshold_disable' => config('abuse.thresholds.disable'), 'abuse.threshold_suspend_user' => config('abuse.thresholds.suspend_user'),
-            'abuse.register_per_ip_per_hour' => config('abuse.register_per_ip_per_hour'),
-            'turnstile' => (bool) config('services.turnstile.site_key'), 'safe_browsing' => (bool) config('abuse.providers.safe_browsing_key'),
-            'urlhaus' => (bool) config('abuse.providers.urlhaus_auth_key'), 'google_login' => (bool) config('services.google.client_id'),
+            'abuse.threshold_disable' => config('safety.thresholds.disable'), 'abuse.threshold_suspend_user' => config('safety.thresholds.suspend_user'),
+            'abuse.register_per_ip_per_hour' => config('safety.register_per_ip_per_hour'),
+            'turnstile' => (bool) config('services.turnstile.site_key'), 'safe_browsing' => (bool) config('safety.providers.safe_browsing_key'),
+            'urlhaus' => (bool) config('safety.providers.urlhaus_auth_key'), 'google_login' => (bool) config('services.google.client_id'),
             'session_lifetime_min' => config('session.lifetime'),
         ];
         foreach ($env as $k => $v) {

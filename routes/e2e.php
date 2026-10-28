@@ -13,12 +13,21 @@ use Hop\Bio\Models\BioLink;
 use Hop\Bio\Models\BioPage;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
 Route::prefix('_e2e')->withoutMiddleware(ValidateCsrfToken::class)->group(function () {
+    // Sign a persona in without the hub: what the SSO callback does after a verified ticket.
+    Route::post('/login', function (Request $request) {
+        $user = User::where('email', (string) $request->input('email'))->firstOrFail();
+        Auth::loginUsingId($user->id, remember: true);
+        $request->session()->regenerate();
+
+        return ['ok' => true, 'id' => $user->id];
+    });
     // A fresh, verified account with its own data; every marker contains a unique
     // token so pages can be checked for data leaking between users.
     Route::post('/persona', function (Request $request) {

@@ -7,15 +7,21 @@ use App\Http\Controllers\HandlesSlugs;
 use App\Models\ActivityLog;
 use App\Models\Folder;
 use App\Models\Link;
-use App\Services\LinkSafety;
 use App\Services\LinkService;
 use App\Services\QuotaService;
+use Hop\Safety\LinkSafety;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * The token API (link.hel.ink/api): create, read and delete a short link.
+ * `hop.token:{scope}` (hop/auth) has already resolved the token's owner as
+ * the request user. Request and response shapes are documented in README, "API".
+ */
 class ShortenController extends Controller
 {
     use HandlesSlugs;
@@ -24,8 +30,55 @@ class ShortenController extends Controller
         private LinkService $links
     ) {}
 
+    /** GET /api/links/{slug}: one of the caller's links with its click count. */
+    public function show(Request $request, string $slug): JsonResponse
+    {
+        $link = $this->ownLink($request, $slug);
+
+        return response()->json(['success' => true, 'data' => $this->payload($link) + ['clicks' => $link->clicks()->count()]]);
+    }
+
+    /** DELETE /api/links/{slug}: remove one of the caller's links (and its QR code). */
+    public function destroy(Request $request, string $slug): JsonResponse
+    {
+        $link = $this->ownLink($request, $slug);
+        if ($link->qr_code_path) {
+            Storage::disk('public')->delete($link->qr_code_path);
+        }
+        $link->tags()->detach();
+        $link->comments()->delete();
+        $link->delete();
+        $this->links->forgetCache($link);
+        ActivityLog::log('deleted', 'Link', $link->id, "Deleted link via API: {$link->slug}");
+
+        return response()->json(['success' => true, 'message' => 'Link deleted']);
+    }
+
+    private function ownLink(Request $request, string $slug): Link
+    {
+        $link = Link::where('slug', $slug)->where('user_id', $request->user()->id)->first();
+        if (! $link) {
+            abort(response()->json(['success' => false, 'error' => 'Not Found', 'message' => 'No such link on this account'], 404));
+        }
+
+        return $link;
+    }
+
+    /** @return array<string, mixed> */
+    private function payload(Link $link): array
+    {
+        return [
+            'url' => $link->short_url,
+            'slug' => $link->slug,
+            'target_url' => $link->target_url,
+            'status' => $link->status,
+            'created_at' => $link->created_at->toIso8601String(),
+            'expires_at' => $link->expires_at?->toIso8601String(),
+        ];
+    }
+
     /**
-     * Create a shortened URL via API
+     * POST /api/shorten: create a short link (scope link:create). BioHop calls this for its blocks.
      *
      * @return JsonResponse
      */
@@ -47,7 +100,7 @@ class ShortenController extends Controller
                 'messages' => $validator->errors(),
             ], 422);
         }
-        $user = $request->get('api_user');
+        $user = $request->user();
         if (! $user->hasVerifiedEmail()) {
             return response()->json([
                 'success' => false,
@@ -128,13 +181,7 @@ class ShortenController extends Controller
             // Return success response
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'url' => $link->short_url,
-                    'slug' => $link->slug,
-                    'target_url' => $link->target_url,
-                    'created_at' => $link->created_at->toIso8601String(),
-                    'expires_at' => $link->expires_at?->toIso8601String(),
-                ],
+                'data' => $this->payload($link),
                 'message' => 'Link created successfully',
             ], 201);
         } catch (ValidationException $e) {

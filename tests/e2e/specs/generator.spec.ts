@@ -26,5 +26,5 @@ test('random walks are reproducible from their seed', () => {
 
 test('impossible journeys are rejected', () => {
   expect(walk(['nav_links'], 'user')).toBeNull(); // not logged in yet
-  expect(walk(['open_login', 'login', 'admin_control_center'], 'user')).toBeNull(); // not an admin
+  expect(walk(['login', 'admin_control_center'], 'user')).toBeNull(); // not an admin
 });

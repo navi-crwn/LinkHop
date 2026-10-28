@@ -2,12 +2,12 @@
 
 use App\Console\Commands\AbuseScan;
 use App\Models\AbuseFlag;
-use App\Models\DomainBlacklist;
 use App\Models\Link;
 use App\Models\User;
-use App\Services\LinkSafety;
 use Hop\Bio\Models\BioLink;
 use Hop\Bio\Models\BioPage;
+use Hop\Safety\LinkSafety;
+use Hop\Safety\Models\DomainBlacklist;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 
@@ -238,15 +238,6 @@ test('an admin can edit any user link, other users cannot', function () {
     expect($link->fresh())->target_url->toBe('https://example.com/safe')->status->toBe('inactive')->user_id->toBe($owner->id);
 });
 
-test('remember me lasts 30 days', function () {
-    $user = User::factory()->create();
-    $response = $this->post('/login', ['email' => $user->email, 'password' => 'password', 'remember' => 'on']);
-
-    $cookie = collect($response->headers->getCookies())->first(fn ($c) => str_starts_with($c->getName(), 'remember_web_'));
-    expect($cookie)->not->toBeNull()
-        ->and($cookie->getExpiresTime())->toBeBetween(now()->addDays(30)->subMinute()->timestamp, now()->addDays(30)->addMinute()->timestamp);
-});
-
 test('csam terms from the old url safety list are blocked and file hosts are flagged', function () {
     $safety = app(LinkSafety::class);
 
@@ -254,7 +245,7 @@ test('csam terms from the old url safety list are blocked and file hosts are fla
         ->and($safety->assess('https://example.com/kid-porn')['signals'])->toContain('csam')
         ->and($safety->assess('https://example.com/pedometer-review')['signals'])->not->toContain('csam')
         ->and($safety->assess('https://www.gofile.io/d/abc')['signals'])->toContain('file_host')
-        ->and($safety->assess('https://www.gofile.io/d/abc')['score'])->toBeLessThan(config('abuse.thresholds.disable'));
+        ->and($safety->assess('https://www.gofile.io/d/abc')['score'])->toBeLessThan(config('safety.thresholds.disable'));
 });
 
 test('video embed hosts and subdomains of listed hosts are flagged for review', function () {

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Link;
-use App\Services\LinkSafety;
 use Hop\Bio\Models\BioPage;
+use Hop\Safety\LinkSafety;
 use Illuminate\Http\Request;
 
 /**
@@ -68,7 +68,7 @@ class LinkCheckController extends Controller
             return ['type' => 'link', 'link' => $link, 'state' => $state, 'protected' => true];
         }
         $assessment = $safety->assess($link->target_url, implode(' ', array_filter([$link->custom_title, $link->custom_description])), remote: true);
-        $blocked = array_values(array_intersect($assessment['signals'], config('abuse.block_categories', [])));
+        $blocked = array_values(array_intersect($assessment['signals'], config('safety.block_categories', [])));
 
         return [
             'type' => 'link',

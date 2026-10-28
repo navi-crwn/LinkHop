@@ -1,7 +1,7 @@
-<x-marketing-layout title="Check a link - LinkHop">
+<x-public-layout title="Check a link - LinkHop">
     @php
         $card = 'rounded-3xl border border-white/10 bg-white/4 backdrop-blur-xl';
-        $host = parse_url(config('app.url'), PHP_URL_HOST);
+        $host = public_host();
     @endphp
     <section class="mx-auto max-w-2xl px-4 pb-10 pt-14 sm:pt-20">
         <h1 class="text-center text-3xl font-semibold tracking-tight sm:text-4xl">Where does this link go?</h1>
@@ -91,4 +91,4 @@
             </div>
         @endif
     </section>
-</x-marketing-layout>
+</x-public-layout>

@@ -2,6 +2,7 @@
 
 use App\Models\Link;
 use App\Models\User;
+use App\Services\UserDeletion;
 use Illuminate\Support\Facades\Schema;
 
 /*
@@ -38,15 +39,16 @@ test('short links, the sitemap and the link checker work without bio tables', fu
     $this->get('/check?url=nobio1')->assertOk()->assertSee('example.com/n');
 });
 
-test('abuse:scan, privacy:prune and the account export and deletion skip bio', function () {
+test('abuse:scan, privacy:prune and the account purge skip bio', function () {
     $user = User::factory()->create();
     Link::create(['user_id' => $user->id, 'slug' => 'nobio2', 'target_url' => 'https://example.com/n', 'status' => 'active']);
 
     $this->artisan('abuse:scan', ['--full' => true, '--dry-run' => true])->assertSuccessful();
     $this->artisan('privacy:prune')->assertSuccessful();
-    $this->actingAs($user)->post('/settings/export-account')->assertOk();
-    $this->actingAs($user)->delete('/profile', ['password' => 'password'])->assertRedirect(route('goodbye'));
-    expect(User::find($user->id))->toBeNull();
+    $stats = app(UserDeletion::class)->purge($user);
+    expect($stats)->toBe(['links' => 1, 'folders' => 0, 'tags' => 0, 'bio_pages' => 0])
+        ->and(Link::where('slug', 'nobio2')->exists())->toBeFalse()
+        ->and(User::find($user->id))->not->toBeNull();
 });
 
 test('the example seeder still seeds the short links', function () {

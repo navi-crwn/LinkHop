@@ -29,7 +29,7 @@
 
 ## What is LinkHop?
 
-**LinkHop** is the link shortener of the HOP family, at **hel.ink** ("Hop Easy Link"). One HOP ID signs you in to LinkHop, [PixelHop](https://github.com/navi-crwn/pixelhop) (images) and [NoteHop](https://github.com/navi-crwn/NoteHop) (notes).
+**LinkHop** is the link shortener of the HOP family ("Hop Easy Link"). The family shares one account, **HOP ID**, kept by the [hub](https://github.com/navi-crwn/HEL.ink) at `hel.ink` / `hub.hel.ink`; LinkHop's dashboard lives at `link.hel.ink`, short links stay at `hel.ink/l/slug`, and the hub's app switcher takes you to [BioHop](https://github.com/navi-crwn/BioHop) (link in bio) and [PixelHop](https://github.com/navi-crwn/pixelhop) (images). LinkHop has no sign-in, sign-up or profile pages of its own: the hub signs you in with a short-lived SSO ticket, and the apps share one database.
 
 Long links are hard to share and you never know who clicks them. LinkHop makes them **short** (with your own slug if you like), **counts every click** by country, device and referrer, and gives you one **link in bio page** at `hel.ink/b/you` for everything you want people to find.
 
@@ -85,26 +85,28 @@ To load the same example on your own install, run `php artisan db:seed --class=E
 
 ## Install
 
-**You need:** PHP 8.2+, Composer, Node.js 18+ and a database (MySQL 8.0+, PostgreSQL 13+ or SQLite). Redis is optional, for caching.
+**You need:** PHP 8.3+, Composer, Node.js 18+, a database (MySQL 8.0+, MariaDB or SQLite) and the [hub](https://github.com/navi-crwn/HEL.ink) running against the same database: the hub owns the accounts (`users`, `api_tokens`, …) and signs people in here. Redis is optional, for caching.
 
 ```bash
-# 1. Get the code
-git clone https://github.com/navi-crwn/hel.ink.git
-cd hel.ink
+# 1. Get the code (the shared packages hop/auth, hop/ui and hop/safety come from GitHub through Composer)
+git clone https://github.com/navi-crwn/LinkHop.git
+cd LinkHop
 composer install && npm install
 
-# 2. Set it up
+# 2. Set it up: the same DB_* and HOP_SSO_SECRET as the hub's .env, HOP_HUB_URL pointing at the hub
 cp .env.example .env
 php artisan key:generate
-php artisan migrate
+php artisan migrate          # only this app's tables; the hub has already made the account tables
 php artisan storage:link
 
 # 3. Build and run
 npm run build
-php artisan serve
+php artisan serve --port=8001
 ```
 
-Then open `http://localhost:8000`.
+Then open `http://localhost:8001`: a guest is sent to the hub's sign-in and comes back signed in. For local work set `APP_URL=http://localhost:8001`, `PUBLIC_URL=http://localhost:8001` and `HOP_HUB_URL=http://localhost:8000` (the hub on `php artisan serve`), and at the hub `LINKHOP_URL=http://localhost:8001`.
+
+**Database ownership.** Every HOP app runs only its own migrations against the shared database. LinkHop's are in `database/migrations` (links, clicks, folders, tags, comments, abuse, IP bans, the domain blacklist, the app registry); the account tables' history is kept in `database/migrations-archive` and is not run any more (the tests build the schema from it). Do not point `migrate:fresh` at a database the hub uses.
 
 <details>
 <summary><b>Settings in <code>.env</code></b></summary>
@@ -127,14 +129,15 @@ MAIL_USERNAME=your@email.com
 MAIL_PASSWORD=your-app-password
 ```
 
-**Google login** (optional)
+**HOP ID (the hub)**
 ```env
-GOOGLE_CLIENT_ID=xxx
-GOOGLE_CLIENT_SECRET=xxx
-GOOGLE_REDIRECT_URI=https://yourdomain.com/auth/google/callback
+HOP_APP=linkhop
+HOP_HUB_URL=https://hub.hel.ink
+HOP_SSO_SECRET=the-same-32-plus-character-secret-as-the-hub
 ```
+Google sign-in, two-factor and password reset are the hub's; there is nothing to configure for them here.
 
-**Your own domain:** set `APP_URL` to it, and every short link and bio page uses it (or `PUBLIC_URL` when the public host differs from the dashboard's).
+**Your own domains:** `APP_URL` is the dashboard and the API (`link.hel.ink`); `PUBLIC_URL` is where short links, QR codes, the sitemap and bio pages are reached (`hel.ink`). On a single-host install set both to the same value.
 
 **Behind Cloudflare:** LinkHop sends a strict, report-only Content Security Policy that only trusts scripts carrying the page's nonce, and logs what it would block to `storage/logs/csp-*.log`. Cloudflare's **Email Address Obfuscation** (Scrape Shield) and **Rocket Loader** (Speed → Optimization) inject their own scripts from `/cdn-cgi/scripts/.../cloudflare-static/` without that nonce, so they fill the log. Either turn them off in the Cloudflare dashboard (recommended: LinkHop doesn't need them, and it keeps the policy ready to enforce), or skip them only where needed with a Cloudflare Configuration Rule. Allowing them in the policy doesn't work with a nonce policy (`'strict-dynamic'` ignores host and `'self'` allowlists); it would mean dropping the nonce, which weakens the policy for everything else.
 
@@ -142,6 +145,22 @@ GOOGLE_REDIRECT_URI=https://yourdomain.com/auth/google/callback
 ```bash
 php artisan queue:work
 ```
+
+</details>
+
+<details>
+<summary><b>Cutover: moving this app from hel.ink to link.hel.ink</b></summary>
+
+LinkHop keeps running at `hel.ink` with `APP_URL=https://hel.ink` until every HOP app is ready; the switch is one window for all of them (the plan: `docs/planning/PLAN-pemisahan-aplikasi.md` in the hub repo). What this app needs on that day, in order:
+
+1. The hub is live at `hub.hel.ink` with the same database and `HOP_SSO_SECRET`, and lists this app (`LINKHOP_URL=https://link.hel.ink`).
+2. In this app's `.env`: `APP_URL=https://link.hel.ink`, `PUBLIC_URL=https://hel.ink`, `HOP_APP=linkhop`, `HOP_HUB_URL=https://hub.hel.ink`, `HOP_SSO_SECRET=…`, `BIOHOP_URL`, `PIXELHOP_URL`. Remove `GOOGLE_*`; Turnstile keys may stay (abuse report form). `BIO_ENABLED=false` once BioHop serves `/b/*`.
+3. Code and dependencies: `git pull`, then `/usr/bin/php8.3 /usr/local/bin/composer install --no-dev -o` (the server's default `php` is 8.5 and lacks `zip`), `npm ci && npm run build`.
+4. `php artisan migrate --force` (only LinkHop tables; the `apps` migration is a no-op where the table exists).
+5. `php artisan config:cache && php artisan route:cache && php artisan view:cache`, then `systemctl restart queue-worker` so the worker picks up the new code and `.env`.
+6. nginx: `link.hel.ink` → this app; on `hel.ink` only `/l/*`, `/{slug}` (301 to `/l/`, until 27 November 2026), `/b/*` (BioHop) and `/api/*` (308 to `link.hel.ink/api`) reach the apps, everything else is the hub (the hub repo has the full config in `deploy/nginx/`).
+7. Check: `https://link.hel.ink/up`, `https://link.hel.ink/` sends a guest to the hub and back signed in, `https://hel.ink/l/<slug>` redirects, `curl -H "Authorization: Bearer …" https://link.hel.ink/api/links/<slug>` answers, the sidebar's app switcher opens BioHop and PixelHop.
+8. Rollback: the previous release with `APP_URL=https://hel.ink` and the old nginx config; the database needs nothing (the hub's migrations only added tables and columns).
 
 </details>
 
@@ -159,6 +178,8 @@ php artisan queue:work
 | Short link | `hel.ink/l/slug` |
 | Bio page | `hel.ink/b/name` |
 | Old short link form | `hel.ink/slug`: redirects to `hel.ink/l/slug` until **27 November 2026**, then stops |
+| Dashboard and API | `link.hel.ink` (sign in through the hub, `hub.hel.ink`) |
+| Your account | `hub.hel.ink`: profile, password, two-factor, API tokens, data download, deleting the account |
 
 hel.ink is becoming the home of several HOP apps, so short links got their own path on 28 October 2026. Nothing was deleted; the dashboard, QR codes, the API and the account export show the new form. On your own install the public host is `PUBLIC_URL` (default `APP_URL`), the date is `LEGACY_SLUG_UNTIL`, and `php artisan links:announce-migration` mails every link owner their links in the new form (`--reminder` for the second mail).
 
@@ -171,16 +192,37 @@ hel.ink is becoming the home of several HOP apps, so short links got their own p
 
 ## API
 
-Make a token in **Settings → API**, then:
+API tokens are made at the hub (**HOP ID → Settings → API**) and work in every HOP app; this app reads them from the shared `api_tokens` table through `hop/auth`. A token carries **scopes**: `link:create`, `link:read`, `link:delete` (a token made before scopes existed has none and may do everything). The API answers at `link.hel.ink/api` (and at `hel.ink/api`, which forwards there until 27 November 2026). The rate limit is per token (100 requests an hour by default).
+
+**Create a short link** (`link:create`). This is the call BioHop makes when a bio block wants a short link.
 
 ```bash
-curl -X POST https://hel.ink/api/shorten \
+curl -X POST https://link.hel.ink/api/shorten \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"url": "https://example.com", "alias": "my-link"}'
 ```
 
-`alias` is optional. The reply holds the short `url` (in the `hel.ink/l/slug` form) and its `slug`. A ShareX config is ready to download in **Settings → API**.
+| Field | | |
+| --- | --- | --- |
+| `url` | required | The destination (`https://` is added when the scheme is missing). Refused when the safety check flags it. |
+| `alias` | optional | The slug, 3–255 characters of `A-Z a-z 0-9 _ -`; reserved words and taken slugs are refused. Random when omitted. |
+| `folder` | optional | Folder name on the account; created when it does not exist. |
+| `expires_at` | optional | ISO date-time in the future. |
+| `password` | optional | 4–50 characters; visitors must type it. |
+
+```json
+HTTP 201
+{"success": true, "message": "Link created successfully",
+ "data": {"url": "https://hel.ink/l/my-link", "slug": "my-link", "target_url": "https://example.com",
+          "status": "active", "created_at": "2026-10-28T10:00:00+00:00", "expires_at": null}}
+```
+
+Errors keep one shape, `{"success": false, "error": "…", "message": "…"}`: `401` unknown or expired token, `403` missing scope, suspended or unverified account, `422` validation (`messages` lists the fields), `429` quota or rate limit.
+
+**Read a link** (`link:read`): `GET /api/links/{slug}` → the same `data` plus `clicks`. **Delete a link** (`link:delete`): `DELETE /api/links/{slug}` → `{"success": true}`. Both answer `404` for a slug that is not on the token's account.
+
+A ShareX config is ready to download on the **API docs** page of the dashboard.
 
 ## FAQ
 
@@ -188,13 +230,13 @@ curl -X POST https://hel.ink/api/shorten \
 Yes. There's no paid plan and no locked feature, and the code is MIT licensed, so you can run, change and share it.
 
 **Do I need an account?**
-Not to shorten a link. Guest links are deleted after 14 days without a click, and after 30 days at most. With an account you keep your links and get analytics, folders, the API and a bio page.
+Yes, a HOP ID (free, made at the hub); it also signs you in to the other HOP apps. Guest links made on the old home page still work and are deleted after 14 days without a click, and after 30 days at most.
 
 **Where is my bio page?**
 At `hel.ink/b/` followed by the name you pick, for example [hel.ink/b/hel](https://hel.ink/b/hel).
 
 **Can I use my own domain?**
-Yes, by hosting your own copy: set `APP_URL` in `.env` to your domain. If the public links should live on another host than the dashboard, set `PUBLIC_URL` too.
+Yes, by hosting your own copy next to the hub: `APP_URL` is the dashboard's host, `PUBLIC_URL` the public one for short links, and `HOP_HUB_URL` the hub.
 
 **Can I run it without Link in Bio?**
 Yes: `BIO_ENABLED=false` in `.env`. Bio lives in the `hop/bio` package (`packages/bio`); off, it registers no routes and needs no tables.
@@ -203,7 +245,7 @@ Yes: `BIO_ENABLED=false` in `.env`. Bio lives in the `hop/bio` package (`package
 The time, country and city, device, browser and referrer. Tracking pixels on bio pages only load after the visitor agrees.
 
 **How do I report a bad link?**
-Use the report form on hel.ink. Reports land on the admin Abuse page, next to the findings of the automatic scan.
+Use the report form (`/report-abuse`). Reports land in the HOP control center's abuse queue, next to the findings of the automatic scan.
 
 ## Under the hood
 
@@ -213,14 +255,16 @@ Use the report form on hel.ink. Reports land on the admin Abuse page, next to th
 | **Frontend** | Tailwind CSS 4, Alpine.js 3, Vite 7 |
 | **Charts & maps** | Chart.js 4, Leaflet 1.9 |
 | **Icons** | Heroicons, Simple Icons (150+ brands) |
-| **Auth** | Laravel Breeze, Socialite, Google2FA |
-| **Services** | Cloudflare Turnstile, IP-API, FlagCDN |
+| **Accounts** | HOP ID at the hub; `hop/auth` (SSO client, `hop.auth` and `hop.token` middleware) |
+| **Shared packages** | `hop/auth`, `hop/ui` (app switcher), `hop/safety` (URL and content safety), `hop/bio` |
+| **Services** | Cloudflare Turnstile (abuse report form), IP-API, FlagCDN |
 
 | Folder | What's in it |
 |---|---|
 | `app/`, `routes/`, `resources/` | The Laravel app: controllers, models, Blade views and the bio editor. |
 | `config/bio-themes.php` | The bio page themes. |
-| `config/abuse.php`, `config/limits.php` | Abuse scan patterns and thresholds, and link quotas. |
+| `config/hop.php`, `config/limits.php` | The HOP family (same `apps` list as the hub) and link quotas. Safety patterns and thresholds come from `hop/safety` (`config('safety')`). |
+| `database/migrations-archive/` | The account tables' history (now the hub's); not run. |
 | `tests/` | PHPUnit tests (`php artisan test`) and the Playwright synthetic users in `tests/e2e/`. |
 | `docs/` | The website (GitHub Pages). `docs/readme/` holds the README images, drawn from the website with `node scripts/readme-images.mjs`. |
 

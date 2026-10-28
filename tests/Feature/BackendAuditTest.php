@@ -98,15 +98,6 @@ test('bio analytics accepts only the offered ranges and ranks top links by click
         ->assertSee('Clicks over time');
 });
 
-test('reordering and toggling blocks need a verified email like other edits', function () {
-    $page = backendPage();
-    $page->user->forceFill(['email_verified_at' => null])->save();
-    $block = BioLink::create(['bio_page_id' => $page->id, 'type' => 'link', 'title' => 'A', 'url' => 'https://example.com', 'is_active' => true, 'order' => 0]);
-
-    $this->actingAs($page->user)->postJson("/bio/{$page->slug}/links/reorder", ['links' => [['id' => $block->id, 'order' => 0]]])->assertForbidden();
-    $this->actingAs($page->user)->postJson("/bio/{$page->slug}/links/{$block->id}/toggle")->assertForbidden();
-});
-
 test('design fields only accept colours, gradients and images, not arbitrary css', function () {
     $page = backendPage();
     $put = fn (array $data) => $this->actingAs($page->user)->putJson("/bio/{$page->slug}", $data);
