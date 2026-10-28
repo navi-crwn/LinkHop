@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\DomainBlacklist;
 use App\Models\Link;
+use Hop\Safety\Models\DomainBlacklist;
 
 test('link checker shows the destination without counting a click', function () {
     Link::create(['slug' => 'abc123', 'target_url' => 'https://example.com/landing', 'status' => 'active']);

@@ -42,11 +42,6 @@ return [
         'site_key' => env('TURNSTILE_SITE_KEY'),
         'secret' => env('TURNSTILE_SECRET_KEY'),
     ],
-    'google' => [
-        'client_id' => env('GOOGLE_CLIENT_ID'),
-        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect' => env('APP_URL').'/auth/google/callback',
-    ],
     'ip_api' => [
         'base_url' => 'http://ip-api.com/json/',
         'fields' => '66846719', // country,countryCode,region,regionName,city,isp,org,as

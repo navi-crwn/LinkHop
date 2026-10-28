@@ -3,35 +3,29 @@
 namespace App\Providers;
 
 use App\Bio\ShortlinkCreatorAdapter;
-use App\Http\Controllers\AppSsoController;
+use App\Bio\UrlSafetyAdapter;
 use App\Http\Controllers\BrandAssetController;
-use App\Models\SeoSetting;
 use App\Services\GeoIpService;
-use App\Services\LinkSafety;
 use App\Services\UserAgentService;
 use Hop\Bio\Contracts\GeoLookup;
 use Hop\Bio\Contracts\ShortlinkCreator;
 use Hop\Bio\Contracts\UrlSafety;
 use Hop\Bio\Contracts\UserAgentParser;
-use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Http\Request;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        // One instance per request/job so the domain blacklist is loaded once.
-        $this->app->scoped(LinkSafety::class);
         // What the hop/bio package may call in this app (Hop\Bio\Contracts); nothing else.
+        // URL safety is the family's one LinkSafety (hop/safety), already scoped per request.
         $this->app->bind(ShortlinkCreator::class, ShortlinkCreatorAdapter::class);
-        $this->app->bind(UrlSafety::class, LinkSafety::class);
+        $this->app->bind(UrlSafety::class, UrlSafetyAdapter::class);
         $this->app->bind(GeoLookup::class, GeoIpService::class);
         $this->app->bind(UserAgentParser::class, UserAgentService::class);
     }
@@ -40,19 +34,6 @@ class AppServiceProvider extends ServiceProvider
     {
         URL::defaults(['v' => BrandAssetController::version()]); // brand image URLs change with the images
         \URL::forceRootUrl(config('app.url'));
-        // The password-reset mail speaks HOP ID: one password for every HOP app.
-        ResetPassword::toMailUsing(function (object $notifiable, string $token) {
-            $url = url(route('password.reset', ['token' => $token, 'email' => $notifiable->getEmailForPasswordReset()], false));
-            $apps = collect(AppSsoController::apps())->pluck('name')->implode(', ');
-
-            return (new MailMessage)
-                ->subject('Reset your HOP ID password')
-                ->greeting('Hi '.($notifiable->name ?: 'there').',')
-                ->line('Someone asked to reset the password of your HOP ID ('.$notifiable->getEmailForPasswordReset().'). That is the one account for '.config('app.name').($apps ? ', '.$apps : '').' and every HOP app.')
-                ->action('Choose a new password', $url)
-                ->line('The link works for '.config('auth.passwords.'.config('auth.defaults.passwords').'.expire').' minutes and only for this address.')
-                ->line('If you did not ask for this, you can ignore this email: your password stays as it is.');
-        });
         if (config('app.env') === 'production') {
             \URL::forceScheme('https');
         }
@@ -72,13 +53,6 @@ class AppServiceProvider extends ServiceProvider
         // Flood guard only: bio click limits normally just stop counting (see PublicBioController::click).
         RateLimiter::for('bio-click', function (Request $request) {
             return Limit::perMinute(300)->by('bio-click:'.$request->ip());
-        });
-        RateLimiter::for('register', function (Request $request) {
-            return Limit::perHour((int) config('abuse.register_per_ip_per_hour', 3))->by($request->ip());
-        });
-        View::composer('components.marketing-layout', function ($view) {
-            $seo = cache()->rememberForever('seo.settings', fn () => SeoSetting::first());
-            $view->with('seoSettings', $seo);
         });
     }
 }

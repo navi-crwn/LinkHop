@@ -4,11 +4,11 @@ namespace Hop\Bio\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Support\QrPng;
-use App\Support\SafeContent;
 use Hop\Bio\Contracts\GeoLookup;
 use Hop\Bio\Contracts\UserAgentParser;
 use Hop\Bio\Models\BioLink;
 use Hop\Bio\Models\BioPage;
+use Hop\Safety\SafeContent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;

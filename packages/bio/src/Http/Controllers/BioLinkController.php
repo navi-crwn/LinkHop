@@ -5,11 +5,11 @@ namespace Hop\Bio\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\AbuseFlag;
 use App\Support\CssValue;
-use App\Support\SafeContent;
 use Hop\Bio\Contracts\UrlSafety;
 use Hop\Bio\Models\BioLink;
 use Hop\Bio\Models\BioPage;
 use Hop\Bio\Support\BioUploads;
+use Hop\Safety\SafeContent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
@@ -48,7 +48,7 @@ class BioLinkController extends Controller
         }
         if (! isset($errors['url']) && $text !== '') {
             $result = $safety->assess(null, $text);
-            if (array_intersect($result['signals'], config('abuse.block_categories', [])) !== []) {
+            if (array_intersect($result['signals'], config('safety.block_categories', [])) !== []) {
                 $errors['title'] = 'This content is not allowed due to our security policy.';
             }
         }

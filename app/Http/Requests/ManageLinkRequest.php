@@ -5,8 +5,8 @@ namespace App\Http\Requests;
 use App\Models\AbuseFlag;
 use App\Models\Link;
 use App\Models\RetiredSlug;
-use App\Services\LinkSafety;
 use App\Support\ReservedSlugs;
+use Hop\Safety\LinkSafety;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 

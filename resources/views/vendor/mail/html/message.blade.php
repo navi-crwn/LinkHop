@@ -21,7 +21,7 @@
 {{-- Footer --}}
 <x-slot:footer>
 <x-mail::footer>
-One HOP ID for {{ collect([config('app.name')])->merge(collect(\App\Http\Controllers\AppSsoController::apps())->pluck('name'))->implode(' · ') }}.<br>© {{ date('Y') }} {{ config('app.name') }} · [hel.ink]({{ config('app.url') }})
+One HOP ID for {{ collect(\Hop\Ui\Apps::all())->pluck('name')->implode(' · ') }}.<br>© {{ date('Y') }} {{ config('app.name') }} · [hel.ink]({{ config('app.url') }})
 </x-mail::footer>
 </x-slot:footer>
 </x-mail::layout>

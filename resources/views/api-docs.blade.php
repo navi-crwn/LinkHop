@@ -2,7 +2,7 @@
     <x-slot name="pageTitle">LinkHop - API</x-slot>
     <x-page-header title="API documentation" subtitle="Use hel.ink from ShareX, the command line or your own apps.">
         <x-slot name="actions">
-            <a href="{{ route('settings') }}#api" class="btn-soft btn-sm">Manage API tokens</a>
+            <a href="{{ hub_url('settings') }}#api" class="btn-soft btn-sm">Manage API tokens (HOP ID)</a>
         </x-slot>
     </x-page-header>
     @php
@@ -86,8 +86,8 @@ Content-Type: application/json</code></pre>
             <section class="glass-card space-y-2">
                 <h2 class="section-title">Quick start</h2>
                 <ol class="list-decimal space-y-1 pl-4 text-sm text-muted marker:text-ink">
-                    <li>Open <a href="{{ route('settings') }}#api" class="text-ink underline">Settings → API</a>.</li>
-                    <li>Create a token with a name you'll recognise.</li>
+                    <li>Open <a href="{{ hub_url('settings') }}#api" class="text-ink underline">HOP ID → Settings → API</a> (tokens are made at the hub and work in every HOP app).</li>
+                    <li>Create a token with a name you'll recognise and the <code class="rounded-sm bg-slate-500/10 px-1 font-mono text-xs text-ink">link:*</code> scopes you need.</li>
                     <li>Copy it now. It is shown only once.</li>
                     <li>Send it as <code class="rounded-sm bg-slate-500/10 px-1 font-mono text-xs text-ink">Authorization: Bearer …</code></li>
                 </ol>

@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Http\Controllers\AppSsoController;
 use Closure;
 use Hop\Bio\Support\BioEmbed;
 use Illuminate\Http\Request;
@@ -28,9 +27,8 @@ class ContentSecurityPolicyMiddleware
             "frame-src 'self' https://challenges.cloudflare.com https://maps.google.com https://www.google.com https://youtube.com ".implode(' ', BioEmbed::FRAME_HOSTS),
             "object-src 'none'",
             "base-uri 'self'",
-            // Signing in from PixelHop or NoteHop ends in a redirect to the app
-            // after the form post; form-action applies to that redirect too.
-            trim("form-action 'self' ".implode(' ', AppSsoController::origins())),
+            // Logging out posts here and ends at the hub; form-action applies to that redirect too.
+            "form-action 'self' ".hub_url(),
             $isPreviewRoute ? "frame-ancestors 'self'" : "frame-ancestors 'none'",
             'upgrade-insecure-requests',
         ];

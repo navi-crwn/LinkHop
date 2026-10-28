@@ -6,13 +6,9 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/** A suspended account (users.suspended by the hub) is signed out and sent to the hub's notice. */
 class CheckSuspended
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  Closure(Request): (Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         if (auth()->check() && auth()->user()->isSuspended()) {
@@ -20,8 +16,7 @@ class CheckSuspended
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            return redirect()->route('suspended')
-                ->with('error', 'Your account has been suspended. Please contact administrator.');
+            return redirect()->away(hub_url('suspended'));
         }
 
         return $next($request);

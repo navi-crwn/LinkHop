@@ -13,17 +13,17 @@ Route::middleware(['web', 'ip.ban'])->prefix('b')->name('bio.public.')->group(fu
     Route::get('/click/{bioLink:public_id}', [PublicBioController::class, 'click'])->middleware('throttle:bio-click')->name('click');
 });
 
-// The editor, for signed-in members.
-Route::middleware(['web', 'ip.ban', 'auth', '2fa'])->prefix('bio')->name('bio.')->group(function () {
+// The editor, for signed-in members (hop.auth: a guest is sent through the hub's SSO; the hub only signs in verified accounts).
+Route::middleware(['web', 'ip.ban', 'hop.auth'])->prefix('bio')->name('bio.')->group(function () {
     Route::get('/', [BioPageController::class, 'index'])->name('index');
     Route::get('/create', [BioPageController::class, 'create'])->name('create');
     Route::get('/check-slug', [BioPageController::class, 'checkSlug'])->name('check-slug');
-    Route::post('/', [BioPageController::class, 'store'])->middleware('verified')->name('store');
+    Route::post('/', [BioPageController::class, 'store'])->name('store');
     Route::get('/{bioPage}/edit', [BioPageController::class, 'edit'])->name('edit');
-    Route::put('/{bioPage}', [BioPageController::class, 'update'])->middleware('verified')->name('update');
+    Route::put('/{bioPage}', [BioPageController::class, 'update'])->name('update');
     Route::delete('/{bioPage}', [BioPageController::class, 'destroy'])->name('destroy');
     Route::get('/{bioPage}/analytics', [BioPageController::class, 'analytics'])->name('analytics');
-    Route::post('/{bioPage}/duplicate', [BioPageController::class, 'duplicate'])->middleware('verified')->name('duplicate');
+    Route::post('/{bioPage}/duplicate', [BioPageController::class, 'duplicate'])->name('duplicate');
     Route::post('/{bioPage}/upload-image', [BioPageController::class, 'uploadImage'])->name('upload-image');
     Route::post('/{bioPage}/upload-avatar', [BioPageController::class, 'uploadAvatar'])->name('upload-avatar');
     Route::post('/{bioPage}/upload-thumbnail', [BioPageController::class, 'uploadThumbnail'])->name('upload-thumbnail');
@@ -33,18 +33,18 @@ Route::middleware(['web', 'ip.ban', 'auth', '2fa'])->prefix('bio')->name('bio.')
     // Short links for blocks, through the ShortlinkCreator contract (same safety checks and quota as other links).
     Route::get('/links/search', [BioShortlinkController::class, 'search'])->name('links.search');
     Route::post('/shorten', [BioShortlinkController::class, 'store'])
-        ->middleware(['verified', 'throttle:shorten', 'quota'])
+        ->middleware(['throttle:shorten', 'quota'])
         ->name('shorten');
     // scopeBindings: {bioLink} must belong to {bioPage}, otherwise 404
     Route::prefix('{bioPage}/links')->name('links.')->scopeBindings()->group(function () {
-        Route::post('/', [BioLinkController::class, 'store'])->middleware('verified')->name('store');
-        Route::put('/{bioLink}', [BioLinkController::class, 'update'])->middleware('verified')->name('update');
+        Route::post('/', [BioLinkController::class, 'store'])->name('store');
+        Route::put('/{bioLink}', [BioLinkController::class, 'update'])->name('update');
         Route::delete('/{bioLink}', [BioLinkController::class, 'destroy'])->name('destroy');
-        Route::post('/reorder', [BioLinkController::class, 'reorder'])->middleware('verified')->name('reorder');
-        Route::post('/{bioLink}/toggle', [BioLinkController::class, 'toggle'])->middleware('verified')->name('toggle');
+        Route::post('/reorder', [BioLinkController::class, 'reorder'])->name('reorder');
+        Route::post('/{bioLink}/toggle', [BioLinkController::class, 'toggle'])->name('toggle');
     });
 });
 
 // The same shortener door under /api for the editor's older JavaScript (web session, not an API token).
-Route::middleware(['api', 'web', 'auth', '2fa', 'verified', 'throttle:shorten', 'quota'])
+Route::middleware(['api', 'web', 'hop.auth', 'throttle:shorten', 'quota'])
     ->post('/api/bio/shorten', [BioShortlinkController::class, 'store'])->name('bio.api.shorten');

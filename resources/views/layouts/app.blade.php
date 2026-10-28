@@ -68,10 +68,10 @@
                                 <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-sm font-semibold text-white dark:bg-white dark:text-slate-900">
                                     {{ strtoupper(mb_substr($user->name ?? 'U', 0, 1)) }}
                                 </div>
-                                <div class="min-w-0 flex-1">
+                                <a href="{{ hub_url('profile') }}" class="min-w-0 flex-1" title="Your HOP ID profile (hub)">
                                     <p class="truncate text-sm font-medium text-ink">{{ $user->name }}</p>
                                     <p class="truncate text-xs text-muted">{{ $user->email }}</p>
-                                </div>
+                                </a>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="icon-btn" title="Log out" aria-label="Log out">
@@ -90,6 +90,8 @@
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h10"/></svg>
                         </button>
                         <p class="truncate pl-1 text-sm font-semibold text-ink">{{ $sectionTitle }}</p>
+                        {{-- The HOP app switcher (hop/ui): hub, LinkHop, BioHop, PixelHop. --}}
+                        <x-hop::pill class="ml-2 hidden md:inline-flex" />
                         <div class="ml-auto flex items-center gap-1.5">
                             @if (request()->routeIs('bio.*'))
                                 <a href="{{ route('bio.create') }}" class="btn-primary btn-sm sm:btn">
@@ -122,18 +124,6 @@
 
                 <main class="app-shell px-3 pb-10 pt-4 sm:px-5 sm:pt-6">
                     <div class="mx-auto w-full @yield('container-width', 'max-w-(--breakpoint-xl) 2xl:max-w-(--breakpoint-2xl)') space-y-5">
-                        @unless ($user->hasVerifiedEmail())
-                            <div class="glass flex flex-col gap-3 rounded-2xl border-amber-400/40 px-4 py-3 sm:flex-row sm:items-center">
-                                <div class="flex flex-1 items-start gap-3">
-                                    <span class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-300">!</span>
-                                    <p class="text-sm text-ink">Verify your email to create links and bio pages. We sent a link to <strong>{{ $user->email }}</strong>.</p>
-                                </div>
-                                <form method="POST" action="{{ route('verification.send') }}">
-                                    @csrf
-                                    <button class="btn-soft btn-sm w-full sm:w-auto">Resend email</button>
-                                </form>
-                            </div>
-                        @endunless
                         @isset($header)
                             <div>{{ $header }}</div>
                         @endisset
