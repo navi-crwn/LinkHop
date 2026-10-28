@@ -228,7 +228,9 @@
 .auth-card .relative > .relative > span[class*="px-"] { background-color: rgb(var(--glass)) !important; border-radius: 9999px; }
 .auth-card :is(.rounded-md) { border-radius: 0.75rem; }
 .auth-card :is(.border-gray-300, .dark\:border-gray-600, .dark\:border-gray-700) { border-color: rgb(var(--muted) / 0.25) !important; }
-.auth-card input[type=checkbox] { @apply rounded-sm border-slate-400/50 bg-transparent text-indigo-500; }
+.auth-card input[type=checkbox] { @apply rounded-sm border-slate-400/50 text-indigo-500; }
+.auth-card input[type=checkbox]:not(:checked) { @apply bg-transparent; }
+.auth-card input[type=checkbox]:checked { background-color: rgb(99 102 241) !important; border-color: rgb(99 102 241) !important; }
 
 /* Legacy solid blue buttons follow the neutral primary style. */
 .app-shell :is(button, a, input[type=submit]):is(.bg-blue-600, .bg-indigo-600):not(.no-skin) {
@@ -259,4 +261,64 @@
         margin-left: calc(var(--spacing) * --value(number));
         margin-right: 0;
     }
+}
+
+/*
+| Floating HOP tiles (auth pages). The layer sits under the card; each sprite is moved
+| by hop-float.js with translate3d, the tile inside tumbles slowly for a 3D feel and
+| its colours come from the hop-theme-N class, swapped on every bounce.
+*/
+.hop-float {
+    position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+    perspective: 900px; opacity: 0; transition: opacity 1.2s ease;
+}
+.hop-float.is-ready { opacity: 1; }
+.hop-sprite {
+    position: absolute; top: 0; left: 0; width: clamp(52px, 9vw, 84px); aspect-ratio: 1;
+    will-change: transform; transform-style: preserve-3d;
+}
+.hop-tile {
+    position: relative; width: 100%; height: 100%; transform-style: preserve-3d;
+    animation: hop-tumble 11s ease-in-out infinite; animation-delay: calc(var(--i, 0) * -1.9s);
+}
+.hop-face {
+    position: absolute; inset: 0; display: grid; place-items: center; border-radius: 22%;
+    background: linear-gradient(135deg, var(--hop-a), var(--hop-b) 55%, var(--hop-c));
+    box-shadow: 0 18px 40px -14px rgb(var(--hop-shadow) / 0.55), inset 0 1px 0 rgb(255 255 255 / 0.5);
+    transition: background 0.6s ease, box-shadow 0.6s ease;
+}
+.hop-face::before { /* glass highlight */
+    content: ""; position: absolute; inset: 0; border-radius: inherit;
+    background: radial-gradient(120% 90% at 20% 0%, rgb(255 255 255 / 0.55), transparent 55%);
+}
+.hop-face > img, .hop-face > svg { width: 58%; height: 58%; position: relative; filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.25)); }
+.hop-side { /* the tile's thickness, tinted darker than the face */
+    position: absolute; border-radius: 22%; background: var(--hop-c); filter: brightness(0.7);
+    transition: background 0.6s ease;
+}
+.hop-side-r { top: 6%; bottom: -2%; right: -3%; width: 9%; transform: translateZ(-5px); }
+.hop-side-b { left: 6%; right: -2%; bottom: -3%; height: 9%; transform: translateZ(-5px); }
+.hop-sprite.is-bounce .hop-tile { animation: hop-tumble 11s ease-in-out infinite, hop-squash 0.45s ease-out; animation-delay: calc(var(--i, 0) * -1.9s), 0s; }
+@keyframes hop-tumble {
+    0%   { transform: rotateX(10deg) rotateY(-14deg); }
+    50%  { transform: rotateX(-12deg) rotateY(16deg); }
+    100% { transform: rotateX(10deg) rotateY(-14deg); }
+}
+@keyframes hop-squash {
+    0% { scale: 1; } 35% { scale: 1.12 0.9; } 70% { scale: 0.95 1.06; } 100% { scale: 1; }
+}
+/* Six multi-colour themes; never one flat colour. */
+.hop-theme-0 { --hop-a: #fb923c; --hop-b: #ec4899; --hop-c: #7c3aed; --hop-shadow: 236 72 153; }
+.hop-theme-1 { --hop-a: #22d3ee; --hop-b: #3b82f6; --hop-c: #8b5cf6; --hop-shadow: 59 130 246; }
+.hop-theme-2 { --hop-a: #a3e635; --hop-b: #22d3ee; --hop-c: #8b5cf6; --hop-shadow: 34 211 238; }
+.hop-theme-3 { --hop-a: #fbbf24; --hop-b: #f43f5e; --hop-c: #6d28d9; --hop-shadow: 244 63 94; }
+.hop-theme-4 { --hop-a: #34d399; --hop-b: #06b6d4; --hop-c: #2563eb; --hop-shadow: 6 182 212; }
+.hop-theme-5 { --hop-a: #f472b6; --hop-b: #fb7185; --hop-c: #f59e0b; --hop-shadow: 251 113 133; }
+.dark .hop-face { box-shadow: 0 18px 40px -14px rgb(var(--hop-shadow) / 0.7), inset 0 1px 0 rgb(255 255 255 / 0.35); }
+@media (max-width: 640px) {
+    .hop-float { opacity: 0; } .hop-float.is-ready { opacity: 0.85; }
+    .hop-sprite:nth-child(n+5) { display: none; } /* four tiles are plenty on a phone */
+}
+@media (prefers-reduced-motion: reduce) {
+    .hop-tile { animation: none; transform: rotateX(8deg) rotateY(-10deg); }
 }
