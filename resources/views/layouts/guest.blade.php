@@ -23,7 +23,8 @@
     </head>
     <body class="app-bg min-h-screen">
         <x-session-expired-notice />
-        <div class="flex min-h-screen flex-col items-center px-4 py-8 sm:justify-center">
+        <x-hop-float />
+        <div class="relative z-10 flex min-h-screen flex-col items-center px-4 py-8 sm:justify-center">
             <div class="mb-6 flex w-full max-w-md items-center justify-between">
                 <a href="{{ route('home') }}" class="flex items-center gap-2.5">
                     <x-application-logo class="h-8 w-auto" />
