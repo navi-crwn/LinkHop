@@ -44,8 +44,6 @@
                             @break
                     @endswitch
                 </span>
-                <span class="hop-side hop-side-r"></span>
-                <span class="hop-side hop-side-b"></span>
             </div>
         </div>
     @endforeach
