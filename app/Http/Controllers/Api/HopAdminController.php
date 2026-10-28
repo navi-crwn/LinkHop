@@ -325,19 +325,19 @@ class HopAdminController extends Controller
         $this->matchUsers($users, $term);
         foreach ($users->orderByDesc('id')->limit(20)->get() as $u) {
             $out[] = ['kind' => 'user', 'id' => (string) $u->id, 'label' => ($u->username ? '@'.$u->username.' ' : '').$u->name.' <'.$u->email.'>',
-                'sub' => (string) $u->id, 'url' => route('admin.users.inspect', $u)];
+                'sub' => (string) $u->id, 'url' => null];
         }
         $links = Link::query()->where(fn ($w) => $w->where('slug', 'like', "%{$term}%")->orWhere('target_url', 'like', "%{$term}%"))
             ->orderByDesc('id')->limit(max(0, 20 - count($out)))->get();
         foreach ($links as $l) {
             $out[] = ['kind' => 'link', 'id' => (string) $l->id, 'label' => '/'.$l->slug.' → '.$l->target_url,
-                'sub' => $l->user_id ? (string) $l->user_id : null, 'url' => route('admin.links.index', ['q' => $l->slug])];
+                'sub' => $l->user_id ? (string) $l->user_id : null, 'url' => url('/'.$l->slug)];
         }
         $bios = BioPage::query()->where(fn ($w) => $w->where('slug', 'like', "%{$term}%")->orWhere('title', 'like', "%{$term}%"))
             ->orderByDesc('id')->limit(max(0, 20 - count($out)))->get();
         foreach ($bios as $b) {
             $out[] = ['kind' => 'bio', 'id' => (string) $b->id, 'label' => $b->title.' (/'.$b->slug.')',
-                'sub' => $b->user_id ? (string) $b->user_id : null, 'url' => route('admin.bio.index', ['q' => $b->slug])];
+                'sub' => $b->user_id ? (string) $b->user_id : null, 'url' => route('bio.public.show', $b->slug)];
         }
 
         return response()->json(['ok' => true, 'data' => array_slice($out, 0, 20)]);
