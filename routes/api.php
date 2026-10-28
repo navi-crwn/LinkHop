@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AppAccountController;
 use App\Http\Controllers\Api\HopAdminController;
+use App\Http\Controllers\Api\HopContentController;
 use App\Http\Controllers\Api\HopController;
 use App\Http\Controllers\Api\LinkController;
 use App\Http\Controllers\Api\ShortenController;
@@ -50,6 +51,19 @@ Route::middleware(['hop.signed', 'throttle:600,1,hop'])->prefix('hop')->group(fu
     Route::get('/health', [HopAdminController::class, 'health']);
     // The admin API: only for an app registered with the admin_client capability (Imperium).
     Route::middleware('hop.admin_client')->group(function () {
+        Route::get('/manifest', [HopContentController::class, 'manifest']);
+        Route::get('/content', [HopContentController::class, 'index']);
+        Route::get('/content/{type}/{id}', [HopContentController::class, 'show'])->where(['type' => 'link|bio', 'id' => '[0-9]+']);
+        Route::post('/content/{type}/{id}/actions', [HopContentController::class, 'act'])->where(['type' => 'link|bio', 'id' => '[0-9]+']);
+        Route::get('/reports', [HopContentController::class, 'reports']);
+        Route::post('/reports/{kind}/{id}/actions', [HopContentController::class, 'reportAct'])->where(['kind' => 'report|flag', 'id' => '[0-9]+']);
+        Route::get('/x/ip', [HopContentController::class, 'ip']);
+        Route::post('/x/ip/actions', [HopContentController::class, 'ipAct']);
+        Route::get('/x/domains', [HopContentController::class, 'domains']);
+        Route::post('/x/domains/actions', [HopContentController::class, 'domainsAct']);
+        Route::get('/x/queue', [HopContentController::class, 'queue']);
+        Route::get('/settings', [HopContentController::class, 'settings']);
+        Route::put('/settings', [HopContentController::class, 'saveSettings']);
         Route::get('/stats', [HopAdminController::class, 'stats']);
         Route::get('/users', [HopAdminController::class, 'users']);
         $missing = fn () => response()->json(['ok' => false, 'error' => 'not_found', 'message' => 'No such user.'], 404);

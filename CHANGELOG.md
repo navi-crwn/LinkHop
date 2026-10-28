@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### HOP ID
+- Content side of the HOP admin API for Imperium: `/api/hop/manifest`, `/content` (links, bio pages: list, detail, disable/enable/unpublish/publish/delete/transfer/rescan, owner's content protected), `/reports` (people's reports and scanner findings in one queue with investigate/close/confirm/restore), `/x/ip` (bans incl. expiry, watchlist), `/x/domains` (blacklist), `/x/queue` (worker heartbeat, backlog, last abuse scan), `/settings` (Site & SEO editable, .env facts read-only). Every change lands in `hop_audit`
 - **LinkHop** is the new name of this app; the domain stays hel.ink ("Hop Easy Link"). It is the account server ("HOP ID") of the HOP family: the sign-in and sign-up buttons say "Login with HOP" and "Join HOP", and the sign-in page says which app you are on your way to
 - **App registry.** The other HOP apps are rows in the new `apps` table instead of `PIXELHOP_*` / `NOTEHOP_*` keys: `/sso/{app}`, `/sso/{app}/google` and `/apps/{app}` work for any registered app, the sidebar lists them, and an app can be put in maintenance or switched off. `php artisan hop:bootstrap` moves the old keys over once (`/pixelhop` and `/notehop` redirect to `/apps/…`)
 - **Roles.** `owner`, `admin`, `moderator`, `support` and app-scoped `admin` (new `roles` table) replace the single `SUPERADMIN_EMAIL` check, which stays as a fallback so the owner is never locked out. Admin pages now also require the two-factor check when the admin has 2FA on
