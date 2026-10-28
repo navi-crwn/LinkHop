@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Http\Controllers\AppSsoController;
+use App\Http\Controllers\BrandAssetController;
 use App\Models\SeoSetting;
 use App\Services\LinkSafety;
 use Illuminate\Auth\Notifications\ResetPassword;
@@ -11,6 +12,7 @@ use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        URL::defaults(['v' => BrandAssetController::version()]); // brand image URLs change with the images
         \URL::forceRootUrl(config('app.url'));
         // The password-reset mail speaks HOP ID: one password for every HOP app.
         ResetPassword::toMailUsing(function (object $notifiable, string $token) {

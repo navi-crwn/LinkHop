@@ -27,9 +27,7 @@
         <div class="relative z-10 flex min-h-screen flex-col items-center px-4 py-8 sm:justify-center">
             <div class="mb-6 flex w-full max-w-md items-center justify-between">
                 <a href="{{ route('home') }}" class="flex items-center gap-2.5">
-                    <x-application-logo class="h-8 w-auto" />
-                    <span class="text-base font-semibold tracking-tight text-ink">{{ config('app.name') }}</span>
-                    <span class="hidden text-xs text-muted sm:inline">hel.ink</span>
+                    <x-wordmark class="h-10 w-auto" />
                     <span class="chip-blue ml-1">HOP ID</span>
                 </a>
                 <button type="button" class="icon-btn" aria-label="Toggle theme"
