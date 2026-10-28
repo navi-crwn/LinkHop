@@ -84,8 +84,12 @@
         </div>
         </div>
         {{-- the miniature: plain hops only, desktop only (phones get the full scene below) --}}
-        <div class="relative hidden h-[440px] lg:block" data-hop-scene data-mini aria-hidden="true">
+        <div class="relative hidden h-[460px] lg:block" data-hop-scene data-mini aria-hidden="true">
             <div class="absolute inset-0" data-hop-canvas></div>
+            <p class="absolute inset-x-0 top-2 text-center text-xs font-semibold text-slate-500 dark:text-white/55" data-hop-story></p>
+            <div class="absolute inset-x-0 bottom-1 flex justify-center px-6">
+                <code class="hop-url min-w-0 max-w-full truncate rounded-full border border-slate-200 bg-white/90 px-3 py-1.5 font-mono text-[11px] text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-white/75" data-hop-url>hel.ink</code>
+            </div>
         </div>
     </section>
 
