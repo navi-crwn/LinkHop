@@ -7,17 +7,18 @@
         $btnSecondary = 'rounded-xl border border-slate-300 px-4 py-2.5 text-sm text-slate-700 transition hover:bg-slate-900/5 dark:border-white/15 dark:text-white/80 dark:hover:bg-white/10';
     @endphp
 
-    {{-- Hero + shortener: "hel.ink/anything", then the bunny hops from a short link to where it goes --}}
-    <section class="mx-auto max-w-3xl px-4 pb-4 pt-12 text-center sm:pt-16">
+    {{-- Hero: the free guest shortener on the left, a small copy of the hop scene on the right --}}
+    <section class="mx-auto grid max-w-6xl items-center gap-6 px-4 pb-4 pt-10 sm:pt-14 lg:grid-cols-[1.05fr_1fr]">
+        <div class="text-center lg:text-left">
         <p class="font-mono text-[11px] font-medium uppercase tracking-[0.3em] text-slate-500 dark:text-white/50">LinkHop · by hel.ink</p>
-        <h1 class="mt-4 text-5xl font-extrabold leading-[1.02] tracking-[-0.045em] sm:text-7xl md:text-[88px]">
+        <h1 class="mt-4 text-5xl font-extrabold leading-[1.02] tracking-[-0.045em] sm:text-7xl lg:text-[76px]">
             hel.ink/<span class="hop-serif bg-linear-to-r from-sky-500 via-indigo-500 to-fuchsia-500 bg-clip-text pr-2 text-transparent dark:from-sky-300 dark:via-indigo-300 dark:to-fuchsia-300">anything</span>
         </h1>
-        <p class="mx-auto mt-5 max-w-xl text-base text-slate-600 sm:text-lg dark:text-white/65">
+        <p class="mx-auto mt-5 max-w-xl text-base text-slate-600 sm:text-lg lg:mx-0 dark:text-white/65">
             Turn a long, ugly link into one that's short, trackable and safe to share. Free, open source, no tracking ads.
         </p>
 
-        <div class="{{ $card }} mx-auto mt-8 p-2 text-left shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500/10 dark:shadow-2xl dark:shadow-black/30 dark:ring-0">
+        <div class="{{ $card }} mx-auto mt-8 max-w-2xl p-2 text-left lg:mx-0 shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500/10 dark:shadow-2xl dark:shadow-black/30 dark:ring-0">
             <form
                 x-data="Object.assign({ custom: {{ old('slug') ? 'true' : 'false' }} }, turnstileForm(@js(config('services.turnstile.site_key'))))"
                 x-on:submit="handleSubmit($event)"
@@ -81,21 +82,26 @@
                 </p>
             @endif
         </div>
+        </div>
+        {{-- the miniature: plain hops only, desktop only (phones get the full scene below) --}}
+        <div class="relative hidden h-[440px] lg:block" data-hop-scene data-mini aria-hidden="true">
+            <div class="absolute inset-0" data-hop-canvas></div>
+        </div>
     </section>
 
-    {{-- The hop: bunnies around the world take turns hopping to hel.ink; the arrow carries the short link on to its long destination --}}
-    <section class="mx-auto mt-6 max-w-5xl px-4 pb-8" aria-label="How a short link works" data-hop-scene data-mark="{{ asset('images/brand/linkhop-mark-gradient.svg') }}">
-        <div class="relative">
-            <img src="{{ asset('images/world-dots.svg') }}" alt="" class="block w-full select-none dark:opacity-60" draggable="false">
-            <svg class="absolute inset-0 h-full w-full overflow-visible" viewBox="0 0 1000 380" aria-hidden="true" data-hop-layer></svg>
+    {{-- The hop: a holographic sea; islands rise, bunnies hop through hel.ink to where a link goes (resources/js/hop-hero.js) --}}
+    <section class="mx-auto mt-4 max-w-6xl px-2 pb-8 sm:px-4" aria-label="How a short link works" data-hop-scene>
+        <div class="flex flex-wrap justify-center gap-2" role="group" aria-label="Play a scenario">
+            @foreach (['hop' => 'Hop to a link', 'share' => 'Share a link', 'pass-ok' => 'Password: right', 'pass-fail' => 'Password: wrong'] as $key => $label)
+                <button type="button" data-hop-play="{{ $key }}" aria-pressed="false" class="hop-pill rounded-full border border-slate-200 bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-slate-600 transition hover:border-indigo-300 hover:text-indigo-700 sm:text-[13px] dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:text-white">{{ $label }}</button>
+            @endforeach
         </div>
-        <div class="mt-5 flex flex-col items-center justify-center gap-2 font-mono text-xs sm:flex-row sm:gap-3 sm:text-sm">
-            <span class="hop-short shrink-0 rounded-full border border-indigo-200 bg-white/90 px-4 py-2 font-semibold text-indigo-700 dark:border-indigo-400/30 dark:bg-white/5 dark:text-indigo-200" data-hop-short>hel.ink/school</span>
-            <svg class="hop-arrow h-6 w-14 shrink-0 rotate-90 text-fuchsia-500 sm:rotate-0" viewBox="0 0 56 24" fill="none" aria-hidden="true">
-                <path d="M2 12h46" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-                <path d="M40 4l10 8-10 8" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span class="hop-dest min-w-0 max-w-full truncate rounded-full border border-fuchsia-200 bg-white/90 px-4 py-2 text-slate-600 sm:max-w-md dark:border-fuchsia-400/30 dark:bg-white/5 dark:text-white/65" data-hop-dest>school.example.com/students/2026/semester-2/assignments/final-project-guidelines.pdf</span>
+        <p class="mt-3 text-center text-[13px] font-semibold text-slate-500 dark:text-white/55" data-hop-story aria-live="polite"></p>
+        <div class="relative h-[340px] sm:h-[480px]" data-hop-canvas>
+            <img data-hop-fallback src="{{ asset('images/brand/linkhop-mark-gradient.svg') }}" alt="" class="absolute inset-0 m-auto h-32 w-auto opacity-80">
+        </div>
+        <div class="flex justify-center px-2">
+            <code class="hop-url min-w-0 max-w-full truncate rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-center font-mono text-xs text-slate-700 sm:max-w-2xl sm:text-sm dark:border-white/10 dark:bg-white/5 dark:text-white/75" data-hop-url>hel.ink</code>
         </div>
     </section>
     @vite('resources/js/hop-hero.js')

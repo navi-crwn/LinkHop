@@ -326,18 +326,7 @@
     letter-spacing: -0.01em;
 }
 
-/* Home hero hop scene (resources/js/hop-hero.js) */
-.hop-bunny { transition: opacity .2s; }
-.hop-bunny:not(.is-active) { opacity: .92; }
-.hop-tag { font: 600 11px ui-monospace, SFMono-Regular, Menlo, monospace; fill: #64748b; letter-spacing: .08em; }
-.dark .hop-tag { fill: rgb(255 255 255 / .55); }
-.hop-trail { stroke: #a5b4fc; stroke-width: 3; stroke-linecap: round; stroke-dasharray: .1 9; }
-.hop-hub-glow { fill: #818cf8; opacity: .18; transform-box: fill-box; transform-origin: center; }
-[data-hop-scene].is-arrived .hop-hub-glow { animation: hop-pulse .9s ease-out; }
-@keyframes hop-pulse { from { transform: scale(.7); opacity: .55; } to { transform: scale(1.6); opacity: 0; } }
-.hop-short, .hop-dest { transition: box-shadow .3s, border-color .3s, color .3s; }
-[data-hop-scene].is-arrived .hop-short { box-shadow: 0 0 0 4px rgb(99 102 241 / .15); }
-.hop-arrow path { stroke-dasharray: 60; stroke-dashoffset: 60; }
-[data-hop-scene].is-arrived .hop-arrow path { transition: stroke-dashoffset .5s ease-out .25s; stroke-dashoffset: 0; }
-[data-hop-scene].is-arrived .hop-dest { box-shadow: 0 0 0 4px rgb(217 70 239 / .14); transition-delay: .6s; }
-@media (prefers-reduced-motion: reduce) { .hop-arrow path { stroke-dashoffset: 0; } }
+/* Home hero hop scene (resources/js/hop-hero.js): the URL turns indigo while it is short */
+.hop-url.short { color: #4f46e5; font-weight: 700; }
+.dark .hop-url.short { color: #a5b4fc; }
+.hop-pill[aria-pressed="true"] { color: #fff; border-color: transparent; background-image: linear-gradient(90deg, #6366f1, #0ea5e9, #d946ef); }
