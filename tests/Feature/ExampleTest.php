@@ -2,7 +2,10 @@
 
 use App\Models\User;
 
-it('sends a guest on link.hel.ink/ to the hub sign-in and a member to the dashboard', function () {
-    $this->get('/')->assertRedirect(route('hop.sso.start'));
+it('shows LinkHop\'s landing to a guest on link.hel.ink/ and sends a member to the dashboard', function () {
+    $this->get('/')
+        ->assertOk()
+        ->assertSee('id="target_url"', false)
+        ->assertSee('hop-hero', false);
     $this->actingAs(User::factory()->create())->get('/')->assertRedirect(route('dashboard'));
 });

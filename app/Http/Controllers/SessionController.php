@@ -13,12 +13,6 @@ use Illuminate\Support\Facades\Auth;
  */
 class SessionController extends Controller
 {
-    /** GET /: the dashboard, or the hub's sign-in for a guest. */
-    public function home(Request $request): RedirectResponse
-    {
-        return $request->user() ? redirect()->route('dashboard') : $this->login($request);
-    }
-
     /** GET /login: start the SSO round trip, coming back to ?next= (a local path) or the dashboard. */
     public function login(Request $request): RedirectResponse
     {
