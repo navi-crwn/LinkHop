@@ -104,7 +104,7 @@
             <p class="min-h-5 text-center text-[13px] font-semibold text-slate-500 dark:text-white/60" data-hop-story aria-live="polite"></p>
         </div>
         <div class="relative h-[360px] sm:h-[420px]" data-hop-canvas>
-            <img data-hop-fallback src="{{ asset('images/brand/linkhop-mark-gradient.svg') }}" alt="" class="absolute inset-0 m-auto h-32 w-auto opacity-80">
+            <img data-hop-fallback src="{{ route('brand.asset', 'linkhop-mark-gradient.svg') }}" alt="" class="absolute inset-0 m-auto h-32 w-auto opacity-80">
         </div>
     </section>
     @vite('resources/js/hop-hero.js')
