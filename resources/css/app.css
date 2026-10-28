@@ -326,7 +326,5 @@
     letter-spacing: -0.01em;
 }
 
-/* Home hero hop scene (resources/js/hop-hero.js): the URL turns indigo while it is short */
-.hop-url.short { color: #4f46e5; font-weight: 700; }
-.dark .hop-url.short { color: #a5b4fc; }
+/* Home hero hop scene (resources/js/hop-hero.js) */
 .hop-pill[aria-pressed="true"] { color: #fff; border-color: transparent; background-image: linear-gradient(90deg, #6366f1, #0ea5e9, #d946ef); }
