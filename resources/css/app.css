@@ -284,7 +284,8 @@
 .hop-face {
     position: absolute; inset: 0; display: grid; place-items: center; border-radius: 22%;
     background: linear-gradient(135deg, var(--hop-a), var(--hop-b) 55%, var(--hop-c));
-    box-shadow: 0 18px 40px -14px rgb(var(--hop-shadow) / 0.55), inset 0 1px 0 rgb(255 255 255 / 0.5);
+    /* Thickness that follows the rounded shape: a hard dark lip under the face, then a soft tinted glow. */
+    box-shadow: 0 5px 0 0 rgb(0 0 0 / 0.22), 0 18px 40px -14px rgb(var(--hop-shadow) / 0.55), inset 0 1px 0 rgb(255 255 255 / 0.5);
     transition: background 0.6s ease, box-shadow 0.6s ease;
 }
 .hop-face::before { /* glass highlight */
@@ -292,12 +293,6 @@
     background: radial-gradient(120% 90% at 20% 0%, rgb(255 255 255 / 0.55), transparent 55%);
 }
 .hop-face > img, .hop-face > svg { width: 58%; height: 58%; position: relative; filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.25)); }
-.hop-side { /* the tile's thickness, tinted darker than the face */
-    position: absolute; border-radius: 22%; background: var(--hop-c); filter: brightness(0.7);
-    transition: background 0.6s ease;
-}
-.hop-side-r { top: 6%; bottom: -2%; right: -3%; width: 9%; transform: translateZ(-5px); }
-.hop-side-b { left: 6%; right: -2%; bottom: -3%; height: 9%; transform: translateZ(-5px); }
 .hop-sprite.is-bounce .hop-tile { animation: hop-tumble 11s ease-in-out infinite, hop-squash 0.45s ease-out; animation-delay: calc(var(--i, 0) * -1.9s), 0s; }
 @keyframes hop-tumble {
     0%   { transform: rotateX(10deg) rotateY(-14deg); }
@@ -314,7 +309,7 @@
 .hop-theme-3 { --hop-a: #fbbf24; --hop-b: #f43f5e; --hop-c: #6d28d9; --hop-shadow: 244 63 94; }
 .hop-theme-4 { --hop-a: #34d399; --hop-b: #06b6d4; --hop-c: #2563eb; --hop-shadow: 6 182 212; }
 .hop-theme-5 { --hop-a: #f472b6; --hop-b: #fb7185; --hop-c: #f59e0b; --hop-shadow: 251 113 133; }
-.dark .hop-face { box-shadow: 0 18px 40px -14px rgb(var(--hop-shadow) / 0.7), inset 0 1px 0 rgb(255 255 255 / 0.35); }
+.dark .hop-face { box-shadow: 0 5px 0 0 rgb(0 0 0 / 0.35), 0 18px 40px -14px rgb(var(--hop-shadow) / 0.7), inset 0 1px 0 rgb(255 255 255 / 0.35); }
 @media (max-width: 640px) {
     .hop-float { opacity: 0; } .hop-float.is-ready { opacity: 0.85; }
     .hop-sprite:nth-child(n+5) { display: none; } /* four tiles are plenty on a phone */
