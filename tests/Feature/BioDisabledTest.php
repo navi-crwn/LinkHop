@@ -2,30 +2,22 @@
 
 use App\Models\Link;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /*
  * LinkHop with BIO_ENABLED=false: no bio routes, menus or quota, and the
- * commands and account pages work without the bio tables. The env is set before
- * the app boots for this file, and the bio tables are dropped so that a missing
- * table would surface here (RefreshDatabase keeps the in-memory database between tests).
+ * commands and account pages work without the bio tables. The package reads
+ * the flag when the app boots, so these tests only run in a process started
+ * with BIO_ENABLED=false (the second test step in CI), where the bio
+ * migrations are never loaded and the tables never exist.
  */
-beforeAll(function () {
-    $_ENV['BIO_ENABLED'] = $_SERVER['BIO_ENABLED'] = 'false';
-});
-afterAll(function () {
-    unset($_ENV['BIO_ENABLED'], $_SERVER['BIO_ENABLED']);
-});
 beforeEach(function () {
-    expect(bio_enabled())->toBeFalse();
-    Schema::disableForeignKeyConstraints();
-    foreach (['bio_clicks', 'bio_links', 'bio_pages'] as $table) {
-        Schema::dropIfExists($table);
+    if (bio_enabled()) {
+        $this->markTestSkipped('Run with BIO_ENABLED=false (php artisan test --exclude-group=bio).');
     }
-    Schema::enableForeignKeyConstraints();
-    // So the next file's migrate recreates them (their migrations live in packages/bio).
-    DB::table('migrations')->where('migration', 'like', '%bio%')->delete();
+    foreach (['bio_clicks', 'bio_links', 'bio_pages'] as $table) {
+        expect(Schema::hasTable($table))->toBeFalse("{$table} should not exist with bio off");
+    }
 });
 
 test('bio routes are gone and the dashboard shows no bio menu or quota', function () {
@@ -58,7 +50,6 @@ test('abuse:scan, privacy:prune and the account export and deletion skip bio', f
 });
 
 test('the example seeder still seeds the short links', function () {
-    expect(bio_enabled())->toBeFalse();
     $this->artisan('db:seed', ['--class' => 'ExampleBioSeeder'])->assertSuccessful();
     expect(Link::where('slug', 'github')->exists())->toBeTrue();
 });
