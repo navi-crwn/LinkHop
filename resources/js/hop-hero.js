@@ -1,111 +1,136 @@
-// Home page hero: the LinkHop bunny (the logo's head, in 3D) hops from a short link to its
-// destination. Smooth shapes only, no pixels. Loaded on the home page alone; skipped without
-// WebGL (the static mark stays), frozen mid-hop under prefers-reduced-motion, paused off screen.
-import {
-    CapsuleGeometry, Color, DirectionalLight, Group, HemisphereLight, Mesh, MeshPhysicalMaterial,
-    MeshStandardMaterial, PerspectiveCamera, Scene, SphereGeometry, TorusGeometry, WebGLRenderer,
-} from 'three';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+// Home page hero: LinkHop bunnies wait in cities around a dotted world map. One at a time a
+// bunny hops to hel.ink, the short link lights up, and an arrow carries it on to the long
+// destination. Every hop shows another example link. Plain SVG + DOM, no libraries.
+// Under prefers-reduced-motion it shows one example without moving; it pauses off screen.
 
-const SKY = new Color('#0ea5e9'), INDIGO = new Color('#6366f1'), FUCHSIA = new Color('#d946ef');
-const grad = (t) => (t < 0.5 ? SKY.clone().lerp(INDIGO, t * 2) : INDIGO.clone().lerp(FUCHSIA, (t - 0.5) * 2));
+const LINKS = [
+    ['school', 'school.example.com/students/2026/semester-2/assignments/final-project-guidelines.pdf'],
+    ['shop', 'shop.example.com/collections/summer-sale/products/linen-shirt?color=sand&size=m'],
+    ['event', 'events.example.com/2026/jakarta-tech-meetup/registration?ref=newsletter'],
+    ['menu', 'cafe.example.com/menu/today/lunch-specials-and-cold-drinks'],
+    ['wedding', 'photos.example.com/albums/2026/rina-and-dimas-wedding/highlights'],
+    ['podcast', 'podcast.example.com/episodes/142-how-small-teams-ship-fast'],
+    ['cv', 'drive.example.com/file/d/1a2b3c4d5e6f7g8h9i0j/view?usp=sharing'],
+    ['promo', 'store.example.com/checkout?promo=HOP25&utm_source=instagram&utm_medium=story'],
+    ['course', 'learn.example.com/courses/web-basics/lesson-07-forms-and-validation'],
+    ['rsvp', 'forms.example.com/r/birthday-party-rsvp-saturday-7pm-rooftop'],
+    ['docs', 'docs.example.com/api/v2/reference/links#create-a-short-link'],
+    ['playlist', 'music.example.com/playlist/37i9dQZF1DX0XUsuxWHRQd?si=friday-mix'],
+    ['map', 'maps.example.com/place/warung-makan-bu-sri/@-6.2088,106.8456,17z'],
+    ['jobs', 'careers.example.com/jobs/frontend-engineer-remote-asia-2026?source=linkedin'],
+    ['portfolio', 'design.example.com/u/ayu-pratama/projects/brand-refresh-case-study'],
+    ['report', 'reports.example.com/q3-2026/annual-summary-final-v3-approved.pdf'],
+];
 
-function bunny() {
-    const g = new Group();
-    const glossy = (c) => new MeshPhysicalMaterial({ color: c, roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.2 });
-    // the head is the logo's "o": a thick ring
-    const head = new Mesh(new TorusGeometry(1, 0.42, 32, 72), glossy(grad(0.45)));
-    head.scale.set(1, 0.94, 1);
-    g.add(head);
-    [-1, 1].forEach((s) => {
-        const ear = new Mesh(new CapsuleGeometry(0.34, 1.6, 12, 24), glossy(grad(s < 0 ? 0.15 : 0.8)));
-        ear.position.set(s * 0.45, 2.1, 0);
-        ear.rotation.z = -s * 0.22;
-        g.add(ear);
-    });
-    g.rotation.z = -0.17; // the italic slant of the wordmark
-    return g;
-}
+// [country code, latitude, longitude]
+const PLACES = [
+    ['ID', -6.2, 106.8], ['JP', 35.7, 139.7], ['IN', 19.1, 72.9], ['US', 40.7, -74.0], ['BR', -23.5, -46.6],
+    ['DE', 52.5, 13.4], ['NG', 6.5, 3.4], ['AU', -33.9, 151.2], ['MX', 19.4, -99.1], ['ZA', -26.2, 28.0],
+];
 
-function pad(x, color) {
-    const m = new Mesh(new RoundedBoxGeometry(4.6, 0.5, 2.6, 4, 0.22), new MeshStandardMaterial({ color, roughness: 0.5, transparent: true, opacity: 0.9 }));
-    m.position.set(x, -2.6, 0);
-    return m;
-}
+// same projection as public/images/world-dots.svg: 1000 x 380, lat 72..-56
+const project = (lat, lon) => [((lon + 180) / 360) * 1000, ((72 - lat) / 128) * 380];
+const HUB = [500, 352];
+const NS = 'http://www.w3.org/2000/svg';
+const el = (tag, attrs, parent) => {
+    const e = document.createElementNS(NS, tag);
+    Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v));
+    parent?.appendChild(e);
+    return e;
+};
 
-export default function start(el) {
-    const canvas = document.createElement('canvas');
-    let renderer;
-    try {
-        renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true });
-    } catch (e) {
-        return; // no WebGL: keep the static fallback
-    }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    el.querySelector('[data-hop-fallback]')?.remove();
-    el.prepend(canvas);
-    canvas.className = 'block h-full w-full';
-    canvas.setAttribute('aria-hidden', 'true');
-
-    const scene = new Scene();
-    const cam = new PerspectiveCamera(30, 1, 0.1, 100);
-    cam.position.set(0, 1.4, 21);
-    cam.lookAt(0, 0.4, 0);
-    scene.add(new HemisphereLight(0xffffff, 0xc7d2fe, 1.7));
-    const sun = new DirectionalLight(0xffffff, 1.8);
-    sun.position.set(4, 8, 9);
-    scene.add(sun);
-
-    scene.add(pad(-7.5, '#c7d2fe'), pad(7.5, '#f5d0fe'));
-    const hopper = bunny();
-    hopper.scale.setScalar(0.9);
-    scene.add(hopper);
-    // dotted trail along the hop
-    const dots = [];
-    for (let i = 0; i < 15; i++) {
-        const d = new Mesh(new SphereGeometry(0.09, 12, 12), new MeshStandardMaterial({ color: grad(i / 14), transparent: true }));
-        const k = (i + 1) / 16;
-        d.position.set(-7.5 + 15 * k, -1.2 + Math.sin(k * Math.PI) * 4.8, 0);
-        scene.add(d);
-        dots.push(d);
-    }
-
-    const resize = () => {
-        const w = el.clientWidth, h = el.clientHeight;
-        renderer.setSize(w, h, false);
-        cam.aspect = w / h;
-        // keep both pads in view on narrow screens
-        cam.position.z = w < 640 ? 30 : 21;
-        cam.updateProjectionMatrix();
-    };
-    resize();
-    new ResizeObserver(resize).observe(el);
-
+function start(root) {
+    const svg = root.querySelector('[data-hop-layer]');
+    const mark = root.dataset.mark;
+    const short = root.querySelector('[data-hop-short]');
+    const dest = root.querySelector('[data-hop-dest]');
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const PERIOD = 2400;
-    const frame = (t) => {
-        // 0..0.15 crouch, 0.15..0.75 flight, 0.75..1 land and settle
-        const p = reduce ? 0.45 : (t % PERIOD) / PERIOD;
-        const f = Math.min(1, Math.max(0, (p - 0.15) / 0.6));
-        const e = f < 0.5 ? 2 * f * f : 1 - Math.pow(-2 * f + 2, 2) / 2;
-        const x = -7.5 + 15 * e, y = -1.45 + Math.sin(e * Math.PI) * 4.6;
-        const squash = p < 0.15 ? 1 - Math.sin((p / 0.15) * Math.PI) * 0.18 : p > 0.75 ? 1 - Math.sin(((p - 0.75) / 0.25) * Math.PI) * 0.14 : 1 + Math.sin(f * Math.PI) * 0.08;
-        hopper.position.set(x, y, 0);
-        hopper.scale.set(0.9 / Math.sqrt(squash), 0.9 * squash, 0.9);
-        hopper.rotation.y = Math.sin(t / 900) * 0.35;
-        hopper.rotation.z = -0.17 - (f > 0 && f < 1 ? Math.cos(e * Math.PI) * 0.25 : 0);
-        dots.forEach((d, i) => { d.material.opacity = (i + 1) / 16 < e ? 0.9 : 0.18; });
-        renderer.render(scene, cam);
+    const big = () => (root.clientWidth < 640 ? 1.9 : 1); // the map shrinks a lot on phones; the bunnies shouldn't
+
+    // hel.ink in the middle: a glowing mark the bunnies land on
+    const hub = el('g', { transform: `translate(${HUB[0]} ${HUB[1]}) scale(${big()})` }, svg);
+    el('circle', { r: 30, class: 'hop-hub-glow' }, hub);
+    el('circle', { r: 21, fill: '#fff', stroke: '#c7d2fe', 'stroke-width': 2 }, hub);
+    el('image', { href: mark, x: -15, y: -15, width: 30, height: 30 }, hub);
+
+    const trail = el('path', { class: 'hop-trail', fill: 'none' }, svg);
+    const bunnies = PLACES.map(([code, lat, lon]) => {
+        const [x, y] = project(lat, lon);
+        const g = el('g', { class: 'hop-bunny' }, svg);
+        el('circle', { r: 15, fill: '#fff', stroke: '#e0e7ff', 'stroke-width': 1.5 }, g);
+        el('image', { href: mark, x: -11, y: -11, width: 22, height: 22 }, g);
+        el('text', { y: 28, 'text-anchor': 'middle', class: 'hop-tag' }, g).textContent = code;
+        g.setAttribute('transform', `translate(${x} ${y}) scale(${big()})`);
+        return { g, x, y };
+    });
+
+    let linkIx = Math.floor(Math.random() * LINKS.length), who = -1;
+    const show = () => {
+        const [slug, url] = LINKS[linkIx];
+        short.textContent = `hel.ink/${slug}`;
+        dest.textContent = url;
+        dest.title = url;
+    };
+    show();
+    if (reduce) {
+        root.classList.add('is-arrived');
+        return;
+    }
+
+    const PERIOD = 3400;
+    let cycleStart = 0, raf = 0, visible = false;
+    const pick = (n, not) => {
+        let i;
+        do i = Math.floor(Math.random() * n); while (i === not);
+        return i;
+    };
+    const nextCycle = (t) => {
+        cycleStart = t;
+        who = pick(bunnies.length, who);
+        linkIx = pick(LINKS.length, linkIx);
+        root.classList.remove('is-arrived');
+        bunnies.forEach((b, i) => b.g.classList.toggle('is-active', i === who));
     };
 
-    let raf = 0, visible = false;
-    const loop = (t) => { frame(t); raf = visible && !reduce ? requestAnimationFrame(loop) : 0; };
+    const frame = (t) => {
+        if (!cycleStart || t - cycleStart > PERIOD) nextCycle(t);
+        const p = (t - cycleStart) / PERIOD, b = bunnies[who];
+        // the hop: from the bunny's city, up and over, down onto hel.ink
+        const cx = (b.x + HUB[0]) / 2, cy = Math.min(b.y, HUB[1]) - 120;
+        const f = Math.min(1, Math.max(0, (p - 0.1) / 0.45)), e = f < 0.5 ? 2 * f * f : 1 - (-2 * f + 2) ** 2 / 2;
+        const at = (k) => [
+            (1 - k) ** 2 * b.x + 2 * (1 - k) * k * cx + k * k * HUB[0],
+            (1 - k) ** 2 * b.y + 2 * (1 - k) * k * cy + k * k * HUB[1],
+        ];
+        if (p > 0.92) {
+            b.g.setAttribute('transform', `translate(${b.x} ${b.y}) scale(${big()})`); // back home for its next turn
+            b.g.style.opacity = 1;
+            trail.setAttribute('d', '');
+            return;
+        }
+        const [x, y] = at(e);
+        const squash = p < 0.1 ? 1 - Math.sin((p / 0.1) * Math.PI) * 0.22 : f < 1 ? 1 + Math.sin(f * Math.PI) * 0.12 : 1;
+        const scale = big() * (1 + Math.sin(e * Math.PI) * 0.35);
+        b.g.setAttribute('transform', `translate(${x} ${y}) scale(${scale / Math.sqrt(squash)} ${scale * squash})`);
+        b.g.style.opacity = p > 0.82 ? Math.max(0, 1 - (p - 0.82) / 0.08) : 1;
+        let d = `M${b.x} ${b.y}`;
+        for (let k = 0.04; k <= e; k += 0.04) d += `L${at(k).join(' ')}`;
+        trail.setAttribute('d', f > 0 && p < 0.82 ? d : '');
+        if (p > 0.55 && !root.classList.contains('is-arrived')) {
+            show();
+            root.classList.add('is-arrived'); // the short link lights up, the arrow runs on to the destination
+        }
+    };
+
+    const loop = (t) => {
+        frame(t);
+        raf = visible ? requestAnimationFrame(loop) : 0;
+    };
     new IntersectionObserver(([entry]) => {
         visible = entry.isIntersecting;
         if (visible && !raf) raf = requestAnimationFrame(loop);
-    }).observe(el);
-    frame(0);
+    }).observe(root);
 }
 
-const el = document.querySelector('[data-hop-scene]');
-if (el) start(el);
+const root = document.querySelector('[data-hop-scene]');
+if (root) start(root);

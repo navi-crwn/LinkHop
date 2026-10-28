@@ -83,15 +83,19 @@
         </div>
     </section>
 
-    {{-- The hop: a short link on the left, its destination on the right --}}
-    <section class="mx-auto max-w-5xl px-4 pb-6" aria-label="How a short link works">
-        <div class="relative h-60 sm:h-80" data-hop-scene>
-            <img data-hop-fallback src="{{ asset('images/brand/linkhop-mark-gradient.svg') }}" alt="" class="mx-auto h-full max-h-40 w-auto py-6 sm:max-h-56">
+    {{-- The hop: bunnies around the world take turns hopping to hel.ink; the arrow carries the short link on to its long destination --}}
+    <section class="mx-auto mt-6 max-w-5xl px-4 pb-8" aria-label="How a short link works" data-hop-scene data-mark="{{ asset('images/brand/linkhop-mark-gradient.svg') }}">
+        <div class="relative">
+            <img src="{{ asset('images/world-dots.svg') }}" alt="" class="block w-full select-none dark:opacity-60" draggable="false">
+            <svg class="absolute inset-0 h-full w-full overflow-visible" viewBox="0 0 1000 380" aria-hidden="true" data-hop-layer></svg>
         </div>
-        {{-- one label under each pad (the pads sit at about a quarter and three quarters of the width) --}}
-        <div class="-mt-3 grid grid-cols-2 gap-3 font-mono text-[11px] sm:text-sm">
-            <div class="flex justify-center"><span class="rounded-full border border-indigo-200 bg-white/80 px-3 py-1.5 font-semibold text-indigo-700 dark:border-indigo-400/30 dark:bg-white/5 dark:text-indigo-200">{{ parse_url(config('app.url'), PHP_URL_HOST) }}/launch</span></div>
-            <div class="flex min-w-0 justify-center"><span class="min-w-0 max-w-full truncate rounded-full border border-fuchsia-200 bg-white/80 px-3 py-1.5 text-slate-500 sm:max-w-80 dark:border-fuchsia-400/30 dark:bg-white/5 dark:text-white/55">shop.example.com/collections/summer-2026?utm_source=newsletter</span></div>
+        <div class="mt-5 flex flex-col items-center justify-center gap-2 font-mono text-xs sm:flex-row sm:gap-3 sm:text-sm">
+            <span class="hop-short shrink-0 rounded-full border border-indigo-200 bg-white/90 px-4 py-2 font-semibold text-indigo-700 dark:border-indigo-400/30 dark:bg-white/5 dark:text-indigo-200" data-hop-short>hel.ink/school</span>
+            <svg class="hop-arrow h-6 w-14 shrink-0 rotate-90 text-fuchsia-500 sm:rotate-0" viewBox="0 0 56 24" fill="none" aria-hidden="true">
+                <path d="M2 12h46" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                <path d="M40 4l10 8-10 8" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="hop-dest min-w-0 max-w-full truncate rounded-full border border-fuchsia-200 bg-white/90 px-4 py-2 text-slate-600 sm:max-w-md dark:border-fuchsia-400/30 dark:bg-white/5 dark:text-white/65" data-hop-dest>school.example.com/students/2026/semester-2/assignments/final-project-guidelines.pdf</span>
         </div>
     </section>
     @vite('resources/js/hop-hero.js')
