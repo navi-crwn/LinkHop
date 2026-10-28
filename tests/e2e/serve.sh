@@ -14,6 +14,8 @@ BASE="$( [ -f .env ] && echo .env || echo .env.example )"
   echo "APP_URL=http://127.0.0.1:${PORT}"
   echo "E2E_HOOKS=true"
   echo "SUPERADMIN_EMAIL=admin@e2e.test"
+  # No control center in the suite: /admin shows the "panel moved" page.
+  echo "HOP_CONTROL_URL="
   echo "TURNSTILE_SITE_KEY=${TURNSTILE_SITE_KEY:-}"
   echo "TURNSTILE_SECRET_KEY=${TURNSTILE_SECRET_KEY:-}"
   echo "CACHE_STORE=file"
@@ -33,7 +35,7 @@ BASE="$( [ -f .env ] && echo .env || echo .env.example )"
     echo "DB_CONNECTION=mysql"
     for v in DB_HOST DB_PORT DB_DATABASE DB_USERNAME DB_PASSWORD; do echo "$v=${!v:-}"; done
   fi
-  grep -vE '^(APP_ENV|APP_DEBUG|APP_URL|DB_|CACHE_STORE|SESSION_DRIVER|SESSION_SECURE_COOKIE|QUEUE_CONNECTION|MAIL_MAILER|TURNSTILE_|SUPERADMIN_EMAIL|TRUSTED_PROXIES|SPAMHAUS_DBL|PHP_CLI_SERVER_WORKERS|E2E_)' "$BASE"
+  grep -vE '^(APP_ENV|APP_DEBUG|APP_URL|DB_|CACHE_STORE|SESSION_DRIVER|SESSION_SECURE_COOKIE|QUEUE_CONNECTION|MAIL_MAILER|TURNSTILE_|SUPERADMIN_EMAIL|TRUSTED_PROXIES|SPAMHAUS_DBL|PHP_CLI_SERVER_WORKERS|E2E_|HOP_CONTROL_URL)' "$BASE"
 } > .env.e2e
 grep -q '^APP_KEY=base64' .env.e2e || echo "APP_KEY=base64:$(head -c 32 /dev/urandom | base64)" >> .env.e2e
 export APP_ENV=e2e

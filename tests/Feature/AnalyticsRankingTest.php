@@ -27,11 +27,6 @@ test('top links rank only live links and expired ones are listed apart', functio
     rankedLink($user, 'livelink');
     rankedLink($user, 'oldlink', ['expires_at' => now()->subDay(), 'clicks' => 900]);
 
-    $user->forceFill(['email' => config('auth.superadmin_email', 'admin@hel.ink')])->save();
-    $admin = $this->actingAs($user)->get(route('admin.analytics.global'))->assertOk();
-    expect($admin->viewData('topLinks')->pluck('slug')->all())->toBe(['livelink'])
-        ->and($admin->viewData('endedLinks')->pluck('slug')->all())->toBe(['oldlink']);
-
     $mine = $this->actingAs($user)->get(route('analytics'))->assertOk();
     expect($mine->viewData('topLinks')->pluck('link.slug')->all())->toBe(['livelink'])
         ->and($mine->viewData('endedLinks')->pluck('link.slug')->all())->toBe(['oldlink']);

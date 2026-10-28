@@ -320,9 +320,11 @@ class HopAdminApiTest extends TestCase
         $this->assertSame(['user', 'link', 'link', 'bio'], array_column($rows, 'kind'));
         $this->assertSame((string) $u->id, $rows[0]['id']);
         $this->assertSame((string) $u->id, $rows[0]['sub']);
-        $this->assertSame(route('admin.users.inspect', $u), $rows[0]['url']);
+        $this->assertNull($rows[0]['url']); // users are opened in the control center itself
         $this->assertSame('xyz', Link::find($rows[1]['id'])->slug);
         $this->assertNull($rows[1]['sub']);
+        $this->assertSame(url('/xyz'), $rows[1]['url']);
+        $this->assertSame(route('bio.public.show', 'ranipage'), $rows[3]['url']);
         $this->assertSame((string) $link->id, $rows[2]['id']);
         $this->assertSame((string) $bio->id, $rows[3]['id']);
         $this->assertSame([], $this->signed('GET', '/api/hop/search?q=')->json('data'));

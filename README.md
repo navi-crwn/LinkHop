@@ -80,7 +80,7 @@ To load the same example on your own install, run `php artisan db:seed --class=E
 - **🔌 API & ShareX.** A REST API with Bearer tokens, plus a ready-made ShareX config in Settings → API.
 - **🔐 Safe sign-in.** Email and password or Google login, two-factor codes (TOTP) and a login history.
 - **🛡️ Abuse protection.** Rate limits and quotas, a domain blacklist, proxy/VPN checks, a report form, and an hourly scan for phishing, scams and other harmful links, with optional Google Safe Browsing and URLhaus lookups.
-- **🧰 Admin panel.** Users, links, bio pages, IP bans, the domain blacklist, abuse reports and the job queue in one place.
+- **🏛️ HOP control center.** Moderation and settings (users, links, bio pages, abuse reports, IP bans, the domain blacklist, SEO, the job queue) live in Imperium, the HOP control center, through the signed admin API (`/api/hop/*`); `/admin` sends admins there (`HOP_CONTROL_URL`). Self-hosters without it can call the API directly or use the artisan commands (`abuse:scan`, `hop:bootstrap`, `queue:heartbeat`, …).
 - **🏠 Self-hostable.** Laravel 12 on your own server with MySQL, PostgreSQL or SQLite.
 
 ## Install
