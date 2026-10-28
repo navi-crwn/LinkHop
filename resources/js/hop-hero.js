@@ -150,8 +150,10 @@ function start(root) {
     }
     function RoundedBox(w, h, d) { return new THREE.BoxGeometry(w, h, d); }
     function makeRun(n, forced) {
-      const r = rnd(n + 11), type = forced || (mini ? 'hop' : SCENARIOS[n % SCENARIOS.length]), link = LINKS[Math.floor(r() * LINKS.length)];
-      const A = pick(r), B = type === 'share' ? pick(r, [A]) : null, from = B || A, Dd = pick(r, [A, from]);
+      const r = rnd(n + 11), type = forced || (mini ? 'loop' : SCENARIOS[n % SCENARIOS.length]), link = LINKS[Math.floor(r() * LINKS.length)];
+      // the miniature keeps a fixed, readable layout: home back-left, hel.ink in the middle, the destination front-right
+      const A = mini ? new THREE.Vector3(-W * .21, 0, -D * .16) : pick(r), B = type === 'share' ? pick(r, [A]) : null, from = B || A;
+      const Dd = mini ? new THREE.Vector3(W * .24, 0, D * .14) : pick(r, [A, from]);
       const hub = (type === 'share' ? A.clone().lerp(B, .5) : from.clone().lerp(Dd, .5)); hub.z += (r() - .5);
       const run = {
         n, type, link, A, B, D: Dd, hub,
@@ -163,7 +165,7 @@ function start(root) {
         label: makeLabel('hel.ink'),
       };
       scene.add(run.packet, run.trail);
-      run.dur = { hop: 8, share: 9.5, 'pass-ok': 9.5, 'pass-fail': 8.5 }[type];
+      run.dur = { hop: 8, share: 9.5, 'pass-ok': 9.5, 'pass-fail': 8.5, loop: 10.6 }[type];
       return run;
     }
     function disposeRun(run) { for (const k of ['bunnyA', 'bunnyB', 'building', 'lock', 'packet', 'trail', 'label']) if (run[k]) scene.remove(run[k]); }
@@ -176,7 +178,10 @@ function start(root) {
       return out;
     }
     function lands(run, t) {
-      const up = (a, b) => ease(clamp((t - a) / (b - a))), sink = 1 - ease(clamp((t - (run.dur - 1.1)) / 1));
+      const up = (a, b) => ease(clamp((t - a) / (b - a))), down = (a, b) => 1 - up(a, b);
+      // the miniature's loop: home island always up, hel.ink and the destination rise and sink again
+      if (run.type === 'loop') return [[run.rA, 1.1], [run.rH, .7 * up(1.6, 2.2) * down(8.7, 9.6)], [run.rD, 1.3 * up(4.8, 5.7) * down(8.6, 9.6)]];
+      const sink = 1 - ease(clamp((t - (run.dur - 1.1)) / 1));
       const L = [[run.rA, 1.1 * up(.2, 1.1) * sink], [run.rH, .7 * up(run.type === 'share' ? 2.4 : 1.6, run.type === 'share' ? 3 : 2.2) * sink]];
       if (run.rB) L.push([run.rB, 1.1 * up(1.2, 2) * sink]);
       const dAt = { hop: 3.2, share: 5, 'pass-ok': 4.8, 'pass-fail': 99 }[run.type];
@@ -217,7 +222,7 @@ function start(root) {
       const ty = run.type, [slug, , long] = run.link, short = `hel.ink/${slug}`;
       const gy = h => Math.round(h / .1) * .1 * .95;
       const A = run.A.clone().setY(gy(1.1 * .9)), H = run.hub.clone().setY(gy(.7 * .9)), Dd = run.D.clone().add(new THREE.Vector3(-1.6, gy(1.3 * .7), 1.1));
-      const sink = clamp((t - (run.dur - 1.1)) / 1), show = t > .8 && sink < .7;
+      const loop = ty === 'loop', sink = loop ? clamp((t - 8.6) / 1) : clamp((t - (run.dur - 1.1)) / 1), show = loop || (t > .8 && sink < .7);
       run.label.position.set(run.hub.x, 1.7, run.hub.z); run.label.material.opacity = clamp((t - 2) / .4) * (1 - sink);
       run.packet.visible = false; run.lock.visible = false; run.trail.count = 0;
       const face = (a, b) => Math.atan2(-(b.z - a.z), b.x - a.x);
@@ -244,7 +249,7 @@ function start(root) {
         url = t < 3.3 ? long : t < 4.1 ? scramble(long, short, (t - 3.3) / .8, 3) : t < 6.2 ? short : t < 7 ? scramble(short, long, (t - 6.2) / .8, 4) : long;
         caption = t < 3 ? 'Two bunnies, far apart' : t < 5 ? 'One sends a long link; hel.ink makes it short on the way' : t < 6.2 ? `The other gets ${short}` : 'and hops to where it goes';
       } else {
-        const ok = ty === 'pass-ok', h1 = ease(clamp((t - 2) / 1));
+        const ok = ty === 'pass-ok' || loop, h1 = ease(clamp((t - 2) / 1));
         let pos = hopPos(A, H, 2.4, h1), dir = face(A, H), k = h1;
         if (t > 2 && t < 3.1) trail(A, H, 2.4, h1);
         run.lock.visible = t > 3.1 && (ok ? t < 5.4 : t < run.dur - 1);
@@ -254,11 +259,13 @@ function start(root) {
         run.lock.userData.shackle.position.y = ok && t > 4.6 ? .58 : .42;
         if (ok) { const h2 = ease(clamp((t - 5.8) / 1)); if (t > 5.8) { pos = hopPos(H, Dd, 2.2, h2); dir = face(H, Dd); k = h2; } if (t > 5.8 && t < 6.9) trail(H, Dd, 2.2, h2); placeBuilding(run.building, run.D.clone().setY(gy(1.3 * .9)), clamp((t - 4.9) / 1.4) * (1 - sink)); }
         else { run.building.visible = false; if (t > 5.3) { const hb = ease(clamp((t - 5.3) / 1)); pos = hopPos(H, A, 1.4, hb); dir = face(H, A); k = hb; } }
+        if (loop && t > 8.2) { const hh = ease(clamp((t - 8.2) / 1.2)); pos = hopPos(Dd, A, 3.2, hh); dir = face(Dd, A); k = hh; if (t < 9.4) trail(Dd, A, 3.2, hh); } // home again: the loop starts where it ends
         placeBunny(run.bunnyA, pos, dir, BS, show, sq(k));
         const dots = '•'.repeat(clamp(Math.floor((t - 3.4) / .18), 0, 6));
         url = t < 2.4 ? long : t < 3.2 ? scramble(long, short, (t - 2.4) / .8, 5) : short;
         if (ok && t > 5.8) url = t < 6.6 ? scramble(short, long, (t - 5.8) / .8, 6) : long;
-        caption = t < 2 ? 'This link has a password' : t < 4.4 ? `Password ${dots}` : ok ? (t < 5.8 ? 'Unlocked ✓' : 'In it goes') : (t < 5.3 ? 'Wrong password ✕' : 'No hop this time');
+        if (loop && t > 8.2) caption = 'Back home for the next link';
+        else caption = t < 2 ? 'This link has a password' : t < 4.4 ? `Password ${dots}` : ok ? (t < 5.8 ? 'Unlocked ✓' : 'In it goes') : (t < 5.3 ? 'Wrong password ✕' : 'No hop this time');
       }
       if (ty !== 'pass-fail' && ty !== 'pass-ok' || ty === 'pass-ok') {} // building handled above
       if (story) story.textContent = caption;
@@ -282,7 +289,7 @@ function start(root) {
     if (still) { render(run, 6.2); return; } // one still moment, no motion
     const loop = (now) => {
       let t = (now - t0) / 1000;
-      if (t > run.dur) { disposeRun(run); run = makeRun(++n); t0 = now; t = 0; mark(); }
+      if (t > run.dur) { if (run.type === 'loop') { t0 = now; t = 0; } else { disposeRun(run); run = makeRun(++n); t0 = now; t = 0; mark(); } }
       render(run, t);
       raf = visible ? requestAnimationFrame(loop) : 0;
     };
