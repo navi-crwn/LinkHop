@@ -39,8 +39,8 @@
                             <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"><path d="M4.5 9.5a11 11 0 0 1 15 0"/><path d="M7.5 13a7 7 0 0 1 9 0"/><path d="M10.5 16.3a3 3 0 0 1 3 0"/><circle cx="12" cy="19.5" r="1" fill="#fff" stroke="none"/></svg>
                             @break
                         @case('imperium')
-                            {{-- the crown: HOP control center --}}
-                            <svg viewBox="0 0 24 24" fill="#fff"><path d="M3 8.5 7.2 12l4.8-6 4.8 6L21 8.5 19.4 18H4.6L3 8.5Zm2.4 11h13.2v1.6H5.4V19.5Z"/></svg>
+                            {{-- the shield with a citadel: Imperium, the HOP Dashboard --}}
+                            <svg viewBox="0 0 64 64" fill="#fff"><path d="M32 11.5 17 17v12c0 9.6 6 16.4 15 21.5 9-5.1 15-11.9 15-21.5V17Z" fill="none" stroke="#fff" stroke-width="3.2" stroke-linejoin="round"/><path fill-rule="evenodd" d="M27 23.5h3v2.5h4v-2.5h3V34h3v-2.5h3V40h-3v3H25v-3h-3v-8.5h3V34h2Zm2.5 19.5h5v-4.5a2.5 2.5 0 0 0-5 0Z"/></svg>
                             @break
                     @endswitch
                 </span>
