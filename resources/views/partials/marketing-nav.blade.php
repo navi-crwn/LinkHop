@@ -1,7 +1,6 @@
 @php
     $marketingLinks = [
         ['label' => 'Features', 'href' => route('home').'#features'],
-        ['label' => 'Link in Bio', 'href' => route('home').'#bio'],
         ['label' => 'Check a link', 'href' => route('link.check')],
         ['label' => 'Products', 'href' => hub_url('products')],
         ['label' => 'Help', 'href' => hub_url('help')],
