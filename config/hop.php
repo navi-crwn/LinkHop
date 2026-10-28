@@ -12,6 +12,12 @@ return [
     // Shown in buttons: "Login with HOP", "Join HOP".
     'brand' => env('HOP_BRAND', 'HOP'),
 
+    // The HOP control center (Imperium): where moderation and settings live now
+    // that the built-in admin pages are gone. /admin sends admins there; the
+    // sidebar shows it under this name. Null: /admin explains where it went.
+    'control_url' => env('HOP_CONTROL_URL'),
+    'control_name' => env('HOP_CONTROL_NAME', 'Control center'),
+
     // Seconds a sign-in ticket for an app stays valid.
     'ticket_ttl' => 120,
 

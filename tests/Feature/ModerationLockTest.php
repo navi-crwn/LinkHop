@@ -30,7 +30,6 @@ test('owners cannot re-publish a bio page or re-enable a block taken down by mod
 });
 
 test('owners cannot re-activate a short link taken down by moderation, until an admin restores it', function () {
-    config(['auth.superadmin_email' => 'boss@example.com']);
     $user = User::factory()->create();
     $link = Link::create(['user_id' => $user->id, 'slug' => 'modlink', 'target_url' => 'https://example.com', 'status' => Link::STATUS_INACTIVE]);
     $flag = takedown('link', $link->id, $user->id);
@@ -39,23 +38,26 @@ test('owners cannot re-activate a short link taken down by moderation, until an 
     $this->actingAs($user)->put("/links/{$link->id}", $payload)->assertSessionHasErrors('status');
     expect($link->fresh()->status)->toBe(Link::STATUS_INACTIVE);
 
-    $admin = User::factory()->create(['email' => 'boss@example.com']);
-    $this->actingAs($admin)->post(route('admin.abuse.flags.restore', $flag));
+    // An admin restoring the link from the control center dismisses the finding.
+    $flag->update(['status' => AbuseFlag::STATUS_DISMISSED]);
     $link->update(['status' => Link::STATUS_INACTIVE]);
     $this->actingAs($user)->put("/links/{$link->id}", $payload)->assertSessionHasNoErrors();
 });
 
 test('an admin unpublishing a bio page locks it until the admin publishes it again', function () {
-    config(['auth.superadmin_email' => 'boss@example.com']);
-    $admin = User::factory()->create(['email' => 'boss@example.com']);
     $user = User::factory()->create();
     $page = BioPage::create(['user_id' => $user->id, 'slug' => 'adminoff', 'title' => 'P', 'theme' => 'default', 'is_published' => true]);
 
-    $this->actingAs($admin)->post(route('admin.bio.toggle', $page));
+    // An admin takedown from the control center: unpublished plus a confirmed flag.
+    $page->update(['is_published' => false]);
+    $flag = AbuseFlag::create(['subject_type' => 'bio_page', 'subject_id' => $page->id, 'user_id' => $user->id, 'score' => 0,
+        'signals' => ['admin'], 'action' => AbuseFlag::ACTION_DISABLED, 'status' => AbuseFlag::STATUS_CONFIRMED, 'summary' => 'Unpublished by an admin']);
     $this->actingAs($user)->putJson('/bio/adminoff', ['is_published' => true])->assertUnprocessable();
+    expect($page->fresh()->is_published)->toBeFalse();
 
-    $this->actingAs($admin)->post(route('admin.bio.toggle', $page));
-    expect($page->fresh()->is_published)->toBeTrue();
+    // The admin publishes it again: the flag is dismissed and the owner is free.
+    $page->update(['is_published' => true]);
+    $flag->update(['status' => AbuseFlag::STATUS_DISMISSED]);
     $this->actingAs($user)->putJson('/bio/adminoff', ['is_published' => false])->assertOk();
     $this->actingAs($user)->putJson('/bio/adminoff', ['is_published' => true])->assertOk();
 });

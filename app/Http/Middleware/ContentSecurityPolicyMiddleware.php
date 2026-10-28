@@ -16,8 +16,8 @@ class ContentSecurityPolicyMiddleware
         // Per-request nonce: added to every <script> tag (Vite::cspNonce()) and @vite output.
         $nonce = Vite::useCspNonce();
         $response = $next($request);
-        // Allow framing for preview routes (both admin and regular bio preview)
-        $isPreviewRoute = $request->routeIs('admin.bio.preview') || $request->routeIs('bio.preview');
+        // Allow framing for the bio preview route
+        $isPreviewRoute = $request->routeIs('bio.preview');
         $csp = [
             "default-src 'self'",
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://fonts.bunny.net https://fonts.googleapis.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://cdn.tailwindcss.com https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net",
