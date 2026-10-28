@@ -317,3 +317,11 @@
 @media (prefers-reduced-motion: reduce) {
     .hop-tile { animation: none; transform: rotateX(8deg) rotateY(-10deg); }
 }
+
+/* Home hero: the italic serif accent word, as on the other Hop sites */
+.hop-serif {
+    font-family: 'Instrument Serif', ui-serif, Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+}

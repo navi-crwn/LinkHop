@@ -7,17 +7,14 @@
         $btnSecondary = 'rounded-xl border border-slate-300 px-4 py-2.5 text-sm text-slate-700 transition hover:bg-slate-900/5 dark:border-white/15 dark:text-white/80 dark:hover:bg-white/10';
     @endphp
 
-    {{-- Hero + shortener --}}
-    <section class="mx-auto max-w-3xl px-4 pb-10 pt-14 text-center sm:pt-20">
-        <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-3 py-1 text-xs text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-white/70">
-            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400"></span> Free · open source · no tracking ads
-        </span>
-        <h1 class="mt-5 text-4xl font-semibold leading-[1.1] tracking-tight sm:text-6xl">
-            Short links,<br class="sm:hidden">
-            <span class="bg-linear-to-r from-indigo-500 via-sky-500 to-fuchsia-500 bg-clip-text dark:from-indigo-300 dark:via-sky-300 dark:to-fuchsia-300 text-transparent">one hop away.</span>
+    {{-- Hero + shortener: "hel.ink/anything", then the bunny hops from a short link to where it goes --}}
+    <section class="mx-auto max-w-3xl px-4 pb-4 pt-12 text-center sm:pt-16">
+        <p class="font-mono text-[11px] font-medium uppercase tracking-[0.3em] text-slate-500 dark:text-white/50">LinkHop · by hel.ink</p>
+        <h1 class="mt-4 text-5xl font-extrabold leading-[1.02] tracking-[-0.045em] sm:text-7xl md:text-[88px]">
+            hel.ink/<span class="hop-serif bg-linear-to-r from-sky-500 via-indigo-500 to-fuchsia-500 bg-clip-text pr-2 text-transparent dark:from-sky-300 dark:via-indigo-300 dark:to-fuchsia-300">anything</span>
         </h1>
-        <p class="mx-auto mt-4 max-w-xl text-base text-slate-600 sm:text-lg dark:text-white/65">
-            Shorten a link in seconds, or sign up for analytics, QR codes, folders and a Link in Bio page.
+        <p class="mx-auto mt-5 max-w-xl text-base text-slate-600 sm:text-lg dark:text-white/65">
+            Turn a long, ugly link into one that's short, trackable and safe to share. Free, open source, no tracking ads.
         </p>
 
         <div class="{{ $card }} mx-auto mt-8 p-2 text-left shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500/10 dark:shadow-2xl dark:shadow-black/30 dark:ring-0">
@@ -85,6 +82,19 @@
             @endif
         </div>
     </section>
+
+    {{-- The hop: a short link on the left, its destination on the right --}}
+    <section class="mx-auto max-w-5xl px-4 pb-6" aria-label="How a short link works">
+        <div class="relative h-60 sm:h-80" data-hop-scene>
+            <img data-hop-fallback src="{{ asset('images/brand/linkhop-mark-gradient.svg') }}" alt="" class="mx-auto h-full max-h-40 w-auto py-6 sm:max-h-56">
+        </div>
+        {{-- one label under each pad (the pads sit at about a quarter and three quarters of the width) --}}
+        <div class="-mt-3 grid grid-cols-2 gap-3 font-mono text-[11px] sm:text-sm">
+            <div class="flex justify-center"><span class="rounded-full border border-indigo-200 bg-white/80 px-3 py-1.5 font-semibold text-indigo-700 dark:border-indigo-400/30 dark:bg-white/5 dark:text-indigo-200">{{ parse_url(config('app.url'), PHP_URL_HOST) }}/launch</span></div>
+            <div class="flex min-w-0 justify-center"><span class="min-w-0 max-w-full truncate rounded-full border border-fuchsia-200 bg-white/80 px-3 py-1.5 text-slate-500 sm:max-w-80 dark:border-fuchsia-400/30 dark:bg-white/5 dark:text-white/55">shop.example.com/collections/summer-2026?utm_source=newsletter</span></div>
+        </div>
+    </section>
+    @vite('resources/js/hop-hero.js')
 
     {{-- Features --}}
     <section id="features" class="mx-auto max-w-6xl scroll-mt-24 px-4 py-10">
