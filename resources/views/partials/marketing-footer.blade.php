@@ -45,7 +45,7 @@
                 <div class="flex items-center gap-2.5">
                     <x-wordmark class="h-10 w-auto" />
                 </div>
-                <p class="mt-3 text-[13px] leading-relaxed">Short links & Link in Bio. Free and open source.</p>
+                <p class="mt-3 text-[13px] leading-relaxed">Short links with analytics and QR codes. Part of the HOP family. Free and open source.</p>
             </div>
             @foreach ($footerBlocks as $block)
                 <div>

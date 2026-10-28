@@ -31,8 +31,9 @@ class ContentSecurityPolicyMiddleware
             "frame-src 'self' https://challenges.cloudflare.com https://maps.google.com https://www.google.com https://youtube.com ".implode(' ', BioEmbed::FRAME_HOSTS),
             "object-src 'none'",
             "base-uri 'self'",
-            // Logging out posts here and ends at the hub; form-action applies to that redirect too.
-            "form-action 'self' ".hub_url(),
+            // Logging out posts here, then hops hub -> each app's logout -> the home page (hel.ink).
+            // form-action applies to every redirect after a form post, so every HOP host is allowed.
+            "form-action 'self' ".self::hopOrigins(),
             $isPreviewRoute ? "frame-ancestors 'self'" : "frame-ancestors 'none'",
             'upgrade-insecure-requests',
         ];
@@ -54,5 +55,23 @@ class ContentSecurityPolicyMiddleware
         $response->headers->set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
 
         return $response;
+    }
+
+    /** Origins of the hub, every HOP app and the public host, space-separated, without duplicates. */
+    private static function hopOrigins(): string
+    {
+        $urls = [hub_url(), public_url()];
+        foreach ((array) config('hop.apps', []) as $app) {
+            $urls[] = (string) ($app['url'] ?? '');
+        }
+        $origins = [];
+        foreach ($urls as $url) {
+            $parts = parse_url($url);
+            if (! empty($parts['scheme']) && ! empty($parts['host'])) {
+                $origins[] = $parts['scheme'].'://'.$parts['host'].(isset($parts['port']) ? ':'.$parts['port'] : '');
+            }
+        }
+
+        return implode(' ', array_values(array_unique($origins)));
     }
 }
