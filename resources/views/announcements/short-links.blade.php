@@ -26,6 +26,6 @@
                 <li>API clients get the new form in <code>short_url</code>; nothing to change on your side unless you built the address yourself.</li>
             </ul>
         </div>
-        <p class="text-xs text-muted">We also emailed this notice to every account that owns links, and will send a reminder a week before {{ $until }}. See the <a href="{{ route('tos') }}" class="underline">Terms of Service</a>, section 11A.</p>
+        <p class="text-xs text-muted">We also emailed this notice to every account that owns links, and will send a reminder a week before {{ $until }}. See the <a href="{{ hub_url('terms') }}" class="underline">Terms of Service</a>, section 11A.</p>
     </section>
 </x-app-layout>

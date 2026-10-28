@@ -5,20 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * LinkHop's own settings: export of links (CSV) and the activity log. Profile,
+ * password, 2FA, API tokens and account deletion are the hub's pages.
+ */
 class SettingsController extends Controller
 {
     public function index(Request $request)
     {
         $user = $request->user();
-        $loginHistory = DB::table('users')
-            ->where('id', $user->id)
-            ->select('last_login_at', 'last_login_ip', 'last_login_country', 'last_login_city', 'last_login_provider', 'last_login_device', 'last_login_browser')
-            ->first();
-        $loginHistories = DB::table('login_histories')
-            ->where('user_id', $user->id)
-            ->orderBy('logged_in_at', 'desc')
-            ->limit(5)
-            ->get();
         $activityQuery = DB::table('activity_logs')
             ->where('user_id', $user->id)
             ->orderBy('created_at', 'desc');
@@ -33,8 +28,6 @@ class SettingsController extends Controller
         $tags = $user->tags()->orderBy('name')->get();
 
         return view('settings', [
-            'loginHistory' => $loginHistory,
-            'loginHistories' => $loginHistories,
             'activityLogs' => $activityLogs,
             'folders' => $folders,
             'tags' => $tags,
@@ -126,35 +119,6 @@ class SettingsController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
-    }
-
-    /**
-     * Everything stored about the account (right of access): profile, links, folders,
-     * tags, bio pages with their blocks, recent sign-ins and the activity log.
-     * Visitor click logs are not included: they describe visitors, not the account owner.
-     */
-    public function exportAccount(Request $request)
-    {
-        $user = $request->user();
-        $data = [
-            'exported_at' => now()->toIso8601String(),
-            'account' => $user->only(['name', 'email', 'created_at', 'email_verified_at', 'last_login_at']),
-            'links' => $user->links()->with(['folder:id,name', 'tags:id,name'])->get()
-                ->map(fn ($link) => $link->only(['slug', 'target_url', 'status', 'redirect_type', 'custom_title', 'custom_description', 'expires_at', 'created_at', 'clicks'])
-                    + ['folder' => $link->folder?->name, 'tags' => $link->tags->pluck('name')]),
-            'folders' => $user->folders()->pluck('name'),
-            'tags' => $user->tags()->pluck('name'),
-            'bio_pages' => ! bio_enabled() ? [] : $user->bioPages()->with('links')->get()->map(fn ($page) => collect($page->makeHidden(['links', 'id', 'user_id'])->toArray())
-                ->put('blocks', $page->links->map->makeHidden(['id', 'bio_page_id'])->values())),
-            'login_history' => $user->loginHistories()->latest('logged_in_at')->get(['logged_in_at', 'ip_address', 'country', 'city', 'device', 'browser']),
-            'activity_log' => $user->activityLogs()->latest()->get(['created_at', 'action', 'model', 'description']),
-        ];
-
-        return response()->streamDownload(
-            fn () => print (json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)),
-            'helink-account-'.now()->format('Y-m-d').'.json',
-            ['Content-Type' => 'application/json']
-        );
     }
 
     public function exportAnalytics(Request $request)

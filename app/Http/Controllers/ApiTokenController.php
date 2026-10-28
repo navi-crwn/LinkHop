@@ -2,57 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ApiToken;
-use Illuminate\Http\Request;
-
+/**
+ * The API documentation and the ShareX config. Tokens themselves are made and
+ * revoked at the hub (hub.hel.ink/settings) and read from the shared table.
+ */
 class ApiTokenController extends Controller
 {
-    /**
-     * Store a newly created API token
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
-        // Generate token
-        $result = ApiToken::generate(
-            userId: $request->user()->id,
-            name: $request->input('name'),
-            rateLimit: 100
-        );
-        if ($request->wantsJson()) {
-            return response()->json([
-                'success' => true,
-                'token' => $result['plain_token'],
-                'name' => $result['model']->name,
-                'message' => 'API token created successfully. Save this token - you won\'t be able to see it again!',
-            ]);
-        }
-
-        return back()->with('status', 'API token created!')->with('api_token', $result['plain_token']);
-    }
-
-    /**
-     * Remove the specified API token
-     */
-    public function destroy(ApiToken $apiToken)
-    {
-        // Ensure user owns this token
-        if ($apiToken->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized');
-        }
-        $apiToken->delete();
-        if (request()->wantsJson()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'API token revoked successfully',
-            ]);
-        }
-
-        return back()->with('status', 'API token revoked successfully');
-    }
-
     /**
      * Show API documentation
      */

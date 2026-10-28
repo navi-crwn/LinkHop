@@ -90,7 +90,3 @@ test('links:announce-migration mails every link owner their links in the new for
     $mail->assertSeeInHtml(public_url('l/mine1'))->assertSeeInHtml(public_url('l/mine2'))->assertSeeInHtml('27 November 2026');
     (new ShortLinkMigrationNotice($owner, Link::where('user_id', $owner->id)->get(), true))->assertSeeInHtml('Reminder');
 });
-
-test('the terms say the service is free, that changes are announced on the dashboard and must be followed', function () {
-    $this->get('/tos')->assertOk()->assertSee('free of charge')->assertSee('dashboard');
-});

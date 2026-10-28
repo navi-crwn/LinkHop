@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Start the app for the synthetic-user suite on a throwaway database.
+# Start the app for the synthetic-user suite on a throwaway database. The account
+# tables belong to the hub, so they are built from database/migrations-archive here.
 #   bash tests/e2e/serve.sh                         # sqlite (local)
 #   E2E_DB=mysql DB_HOST=... bash tests/e2e/serve.sh  # CI uses MariaDB
 # `artisan serve` only forwards variables listed in the env file, so settings go
@@ -41,5 +42,5 @@ grep -q '^APP_KEY=base64' .env.e2e || echo "APP_KEY=base64:$(head -c 32 /dev/ura
 export APP_ENV=e2e
 [ "${E2E_DB:-sqlite}" = "sqlite" ] && rm -f database/e2e.sqlite && touch database/e2e.sqlite
 php artisan config:clear -q
-php artisan migrate:fresh --force -q
+php artisan migrate:fresh --force -q --path=database/migrations-archive --path=database/migrations --path=packages/bio/database/migrations
 exec php artisan serve --host=127.0.0.1 --port="$PORT" --no-reload

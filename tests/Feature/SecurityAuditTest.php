@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\ApiToken;
 use App\Models\Link;
 use App\Models\User;
 use App\Providers\AppServiceProvider;
+use Hop\Auth\Models\ApiToken;
 use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;

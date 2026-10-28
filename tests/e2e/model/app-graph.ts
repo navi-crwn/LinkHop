@@ -1,5 +1,9 @@
 /**
- * Map of HEL.ink as a state machine for the synthetic-user suite.
+ * Map of LinkHop as a state machine for the synthetic-user suite.
+ *
+ * Accounts live at the hub (HOP ID): there is no sign-in form here. The `login`
+ * action uses the test-only hook POST /_e2e/login, which does what the SSO
+ * callback does after a verified ticket (routes/e2e.php, E2E_HOOKS=true only).
  *
  * A state is "where the user is" (page + condition). An action is anything a
  * person can do from a state; `to` is the state it should lead to. Journeys are
@@ -8,7 +12,7 @@
 import type { Page } from '@playwright/test';
 
 export type StateId =
-  | 'guest_home' | 'guest_login' | 'guest_register' | 'guest_check' | 'guest_bio_public' | 'guest_bio_locked'
+  | 'guest_check' | 'guest_bio_public' | 'guest_bio_locked'
   | 'user_dashboard' | 'user_links' | 'user_link_modal' | 'user_link_created' | 'user_link_show' | 'user_link_edit'
   | 'user_bio_index' | 'user_bio_editor' | 'user_bio_block_editor' | 'user_analytics' | 'user_settings'
   | 'user_folders' | 'user_folder_modal' | 'user_tags' | 'user_tag_modal'
@@ -41,7 +45,7 @@ export interface Action {
 
 const USER_STATES: StateId[] = ['user_dashboard', 'user_links', 'user_link_show', 'user_link_edit', 'user_bio_index', 'user_bio_editor',
   'user_analytics', 'user_settings', 'user_folders', 'user_tags', 'admin_retired'];
-export const GUEST_STATES: StateId[] = ['guest_home', 'guest_login', 'guest_register', 'guest_check', 'guest_bio_public', 'guest_bio_locked'];
+export const GUEST_STATES: StateId[] = ['guest_check', 'guest_bio_public', 'guest_bio_locked'];
 export const MODAL_STATES: StateId[] = ['user_link_modal', 'user_link_created', 'user_bio_block_editor', 'user_folder_modal', 'user_tag_modal'];
 
 /** Click a sidebar link when it is visible (desktop), otherwise navigate like the mobile drawer would. */
@@ -70,10 +74,8 @@ const editorData = (page: Page) => page.evaluate(() => {
 
 export const ACTIONS: Action[] = [
   // ---- guests ----
-  { id: 'open_home', from: 'any', to: 'guest_home', run: async ({ page }) => { await page.goto('/'); } },
-  { id: 'open_login', from: GUEST_STATES, to: 'guest_login', run: async ({ page }) => { await page.goto('/login'); } },
-  { id: 'open_register', from: GUEST_STATES, to: 'guest_register', run: async ({ page }) => { await page.goto('/register'); } },
-  { id: 'open_check', from: GUEST_STATES, to: 'guest_check', run: async ({ page }) => { await page.goto('/check'); } },
+  // link.hel.ink/ sends a guest to the hub (another host, not in the suite): the public pages here are the checker and bio pages.
+  { id: 'open_check', from: 'any', to: 'guest_check', run: async ({ page }) => { await page.goto('/check'); } },
   {
     id: 'check_own_link', from: ['guest_check'], to: 'guest_check',
     run: async ({ page, me }) => {
@@ -108,19 +110,21 @@ export const ACTIONS: Action[] = [
     },
   },
   {
-    id: 'login', from: ['guest_login'], to: 'user_dashboard',
+    // The hub's SSO ends in the callback signing the shared user in; the test hook does the same without the hub.
+    id: 'login', from: GUEST_STATES, to: 'user_dashboard',
     run: async ({ page, me }) => {
-      await page.fill('input[name=email]', me.email);
-      await page.fill('input[name=password]', me.password);
-      await Promise.all([page.waitForURL(u => !u.pathname.startsWith('/login'), { waitUntil: 'domcontentloaded' }), page.locator('form[action$="/login"] button[type=submit]').click()]);
+      const res = await page.request.post('/_e2e/login', { form: { email: me.email } });
+      if (!res.ok()) throw new Error(`/_e2e/login answered ${res.status()}`);
+      await page.goto('/dashboard');
     },
   },
   {
-    id: 'login_wrong_password', from: ['guest_login'], to: 'guest_login', expectsClientError: true,
-    run: async ({ page, me }) => {
-      await page.fill('input[name=email]', me.email);
-      await page.fill('input[name=password]', 'not-my-password');
-      await Promise.all([page.waitForLoadState('domcontentloaded'), page.locator('form[action$="/login"] button[type=submit]').click()]);
+    // A guest asking for a member page is sent to the hub's sign-in (the SSO start), never shown it.
+    id: 'guest_dashboard_redirects_to_sso', from: GUEST_STATES, to: 'same',
+    run: async ({ page }) => {
+      const res = await page.request.get('/dashboard', { maxRedirects: 0 });
+      const to = res.headers()['location'] ?? '';
+      if (res.status() !== 302 || !to.includes('/auth/sso')) throw new Error(`INVARIANT guest /dashboard answered ${res.status()} ${to}, expected a redirect to /auth/sso`);
     },
   },
 
@@ -134,7 +138,8 @@ export const ACTIONS: Action[] = [
   { id: 'nav_tags', from: 'any-user', to: 'user_tags', run: async ({ page }) => nav(page, '/tags') },
   { id: 'browser_reload', from: 'any-user', to: 'same', run: async ({ page }) => { await page.reload(); } },
   {
-    id: 'logout', from: 'any-user', to: 'guest_home',
+    // Log out ends here and goes on to the hub (another host): the suite only follows the first hop.
+    id: 'logout', from: 'any-user', to: 'guest_check',
     run: async ({ page }) => {
       // The cookie banner sits on top of the sidebar's log out button; a person dismisses it first.
       const decline = page.locator('button:has-text("Decline")').first();
@@ -146,13 +151,12 @@ export const ACTIONS: Action[] = [
         if (await decline.isVisible().catch(() => false)) await decline.click();
         btn = page.locator('button[aria-label="Log out"]').first();
       }
-      if (await btn.isVisible().catch(() => false)) {
-        await Promise.all([page.waitForLoadState('domcontentloaded'), btn.click()]);
-      } else {
-        await page.evaluate(() => (document.querySelector('button[aria-label="Log out"]')?.closest('form') as HTMLFormElement)?.submit());
-        await page.waitForLoadState('domcontentloaded');
-      }
-      await page.goto('/');
+      const form = btn.locator('xpath=ancestor::form[1]');
+      const token = await form.locator('input[name=_token]').inputValue();
+      // Submit the form through the request API: the browser would follow the redirect to the hub.
+      const res = await page.request.post('/logout', { form: { _token: token }, maxRedirects: 0 });
+      if (res.status() !== 302) throw new Error(`POST /logout answered ${res.status()}`);
+      await page.goto('/check');
     },
   },
 

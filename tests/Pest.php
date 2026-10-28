@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /*
@@ -13,8 +12,8 @@ use Tests\TestCase;
 | need to change it using the "pest()" function to bind a different classes or traits.
 |
 */
+// TestCase refreshes the database (and builds the hub's account tables from database/migrations-archive).
 pest()->extend(TestCase::class)
-    ->use(RefreshDatabase::class)
     ->in('Feature', '../packages/bio/tests');
 // Tests that need the hop/bio package (its routes and tables). `BIO_ENABLED=false php artisan test --exclude-group=bio`
 // runs the suite with bio off, which is what a LinkHop without bio looks like.
@@ -24,7 +23,6 @@ pest()->group('bio')->in(
     'Feature/AdminPagesSmokeTest.php',
     'Feature/BackendAuditTest.php',
     'Feature/ExampleBioSeederTest.php',
-    'Feature/HopAdminApiTest.php',
     'Feature/HopContentApiTest.php',
     'Feature/ModerationLockTest.php',
     'Feature/PrivacyRetentionTest.php',
