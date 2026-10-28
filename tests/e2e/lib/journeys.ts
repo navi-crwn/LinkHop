@@ -21,10 +21,10 @@ export interface Journey {
 /** Where the walk is: the state, the page a modal was opened from, and whether the user is signed in. */
 export interface Position { state: StateId; origin: StateId; authed: boolean }
 
-export const START: Position = { state: 'guest_home', origin: 'guest_home', authed: false };
+export const START: Position = { state: 'guest_check', origin: 'guest_check', authed: false };
 
 /** Only possible while signed out (the guest middleware redirects signed-in users). */
-const GUEST_ONLY = new Set(['open_login', 'open_register', 'login', 'login_wrong_password']);
+const GUEST_ONLY = new Set(['login', 'guest_dashboard_redirects_to_sso']);
 
 /** Graph rule plus session state: a signed-in user on a public page can still use the app. */
 export function can(action: Action, pos: Position, role: Role): boolean {
@@ -145,9 +145,9 @@ function walkFrom(pos: Position, steps: string[], role: Role): Position | null {
   return pos;
 }
 
-/** Login is limited to 5 attempts a minute per IP; a journey stays under that. */
+/** A journey signs in only a few times (each sign-in is a fresh session). */
 const MAX_LOGINS = 4;
-const logins = (steps: string[]) => steps.filter(s => s === 'login' || s === 'login_wrong_password').length;
+const logins = (steps: string[]) => steps.filter(s => s === 'login').length;
 
 const roleActions = (role: Role) => ACTIONS.filter(a => (role === 'admin' ? a.adminOnly : !a.adminOnly));
 
@@ -210,8 +210,8 @@ export function randomJourney(seed: number, length = 25): Journey {
   let pos = START;
   while (steps.length < length) {
     const tired = logins(steps) >= MAX_LOGINS;
-    const options = available(pos, role).filter(a => !tired || !(a.id === 'login' || a.id === 'login_wrong_password'));
-    // A guest who never logs in only ever sees the marketing pages; nudge towards login.
+    const options = available(pos, role).filter(a => !tired || a.id !== 'login');
+    // A guest who never logs in only ever sees the checker and bio pages; nudge towards login.
     if (!tired && pos.state.startsWith('guest_') && rand() < 0.5) {
       const route = pathTo(pos, role, p => p.state === 'user_dashboard');
       if (route) { for (const id of route) { pos = step(pos, ACTION_BY_ID[id]); steps.push(id); } continue; }

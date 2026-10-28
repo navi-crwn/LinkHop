@@ -6,11 +6,11 @@ use App\Helpers\SocialUrlHelper;
 use App\Models\AbuseFlag;
 use App\Models\Link;
 use App\Models\User;
-use App\Services\LinkSafety;
 use App\Services\LinkService;
 use App\Services\NotificationService;
 use Hop\Bio\Models\BioLink;
 use Hop\Bio\Models\BioPage;
+use Hop\Safety\LinkSafety;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
@@ -167,7 +167,7 @@ class AbuseScan extends Command
         $isCsam = in_array('csam', $result['signals'], true);
         // Never store full URLs for CSAM hits; the summary is slug/domain only.
         $label = ($isCsam ? '[CSAM] ' : '').$summary.' ['.implode(',', $result['signals']).'] score '.$score;
-        $shouldDisable = $score >= (int) config('abuse.thresholds.disable', 60);
+        $shouldDisable = $score >= (int) config('safety.thresholds.disable', 60);
         if ($userId) {
             $this->owners[$userId]['max'] = max($this->owners[$userId]['max'] ?? 0, $score);
             $this->owners[$userId]['disabled'] = ($this->owners[$userId]['disabled'] ?? 0) + ($shouldDisable ? 1 : 0);
@@ -192,8 +192,8 @@ class AbuseScan extends Command
 
     private function suspendRepeatOffenders(array $protected): void
     {
-        $scoreLimit = (int) config('abuse.thresholds.suspend_user', 100);
-        $countLimit = (int) config('abuse.suspend_after_disabled_items', 3);
+        $scoreLimit = (int) config('safety.thresholds.suspend_user', 100);
+        $countLimit = (int) config('safety.suspend_after_disabled_items', 3);
         foreach ($this->owners as $userId => $o) {
             if (in_array($userId, $protected, true) || (($o['max'] ?? 0) < $scoreLimit && ($o['disabled'] ?? 0) < $countLimit)) {
                 continue;
@@ -223,7 +223,7 @@ class AbuseScan extends Command
 
     private function purge(): void
     {
-        $cutoff = now()->subDays((int) config('abuse.purge_after_days', 30));
+        $cutoff = now()->subDays((int) config('safety.purge_after_days', 30));
         AbuseFlag::where('action', AbuseFlag::ACTION_DISABLED)
             ->where('status', '!=', AbuseFlag::STATUS_DISMISSED)
             ->where('created_at', '<', $cutoff)
@@ -276,7 +276,7 @@ class AbuseScan extends Command
     private function merge(array $a, array $b): array
     {
         $signals = array_values(array_unique(array_merge($a['signals'], $b['signals'])));
-        $weights = config('abuse.weights', []);
+        $weights = config('safety.weights', []);
 
         return [
             'score' => array_sum(array_map(fn ($s) => (int) ($weights[$s] ?? 0), $signals)),

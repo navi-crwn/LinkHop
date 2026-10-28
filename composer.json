@@ -11,13 +11,13 @@
     "require": {
         "php": "^8.2",
         "geoip2/geoip2": "^3.2",
+        "hop/auth": "dev-main",
         "hop/bio": "@dev",
+        "hop/safety": "dev-main",
+        "hop/ui": "dev-main",
         "laravel/framework": "^12.0",
-        "laravel/socialite": "^5.23",
         "laravel/tinker": "^2.10.1",
         "matomo/device-detector": "^6.5",
-        "pragmarx/google2fa-laravel": "^2.3",
-        "propaganistas/laravel-disposable-email": "^2.5",
         "sentry/sentry-laravel": "^4.19",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-backup": "^10.3",
@@ -25,7 +25,6 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
-        "laravel/breeze": "^2.3",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.26",
         "laravel/sail": "^1.41",
@@ -108,6 +107,18 @@
             "options": {
                 "symlink": true
             }
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/navi-crwn/hop-auth.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/navi-crwn/hop-ui.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/navi-crwn/hop-safety.git"
         }
     ]
 }

@@ -196,7 +196,7 @@
     @endif
     <style>
         .bio-container {
-            {!! \App\Support\SafeContent::css($bgStyle) !!}
+            {!! \Hop\Safety\SafeContent::css($bgStyle) !!}
             font-family: {!! $fontFamily !!};
             /* Headers, FAQ and contact cards inherit this, so they stay readable on dark themes. */
             color: {{ $titleColor }};
@@ -583,7 +583,7 @@
         }
     </style>
     @if($bioPage->custom_css)
-        <style>{!! \App\Support\SafeContent::css($bioPage->custom_css) !!}</style>
+        <style>{!! \Hop\Safety\SafeContent::css($bioPage->custom_css) !!}</style>
     @endif
 </head>
 @php
@@ -709,7 +709,7 @@
                             @if(is_array($socialLink) && $isEnabled && !empty($linkValue))
                                 @php
                                     $platform = $socialLink['platform'];
-                                    $url = \App\Support\SafeContent::url(SocialUrlHelper::buildUrl($platform, $linkValue));
+                                    $url = \Hop\Safety\SafeContent::url(SocialUrlHelper::buildUrl($platform, $linkValue));
                                     $platformConfig = config("brands.platforms.{$platform}");
                                     $brandColor = $platformConfig['color'] ?? '#6b7280';
                                 @endphp
@@ -761,7 +761,7 @@
                                 // http(s) links go through the click tracker; mailto/tel/sms stay direct
                                 $linkHref = preg_match('#^https?://#i', trim((string) $link->url))
                                     ? route('bio.public.click', $link->public_id)
-                                    : \App\Support\SafeContent::url($link->url);
+                                    : \Hop\Safety\SafeContent::url($link->url);
                                 $entranceAnim = $link->entrance_animation ?? 'none';
                                 $attentionAnim = $link->attention_animation ?? 'none';
                                 $animClasses = '';
@@ -804,7 +804,7 @@
                                 <div class="text-block-content truncated" style="color: inherit;">
                                     @php
                                         $textContent = html_entity_decode($link->content ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
-                                        $textContent = \App\Support\SafeContent::html(nl2br($textContent));
+                                        $textContent = \Hop\Safety\SafeContent::html(nl2br($textContent));
                                     @endphp
                                     {!! $textContent !!}
                                 </div>
@@ -871,7 +871,7 @@
                                 @endif
                                 <div class="text-sm leading-relaxed" style="color: inherit;">
                                     @php
-                                        $htmlContent = \App\Support\SafeContent::html($link->html_content);
+                                        $htmlContent = \Hop\Safety\SafeContent::html($link->html_content);
                                     @endphp
                                     {!! $htmlContent !!}
                                 </div>
@@ -967,7 +967,7 @@
                             @if(is_array($socialLink) && $isEnabled && !empty($linkValue))
                                 @php
                                     $platform = $socialLink['platform'];
-                                    $url = \App\Support\SafeContent::url(SocialUrlHelper::buildUrl($platform, $linkValue));
+                                    $url = \Hop\Safety\SafeContent::url(SocialUrlHelper::buildUrl($platform, $linkValue));
                                     $platformConfig = config("brands.platforms.{$platform}");
                                     $brandColor = $platformConfig['color'] ?? '#6b7280';
                                 @endphp

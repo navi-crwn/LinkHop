@@ -14,9 +14,12 @@ npx playwright install chromium        # once
 npx playwright test -c tests/e2e       # starts the app via serve.sh on :8130 (SQLite)
 ```
 
-`serve.sh` writes `.env.e2e` (git-ignored) and uses a throwaway database. The
+`serve.sh` writes `.env.e2e` (git-ignored) and uses a throwaway database (the
+hub's account tables are built from `database/migrations-archive`). The
 test-only hooks in `routes/e2e.php` are loaded only with `E2E_HOOKS=true` outside
-production.
+production: `POST /_e2e/persona` makes a user with data, `POST /_e2e/login`
+signs one in the way the hub's SSO callback would (there is no sign-in form in
+this app any more), `GET /_e2e/invariants` checks the database.
 
 | Variable | Default | Meaning |
 | --- | --- | --- |

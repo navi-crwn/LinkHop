@@ -2,16 +2,20 @@
 
 namespace App\Models;
 
-use App\Jobs\SendHopEvent;
+use Hop\Auth\Models\ApiToken;
 use Hop\Bio\Models\BioPage;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 
-class User extends Authenticatable implements MustVerifyEmail
+/**
+ * The shared `users` table, owned by the hub (HOP ID). This app only reads it:
+ * sign-in comes through an SSO ticket (Auth::loginUsingId), profile changes,
+ * roles, suspension and deletion happen at the hub.
+ */
+class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
@@ -76,40 +80,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Role::class);
     }
 
-    /** Columns every HOP app keeps a copy of. */
-    public const PROFILE_FIELDS = ['username', 'name', 'email', 'avatar', 'avatar_path', 'bio', 'website', 'location', 'locale', 'show_owner'];
-
-    protected static function booted(): void
-    {
-        // Profile changes bump profile_version and reach the apps; status changes
-        // and deletions too. saveQuietly() (last_login_*) skips all of this.
-        static::updating(function (User $user) {
-            if ($user->isDirty(self::PROFILE_FIELDS)) {
-                $user->profile_version = max(1, (int) $user->profile_version) + 1;
-            }
-        });
-        static::updated(function (User $user) {
-            if ($user->wasChanged(self::PROFILE_FIELDS)) {
-                SendHopEvent::broadcast('profile.updated', $user->hopProfile());
-            }
-            if ($user->wasChanged('status')) {
-                SendHopEvent::broadcast('account.status', ['sub' => (string) $user->id, 'status' => $user->status]);
-            }
-        });
-        static::deleted(function (User $user) {
-            SendHopEvent::broadcast('account.deleted', ['sub' => (string) $user->id, 'email' => $user->email]);
-        });
-    }
-
-    /** Takes a new username, keeping the old one on hold for other people. */
-    public function changeUsername(string $username): void
-    {
-        if ($this->username !== null && $this->username !== $username) {
-            UsernameHistory::create(['user_id' => $this->id, 'username' => $this->username, 'released_at' => now()]);
-        }
-        $this->username = $username;
-    }
-
     public function links(): HasMany
     {
         return $this->hasMany(Link::class);
@@ -133,11 +103,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function bioPages(): HasMany
     {
         return $this->hasMany(BioPage::class);
-    }
-
-    public function loginHistories(): HasMany
-    {
-        return $this->hasMany(LoginHistory::class);
     }
 
     public function activityLogs(): HasMany
@@ -211,31 +176,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->avatar ?: null;
     }
 
-    /**
-     * The profile every HOP app gets (in the SSO ticket and from the profile API).
-     *
-     * @return array<string, mixed>
-     */
-    public function hopProfile(): array
+    /** Verified at the hub (by email, or by Google which verifies the address itself). */
+    public function hasVerifiedEmail(): bool
     {
-        return [
-            'sub' => (string) $this->id,
-            'username' => $this->username,
-            'name' => $this->name,
-            'email' => $this->email,
-            'avatar' => $this->avatarUrl() ?? '',
-            'bio' => (string) $this->bio,
-            'website' => (string) $this->website,
-            'location' => (string) $this->location,
-            'locale' => (string) $this->locale,
-            'show_owner' => (bool) $this->show_owner,
-            'roles' => $this->roleNames(),
-            'status' => $this->status,
-            'verified' => $this->hasVerifiedEmail() || (bool) $this->google_id,
-            'mfa' => (bool) ($this->two_factor_secret && $this->two_factor_confirmed_at),
-            'profile_version' => max(1, (int) $this->profile_version),
-            'created_at' => $this->created_at?->toIso8601String(),
-        ];
+        return $this->email_verified_at !== null || (bool) $this->google_id;
     }
 
     public function isSuspended(): bool

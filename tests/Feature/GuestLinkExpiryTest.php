@@ -4,6 +4,7 @@ use App\Models\Link;
 use App\Models\RetiredSlug;
 use App\Models\User;
 use Carbon\CarbonImmutable;
+use Hop\Auth\Models\ApiToken;
 use Illuminate\Support\Facades\Cache;
 
 function guestLink(string $slug, array $attrs = []): Link
@@ -106,16 +107,14 @@ test('prune command deletes only expired guest links', function () {
         ->and(Link::find($keep->id))->not->toBeNull();
 });
 
-test('unverified users cannot create links or bio content', function () {
+test('the token API refuses an unverified account; the hub never signs one in here', function () {
     $user = User::factory()->unverified()->create();
+    $token = ApiToken::generate($user->id, 'cli')['plain_token'];
 
-    if (bio_enabled()) {
-        $this->actingAs($user)->postJson('/api/bio/shorten', ['url' => 'https://example.com'])->assertForbidden();
-        $this->actingAs($user)->post('/bio', ['slug' => 'abc123', 'title' => 'x'])->assertRedirect(route('verification.notice'));
-    }
-    $this->actingAs($user)->post('/links', ['target_url' => 'https://example.com', 'status' => 'active'])->assertRedirect(route('verification.notice'));
-    // They can still sign in and see their dashboard.
-    $this->actingAs($user)->get('/dashboard')->assertOk();
+    $this->withHeader('Authorization', 'Bearer '.$token)->postJson('/api/shorten', ['url' => 'https://example.com'])->assertForbidden();
+    // Verified at the hub by Google: allowed.
+    $user->forceFill(['google_id' => 'g-1'])->save();
+    $this->withHeader('Authorization', 'Bearer '.$token)->postJson('/api/shorten', ['url' => 'https://example.com'])->assertCreated();
 });
 
 test('bot visits are not counted as clicks', function () {
