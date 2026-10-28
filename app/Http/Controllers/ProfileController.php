@@ -6,8 +6,8 @@ use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\ActivityLog;
 use App\Services\LinkService;
 use App\Support\Avatar;
-use App\Support\BioUploads;
 use App\Support\Username;
+use Hop\Bio\Support\BioUploads;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -117,7 +117,7 @@ class ProfileController extends Controller
                 'tags_count' => $user->tags()->count(),
                 'total_clicks' => DB::table('link_clicks')->whereIn('link_id', $user->links()->pluck('id'))->count(),
             ];
-            $bioFiles = BioUploads::ofUser($user);
+            $bioFiles = bio_enabled() ? BioUploads::ofUser($user) : [];
             Avatar::delete($user);
             DB::transaction(function () use ($user) {
                 foreach ($user->links as $link) {

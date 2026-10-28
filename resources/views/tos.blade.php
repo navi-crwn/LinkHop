@@ -181,6 +181,12 @@
                         <p>Your continued use of the Service after any changes to these Terms constitutes acceptance of those changes.</p>
                     </section>
                     <section>
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">11A. Free Service and Changes to the Service</h2>
+                        <p class="mb-3">The Service is provided free of charge. In return, we may change how it works, including the form of the links it produces, the addresses it is reached at, its features and its limits, and we may discontinue parts of it.</p>
+                        <p class="mb-3">Such changes are binding: to keep using the Service you must follow them, for example by updating links you have published elsewhere when their form changes. Links that are not updated may stop working after a change takes effect.</p>
+                        <p>We announce changes that affect your links or your account on the dashboard before they take effect, and where possible by email as well. The announcement states the date from which the change applies.</p>
+                    </section>
+                    <section>
                         <h2 class="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">12. Governing Law and Dispute Resolution</h2>
                         <p class="mb-3">These Terms shall be governed by and construed in accordance with the laws of [Your Country/State], without regard to its conflict of law provisions.</p>
                         <p>Any disputes arising out of or relating to these Terms or the Service shall be resolved through binding arbitration in accordance with the rules of [Arbitration Body], except that either party may seek injunctive or other equitable relief in any court of competent jurisdiction.</p>

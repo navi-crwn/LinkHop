@@ -4,13 +4,13 @@ namespace App\Console\Commands;
 
 use App\Helpers\SocialUrlHelper;
 use App\Models\AbuseFlag;
-use App\Models\BioLink;
-use App\Models\BioPage;
 use App\Models\Link;
 use App\Models\User;
 use App\Services\LinkSafety;
 use App\Services\LinkService;
 use App\Services\NotificationService;
+use Hop\Bio\Models\BioLink;
+use Hop\Bio\Models\BioPage;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
@@ -57,8 +57,10 @@ class AbuseScan extends Command
         $protected = $this->protectedUserIds();
 
         $this->scanLinks($since, $protected);
-        $this->scanBioPages($since, $protected);
-        $this->scanBioLinks($since, $protected);
+        if (bio_enabled()) {
+            $this->scanBioPages($since, $protected);
+            $this->scanBioLinks($since, $protected);
+        }
         $this->suspendRepeatOffenders($protected);
         if ($this->option('purge')) {
             $this->purge();
@@ -213,7 +215,9 @@ class AbuseScan extends Command
                     $link->forceFill(['status' => Link::STATUS_INACTIVE])->save();
                     $this->links->forgetCache($link);
                 });
-            BioPage::where('user_id', $user->id)->update(['is_published' => false]);
+            if (bio_enabled()) {
+                BioPage::where('user_id', $user->id)->update(['is_published' => false]);
+            }
         }
     }
 
@@ -231,8 +235,8 @@ class AbuseScan extends Command
                     }
                     $subject = match ($flag->subject_type) {
                         'link' => Link::where('id', $flag->subject_id)->where('status', Link::STATUS_INACTIVE)->first(),
-                        'bio_page' => BioPage::where('id', $flag->subject_id)->where('is_published', false)->first(),
-                        'bio_link' => BioLink::where('id', $flag->subject_id)->where('is_active', false)->first(),
+                        'bio_page' => bio_enabled() ? BioPage::where('id', $flag->subject_id)->where('is_published', false)->first() : null,
+                        'bio_link' => bio_enabled() ? BioLink::where('id', $flag->subject_id)->where('is_active', false)->first() : null,
                         default => null,
                     };
                     if (! $subject) {

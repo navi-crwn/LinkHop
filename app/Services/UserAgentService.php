@@ -3,11 +3,12 @@
 namespace App\Services;
 
 use DeviceDetector\DeviceDetector;
+use Hop\Bio\Contracts\UserAgentParser;
 
 /**
  * User-agent parsing via matomo/device-detector (browsers, OS, device types, bots).
  */
-class UserAgentService
+class UserAgentService implements UserAgentParser
 {
     private array $memo = [];
 

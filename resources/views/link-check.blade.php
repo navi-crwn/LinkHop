@@ -31,7 +31,7 @@
                         <p class="text-xs font-semibold uppercase tracking-wider text-white/70">Link in Bio page</p>
                         <p class="mt-2 text-lg font-semibold">{{ $result['page']->title }}</p>
                         <p class="text-sm text-white/60">{{ $host }}/b/{{ $result['page']->slug }} · {{ $result['page']->links_count }} links</p>
-                        <a href="{{ url('/b/'.$result['page']->slug) }}" rel="noopener" class="mt-4 inline-block rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-900">Open page</a>
+                        <a href="{{ public_url('b/'.$result['page']->slug) }}" rel="noopener" class="mt-4 inline-block rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-900">Open page</a>
                         @break
 
                     @case('link')

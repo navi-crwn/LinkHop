@@ -4,53 +4,46 @@ use App\Http\Requests\ShortenLinkRequest;
 use App\Models\ApiToken;
 use App\Models\Link;
 use App\Models\User;
-use Illuminate\Support\Facades\Route;
+use App\Support\ReservedSlugs;
 use Illuminate\Support\Facades\Validator;
 
-/** First path segment of every route that has a fixed (non-parameter) first segment. */
-function staticRouteSegments(): array
-{
-    return collect(Route::getRoutes()->getRoutes())
-        ->map(fn ($route) => strtolower(explode('/', trim($route->uri(), '/'))[0]))
-        ->filter(fn ($segment) => $segment !== '' && ! str_contains($segment, '{'))
-        ->unique()->values()->all();
-}
-
-test('no route segment can be taken as a short link slug', function () {
-    $segments = staticRouteSegments();
-    expect($segments)->toContain('api-docs', 'analytics', 'up', 'csp-report', 'two-factor-challenge');
-
+test('the HOP path prefixes and the configured words are reserved, app route segments are not', function () {
     $rules = (new ShortenLinkRequest)->rules();
-    foreach ($segments as $segment) {
-        foreach ([$segment, strtoupper($segment)] as $slug) {
-            $validator = Validator::make(['target_url' => 'https://example.com', 'slug' => $slug], ['slug' => $rules['slug']]);
-            expect($validator->fails())->toBeTrue("/{$slug} is an app route but was accepted as a slug");
-        }
+    $refused = fn (string $slug) => Validator::make(['target_url' => 'https://example.com', 'slug' => $slug], ['slug' => $rules['slug']])->fails();
+
+    foreach (['l', 'b', 'api', 'L', 'API', 'admin', 'paypal', 'helink'] as $slug) {
+        expect(ReservedSlugs::isReserved($slug))->toBeTrue("{$slug} should be reserved")
+            ->and($refused($slug))->toBeTrue("{$slug} was accepted as a slug");
+    }
+    // Short links live under /l/, so hel.ink/l/analytics cannot collide with the /analytics page any more.
+    foreach (['analytics', 'api-docs', 'goodbye', 'onboarding'] as $slug) {
+        expect(ReservedSlugs::isReserved($slug))->toBeFalse("{$slug} need not be reserved");
     }
 });
 
-test('guests, members and the API are refused a route segment as slug', function () {
-    $this->post('/shorten', ['target_url' => 'https://example.com', 'slug' => 'api-docs'])->assertSessionHasErrors('slug');
+test('guests, members and the API are refused a reserved word as slug', function () {
+    $this->post('/shorten', ['target_url' => 'https://example.com', 'slug' => 'api'])->assertSessionHasErrors('slug');
 
     $user = User::factory()->create();
-    $this->actingAs($user)->post('/links', ['target_url' => 'https://example.com', 'slug' => 'Analytics', 'status' => 'active'])
+    $this->actingAs($user)->post('/links', ['target_url' => 'https://example.com', 'slug' => 'Admin', 'status' => 'active'])
         ->assertSessionHasErrors('slug');
     $token = ApiToken::generate($user->id, 'cli')['plain_token'];
-    $this->withHeader('Authorization', 'Bearer '.$token)->postJson('/api/shorten', ['url' => 'https://example.com', 'alias' => 'goodbye'])
+    $this->withHeader('Authorization', 'Bearer '.$token)->postJson('/api/shorten', ['url' => 'https://example.com', 'alias' => 'b'])
         ->assertStatus(422);
 
-    expect(Link::whereIn('slug', ['api-docs', 'analytics', 'goodbye'])->exists())->toBeFalse();
+    expect(Link::whereIn('slug', ['api', 'admin', 'b'])->exists())->toBeFalse();
 });
 
-test('a bio slug cannot be an app route segment either', function () {
+test('a bio slug cannot be a reserved word either', function () {
     $user = User::factory()->create();
-    $this->actingAs($user)->getJson('/bio/check-slug?slug=onboarding')->assertJson(['available' => false]);
-});
+    $this->actingAs($user)->getJson('/bio/check-slug?slug=paypal')->assertJson(['available' => false]);
+})->group('bio');
 
-test('editing a link that already has such a slug keeps working', function () {
+test('a slug that is also an app route segment opens under /l/ and can be edited', function () {
     $user = User::factory()->create();
     $link = Link::create(['user_id' => $user->id, 'slug' => 'goodbye', 'target_url' => 'https://example.com', 'status' => 'active']);
 
+    $this->get('/l/goodbye')->assertRedirect('https://example.com');
     $this->actingAs($user)->put("/links/{$link->id}", ['target_url' => 'https://example.org', 'slug' => 'goodbye', 'status' => 'active'])
         ->assertSessionHasNoErrors();
     expect($link->fresh()->target_url)->toBe('https://example.org');
