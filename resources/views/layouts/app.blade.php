@@ -51,8 +51,7 @@
                     <div class="glass flex h-full flex-col rounded-3xl">
                         <div class="flex h-16 items-center justify-between px-5">
                             <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5">
-                                <x-application-logo class="h-7 w-auto" />
-                                <span class="text-[15px] font-semibold tracking-tight text-ink">{{ config('app.name') }}</span>
+                                <x-wordmark class="h-11 w-auto" />
                                 @if ($isAdmin)
                                     <span class="chip-blue">Admin</span>
                                 @endif

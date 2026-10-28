@@ -43,8 +43,7 @@
         <div class="grid grid-cols-2 gap-8 lg:grid-cols-5">
             <div class="col-span-2 lg:col-span-1">
                 <div class="flex items-center gap-2.5">
-                    <x-application-logo class="h-7 w-7" />
-                    <p class="font-semibold text-slate-900 dark:text-white">LinkHop</p>
+                    <x-wordmark class="h-10 w-auto" />
                 </div>
                 <p class="mt-3 text-[13px] leading-relaxed">Short links & Link in Bio. Free and open source.</p>
             </div>
