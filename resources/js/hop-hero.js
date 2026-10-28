@@ -201,6 +201,7 @@ function start(root) {
       const max = mini ? 64 : 92; if (text.length > max) text = text.slice(0, max - 1) + '…';
       bctx.clearRect(0, 0, 4096, 160); bctx.font = `${isShort ? 700 : 500} 64px ui-monospace, SFMono-Regular, Menlo, monospace`;
       const w = bctx.measureText(text).width + 96, x = (4096 - w) / 2;
+      const fit = Math.min(1, W * (mini ? .52 : .6) / (BH * w / 160)); banner.scale.set(BH * 4096 / 160 * fit, BH * fit, 1); // long links shrink to stay inside the view
       bctx.fillStyle = dark ? 'rgba(15,18,38,.88)' : 'rgba(255,255,255,.94)'; bctx.strokeStyle = isShort ? '#818cf8' : dark ? 'rgba(255,255,255,.18)' : 'rgba(99,102,241,.25)'; bctx.lineWidth = 4;
       bctx.beginPath(); bctx.roundRect(x, 16, w, 128, 64); bctx.fill(); bctx.stroke();
       bctx.fillStyle = isShort ? (dark ? '#a5b4fc' : '#4f46e5') : dark ? '#e2e8f0' : '#334155'; bctx.textAlign = 'center'; bctx.textBaseline = 'middle'; bctx.fillText(text, 2048, 84);
