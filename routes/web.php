@@ -10,6 +10,7 @@ use App\Http\Controllers\LegacySlugController;
 use App\Http\Controllers\LinkCheckController;
 use App\Http\Controllers\LinkCommentController;
 use App\Http\Controllers\LinkController;
+use App\Http\Controllers\PublicLinkController;
 use App\Http\Controllers\QrController;
 use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\SessionController;
@@ -42,8 +43,12 @@ Route::middleware('ip.ban')->group(function () {
     Route::get('/brand/{v}/favicon.png', [BrandAssetController::class, 'show'])->defaults('file', 'favicon.png')->where('v', '[a-f0-9]{8}')->name('brand.favicon');
     Route::get('/brand/{v}/{file}', [BrandAssetController::class, 'show'])->where(['v' => '[a-f0-9]{8}', 'file' => $brandFile])->name('brand.asset');
     Route::get('/brand/{file}', [BrandAssetController::class, 'legacy'])->where('file', $brandFile);
-    // link.hel.ink/: the dashboard, or the hub's sign-in for a guest. The home page is the hub's (hel.ink).
-    Route::get('/', [SessionController::class, 'home'])->name('home');
+    // link.hel.ink/: LinkHop's landing (hero animation, guest shortener) for guests, the dashboard once
+    // signed in. The HOP family home page is the hub's (hel.ink).
+    Route::get('/', [PublicLinkController::class, 'index'])->name('home');
+    Route::post('/shorten', [PublicLinkController::class, 'store'])
+        ->middleware(['throttle:shorten', 'quota'])
+        ->name('shorten.store');
     // Sign in / out through the hub. `login` keeps its name so the `auth` middleware and old links still work.
     Route::get('/login', [SessionController::class, 'login'])->name('login');
     Route::get('/register', fn () => redirect()->away(hub_url('register')))->name('register');
