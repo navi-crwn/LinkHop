@@ -52,7 +52,7 @@
                         </div>
                     </div>
                     {{-- Kept rendered but collapsed (Turnstile needs a live container). --}}
-                    <x-turnstile class="flex-none"
+                    <x-turnstile class="flex-none self-center sm:self-auto"
                         x-bind:class="challenge || status === 'error' ? 'mb-2 sm:mb-0' : 'h-0 w-0 overflow-hidden'" />
                 </div>
                 @if (session('link_error') || $errors->any())
