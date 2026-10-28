@@ -317,3 +317,16 @@
 @media (prefers-reduced-motion: reduce) {
     .hop-tile { animation: none; transform: rotateX(8deg) rotateY(-10deg); }
 }
+
+/* Home hero: the italic serif accent word, as on the other Hop sites */
+.hop-serif {
+    font-family: 'Instrument Serif', ui-serif, Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+}
+
+/* Home hero hop scene (resources/js/hop-hero.js): the URL turns indigo while it is short */
+.hop-url.short { color: #4f46e5; font-weight: 700; }
+.dark .hop-url.short { color: #a5b4fc; }
+.hop-pill[aria-pressed="true"] { color: #fff; border-color: transparent; background-image: linear-gradient(90deg, #6366f1, #0ea5e9, #d946ef); }
