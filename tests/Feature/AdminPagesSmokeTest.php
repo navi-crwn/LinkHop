@@ -19,13 +19,13 @@ function smokeMember(): User
 
 test('every member page renders', function (string $path) {
     $this->actingAs(smokeMember())->get($path)->assertOk();
-})->with(['/dashboard', '/links', '/analytics', '/folders', '/tags', '/bio', '/profile', '/settings']);
+})->with(['/dashboard', '/links', '/analytics', '/folders', '/tags', '/bio', '/settings', '/api-docs', '/changes/short-links']);
 
 test('an admin gets the same member pages, not an admin panel', function (string $path) {
     smokeMember();
     $admin = User::factory()->create(['email' => config('auth.superadmin_email', 'admin@hel.ink')]);
     $this->actingAs($admin)->get($path)->assertOk()->assertDontSee('Admin Control Panel');
-})->with(['/dashboard', '/links', '/analytics', '/bio', '/profile', '/settings']);
+})->with(['/dashboard', '/links', '/analytics', '/bio', '/settings']);
 
 test('member link, folder, tag and create pages render', function () {
     $member = smokeMember();

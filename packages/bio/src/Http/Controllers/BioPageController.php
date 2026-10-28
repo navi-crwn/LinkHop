@@ -105,7 +105,7 @@ class BioPageController extends Controller
         $safety = app(UrlSafety::class);
         $errors = [];
         $text = implode(' ', array_filter([$data['slug'] ?? null, $data['title'] ?? null, $data['bio'] ?? null, $data['seo_title'] ?? null, $data['seo_description'] ?? null]));
-        if ($text !== '' && array_intersect($safety->assess(null, $text)['signals'], config('abuse.block_categories', [])) !== []) {
+        if ($text !== '' && array_intersect($safety->assess(null, $text)['signals'], config('safety.block_categories', [])) !== []) {
             $errors['title'] = 'This content is not allowed due to our security policy.';
         }
         foreach ((array) ($data['social_links'] ?? []) as $i => $social) {

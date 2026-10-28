@@ -11,14 +11,8 @@
         'globe' => 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0c2.5-2.5 3.5-5.5 3.5-9S14.5 5.5 12 3m0 18c-2.5-2.5-3.5-5.5-3.5-9S9.5 5.5 12 3M3.5 9h17m-17 6h17',
         'image' => 'M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm4.5 6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM21 15l-5-5-9 9',
         'note' => 'M6 3h9l4 4v14H6V3Zm8 0v5h5M9 12h6m-6 4h4',
+        'user' => 'M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM12 14a7 7 0 0 0-7 7h14a7 7 0 0 0-7-7Z',
     ];
-    // The other HOP apps (PixelHop, NoteHop, …) from the registry, each opened
-    // signed in with this HOP ID.
-    $images = [];
-    foreach (\App\Http\Controllers\AppSsoController::apps() as $hopApp) {
-        $images[] = ['label' => $hopApp->label(), 'icon' => isset($icons[$hopApp->icon]) ? $hopApp->icon : 'globe',
-            'href' => route('apps.open', ['app' => $hopApp->slug]), 'active' => 'apps.open'];
-    }
     // Admins get the same menu plus the HOP control center (Imperium), where the
     // admin pages went. Needs HOP_CONTROL_URL; without it the item stays hidden.
     $control = $isAdmin && config('hop.control_url')
@@ -33,9 +27,9 @@
             ['label' => 'Tags', 'route' => 'tags.index', 'active' => 'tags*'],
         ]],
         bio_enabled() ? ['label' => 'Link in Bio', 'icon' => 'bio', 'route' => 'bio.index', 'active' => 'bio*'] : null,
-        ...$images,
         ...$control,
         ['label' => 'Settings', 'icon' => 'settings', 'route' => 'settings', 'active' => 'settings'],
+        ['label' => 'HOP ID', 'icon' => 'user', 'href' => hub_url('settings'), 'active' => 'hub.settings', 'external' => true],
     ]);
     $is = fn ($patterns) => request()->routeIs(...(array) $patterns);
 @endphp
@@ -63,8 +57,14 @@
                     @if (! empty($item['badge']))
                         <span class="chip-red">{{ $item['badge'] > 99 ? '99+' : $item['badge'] }}</span>
                     @endif
+                    @if (! empty($item['external']))
+                        <svg class="h-3.5 w-3.5 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7M8 7h9v9"/></svg>
+                    @endif
                 </a>
             </li>
         @endif
     @endforeach
+    {{-- The other HOP apps (hop/ui, from config/hop.php), each opened through its own SSO. --}}
+    <li class="pt-2"><p class="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted">HOP apps</p></li>
+    <x-hop::nav-items />
 </ul>

@@ -22,6 +22,16 @@ if (! function_exists('public_host')) {
         return preg_replace('/^www\./', '', (string) parse_url(public_url(), PHP_URL_HOST));
     }
 }
+if (! function_exists('hub_url')) {
+    /** A URL on the hub (HOP ID, hub.hel.ink): hub_url('settings') → https://hub.hel.ink/settings. */
+    function hub_url(string $path = ''): string
+    {
+        $base = (string) config('hop.hub_url');
+        $path = ltrim($path, '/');
+
+        return $path === '' ? $base : $base.'/'.$path;
+    }
+}
 if (! function_exists('bio_enabled')) {
     /** Whether the hop/bio package is switched on (BIO_ENABLED). */
     function bio_enabled(): bool

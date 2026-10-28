@@ -35,6 +35,9 @@ return new class extends Migration
             $table->timestamp('created_at')->useCurrent();
         });
 
+        if (Schema::hasColumn('apps', 'hidden')) {
+            return;
+        }
         Schema::table('apps', function (Blueprint $table) {
             // Registered (SSO, signed API) but not shown in the sidebar.
             $table->boolean('hidden')->default(false)->after('sort_order');

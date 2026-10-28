@@ -1,7 +1,9 @@
 <?php
 
+use App\Models\User;
+
 test('pages link brand images by a version that changes with the files', function () {
-    $html = $this->get('/')->assertOk()->getContent();
+    $html = $this->actingAs(User::factory()->create())->get('/dashboard')->assertOk()->getContent();
     expect($html)->toMatch('#/brand/[a-f0-9]{8}/favicon\.png#')
         ->toMatch('#/brand/[a-f0-9]{8}/linkhop-wordmark\.svg#');
 

@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\AbuseFlag;
 use App\Models\AbuseReport;
-use App\Models\DomainBlacklist;
 use App\Models\HopApp;
 use App\Models\HopAudit;
 use App\Models\IpBan;
@@ -13,7 +12,7 @@ use App\Models\SeoSetting;
 use App\Models\User;
 use App\Support\HopSignature;
 use Hop\Bio\Models\BioPage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Hop\Safety\Models\DomainBlacklist;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
@@ -21,8 +20,6 @@ use Tests\TestCase;
 #[Group('bio')]
 class HopContentApiTest extends TestCase
 {
-    use RefreshDatabase;
-
     private const SECRET = 'imperium-secret-that-is-long-enough-1234';
 
     protected function setUp(): void
@@ -146,7 +143,7 @@ class HopContentApiTest extends TestCase
         $this->assertContains('abuse.threshold_disable', $keys);
         $this->signed('PUT', '/api/hop/settings', ['seo.site_title' => 'LinkHop test', 'abuse.threshold_disable' => 5])->assertOk();
         $this->assertSame('LinkHop test', SeoSetting::first()->site_title);
-        $this->assertSame(60, config('abuse.thresholds.disable'), 'read-only keys are ignored');
+        $this->assertSame(60, config('safety.thresholds.disable'), 'read-only keys are ignored');
         $this->signed('PUT', '/api/hop/settings', ['nothing' => 1])->assertStatus(422);
     }
 

@@ -9,16 +9,10 @@ class SitemapController extends Controller
 {
     public function index(): Response
     {
+        // The home and marketing pages are the hub's (its own sitemap). This one lists
+        // what the public reaches on PUBLIC_URL through this app: the link checker and bio pages.
         $staticPages = [
-            ['loc' => url('/'), 'priority' => '1.0', 'changefreq' => 'daily'],
-            ['loc' => route('about'), 'priority' => '0.8', 'changefreq' => 'monthly'],
-            ['loc' => route('products'), 'priority' => '0.8', 'changefreq' => 'monthly'],
-            ['loc' => route('faq'), 'priority' => '0.7', 'changefreq' => 'monthly'],
-            ['loc' => route('help'), 'priority' => '0.7', 'changefreq' => 'monthly'],
-            ['loc' => route('contact'), 'priority' => '0.6', 'changefreq' => 'monthly'],
-            ['loc' => route('privacy'), 'priority' => '0.5', 'changefreq' => 'yearly'],
-            ['loc' => route('terms'), 'priority' => '0.5', 'changefreq' => 'yearly'],
-            ['loc' => route('plans'), 'priority' => '0.6', 'changefreq' => 'monthly'],
+            ['loc' => public_url('check'), 'priority' => '0.5', 'changefreq' => 'monthly'],
         ];
 
         // Public bio pages (hel.ink/b/{slug}); none when the bio package is off.
