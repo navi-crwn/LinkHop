@@ -351,7 +351,8 @@ export const ACTIONS: Action[] = [
 
 async function linkId(page: Page, slug: string): Promise<string> {
   const html = await page.request.get('/links').then(r => r.text());
-  const m = html.match(new RegExp(`href="[^"]*/links/([^"/]+)"[^>]*>\\s*/${slug}\\s*<`));
+  // The list shows the link as /l/slug (the hel.ink/l/{slug} form); /slug is the form before the move.
+  const m = html.match(new RegExp(`href="[^"]*/links/([^"/]+)"[^>]*>\\s*(?:/l)?/${slug}\\s*<`));
   if (!m) throw new Error(`could not find my link ${slug} on /links`);
   return m[1];
 }
