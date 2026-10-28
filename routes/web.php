@@ -27,9 +27,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('ip.ban')->group(function () {
     Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
-    Route::get('/brand/logo.png', [BrandAssetController::class, 'logo'])->name('brand.logo');
-    Route::get('/brand/logo-dark.png', [BrandAssetController::class, 'logoDark'])->name('brand.logo.dark');
-    Route::get('/brand/favicon.png', [BrandAssetController::class, 'favicon'])->name('brand.favicon');
+    // Brand images, all from resources/brand (BrandAssetController). route() links carry a version ({v},
+    // see AppServiceProvider) that changes with the files; the plain paths stay for emails and old pages.
+    $brandFile = '[a-z0-9-]+\.(png|svg|ico)';
+    Route::get('/brand/{v}/logo.png', [BrandAssetController::class, 'show'])->defaults('file', 'logo.png')->where('v', '[a-f0-9]{8}')->name('brand.logo');
+    Route::get('/brand/{v}/logo-dark.png', [BrandAssetController::class, 'show'])->defaults('file', 'logo-dark.png')->where('v', '[a-f0-9]{8}')->name('brand.logo.dark');
+    Route::get('/brand/{v}/favicon.png', [BrandAssetController::class, 'show'])->defaults('file', 'favicon.png')->where('v', '[a-f0-9]{8}')->name('brand.favicon');
+    Route::get('/brand/{v}/{file}', [BrandAssetController::class, 'show'])->where(['v' => '[a-f0-9]{8}', 'file' => $brandFile])->name('brand.asset');
+    Route::get('/brand/{file}', [BrandAssetController::class, 'legacy'])->where('file', $brandFile);
     Route::get('/', [PublicLinkController::class, 'index'])->name('home');
     Route::get('/onboarding', function () {
         return view('auth.onboarding');
