@@ -56,11 +56,11 @@ Everything is included for every account. No premium tier, no locked features. A
 
 | Short link | Goes to |
 | --- | --- |
-| [hel.ink/github](https://hel.ink/github) | The source code |
-| [hel.ink/website](https://hel.ink/website) | The website |
-| [hel.ink/selfhost](https://hel.ink/selfhost) | The self-host guide |
-| [hel.ink/documentation](https://hel.ink/documentation) | The API reference |
-| [hel.ink/changelog](https://hel.ink/changelog) | What changed in each release |
+| [hel.ink/l/github](https://hel.ink/l/github) | The source code |
+| [hel.ink/l/website](https://hel.ink/l/website) | The website |
+| [hel.ink/l/selfhost](https://hel.ink/l/selfhost) | The self-host guide |
+| [hel.ink/l/documentation](https://hel.ink/l/documentation) | The API reference |
+| [hel.ink/l/changelog](https://hel.ink/l/changelog) | What changed in each release |
 
 To load the same example on your own install, run `php artisan db:seed --class=ExampleBioSeeder`.
 
@@ -134,7 +134,7 @@ GOOGLE_CLIENT_SECRET=xxx
 GOOGLE_REDIRECT_URI=https://yourdomain.com/auth/google/callback
 ```
 
-**Your own domain:** set `APP_URL` to it, and every short link and bio page uses it.
+**Your own domain:** set `APP_URL` to it, and every short link and bio page uses it (or `PUBLIC_URL` when the public host differs from the dashboard's).
 
 **Behind Cloudflare:** LinkHop sends a strict, report-only Content Security Policy that only trusts scripts carrying the page's nonce, and logs what it would block to `storage/logs/csp-*.log`. Cloudflare's **Email Address Obfuscation** (Scrape Shield) and **Rocket Loader** (Speed → Optimization) inject their own scripts from `/cdn-cgi/scripts/.../cloudflare-static/` without that nonce, so they fill the log. Either turn them off in the Cloudflare dashboard (recommended: LinkHop doesn't need them, and it keeps the policy ready to enforce), or skip them only where needed with a Cloudflare Configuration Rule. Allowing them in the policy doesn't work with a nonce policy (`'strict-dynamic'` ignores host and `'self'` allowlists); it would mean dropping the nonce, which weakens the policy for everything else.
 
@@ -151,6 +151,16 @@ php artisan queue:work
 1. Paste your long URL.
 2. Optional: pick a custom slug, a password or an expiry date.
 3. Press **Shorten** and copy your link.
+
+**Where your links live (URLs)**
+
+| What | URL |
+| --- | --- |
+| Short link | `hel.ink/l/slug` |
+| Bio page | `hel.ink/b/name` |
+| Old short link form | `hel.ink/slug`: redirects to `hel.ink/l/slug` until **27 November 2026**, then stops |
+
+hel.ink is becoming the home of several HOP apps, so short links got their own path on 28 October 2026. Nothing was deleted; the dashboard, QR codes, the API and the account export show the new form. On your own install the public host is `PUBLIC_URL` (default `APP_URL`), the date is `LEGACY_SLUG_UNTIL`, and `php artisan links:announce-migration` mails every link owner their links in the new form (`--reminder` for the second mail).
 
 **Make a bio page**
 1. Go to **Dashboard → Link in Bio**.
@@ -170,7 +180,7 @@ curl -X POST https://hel.ink/api/shorten \
   -d '{"url": "https://example.com", "alias": "my-link"}'
 ```
 
-`alias` is optional. The reply holds the short `url` and its `slug`. A ShareX config is ready to download in **Settings → API**.
+`alias` is optional. The reply holds the short `url` (in the `hel.ink/l/slug` form) and its `slug`. A ShareX config is ready to download in **Settings → API**.
 
 ## FAQ
 
@@ -184,7 +194,10 @@ Not to shorten a link. Guest links are deleted after 14 days without a click, an
 At `hel.ink/b/` followed by the name you pick, for example [hel.ink/b/hel](https://hel.ink/b/hel).
 
 **Can I use my own domain?**
-Yes, by hosting your own copy: set `APP_URL` in `.env` to your domain.
+Yes, by hosting your own copy: set `APP_URL` in `.env` to your domain. If the public links should live on another host than the dashboard, set `PUBLIC_URL` too.
+
+**Can I run it without Link in Bio?**
+Yes: `BIO_ENABLED=false` in `.env`. Bio lives in the `hop/bio` package (`packages/bio`); off, it registers no routes and needs no tables.
 
 **What does a click record?**
 The time, country and city, device, browser and referrer. Tracking pixels on bio pages only load after the visitor agrees.

@@ -25,8 +25,7 @@ Route::middleware(['api.auth'])->group(function () {
 Route::middleware(['web', 'auth', '2fa'])->group(function () {
     Route::get('/links', [LinkController::class, 'index']);
     Route::post('/shorten-web', [LinkController::class, 'shorten'])->middleware(['verified', 'throttle:shorten', 'quota']);
-    // Bio-specific shortlink creation (same safety checks and quota as other links)
-    Route::post('/bio/shorten', [LinkController::class, 'shortenForBio'])->middleware(['verified', 'throttle:shorten', 'quota']);
+    // POST /api/bio/shorten is registered by the hop/bio package (packages/bio/routes/bio.php) when bio is on.
     // Utility to fetch title from URL
     Route::post('/utils/fetch-title', [LinkController::class, 'fetchTitle']);
 });

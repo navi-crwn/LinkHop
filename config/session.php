@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Str;
-
 return [
     'driver' => env('SESSION_DRIVER', 'database'),
     // Minutes of inactivity before a session ends; AutoLogout uses the same value.
@@ -13,10 +11,9 @@ return [
     'table' => env('SESSION_TABLE', 'sessions'),
     'store' => env('SESSION_STORE'),
     'lottery' => [2, 100],
-    'cookie' => env(
-        'SESSION_COOKIE',
-        Str::slug((string) env('APP_NAME', 'laravel')).'-session'
-    ),
+    // Unique per HOP app: hel.ink, link.hel.ink and bio.hel.ink share the parent
+    // domain, so a shared cookie name would make the apps overwrite each other's session.
+    'cookie' => env('SESSION_COOKIE', 'linkhop_session'),
     'path' => env('SESSION_PATH', '/'),
     'domain' => env('SESSION_DOMAIN'),
     'secure' => env('SESSION_SECURE_COOKIE', str_starts_with((string) env('APP_URL'), 'https://')),

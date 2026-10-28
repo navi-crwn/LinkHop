@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\BioPage;
 use App\Models\Folder;
 use App\Models\Link;
 use App\Models\Tag;
 use App\Models\User;
+use Hop\Bio\Models\BioPage;
 
 function smokeMember(): User
 {

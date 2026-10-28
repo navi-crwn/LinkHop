@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Http\Controllers\AppSsoController;
 use App\Models\ActivityLog;
 use App\Models\ApiToken;
-use App\Models\BioPage;
 use App\Models\HopApp;
 use App\Models\HopAudit;
 use App\Models\HopUserNote;
@@ -14,13 +13,16 @@ use App\Models\LoginHistory;
 use App\Models\Role;
 use App\Models\User;
 use App\Support\HopSignature;
+use Hop\Bio\Models\BioPage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
 /** The signed HOP admin API for Imperium: /api/hop/stats, users, actions, audit, search, health. */
+#[Group('bio')]
 class HopAdminApiTest extends TestCase
 {
     use RefreshDatabase;
@@ -323,7 +325,7 @@ class HopAdminApiTest extends TestCase
         $this->assertNull($rows[0]['url']); // users are opened in the control center itself
         $this->assertSame('xyz', Link::find($rows[1]['id'])->slug);
         $this->assertNull($rows[1]['sub']);
-        $this->assertSame(url('/xyz'), $rows[1]['url']);
+        $this->assertSame(public_url('l/xyz'), $rows[1]['url']);
         $this->assertSame(route('bio.public.show', 'ranipage'), $rows[3]['url']);
         $this->assertSame((string) $link->id, $rows[2]['id']);
         $this->assertSame((string) $bio->id, $rows[3]['id']);

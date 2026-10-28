@@ -2,10 +2,17 @@
 
 namespace App\Providers;
 
+use App\Bio\ShortlinkCreatorAdapter;
 use App\Http\Controllers\AppSsoController;
 use App\Http\Controllers\BrandAssetController;
 use App\Models\SeoSetting;
+use App\Services\GeoIpService;
 use App\Services\LinkSafety;
+use App\Services\UserAgentService;
+use Hop\Bio\Contracts\GeoLookup;
+use Hop\Bio\Contracts\ShortlinkCreator;
+use Hop\Bio\Contracts\UrlSafety;
+use Hop\Bio\Contracts\UserAgentParser;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Middleware\TrustProxies;
@@ -22,6 +29,11 @@ class AppServiceProvider extends ServiceProvider
     {
         // One instance per request/job so the domain blacklist is loaded once.
         $this->app->scoped(LinkSafety::class);
+        // What the hop/bio package may call in this app (Hop\Bio\Contracts); nothing else.
+        $this->app->bind(ShortlinkCreator::class, ShortlinkCreatorAdapter::class);
+        $this->app->bind(UrlSafety::class, LinkSafety::class);
+        $this->app->bind(GeoLookup::class, GeoIpService::class);
+        $this->app->bind(UserAgentParser::class, UserAgentService::class);
     }
 
     public function boot(): void

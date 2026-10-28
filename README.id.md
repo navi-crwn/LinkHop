@@ -56,11 +56,11 @@ Semua fitur sudah termasuk untuk setiap akun. Tanpa paket premium, tanpa fitur y
 
 | Link pendek | Menuju |
 | --- | --- |
-| [hel.ink/github](https://hel.ink/github) | Kode sumber |
-| [hel.ink/website](https://hel.ink/website) | Website |
-| [hel.ink/selfhost](https://hel.ink/selfhost) | Panduan self-host |
-| [hel.ink/documentation](https://hel.ink/documentation) | Referensi API |
-| [hel.ink/changelog](https://hel.ink/changelog) | Perubahan di setiap rilis |
+| [hel.ink/l/github](https://hel.ink/l/github) | Kode sumber |
+| [hel.ink/l/website](https://hel.ink/l/website) | Website |
+| [hel.ink/l/selfhost](https://hel.ink/l/selfhost) | Panduan self-host |
+| [hel.ink/l/documentation](https://hel.ink/l/documentation) | Referensi API |
+| [hel.ink/l/changelog](https://hel.ink/l/changelog) | Perubahan di setiap rilis |
 
 Untuk memuat contoh yang sama di instalasi kamu sendiri, jalankan `php artisan db:seed --class=ExampleBioSeeder`.
 
@@ -134,7 +134,7 @@ GOOGLE_CLIENT_SECRET=xxx
 GOOGLE_REDIRECT_URI=https://yourdomain.com/auth/google/callback
 ```
 
-**Domain sendiri:** isi `APP_URL` dengan domainmu, maka semua link pendek dan halaman bio memakainya.
+**Domain sendiri:** isi `APP_URL` dengan domainmu, maka semua link pendek dan halaman bio memakainya (atau `PUBLIC_URL` kalau host publiknya berbeda).
 
 **Di belakang Cloudflare:** LinkHop mengirim Content Security Policy ketat dalam mode report-only yang hanya memercayai script dengan nonce halaman, dan mencatat apa yang akan diblokir ke `storage/logs/csp-*.log`. Fitur Cloudflare **Email Address Obfuscation** (Scrape Shield) dan **Rocket Loader** (Speed → Optimization) menyuntikkan script sendiri dari `/cdn-cgi/scripts/.../cloudflare-static/` tanpa nonce itu, sehingga memenuhi log. Matikan keduanya di dashboard Cloudflare (disarankan: LinkHop tidak membutuhkannya, dan policy tetap siap diberlakukan), atau lewati hanya di path tertentu dengan Configuration Rule Cloudflare. Mengizinkannya di policy tidak bisa dengan policy nonce (`'strict-dynamic'` mengabaikan daftar host dan `'self'`); caranya harus membuang nonce, yang melemahkan policy untuk semua script lain.
 
@@ -151,6 +151,16 @@ php artisan queue:work
 1. Tempel URL panjangmu.
 2. Opsional: pilih slug custom, password, atau tanggal kedaluwarsa.
 3. Tekan **Shorten** dan salin link-nya.
+
+**Di mana link-mu berada (URL)**
+
+| Apa | URL |
+| --- | --- |
+| Short link | `hel.ink/l/slug` |
+| Halaman bio | `hel.ink/b/nama` |
+| Bentuk lama short link | `hel.ink/slug`: dialihkan ke `hel.ink/l/slug` sampai **27 November 2026**, lalu berhenti |
+
+hel.ink menjadi rumah beberapa app HOP, jadi sejak 28 Oktober 2026 short link punya jalurnya sendiri. Tidak ada yang dihapus; dashboard, kode QR, API, dan ekspor akun sudah menampilkan bentuk baru. Di instalasi sendiri, host publiknya adalah `PUBLIC_URL` (default `APP_URL`), tanggalnya `LEGACY_SLUG_UNTIL`, dan `php artisan links:announce-migration` mengirim email ke setiap pemilik link berisi link mereka dalam bentuk baru (`--reminder` untuk email kedua).
 
 **Membuat halaman bio**
 1. Buka **Dashboard → Link in Bio**.
@@ -184,7 +194,10 @@ Tidak untuk memendekkan link. Link tamu dihapus setelah 14 hari tanpa klik, dan 
 Di `hel.ink/b/` lalu nama yang kamu pilih, misalnya [hel.ink/b/hel](https://hel.ink/b/hel).
 
 **Bisa pakai domain sendiri?**
-Bisa, dengan meng-host salinan sendiri: isi `APP_URL` di `.env` dengan domainmu.
+Bisa, dengan meng-host salinan sendiri: isi `APP_URL` di `.env` dengan domainmu. Kalau link publik harus hidup di host lain dari dashboard, isi juga `PUBLIC_URL`.
+
+**Bisa jalan tanpa Link in Bio?**
+Bisa: `BIO_ENABLED=false` di `.env`. Bio hidup di paket `hop/bio` (`packages/bio`); saat mati, tidak ada route yang didaftarkan dan tidak butuh tabel.
 
 **Apa yang tercatat dari sebuah klik?**
 Waktu, negara dan kota, perangkat, browser, dan referrer. Pixel pelacak di halaman bio baru dimuat setelah pengunjung setuju.

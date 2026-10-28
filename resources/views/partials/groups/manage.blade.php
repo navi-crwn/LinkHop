@@ -63,7 +63,7 @@
                     @forelse ($links as $link)
                         <tr>
                             <td class="max-w-56 sm:max-w-md">
-                                <a href="{{ route('links.show', $link) }}" class="block truncate text-sm font-semibold text-ink hover:underline">/{{ $link->slug }}</a>
+                                <a href="{{ route('links.show', $link) }}" class="block truncate text-sm font-semibold text-ink hover:underline">/l/{{ $link->slug }}</a>
                                 <p class="truncate text-xs text-muted" title="{{ $link->target_url }}">{{ $link->target_url }}</p>
                             </td>
                             <td class="text-right tabular-nums text-ink">{{ number_format($link->clicks) }}</td>
