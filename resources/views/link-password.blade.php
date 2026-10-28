@@ -25,7 +25,7 @@
     </style>
 </head>
 <body>
-    <form method="POST" action="{{ url($link->slug) }}" class="card">
+    <form method="POST" action="{{ url()->current() }}" class="card">
         @csrf
         <h1 class="text-xl font-semibold">This shortlink is password protected</h1>
         <p class="text-sm text-slate-400 mt-2">Enter the password to continue to <span class="text-slate-200">{{ $link->short_url }}</span>.</p>

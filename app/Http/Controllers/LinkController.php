@@ -153,11 +153,10 @@ class LinkController extends Controller
                 'used' => $stats['active_links'],
                 'limit' => $limits['max_active_links'],
             ],
-            'bio' => [
-                'used' => $user->bioPages()->count(),
-                'limit' => 3,
-            ],
         ];
+        if (bio_enabled()) {
+            $quota['bio'] = ['used' => $user->bioPages()->count(), 'limit' => (int) config('bio.max_pages', 3)];
+        }
         $data = [
             'links' => $links,
             'stats' => $stats,

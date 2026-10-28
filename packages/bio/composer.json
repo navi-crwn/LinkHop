@@ -1,0 +1,23 @@
+{
+    "name": "hop/bio",
+    "description": "Link in bio pages for the HOP apps (hel.ink/b/{slug}). Used by LinkHop today, by BioHop once it has its own app.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Hop\\Bio\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Hop\\Bio\\BioServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable"
+}

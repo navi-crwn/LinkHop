@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BioPage;
 use App\Models\Link;
 use App\Services\LinkSafety;
+use Hop\Bio\Models\BioPage;
 use Illuminate\Http\Request;
 
 /**
@@ -25,10 +25,11 @@ class LinkCheckController extends Controller
 
     private function resolve(string $input, LinkSafety $safety): array
     {
-        $ownHost = preg_replace('/^www\./', '', strtolower((string) parse_url(config('app.url'), PHP_URL_HOST)));
+        // Both the app host (APP_URL) and the public host (PUBLIC_URL) are ours.
+        $ownHosts = array_unique([preg_replace('/^www\./', '', strtolower((string) parse_url(config('app.url'), PHP_URL_HOST))), strtolower(public_host())]);
         $path = $input;
         if (preg_match('#^(https?://)?([^/\s]+\.[^/\s]+)(/.*)?$#i', $input, $m)) {
-            if (preg_replace(['/^www\./', '/:\d+$/'], '', strtolower($m[2])) !== $ownHost) {
+            if (! in_array(preg_replace(['/^www\./', '/:\d+$/'], '', strtolower($m[2])), $ownHosts, true)) {
                 return ['type' => 'foreign', 'host' => $m[2]];
             }
             $path = $m[3] ?? '';
@@ -36,6 +37,9 @@ class LinkCheckController extends Controller
         $path = trim(strtok($path, '?#') ?: '', '/');
 
         if (preg_match('#^b/([A-Za-z0-9]+)$#', $path, $m)) {
+            if (! bio_enabled()) {
+                return ['type' => 'missing', 'slug' => $path];
+            }
             $page = BioPage::where('slug', strtolower($m[1]))->where('is_published', true)->withCount(['links' => fn ($q) => $q->where('is_active', true)])->first();
 
             return $page && ! $page->user?->isSuspended()
@@ -43,6 +47,8 @@ class LinkCheckController extends Controller
                 : ['type' => 'missing', 'slug' => $path];
         }
 
+        // hel.ink/l/{slug} is the link's form; the old hel.ink/{slug} is still understood.
+        $path = preg_replace('#^l/#', '', $path);
         $link = $path !== '' ? Link::where('slug', $path)->first() : null;
         if (! $link) {
             return ['type' => 'missing', 'slug' => $path];

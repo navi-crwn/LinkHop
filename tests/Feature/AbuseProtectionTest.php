@@ -2,12 +2,12 @@
 
 use App\Console\Commands\AbuseScan;
 use App\Models\AbuseFlag;
-use App\Models\BioLink;
-use App\Models\BioPage;
 use App\Models\DomainBlacklist;
 use App\Models\Link;
 use App\Models\User;
 use App\Services\LinkSafety;
+use Hop\Bio\Models\BioLink;
+use Hop\Bio\Models\BioPage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 
@@ -172,9 +172,9 @@ test('link password attempts are rate limited', function () {
     Link::create(['user_id' => $user->id, 'slug' => 'locked1', 'target_url' => 'https://example.com', 'status' => 'active', 'password_hash' => bcrypt('right-pass')]);
 
     foreach (range(1, 10) as $i) {
-        $this->post('/locked1', ['password' => 'wrong'.$i])->assertSessionHasErrors('password');
+        $this->post('/l/locked1', ['password' => 'wrong'.$i])->assertSessionHasErrors('password');
     }
-    $this->post('/locked1', ['password' => 'right-pass'])->assertSessionHasErrors('password');
+    $this->post('/l/locked1', ['password' => 'right-pass'])->assertSessionHasErrors('password');
 });
 
 test('an expired link can still be edited', function () {

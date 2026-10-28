@@ -21,10 +21,10 @@ test('guest links stop redirecting after 14 idle days or 30 days total', functio
     guestLink('old001', ['created_at' => now()->subDays(31), 'last_clicked_at' => now()->subDay()]);
     Cache::flush();
 
-    $this->get('/fresh1')->assertRedirect('https://example.com/fresh1');
-    $this->get('/clicked')->assertRedirect('https://example.com/clicked');
-    $this->get('/idle01')->assertStatus(410);
-    $this->get('/old001')->assertStatus(410);
+    $this->get('/l/fresh1')->assertRedirect('https://example.com/fresh1');
+    $this->get('/l/clicked')->assertRedirect('https://example.com/clicked');
+    $this->get('/l/idle01')->assertStatus(410);
+    $this->get('/l/old001')->assertStatus(410);
 });
 
 test('a guest link lives through day 30 and is gone at 00:00 after it, even if clicked on day 29', function () {
@@ -66,13 +66,13 @@ test('a guest link is gone at 00:00 after 14 full days in a row without a click'
 test('a deleted guest link shows an expired page and its slug stays blocked for a while', function () {
     $old = guestLink('promo1', ['created_at' => now()->subDays(40)]);
     Cache::flush();
-    $this->get('/promo1')->assertStatus(410)->assertSee('Link Expired');
+    $this->get('/l/promo1')->assertStatus(410)->assertSee('Link Expired');
 
     $this->artisan('links:prune-guest')->assertSuccessful();
     expect(Link::find($old->id))->toBeNull()
         ->and(RetiredSlug::isBlocked('PROMO1'))->toBeTrue();
     Cache::flush();
-    $this->get('/promo1')->assertStatus(410);
+    $this->get('/l/promo1')->assertStatus(410);
 
     // nobody can take the slug over and catch its old visitors
     $user = User::factory()->create();
@@ -91,7 +91,7 @@ test('links owned by a user never expire this way', function () {
     Link::create(['user_id' => $user->id, 'slug' => 'mine01', 'target_url' => 'https://example.com', 'status' => 'active'])
         ->forceFill(['created_at' => now()->subDays(400)])->save();
 
-    $this->get('/mine01')->assertRedirect('https://example.com');
+    $this->get('/l/mine01')->assertRedirect('https://example.com');
 });
 
 test('prune command deletes only expired guest links', function () {
@@ -109,8 +109,10 @@ test('prune command deletes only expired guest links', function () {
 test('unverified users cannot create links or bio content', function () {
     $user = User::factory()->unverified()->create();
 
-    $this->actingAs($user)->postJson('/api/bio/shorten', ['url' => 'https://example.com'])->assertForbidden();
-    $this->actingAs($user)->post('/bio', ['slug' => 'abc123', 'title' => 'x'])->assertRedirect(route('verification.notice'));
+    if (bio_enabled()) {
+        $this->actingAs($user)->postJson('/api/bio/shorten', ['url' => 'https://example.com'])->assertForbidden();
+        $this->actingAs($user)->post('/bio', ['slug' => 'abc123', 'title' => 'x'])->assertRedirect(route('verification.notice'));
+    }
     $this->actingAs($user)->post('/links', ['target_url' => 'https://example.com', 'status' => 'active'])->assertRedirect(route('verification.notice'));
     // They can still sign in and see their dashboard.
     $this->actingAs($user)->get('/dashboard')->assertOk();
@@ -120,9 +122,9 @@ test('bot visits are not counted as clicks', function () {
     $link = guestLink('botcheck');
     Cache::flush();
 
-    $this->withHeader('User-Agent', 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)')->get('/botcheck');
+    $this->withHeader('User-Agent', 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)')->get('/l/botcheck');
     expect($link->fresh()->clicks)->toBe(0)->and($link->fresh()->last_clicked_at)->toBeNull();
 
-    $this->withHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36')->get('/botcheck');
+    $this->withHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36')->get('/l/botcheck');
     expect($link->fresh()->clicks)->toBe(1);
 });

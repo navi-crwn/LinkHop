@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\BioPage;
 use App\Models\Link;
 use App\Models\User;
 use App\Support\ReservedSlugs;
 use Database\Seeders\ExampleBioSeeder;
+use Hop\Bio\Models\BioPage;
 use Illuminate\Support\Facades\Storage;
 
 test('example bio seeder builds the showcase page and short links', function () {
@@ -51,8 +51,9 @@ test('every example short link opens its target instead of an app page', functio
     $this->seed(ExampleBioSeeder::class);
 
     foreach (ExampleBioSeeder::SHORT_LINKS as $slug => $target) {
-        expect(ReservedSlugs::isReserved($slug))->toBeFalse("/{$slug} is reserved or an app route");
-        $this->get("/{$slug}")->assertRedirect($target);
+        expect(ReservedSlugs::isReserved($slug))->toBeFalse("/{$slug} is reserved");
+        $this->get("/l/{$slug}")->assertRedirect($target);
+        $this->get("/{$slug}")->assertRedirect(public_url("l/{$slug}"))->assertStatus(301);
     }
     expect(ExampleBioSeeder::SHORT_LINKS['documentation'] ?? null)->toBe(ExampleBioSeeder::SITE.'#api');
 });

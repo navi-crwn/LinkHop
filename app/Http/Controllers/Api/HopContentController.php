@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\AbuseFlag;
 use App\Models\AbuseReport;
-use App\Models\BioLink;
-use App\Models\BioPage;
 use App\Models\DomainBlacklist;
 use App\Models\HopApp;
 use App\Models\HopAudit;
@@ -16,8 +14,10 @@ use App\Models\Link;
 use App\Models\SeoSetting;
 use App\Models\User;
 use App\Services\LinkService;
-use App\Support\BioUploads;
 use Carbon\Carbon;
+use Hop\Bio\Models\BioLink;
+use Hop\Bio\Models\BioPage;
+use Hop\Bio\Support\BioUploads;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -38,10 +38,10 @@ class HopContentController extends Controller
         return response()->json(['ok' => true, 'data' => [
             'app' => 'linkhop', 'name' => config('app.name'), 'icon' => 'link', 'base_url' => config('app.url'),
             'capabilities' => ['admin_api', 'account_server', 'reports', 'settings', 'search', 'metrics'],
-            'content_types' => [
+            'content_types' => array_values(array_filter([
                 ['type' => 'link', 'label' => 'Links', 'actions' => ['disable', 'enable', 'delete', 'transfer', 'rescan']],
-                ['type' => 'bio', 'label' => 'Bio pages', 'actions' => ['unpublish', 'publish', 'delete', 'transfer']],
-            ],
+                bio_enabled() ? ['type' => 'bio', 'label' => 'Bio pages', 'actions' => ['unpublish', 'publish', 'delete', 'transfer']] : null,
+            ])),
             'extensions' => ['ip', 'domains', 'queue'],
             'settings_schema' => array_map(fn ($k) => ['key' => 'seo.'.$k, 'type' => 'string', 'restart_required' => false], SeoSetting::make()->getFillable()),
         ]]);
@@ -81,7 +81,7 @@ class HopContentController extends Controller
             $total = (clone $query)->reorder()->count();
             $rows = $query->limit($limit)->get();
             $data = $rows->map(fn (Link $l) => $this->linkRow($l))->all();
-        } elseif ($type === 'bio') {
+        } elseif ($type === 'bio' && bio_enabled()) {
             $query = BioPage::query()->with('user:id,username,name')->orderByDesc('id');
             if ($cursor) {
                 $query->where('id', '<', $cursor);
@@ -127,7 +127,7 @@ class HopContentController extends Controller
                 'reports' => AbuseReport::where('slug', $l->slug)->latest()->limit(20)->get()->map(fn ($r) => $this->reportRow($r))->all(),
                 'clicks_30d' => \DB::table('link_clicks')->where('link_id', $l->id)->where('clicked_at', '>=', now()->subDays(30))->count(),
             ];
-        } elseif ($type === 'bio') {
+        } elseif ($type === 'bio' && bio_enabled()) {
             $p = BioPage::with('user:id,username,name')->find($id);
             if (! $p) {
                 return $this->fail('not_found', 'no such bio page', 404);
@@ -199,7 +199,7 @@ class HopContentController extends Controller
 
             return response()->json(['ok' => true, 'data' => $this->linkRow($l->fresh('user'))]);
         }
-        if ($type === 'bio') {
+        if ($type === 'bio' && bio_enabled()) {
             $p = BioPage::find($id);
             if (! $p) {
                 return $this->fail('not_found', 'no such bio page', 404);
@@ -297,8 +297,8 @@ class HopContentController extends Controller
                             $this->links->forgetCache($link);
                         }
                     }),
-                    'bio_page' => BioPage::whereKey($f->subject_id)->update(['is_published' => true]),
-                    'bio_link' => BioLink::whereKey($f->subject_id)->update(['is_active' => true]),
+                    'bio_page' => bio_enabled() ? BioPage::whereKey($f->subject_id)->update(['is_published' => true]) : null,
+                    'bio_link' => bio_enabled() ? BioLink::whereKey($f->subject_id)->update(['is_active' => true]) : null,
                     'user' => User::whereKey($f->subject_id)->update(['status' => User::STATUS_ACTIVE]),
                     default => null,
                 };
@@ -429,7 +429,7 @@ class HopContentController extends Controller
         }
         $env = [
             'guest_link_max_days' => config('shortener.guest_link_max_days'), 'guest_link_idle_days' => config('shortener.guest_link_idle_days'),
-            'retired_slug_days' => config('shortener.retired_slug_days'), 'bio_slug_min_length' => config('shortener.bio_slug_min_length'),
+            'retired_slug_days' => config('shortener.retired_slug_days'), 'bio_slug_min_length' => config('bio.slug_min_length'),
             'abuse.threshold_disable' => config('abuse.thresholds.disable'), 'abuse.threshold_suspend_user' => config('abuse.thresholds.suspend_user'),
             'abuse.register_per_ip_per_hour' => config('abuse.register_per_ip_per_hour'),
             'turnstile' => (bool) config('services.turnstile.site_key'), 'safe_browsing' => (bool) config('abuse.providers.safe_browsing_key'),
@@ -483,7 +483,7 @@ class HopContentController extends Controller
             'id' => (string) $p->id, 'type' => 'bio', 'title' => $p->title, 'slug' => $p->slug,
             'owner' => $p->user ? ['sub' => (string) $p->user->id, 'username' => $p->user->username, 'name' => $p->user->name] : null,
             'status' => $p->is_published ? 'published' : 'draft', 'views' => (int) $p->view_count,
-            'created_at' => $p->created_at?->toIso8601String(), 'url' => url('/b/'.$p->slug),
+            'created_at' => $p->created_at?->toIso8601String(), 'url' => public_url('b/'.$p->slug),
             'flags' => array_values(array_filter([$p->is_adult_content ? 'adult' : null, $p->password_enabled ? 'password' : null, $p->seo_noindex ? 'noindex' : null])),
         ];
     }

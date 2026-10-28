@@ -24,5 +24,9 @@ jobs:
       - run: cp .env.example .env && php artisan key:generate
       - run: vendor/bin/pint --test
       - run: php artisan test
+      # LinkHop without the bio package: the tests that need bio are excluded, the rest must pass without its tables.
+      - run: php artisan test --exclude-group=bio
+        env:
+          BIO_ENABLED: 'false'
       - run: composer audit
       - run: npm audit
