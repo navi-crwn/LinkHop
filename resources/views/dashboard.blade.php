@@ -14,6 +14,15 @@
         <div class="glass rounded-2xl px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">{{ session('status') }}</div>
     @endif
 
+    @if (\App\Support\ShortLinkMove::active())
+        {{-- Short links moved to hel.ink/l/{slug}; the old form redirects until the date below. --}}
+        <div class="glass flex flex-wrap items-center gap-3 rounded-2xl px-4 py-3 text-sm">
+            <span class="chip-blue">Notice</span>
+            <span class="min-w-0 flex-1 text-muted">Short links now live at <strong class="text-ink">{{ public_host() }}/l/&hellip;</strong> The old form ({{ public_host() }}/&hellip;) keeps redirecting until <strong class="text-ink">{{ \App\Support\ShortLinkMove::untilLabel() }}</strong>, then stops.</span>
+            <a href="{{ route('announcements.short-links') }}" class="font-medium text-indigo-600 hover:underline dark:text-indigo-300">What to do &rarr;</a>
+        </div>
+    @endif
+
     @if (auth()->user()->isAdmin())
         {{-- The admin pages moved to the HOP control center (Imperium). --}}
         <div class="glass flex flex-wrap items-center gap-3 rounded-2xl px-4 py-3 text-sm">
@@ -87,7 +96,7 @@
                     <div class="list-row">
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2">
-                                <a href="{{ route('links.show', $link) }}" class="truncate text-sm font-semibold text-ink hover:text-indigo-600 dark:hover:text-indigo-300">/{{ $link->slug }}</a>
+                                <a href="{{ route('links.show', $link) }}" class="truncate text-sm font-semibold text-ink hover:text-indigo-600 dark:hover:text-indigo-300">/l/{{ $link->slug }}</a>
                                 @if ($link->isExpired())
                                     <span class="chip-red">Expired</span>
                                 @elseif ($link->status !== 'active')
@@ -126,7 +135,7 @@
                     <span class="text-[11px] text-muted">resets daily</span>
                 </div>
                 <dl class="mt-3 space-y-3 text-xs">
-                    @foreach ([['Created today', $quota['daily'], 'bg-indigo-500'], ['Active links', $quota['active'], 'bg-emerald-500'], ['Bio pages', $quota['bio'], 'bg-violet-500']] as [$label, $q, $color])
+                    @foreach (array_filter([['Created today', $quota['daily'], 'bg-indigo-500'], ['Active links', $quota['active'], 'bg-emerald-500'], isset($quota['bio']) ? ['Bio pages', $quota['bio'], 'bg-violet-500'] : null]) as [$label, $q, $color])
                         {{-- dt/dd must be direct children of the group div (dl > div > dt + dd) --}}
                         <div class="flex flex-wrap justify-between">
                             <dt class="mb-1 text-muted">{{ $label }}</dt>
@@ -141,7 +150,7 @@
             <section class="glass-card">
                 <h2 class="section-title">Top performer</h2>
                 @if ($highlightTop && $highlightTop->clicks > 0)
-                    <a href="{{ route('links.show', $highlightTop) }}" class="mt-2 block truncate text-sm font-semibold text-indigo-600 dark:text-indigo-300">/{{ $highlightTop->slug }}</a>
+                    <a href="{{ route('links.show', $highlightTop) }}" class="mt-2 block truncate text-sm font-semibold text-indigo-600 dark:text-indigo-300">/l/{{ $highlightTop->slug }}</a>
                     <p class="truncate text-xs text-muted">{{ $highlightTop->target_url }}</p>
                     <p class="mt-2 text-2xl font-semibold tabular-nums text-ink">{{ number_format($highlightTop->clicks) }} <span class="text-xs font-normal text-muted">clicks</span></p>
                 @else

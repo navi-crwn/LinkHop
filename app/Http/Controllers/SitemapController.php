@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BioPage;
+use Hop\Bio\Models\BioPage;
 use Illuminate\Http\Response;
 
 class SitemapController extends Controller
@@ -21,7 +21,8 @@ class SitemapController extends Controller
             ['loc' => route('plans'), 'priority' => '0.6', 'changefreq' => 'monthly'],
         ];
 
-        $bioPages = BioPage::query()
+        // Public bio pages (hel.ink/b/{slug}); none when the bio package is off.
+        $bioPages = ! bio_enabled() ? collect() : BioPage::query()
             ->where('is_published', true)
             ->where('allow_indexing', true)
             ->where('is_adult_content', false)
@@ -42,7 +43,7 @@ class SitemapController extends Controller
 
         foreach ($bioPages as $bio) {
             $xml .= '<url>';
-            $xml .= '<loc>'.htmlspecialchars(url('/b/'.$bio->slug)).'</loc>';
+            $xml .= '<loc>'.htmlspecialchars(public_url('b/'.$bio->slug)).'</loc>';
             $xml .= '<lastmod>'.$bio->updated_at->toW3cString().'</lastmod>';
             $xml .= '<changefreq>weekly</changefreq>';
             $xml .= '<priority>0.6</priority>';

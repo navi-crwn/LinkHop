@@ -2,13 +2,13 @@
 
 use App\Models\AbuseReport;
 use App\Models\ActivityLog;
-use App\Models\BioClick;
-use App\Models\BioLink;
-use App\Models\BioPage;
 use App\Models\Link;
 use App\Models\LoginHistory;
 use App\Models\User;
 use App\Support\CspReport;
+use Hop\Bio\Models\BioClick;
+use Hop\Bio\Models\BioLink;
+use Hop\Bio\Models\BioPage;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Console\Commands\UpdateThreatFeeds;
+use Hop\Bio\Contracts\UrlSafety;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Schema;
  * Decides whether a destination URL (plus its surrounding text) is safe to
  * host. Shared by request validation (creation time) and `abuse:scan`.
  */
-class LinkSafety
+class LinkSafety implements UrlSafety
 {
     public const WEB_SCHEMES = ['http', 'https'];
 

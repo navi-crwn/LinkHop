@@ -2,6 +2,33 @@
 
 use Illuminate\Support\Facades\DB;
 
+if (! function_exists('public_url')) {
+    /**
+     * A URL on the public host (PUBLIC_URL, default APP_URL): short links, bio
+     * pages, QR codes, og:url, the sitemap. public_url('l/abc') → https://hel.ink/l/abc.
+     */
+    function public_url(string $path = ''): string
+    {
+        $base = (string) config('shortener.public_url');
+        $path = ltrim($path, '/');
+
+        return $path === '' ? $base : $base.'/'.$path;
+    }
+}
+if (! function_exists('public_host')) {
+    /** The public host without www., for display next to slug inputs (hel.ink). */
+    function public_host(): string
+    {
+        return preg_replace('/^www\./', '', (string) parse_url(public_url(), PHP_URL_HOST));
+    }
+}
+if (! function_exists('bio_enabled')) {
+    /** Whether the hop/bio package is switched on (BIO_ENABLED). */
+    function bio_enabled(): bool
+    {
+        return (bool) config('bio.enabled', false);
+    }
+}
 if (! function_exists('simple_icon_url')) {
     /** Get Simple Icons CDN URL for a platform/brand */
     function simple_icon_url(string $platform, ?string $color = null): ?string

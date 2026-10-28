@@ -10,10 +10,11 @@ use App\Services\GeoIP\Providers\IpApiProvider;
 use App\Services\GeoIP\Providers\IpInfoProvider;
 use App\Services\GeoIP\Providers\LocalMmdbProvider;
 use App\Services\GeoIP\QuotaManager;
+use Hop\Bio\Contracts\GeoLookup;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
-class GeoIpService
+class GeoIpService implements GeoLookup
 {
     private const MAX_EXTERNAL_PER_LOOKUP = 2;
 

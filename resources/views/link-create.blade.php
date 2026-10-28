@@ -18,7 +18,7 @@
         <div>
             <label for="flinkcr-2" class="label">Custom slug (optional)</label>
             <div class="flex items-center gap-2">
-                <span class="shrink-0 text-sm text-muted">{{ parse_url(config('app.url'), PHP_URL_HOST) }}/</span>
+                <span class="shrink-0 text-sm text-muted">{{ public_host() }}/l/</span>
                 <input id="flinkcr-2" type="text" name="slug" value="{{ old('slug') }}" class="input" placeholder="custom-slug">
             </div>
         </div>

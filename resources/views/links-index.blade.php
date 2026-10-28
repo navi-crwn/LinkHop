@@ -76,7 +76,7 @@
                         <input type="checkbox" aria-label="Select {{ $link->slug }}" value="{{ $link->id }}" x-model="selectedLinks" class="rounded-sm border-slate-400/50 bg-transparent text-indigo-500">
                         <div class="min-w-0 flex-1">
                             <div class="flex flex-wrap items-center gap-1.5">
-                                <a href="{{ route('links.show', $link) }}" class="truncate text-sm font-semibold text-ink hover:text-indigo-600 dark:hover:text-indigo-300">/{{ $link->slug }}</a>
+                                <a href="{{ route('links.show', $link) }}" class="truncate text-sm font-semibold text-ink hover:text-indigo-600 dark:hover:text-indigo-300">/l/{{ $link->slug }}</a>
                                 @if ($link->isExpired())
                                     <span class="chip-red">Expired</span>
                                 @elseif ($link->status !== 'active')

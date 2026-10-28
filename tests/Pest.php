@@ -15,7 +15,21 @@ use Tests\TestCase;
 */
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
-    ->in('Feature');
+    ->in('Feature', '../packages/bio/tests');
+// Tests that need the hop/bio package (its routes and tables). `BIO_ENABLED=false php artisan test --exclude-group=bio`
+// runs the suite with bio off, which is what a LinkHop without bio looks like.
+pest()->group('bio')->in(
+    '../packages/bio/tests',
+    'Feature/AbuseProtectionTest.php',
+    'Feature/AdminPagesSmokeTest.php',
+    'Feature/BackendAuditTest.php',
+    'Feature/ExampleBioSeederTest.php',
+    'Feature/HopAdminApiTest.php',
+    'Feature/HopContentApiTest.php',
+    'Feature/ModerationLockTest.php',
+    'Feature/PrivacyRetentionTest.php',
+    'Feature/VisitorPrivacyTest.php',
+);
 /*
 |--------------------------------------------------------------------------
 | Expectations

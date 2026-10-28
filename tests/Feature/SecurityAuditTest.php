@@ -17,17 +17,17 @@ test('api tokens of suspended users are rejected', function () {
 
 test('disabling a link takes effect immediately despite the redirect cache', function () {
     $link = Link::create(['slug' => 'cached1', 'target_url' => 'https://example.com', 'status' => 'active']);
-    $this->get('/cached1')->assertRedirect('https://example.com'); // warms the cache
+    $this->get('/l/cached1')->assertRedirect('https://example.com'); // warms the cache
 
     $link->update(['status' => Link::STATUS_INACTIVE]);
-    $this->get('/cached1')->assertNotFound();
+    $this->get('/l/cached1')->assertNotFound();
 });
 
 test('links of suspended users stop resolving', function () {
     $user = User::factory()->create(['status' => User::STATUS_SUSPENDED]);
     Link::create(['user_id' => $user->id, 'slug' => 'susp01', 'target_url' => 'https://example.com', 'status' => 'active']);
 
-    $this->get('/susp01')->assertNotFound();
+    $this->get('/l/susp01')->assertNotFound();
 });
 
 test('csv cells that look like formulas are neutralised', function () {
@@ -52,7 +52,7 @@ test('client ip comes from cloudflare forwarded headers only when cloudflare pro
 });
 
 test('pages carry a per-request script nonce and accept csp reports', function () {
-    $response = $this->get('/login');
+    $response = $this->get('/l/login');
     preg_match("/'nonce-([^']+)'/", $response->headers->get('Content-Security-Policy-Report-Only'), $m);
 
     expect($m[1] ?? null)->not->toBeNull();

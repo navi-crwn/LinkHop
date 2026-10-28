@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\AbuseFlag;
 use App\Models\AbuseReport;
-use App\Models\BioPage;
 use App\Models\HopApp;
 use App\Models\HopAudit;
 use App\Models\HopUserNote;
@@ -14,6 +13,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Services\UserDeletion;
 use Carbon\CarbonImmutable;
+use Hop\Bio\Models\BioPage;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -49,7 +49,7 @@ class HopAdminController extends Controller
                     'users_suspended' => User::where('status', User::STATUS_SUSPENDED)->count(),
                     'links' => Link::count(),
                     'links_live' => Link::query()->live()->count(),
-                    'bio_pages' => BioPage::count(),
+                    'bio_pages' => bio_enabled() ? BioPage::count() : 0,
                     'clicks_30d' => DB::table('link_clicks')->where('clicked_at', '>=', $now->subDays(30))->count(),
                     'clicks_today' => DB::table('link_clicks')->where('clicked_at', '>=', $now->startOfDay())->count(),
                     'open_reports' => AbuseReport::where('status', 'open')->count(),
@@ -99,7 +99,7 @@ class HopAdminController extends Controller
     public function users(Request $request): JsonResponse
     {
         $limit = max(1, min(200, (int) $request->query('limit', 50)));
-        $q = User::query()->with('roles')->withCount(['links', 'bioPages']);
+        $q = User::query()->with('roles')->withCount(bio_enabled() ? ['links', 'bioPages'] : ['links']);
         $this->matchUsers($q, trim((string) $request->query('q', '')));
         if (in_array($status = (string) $request->query('status', ''), [User::STATUS_ACTIVE, User::STATUS_SUSPENDED], true)) {
             $q->where('status', $status);
@@ -148,7 +148,7 @@ class HopAdminController extends Controller
             'created_at' => $u->created_at?->toIso8601String(),
             'last_login_at' => $u->last_login_at?->toIso8601String(),
             'links' => (int) ($u->links_count ?? $u->links()->count()),
-            'bio_pages' => (int) ($u->bio_pages_count ?? $u->bioPages()->count()),
+            'bio_pages' => bio_enabled() ? (int) ($u->bio_pages_count ?? $u->bioPages()->count()) : 0,
         ];
     }
 
@@ -163,7 +163,7 @@ class HopAdminController extends Controller
             'counts' => [
                 'links' => $user->links()->count(),
                 'links_live' => $user->links()->live()->count(),
-                'bio_pages' => $user->bioPages()->count(),
+                'bio_pages' => bio_enabled() ? $user->bioPages()->count() : 0,
                 'folders' => $user->folders()->count(),
                 'tags' => $user->tags()->count(),
                 'api_tokens' => $user->apiTokens()->count(),
@@ -331,13 +331,13 @@ class HopAdminController extends Controller
             ->orderByDesc('id')->limit(max(0, 20 - count($out)))->get();
         foreach ($links as $l) {
             $out[] = ['kind' => 'link', 'id' => (string) $l->id, 'label' => '/'.$l->slug.' → '.$l->target_url,
-                'sub' => $l->user_id ? (string) $l->user_id : null, 'url' => url('/'.$l->slug)];
+                'sub' => $l->user_id ? (string) $l->user_id : null, 'url' => $l->short_url];
         }
-        $bios = BioPage::query()->where(fn ($w) => $w->where('slug', 'like', "%{$term}%")->orWhere('title', 'like', "%{$term}%"))
+        $bios = ! bio_enabled() ? collect() : BioPage::query()->where(fn ($w) => $w->where('slug', 'like', "%{$term}%")->orWhere('title', 'like', "%{$term}%"))
             ->orderByDesc('id')->limit(max(0, 20 - count($out)))->get();
         foreach ($bios as $b) {
             $out[] = ['kind' => 'bio', 'id' => (string) $b->id, 'label' => $b->title.' (/'.$b->slug.')',
-                'sub' => $b->user_id ? (string) $b->user_id : null, 'url' => route('bio.public.show', $b->slug)];
+                'sub' => $b->user_id ? (string) $b->user_id : null, 'url' => public_url('b/'.$b->slug)];
         }
 
         return response()->json(['ok' => true, 'data' => array_slice($out, 0, 20)]);
