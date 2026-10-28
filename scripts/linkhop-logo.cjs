@@ -1,9 +1,11 @@
-// Regenerates public/images/brand/*.svg. Run: npm i --no-save opentype.js@1.3.4 @fontsource/poppins@5.1.0 && node scripts/linkhop-logo.cjs public/images/brand
+// Regenerates every brand file in resources/brand (and public/favicon.ico) from one design:
+//   npm i --no-save opentype.js@1.3.4 @fontsource/poppins@5.1.0 && node scripts/linkhop-logo.cjs
+// SVGs first, then the PNGs and the .ico are rendered from them with the repo's Playwright.
 // Builds the LinkHop logo files as plain SVG (text converted to outlines, no font needed).
 // Wordmark: "LinkH" + an "o" that is a bunny head + "p", with an Amazon-style ribbon from under
 // the L to an arrow pointing at the p. Mark: the bunny head on its own.
 const fs = require('fs'), path = require('path'), opentype = require('opentype.js');
-const out = process.argv[2];
+const out = process.argv[2] || path.join(__dirname, '..', 'resources', 'brand');
 const font = opentype.parse(fs.readFileSync(require.resolve('@fontsource/poppins/files/poppins-latin-800-italic.woff')).buffer);
 
 const SIZE = 96, BASE = 118, X0 = 30, T = Math.tan(10 * Math.PI / 180);
@@ -82,4 +84,27 @@ fs.writeFileSync(path.join(out, 'linkhop-wordmark-white.svg'), wordmarkSvg('#fff
 fs.writeFileSync(path.join(out, 'linkhop-mark.svg'), markSvg('tile'));
 fs.writeFileSync(path.join(out, 'linkhop-mark-gradient.svg'), markSvg('gradient'));
 fs.writeFileSync(path.join(out, 'linkhop-mark-white.svg'), markSvg('white'));
-console.log('ok');
+
+// PNGs: favicon/app icon (tile), logo-dark (tile, for light backgrounds), logo (white glyph, for dark ones);
+// public/favicon.ico (16/32/48 px PNGs inside one .ico, for browsers that ask for /favicon.ico).
+(async () => {
+  const { chromium } = require('@playwright/test');
+  const browser = await chromium.launch();
+  const render = async (svg, size) => {
+    const page = await browser.newPage({ viewport: { width: size, height: size } });
+    await page.setContent(`<style>html,body{margin:0;background:transparent}</style><img src="data:image/svg+xml;base64,${Buffer.from(fs.readFileSync(path.join(out, svg))).toString('base64')}" width="${size}" height="${size}">`);
+    const png = await page.screenshot({ omitBackground: true });
+    await page.close();
+    return png;
+  };
+  fs.writeFileSync(path.join(out, 'favicon.png'), await render('linkhop-mark.svg', 256));
+  fs.writeFileSync(path.join(out, 'logo-dark.png'), await render('linkhop-mark.svg', 512));
+  fs.writeFileSync(path.join(out, 'logo.png'), await render('linkhop-mark-white.svg', 512));
+  const sizes = [16, 32, 48], pngs = await Promise.all(sizes.map(n => render('linkhop-mark.svg', n)));
+  const head = Buffer.alloc(6 + 16 * sizes.length); head.writeUInt16LE(1, 2); head.writeUInt16LE(sizes.length, 4);
+  let offset = head.length;
+  sizes.forEach((n, i) => { const e = 6 + 16 * i; head[e] = n; head[e + 1] = n; head.writeUInt16LE(1, e + 4); head.writeUInt16LE(32, e + 6); head.writeUInt32LE(pngs[i].length, e + 8); head.writeUInt32LE(offset, e + 12); offset += pngs[i].length; });
+  fs.writeFileSync(path.join(__dirname, '..', 'public', 'favicon.ico'), Buffer.concat([head, ...pngs]));
+  await browser.close();
+  console.log('ok: resources/brand + public/favicon.ico');
+})();
