@@ -127,10 +127,10 @@ function start(root) {
     const LINKS = [
       ['school', 'school', 'school.example.com/students/2026/semester-2/assignments/final-project-guidelines.pdf'],
       ['sale', 'mall', 'shop.example.com/collections/summer-sale/products/linen-shirt?color=sand&size=m'],
-      ['permit', 'government', 'gov.example.go.id/services/business-permit/apply?step=1&lang=id'],
+      ['permit', 'government', 'city.example.gov/services/business-permits/apply?step=1&type=new'],
       ['finals', 'stadium', 'tickets.example.com/football/2026/cup-final/seat-map?section=north'],
       ['live', 'tv', 'tv.example.com/live/evening-news-2026-10-28?quality=1080p'],
-      ['tour', 'concert', 'concerts.example.com/tour-2026/jakarta/presale?code=HOP25'],
+      ['tour', 'concert', 'concerts.example.com/world-tour-2026/london/presale?code=HOP25'],
       ['checkup', 'hospital', 'clinic.example.com/appointments/new?department=general&doctor=any'],
     ];
     const SCENARIOS = ['hop', 'share', 'pass-ok', 'pass-fail'];
@@ -165,7 +165,7 @@ function start(root) {
         label: makeLabel('hel.ink'),
       };
       scene.add(run.packet, run.trail);
-      run.dur = { hop: 8, share: 9.5, 'pass-ok': 9.5, 'pass-fail': 8.5, loop: 10.6 }[type];
+      run.dur = { hop: 8, share: 9.5, 'pass-ok': 9.5, 'pass-fail': 8.5, loop: 10.8 }[type];
       return run;
     }
     function disposeRun(run) { for (const k of ['bunnyA', 'bunnyB', 'building', 'lock', 'packet', 'trail', 'label']) if (run[k]) scene.remove(run[k]); }
@@ -180,17 +180,35 @@ function start(root) {
     function lands(run, t) {
       const up = (a, b) => ease(clamp((t - a) / (b - a))), down = (a, b) => 1 - up(a, b);
       // the miniature's loop: home island always up, hel.ink and the destination rise and sink again
-      if (run.type === 'loop') return [[run.rA, 1.1], [run.rH, .7 * up(1.6, 2.2) * down(8.7, 9.6)], [run.rD, 1.3 * up(4.8, 5.7) * down(8.6, 9.6)]];
+      if (run.type === 'loop') return [[run.rA, 1.1], [run.rH, .7 * up(1.6, 2.2) * down(8.9, 9.8)], [run.rD, 1.3 * up(5.2, 6.1) * down(8.8, 9.8)]];
       const sink = 1 - ease(clamp((t - (run.dur - 1.1)) / 1));
       const L = [[run.rA, 1.1 * up(.2, 1.1) * sink], [run.rH, .7 * up(run.type === 'share' ? 2.4 : 1.6, run.type === 'share' ? 3 : 2.2) * sink]];
       if (run.rB) L.push([run.rB, 1.1 * up(1.2, 2) * sink]);
-      const dAt = { hop: 3.2, share: 5, 'pass-ok': 4.8, 'pass-fail': 99 }[run.type];
+      const dAt = { hop: 3.2, share: 5, 'pass-ok': 5.2, 'pass-fail': 99 }[run.type];
       L.push([run.rD, 1.3 * up(dAt, dAt + .9) * sink]);
       return L;
     }
 
+    // ------------------------------------------------ the URL, floating in the sea in front of the islands
+    const PLACE = { school: 'school', mall: 'mall', government: 'city hall', stadium: 'stadium', tv: 'TV station', concert: 'concert', hospital: 'clinic' };
+    const bc = document.createElement('canvas'); bc.width = 4096; bc.height = 160;
+    const bctx = bc.getContext('2d'), btex = new THREE.CanvasTexture(bc); btex.colorSpace = THREE.SRGBColorSpace; btex.anisotropy = 4;
+    const banner = new THREE.Sprite(new THREE.SpriteMaterial({ map: btex, depthTest: false, transparent: true }));
+    const BH = mini ? 1 : small ? 1.3 : .95; banner.scale.set(BH * 4096 / 160, BH, 1); banner.position.set(0, .35, D * (mini ? .3 : .24)); banner.renderOrder = 20; scene.add(banner);
+    let bannerKey = '';
+    function drawBanner(text, isShort, dark) {
+      const key = text + isShort + dark; if (key === bannerKey) return; bannerKey = key;
+      const max = mini ? 64 : 92; if (text.length > max) text = text.slice(0, max - 1) + '…';
+      bctx.clearRect(0, 0, 4096, 160); bctx.font = `${isShort ? 700 : 500} 64px ui-monospace, SFMono-Regular, Menlo, monospace`;
+      const w = bctx.measureText(text).width + 96, x = (4096 - w) / 2;
+      bctx.fillStyle = dark ? 'rgba(15,18,38,.88)' : 'rgba(255,255,255,.94)'; bctx.strokeStyle = isShort ? '#818cf8' : dark ? 'rgba(255,255,255,.18)' : 'rgba(99,102,241,.25)'; bctx.lineWidth = 4;
+      bctx.beginPath(); bctx.roundRect(x, 16, w, 128, 64); bctx.fill(); bctx.stroke();
+      bctx.fillStyle = isShort ? (dark ? '#a5b4fc' : '#4f46e5') : dark ? '#e2e8f0' : '#334155'; bctx.textAlign = 'center'; bctx.textBaseline = 'middle'; bctx.fillText(text, 2048, 84);
+      btex.needsUpdate = true;
+    }
+
     // ------------------------------------------------ frame
-    const story = root.querySelector('[data-hop-story]'), urlEl = root.querySelector('[data-hop-url]');
+    const story = root.querySelector('[data-hop-story]');
     const mouse = new THREE.Vector2(9, 9), ray = new THREE.Raycaster(), plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), cursor = new THREE.Vector3(2, 0, 1);
     el.addEventListener('pointermove', e => { const b = el.getBoundingClientRect(); mouse.set((e.clientX - b.left) / b.width * 2 - 1, -(e.clientY - b.top) / b.height * 2 + 1); });
 
@@ -222,7 +240,7 @@ function start(root) {
       const ty = run.type, [slug, , long] = run.link, short = `hel.ink/${slug}`;
       const gy = h => Math.round(h / .1) * .1 * .95;
       const A = run.A.clone().setY(gy(1.1 * .9)), H = run.hub.clone().setY(gy(.7 * .9)), Dd = run.D.clone().add(new THREE.Vector3(-1.6, gy(1.3 * .7), 1.1));
-      const loop = ty === 'loop', sink = loop ? clamp((t - 8.6) / 1) : clamp((t - (run.dur - 1.1)) / 1), show = loop || (t > .8 && sink < .7);
+      const loop = ty === 'loop', sink = loop ? clamp((t - 8.8) / 1) : clamp((t - (run.dur - 1.1)) / 1), show = loop || (t > .8 && sink < .7);
       run.label.position.set(run.hub.x, 1.7, run.hub.z); run.label.material.opacity = clamp((t - 2) / .4) * (1 - sink);
       run.packet.visible = false; run.lock.visible = false; run.trail.count = 0;
       const face = (a, b) => Math.atan2(-(b.z - a.z), b.x - a.x);
@@ -236,8 +254,8 @@ function start(root) {
         placeBunny(run.bunnyA, pos, t < 4.4 ? face(A, H) : face(H, Dd), BS, show, sq(t < 4.4 ? h1 : h2));
         if (t > 2 && t < 3.1) trail(A, H, 2.4, h1); else if (t > 4.4 && t < 5.5) trail(H, Dd, 2.2, h2);
         placeBuilding(run.building, run.D.clone().setY(gy(1.3 * .9)), clamp((t - 3.5) / 1.4) * (1 - sink));
-        url = t < 2.4 ? long : t < 3.2 ? scramble(long, short, (t - 2.4) / .8, 1) : t < 4.4 ? short : t < 5.2 ? scramble(short, long, (t - 4.4) / .8, 2) : long;
-        caption = t < 2 ? 'A bunny has a long link to share' : t < 4.4 ? 'It hops to hel.ink: the link gets short' : 'then on to where the link goes';
+        url = t < 3 ? long : t < 3.8 ? scramble(long, short, (t - 3) / .8, 1) : t < 4.4 ? short : t < 5.2 ? scramble(short, long, (t - 4.4) / .8, 2) : long;
+        caption = t < 2 ? 'A bunny has a long link to share' : t < 3 ? 'Hop to hel.ink…' : t < 4.4 ? 'hel.ink makes it short' : t < 5.4 ? 'then on to where the link goes' : `Arrived at the ${PLACE[run.link[1]]} ✓`;
       } else if (ty === 'share') {
         const B = run.B.clone().setY(gy(1.1 * .9));
         placeBunny(run.bunnyA, A, face(A, H), BS, show);
@@ -246,35 +264,38 @@ function start(root) {
         placeBunny(run.bunnyB, t < 6.2 ? B : hopPos(B, Dd, 2.4, h3), t < 6.2 ? face(B, H) : face(B, Dd), BS, t > 1.6 && sink < .7, sq(h3));
         if (t > 6.2 && t < 7.2) trail(B, Dd, 2.4, h3);
         placeBuilding(run.building, run.D.clone().setY(gy(1.3 * .9)), clamp((t - 5.3) / 1.4) * (1 - sink));
-        url = t < 3.3 ? long : t < 4.1 ? scramble(long, short, (t - 3.3) / .8, 3) : t < 6.2 ? short : t < 7 ? scramble(short, long, (t - 6.2) / .8, 4) : long;
-        caption = t < 3 ? 'Two bunnies, far apart' : t < 5 ? 'One sends a long link; hel.ink makes it short on the way' : t < 6.2 ? `The other gets ${short}` : 'and hops to where it goes';
+        url = t < 4 ? long : t < 4.8 ? scramble(long, short, (t - 4) / .8, 3) : t < 6.2 ? short : t < 7 ? scramble(short, long, (t - 6.2) / .8, 4) : long;
+        caption = t < 3 ? 'Two bunnies, far apart' : t < 5 ? 'One sends a long link; hel.ink makes it short on the way' : t < 6.2 ? `The other gets ${short}` : t < 7.2 ? 'and hops to where it goes' : `Arrived at the ${PLACE[run.link[1]]} ✓`;
       } else {
+        // 2–3 hop to hel.ink · 3–3.8 the link gets short · 3.8 the lock appears · 4.2–5.2 password · 5.2 open (or not)
+        // · 6.2–7.2 hop to the destination (or home, when it failed) · loop: 8.4–9.6 hop home, the rest sinks
         const ok = ty === 'pass-ok' || loop, h1 = ease(clamp((t - 2) / 1));
         let pos = hopPos(A, H, 2.4, h1), dir = face(A, H), k = h1;
         if (t > 2 && t < 3.1) trail(A, H, 2.4, h1);
-        run.lock.visible = t > 3.1 && (ok ? t < 5.4 : t < run.dur - 1);
-        const shake = !ok && t > 4.4 && t < 5.1 ? Math.sin(t * 60) * .07 : 0;
-        run.lock.position.set(H.x + .95 + shake, H.y + .8, H.z); run.lock.scale.setScalar(1.6 * clamp((t - 3.1) / .3));
-        run.lock.children[0].material.color.set(!ok && t > 4.4 ? '#ef4444' : '#facc15');
-        run.lock.userData.shackle.position.y = ok && t > 4.6 ? .58 : .42;
-        if (ok) { const h2 = ease(clamp((t - 5.8) / 1)); if (t > 5.8) { pos = hopPos(H, Dd, 2.2, h2); dir = face(H, Dd); k = h2; } if (t > 5.8 && t < 6.9) trail(H, Dd, 2.2, h2); placeBuilding(run.building, run.D.clone().setY(gy(1.3 * .9)), clamp((t - 4.9) / 1.4) * (1 - sink)); }
-        else { run.building.visible = false; if (t > 5.3) { const hb = ease(clamp((t - 5.3) / 1)); pos = hopPos(H, A, 1.4, hb); dir = face(H, A); k = hb; } }
-        if (loop && t > 8.2) { const hh = ease(clamp((t - 8.2) / 1.2)); pos = hopPos(Dd, A, 3.2, hh); dir = face(Dd, A); k = hh; if (t < 9.4) trail(Dd, A, 3.2, hh); } // home again: the loop starts where it ends
+        run.lock.visible = t > 3.8 && (ok ? t < 6.1 : t < run.dur - 1);
+        const shake = !ok && t > 5.2 && t < 5.9 ? Math.sin(t * 60) * .07 : 0;
+        run.lock.position.set(H.x + .95 + shake, H.y + .8, H.z); run.lock.scale.setScalar(1.6 * clamp((t - 3.8) / .3));
+        run.lock.children[0].material.color.set(!ok && t > 5.2 ? '#ef4444' : '#facc15');
+        run.lock.userData.shackle.position.y = ok && t > 5.2 ? .58 : .42;
+        if (ok) { const h2 = ease(clamp((t - 6.2) / 1)); if (t > 6.2) { pos = hopPos(H, Dd, 2.2, h2); dir = face(H, Dd); k = h2; } if (t > 6.2 && t < 7.3) trail(H, Dd, 2.2, h2); placeBuilding(run.building, run.D.clone().setY(gy(1.3 * .9)), clamp((t - 5.3) / 1.4) * (1 - sink)); }
+        else { run.building.visible = false; if (t > 5.9) { const hb = ease(clamp((t - 5.9) / 1)); pos = hopPos(H, A, 1.4, hb); dir = face(H, A); k = hb; } }
+        if (loop && t > 8.4) { const hh = ease(clamp((t - 8.4) / 1.2)); pos = hopPos(Dd, A, 3.2, hh); dir = face(Dd, A); k = hh; if (t < 9.6) trail(Dd, A, 3.2, hh); } // home again: the loop starts where it ends
         placeBunny(run.bunnyA, pos, dir, BS, show, sq(k));
-        const dots = '•'.repeat(clamp(Math.floor((t - 3.4) / .18), 0, 6));
-        url = t < 2.4 ? long : t < 3.2 ? scramble(long, short, (t - 2.4) / .8, 5) : short;
-        if (ok && t > 5.8) url = t < 6.6 ? scramble(short, long, (t - 5.8) / .8, 6) : long;
-        if (loop && t > 8.2) caption = 'Back home for the next link';
-        else caption = t < 2 ? 'This link has a password' : t < 4.4 ? `Password ${dots}` : ok ? (t < 5.8 ? 'Unlocked ✓' : 'In it goes') : (t < 5.3 ? 'Wrong password ✕' : 'No hop this time');
+        const dots = '•'.repeat(clamp(Math.floor((t - 4.2) / .15), 0, 6));
+        url = t < 3 ? long : t < 3.8 ? scramble(long, short, (t - 3) / .8, 5) : short;
+        if (ok && t > 6.2) url = t < 7 ? scramble(short, long, (t - 6.2) / .8, 6) : long;
+        if (loop && t > 8.4) url = long;
+        caption = t < 2 ? 'A bunny has a long link to share' : t < 3 ? 'Hop to hel.ink…' : t < 3.8 ? 'hel.ink makes it short' : t < 4.2 ? 'This link has a password' : t < 5.2 ? `Password ${dots}`
+          : ok ? (t < 6.2 ? 'Unlocked ✓' : t < 7.3 ? 'Off to where the link goes' : loop && t > 8.4 ? 'Back home for the next link' : `Arrived at the ${PLACE[run.link[1]]} ✓`)
+          : (t < 5.9 ? 'Wrong password ✕' : 'No hop this time');
       }
-      if (ty !== 'pass-fail' && ty !== 'pass-ok' || ty === 'pass-ok') {} // building handled above
       if (story) story.textContent = caption;
-      if (urlEl) { urlEl.textContent = url; urlEl.classList.toggle('short', url === short); }
+      drawBanner(url, url === short, dark);
       renderer.render(scene, cam);
     }
 
     // keep the canvas sized to its box
-    new ResizeObserver(() => { const w = el.clientWidth, h = el.clientHeight; renderer.setSize(w, h, false); cam.aspect = w / h; cam.position.z = mini ? 17 : w < 640 ? 21 : 15.5; cam.position.y = mini ? 18 : w < 640 ? 22 : 17; cam.lookAt(0, 0, mini ? .2 : 1.2); cam.updateProjectionMatrix(); }).observe(el);
+    new ResizeObserver(() => { const w = el.clientWidth, h = el.clientHeight; renderer.setSize(w, h, false); cam.aspect = w / h; cam.position.z = mini ? 17 : w < 640 ? 22 : 18.5; cam.position.y = mini ? 18 : w < 640 ? 21 : 16.5; cam.lookAt(0, 0, mini ? .6 : .9); cam.updateProjectionMatrix(); }).observe(el);
 
     let run = makeRun(0), n = 0, t0 = performance.now(), raf = 0, visible = false, paused = 0;
     const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
