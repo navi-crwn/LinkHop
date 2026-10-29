@@ -3,7 +3,7 @@
 <p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/hero-en-light.webp"><img src="docs/readme/hero-en-dark.webp" alt="LinkHop: short links, beautiful bio pages" width="100%"></picture></p>
 
 <p align="center">
-  <b>Shorten links, count every click, and get a link in bio page.<br>Free, open source, and yours to host.</b>
+  <b>Shorten links, count every click, and analyze your audience.<br>Free, open source, and yours to host.</b>
 </p>
 
 <p align="center">
@@ -29,9 +29,20 @@
 
 ## What is LinkHop?
 
-**LinkHop** is the link shortener of the HOP family ("Hop Easy Link"). The family shares one account, **HOP ID**, kept by the [hub](https://github.com/navi-crwn/HEL.ink) at `hel.ink` / `hub.hel.ink`; LinkHop's dashboard lives at `link.hel.ink`, short links stay at `hel.ink/l/slug`, and the hub's app switcher takes you to [BioHop](https://github.com/navi-crwn/BioHop) (link in bio) and [PixelHop](https://github.com/navi-crwn/pixelhop) (images). LinkHop has no sign-in, sign-up or profile pages of its own: the hub signs you in with a short-lived SSO ticket, and the apps share one database.
+**LinkHop** is the link shortener of the HOP family ("Hop Easy Link"). The family shares one account, **HOP ID**, kept by the [hub](https://github.com/navi-crwn/HEL.ink) at `hel.ink` / `hub.hel.ink`; LinkHop's dashboard lives at `link.hel.ink`, short links stay at `hel.ink/l/slug`, and the hub's app switcher takes you to [BioHop](https://github.com/navi-crwn/BioHop) (link in bio), [PixelHop](https://github.com/navi-crwn/PixelHop) (image hosting), and [NoteHop](https://github.com/navi-crwn/NoteHop) (encrypted notes). LinkHop has no sign-in, sign-up or profile pages of its own: the hub signs you in with a short-lived SSO ticket, and the apps share one database.
 
-Long links are hard to share and you never know who clicks them. LinkHop makes them **short** (with your own slug if you like), **counts every click** by country, device and referrer, and gives you one **link in bio page** at `hel.ink/b/you` for everything you want people to find.
+Long links are hard to share and you never know who clicks them. LinkHop makes them **short** (with your own slug if you like), **counts every click** by country, device and referrer, and protects visitors with automated URL threat detection. Personal landing pages are now powered by [BioHop](https://github.com/navi-crwn/BioHop) at `hel.ink/b/you`.
+
+### HOP Family Ecosystem
+
+| App | Live Address | Repository | Purpose |
+| --- | --- | --- | --- |
+| **Hub** | `hel.ink` · `hub.hel.ink` | [navi-crwn/HEL.ink](https://github.com/navi-crwn/HEL.ink) | Account portal, HOP ID, SSO issuer, launcher, admin |
+| **LinkHop** (this repo) | `link.hel.ink` · `hel.ink/l/{slug}` | [navi-crwn/LinkHop](https://github.com/navi-crwn/LinkHop) | URL shortener, QR codes, click analytics, API |
+| **BioHop** | `bio.hel.ink` · `hel.ink/b/{slug}` | [navi-crwn/BioHop](https://github.com/navi-crwn/BioHop) | Link-in-bio pages with custom blocks, themes, stats |
+| **PixelHop** | `p.hel.ink` (soon `pixel.hel.ink`) | [navi-crwn/PixelHop](https://github.com/navi-crwn/PixelHop) | Image & media hosting, EXIF/GPS scrubbing, studio |
+| **NoteHop** | `note.hel.ink` | [navi-crwn/NoteHop](https://github.com/navi-crwn/NoteHop) | Zero-knowledge client-encrypted live notes & docs |
+| **Imperium** | Internal / Tailscale | Private | Unified admin & operations console across all apps |
 
 Everything is included for every account. No premium tier, no locked features. And because it's open source, you can also run the whole thing on your own server and your own domain.
 
