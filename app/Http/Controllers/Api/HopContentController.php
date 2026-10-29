@@ -10,6 +10,7 @@ use App\Models\HopAudit;
 use App\Models\IpBan;
 use App\Models\IpWatchlist;
 use App\Models\Link;
+use App\Models\LinkClick;
 use App\Models\SeoSetting;
 use App\Models\User;
 use App\Services\LinkService;
@@ -42,7 +43,7 @@ class HopContentController extends Controller
                 ['type' => 'link', 'label' => 'Links', 'actions' => ['disable', 'enable', 'delete', 'transfer', 'rescan']],
                 bio_enabled() ? ['type' => 'bio', 'label' => 'Bio pages', 'actions' => ['unpublish', 'publish', 'delete', 'transfer']] : null,
             ])),
-            'extensions' => ['ip', 'domains', 'queue'],
+            'extensions' => ['ip', 'domains', 'queue', 'analytics'],
             'settings_schema' => array_map(fn ($k) => ['key' => 'seo.'.$k, 'type' => 'string', 'restart_required' => false], SeoSetting::make()->getFillable()),
         ]]);
     }
@@ -414,6 +415,50 @@ class HopContentController extends Controller
             'pending' => \DB::table('jobs')->count(),
             'failed' => \DB::table('failed_jobs')->count(),
             'abuse_scan_at' => is_array($scan) ? ($scan['at'] ?? null) : null,
+        ]]);
+    }
+
+    /** GET /api/hop/x/analytics: global LinkHop analytics (countries, devices, referrers, top links). */
+    public function analytics(): JsonResponse
+    {
+        $thirtyDaysAgo = now()->subDays(30);
+
+        $topCountries = LinkClick::query()
+            ->where('clicked_at', '>=', $thirtyDaysAgo)
+            ->whereNotNull('country')
+            ->selectRaw('country, country_name, COUNT(*) as clicks')
+            ->groupBy('country', 'country_name')
+            ->orderByDesc('clicks')
+            ->limit(10)
+            ->get();
+
+        $topLinks = Link::query()
+            ->select('id', 'slug', 'target_url', 'clicks', 'status', 'created_at')
+            ->orderByDesc('clicks')
+            ->limit(10)
+            ->get();
+
+        $totalLinks = Link::count();
+        $totalClicks = (int) Link::sum('clicks');
+        $clicks30d = LinkClick::query()->where('clicked_at', '>=', $thirtyDaysAgo)->count();
+
+        $topReferrers = LinkClick::query()
+            ->where('clicked_at', '>=', $thirtyDaysAgo)
+            ->whereNotNull('referer')
+            ->where('referer', '!=', '')
+            ->selectRaw('referer, COUNT(*) as clicks')
+            ->groupBy('referer')
+            ->orderByDesc('clicks')
+            ->limit(10)
+            ->get();
+
+        return response()->json(['ok' => true, 'data' => [
+            'total_links' => $totalLinks,
+            'total_clicks' => $totalClicks,
+            'clicks_30d' => $clicks30d,
+            'countries' => $topCountries,
+            'top_links' => $topLinks,
+            'referrers' => $topReferrers,
         ]]);
     }
 
