@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c45fe60a426dfeb0a7ec6701bc46dc1f",
+    "content-hash": "e20e3570a265255a3a2ec65fe3565d79",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1297,23 +1297,22 @@
         },
         {
             "name": "hop/auth",
-            "version": "dev-main",
+            "version": "v0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/navi-crwn/hop-auth.git",
-                "reference": "7d860e1334d23fd345b7c00430ced00dac275ef4"
+                "reference": "8dbd071e92e434c76c20c0934a80730fd455f7a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-auth/zipball/7d860e1334d23fd345b7c00430ced00dac275ef4",
-                "reference": "7d860e1334d23fd345b7c00430ced00dac275ef4",
+                "url": "https://api.github.com/repos/navi-crwn/hop-auth/zipball/8dbd071e92e434c76c20c0934a80730fd455f7a2",
+                "reference": "8dbd071e92e434c76c20c0934a80730fd455f7a2",
                 "shasum": ""
             },
             "require": {
                 "illuminate/support": "^12.0",
                 "php": "^8.3"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -1332,14 +1331,14 @@
             ],
             "description": "HOP shared package: auth.",
             "support": {
-                "source": "https://github.com/navi-crwn/hop-auth/tree/main",
+                "source": "https://github.com/navi-crwn/hop-auth/tree/v0.1.1",
                 "issues": "https://github.com/navi-crwn/hop-auth/issues"
             },
-            "time": "2026-10-28T11:10:50+00:00"
+            "time": "2026-10-29T07:28:36+00:00"
         },
         {
             "name": "hop/bio",
-            "version": "dev-claude/fase-c-sso-consumer-19a72f",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/bio",
@@ -5755,16 +5754,16 @@
         },
         {
             "name": "symfony/mime",
-            "version": "v7.4.19",
+            "version": "v7.4.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/mime.git",
-                "reference": "f8ac7d0a800bcabbcd1f7de56594cf05e6cd5693"
+                "reference": "94a4c017435bc515f5ac80421a2c555fb9ca3676"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/mime/zipball/f8ac7d0a800bcabbcd1f7de56594cf05e6cd5693",
-                "reference": "f8ac7d0a800bcabbcd1f7de56594cf05e6cd5693",
+                "url": "https://api.github.com/repos/symfony/mime/zipball/94a4c017435bc515f5ac80421a2c555fb9ca3676",
+                "reference": "94a4c017435bc515f5ac80421a2c555fb9ca3676",
                 "shasum": ""
             },
             "require": {
@@ -5820,7 +5819,7 @@
                 "mime-type"
             ],
             "support": {
-                "source": "https://github.com/symfony/mime/tree/v7.4.19"
+                "source": "https://github.com/symfony/mime/tree/v7.4.22"
             },
             "funding": [
                 {
@@ -5840,7 +5839,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-09-04T10:45:44+00:00"
+            "time": "2026-10-28T17:57:58+00:00"
         },
         {
             "name": "symfony/options-resolver",
@@ -11285,7 +11284,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "hop/auth": 20,
         "hop/bio": 20,
         "hop/safety": 20,
         "hop/ui": 20

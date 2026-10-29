@@ -47,6 +47,37 @@ class UserDeletion
         return $stats;
     }
 
+    /**
+     * Purge by user ID even if the hub already cascaded the user row, and delete
+     * any explicit QR or bio upload paths supplied by the hub.
+     *
+     * @param  iterable<string>  $qrCodes
+     * @param  iterable<string>  $bioUploads
+     * @return array{links: int, folders: int, tags: int, bio_pages: int}
+     */
+    public function purgeById(int $userId, iterable $qrCodes = [], iterable $bioUploads = []): array
+    {
+        $user = $userId > 0 ? User::find($userId) : null;
+        $stats = $user ? $this->purge($user) : ['links' => 0, 'folders' => 0, 'tags' => 0, 'bio_pages' => 0];
+        $this->deleteQrFiles($qrCodes);
+        if (bio_enabled()) {
+            BioUploads::deleteUnused($bioUploads);
+        }
+
+        return $stats;
+    }
+
+    /** @param iterable<string> $paths */
+    public function deleteQrFiles(iterable $paths): void
+    {
+        foreach ($paths as $raw) {
+            $path = preg_replace('#^/?storage/#', '', trim((string) $raw));
+            if (preg_match('#^(qr|qrcodes)/[A-Za-z0-9._-]+$#', (string) $path)) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+    }
+
     /** Everything, account included (the HOP admin API). */
     public function delete(User $user): void
     {
