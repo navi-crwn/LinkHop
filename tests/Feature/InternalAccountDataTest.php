@@ -4,6 +4,8 @@ use App\Http\Middleware\VerifyHubRequest;
 use App\Models\Folder;
 use App\Models\Link;
 use App\Models\User;
+use App\Support\HopSignature;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Support\Facades\Storage;
 
 /*
@@ -59,4 +61,57 @@ test('an unsigned, mis-signed or stale request is refused', function () {
     hubSigned('GET', "/internal/accounts/{$user->id}/export", ts: time() - 600)->assertUnauthorized();
     hubSigned('DELETE', "/internal/accounts/{$user->id}", secret: 'another-secret-that-is-also-long-enough-xx')->assertUnauthorized();
     expect(User::find($user->id))->not->toBeNull();
+});
+
+test('the purge deletes qr files passed in body even after the user row was cascaded', function () {
+    $this->withMiddleware(ValidateCsrfToken::class);
+    Storage::fake('public');
+    Storage::disk('public')->put('qrcodes/link-99.svg', '<svg/>');
+    Storage::disk('public')->put('qrcodes/keep.svg', '<svg/>');
+
+    // Simulate hub having already cascaded the users/links rows or calling with explicit qr_codes
+    hubSigned('DELETE', '/internal/accounts/999999', [
+        'qr_codes' => ['qrcodes/link-99.svg', '../outside.txt'],
+    ])->assertOk();
+
+    Storage::disk('public')->assertMissing('qrcodes/link-99.svg');
+    Storage::disk('public')->assertExists('qrcodes/keep.svg');
+});
+
+test('hop events account.deleted deletes qr files with both hex and hop1 signatures', function () {
+    $this->withMiddleware(ValidateCsrfToken::class);
+    Storage::fake('public');
+    Storage::disk('public')->put('qrcodes/event-qr.png', 'png');
+    Storage::disk('public')->put('qrcodes/hop1-qr.png', 'png');
+
+    hubSigned('POST', '/hop/events', [
+        'id' => 'evt-1',
+        'type' => 'account.deleted',
+        'data' => [
+            'sub' => '888888',
+            'qr_codes' => ['qrcodes/event-qr.png'],
+        ],
+    ])->assertOk();
+    Storage::disk('public')->assertMissing('qrcodes/event-qr.png');
+
+    $ts = (string) time();
+    $nonce = HopSignature::b64(random_bytes(16));
+    $json = json_encode([
+        'id' => 'evt-2',
+        'type' => 'account.deleted',
+        'data' => [
+            'sub' => '888888',
+            'qr_codes' => ['qrcodes/hop1-qr.png'],
+        ],
+    ]);
+    $sig = HopSignature::b64(hash_hmac('sha256', HopSignature::stringToSign('helink', $ts, $nonce, 'POST', '/hop/events', $json), HUB_SECRET, true));
+    $this->call('POST', '/hop/events', [], [], [], [
+        'HTTP_ACCEPT' => 'application/json',
+        'CONTENT_TYPE' => 'application/json',
+        'HTTP_X_HOP_APP' => 'helink',
+        'HTTP_X_HOP_TIMESTAMP' => $ts,
+        'HTTP_X_HOP_NONCE' => $nonce,
+        'HTTP_X_HOP_SIGNATURE' => $sig,
+    ], $json)->assertOk();
+    Storage::disk('public')->assertMissing('qrcodes/hop1-qr.png');
 });
