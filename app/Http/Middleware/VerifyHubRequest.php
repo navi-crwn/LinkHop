@@ -19,8 +19,12 @@ class VerifyHubRequest
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $secret = (string) config('hop-auth.secret');
-        if (strlen($secret) < 32) {
+        $secrets = array_values(array_filter([
+            (string) config('hop-auth.secret'),
+            (string) config('hop-auth.secret_prev'),
+        ], fn ($s) => strlen($s) >= 32));
+
+        if (empty($secrets)) {
             return response()->json(['ok' => false, 'error' => 'not_configured', 'message' => 'HOP_SSO_SECRET is not set.'], 503);
         }
         $ts = (string) $request->header('X-Hop-Timestamp', '');
@@ -38,8 +42,15 @@ class VerifyHubRequest
             }
             $app = (string) $request->header('X-Hop-App', 'helink');
             $base = HopSignature::stringToSign($app, $ts, $nonce, $request->method(), $request->getRequestUri(), $body);
-            $expectedHop1 = HopSignature::b64(hash_hmac('sha256', $base, $secret, true));
-            if ($sig === '' || ! hash_equals($expectedHop1, $sig)) {
+            $matched = false;
+            foreach ($secrets as $s) {
+                $expectedHop1 = HopSignature::b64(hash_hmac('sha256', $base, $s, true));
+                if ($sig !== '' && hash_equals($expectedHop1, $sig)) {
+                    $matched = true;
+                    break;
+                }
+            }
+            if (! $matched) {
                 return response()->json(['ok' => false, 'error' => 'bad_signature', 'message' => 'Signature does not match.'], 401);
             }
             if (! Cache::add('hop:nonce:'.$app.':'.sha1($nonce), 1, $maxAge * 2)) {
@@ -48,8 +59,15 @@ class VerifyHubRequest
 
             return $next($request);
         }
-        $expected = self::sign($secret, (int) $ts, $request->method(), $path, $body);
-        if ($sig === '' || ! hash_equals($expected, strtolower($sig))) {
+        $matched = false;
+        foreach ($secrets as $s) {
+            $expected = self::sign($s, (int) $ts, $request->method(), $path, $body);
+            if ($sig !== '' && hash_equals($expected, strtolower($sig))) {
+                $matched = true;
+                break;
+            }
+        }
+        if (! $matched) {
             return response()->json(['ok' => false, 'error' => 'bad_signature', 'message' => 'Signature does not match.'], 401);
         }
 
