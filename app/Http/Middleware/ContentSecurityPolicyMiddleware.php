@@ -23,7 +23,8 @@ class ContentSecurityPolicyMiddleware
         $assets = $assets !== '' ? ' '.$assets : '';
         $csp = [
             "default-src 'self'",
-            "script-src 'self'{$assets} 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://fonts.bunny.net https://fonts.googleapis.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://cdn.tailwindcss.com https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net",
+            "script-src 'self'{$assets} 'nonce-{$nonce}' 'strict-dynamic' 'unsafe-eval' https: 'unsafe-inline' https://challenges.cloudflare.com https://fonts.bunny.net https://fonts.googleapis.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://cdn.tailwindcss.com https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net",
+            "script-src-attr 'none'",
             "style-src 'self'{$assets} 'unsafe-inline' https://fonts.bunny.net https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com",
             "img-src 'self' data: https: blob: https://flagcdn.com https://*.tile.openstreetmap.org https://www.google-analytics.com https://www.facebook.com",
             "font-src 'self'{$assets} https://fonts.bunny.net https://fonts.gstatic.com data:",
@@ -36,18 +37,9 @@ class ContentSecurityPolicyMiddleware
             "form-action 'self' ".self::hopOrigins(),
             $isPreviewRoute ? "frame-ancestors 'self'" : "frame-ancestors 'none'",
             'upgrade-insecure-requests',
+            'report-uri '.route('csp.report', [], false),
         ];
         $response->headers->set('Content-Security-Policy', implode('; ', $csp));
-        // Strict nonce-based policy in report-only mode: browsers report what it would
-        // block (inline on* handlers, injected scripts) to /csp-report without breaking
-        // pages. Switch to enforcing once the reports are clean.
-        $response->headers->set('Content-Security-Policy-Report-Only', implode('; ', [
-            "script-src 'nonce-{$nonce}' 'strict-dynamic' 'unsafe-eval' https: 'unsafe-inline'",
-            "script-src-attr 'none'",
-            "object-src 'none'",
-            "base-uri 'self'",
-            'report-uri '.route('csp.report', [], false),
-        ]));
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('X-Frame-Options', $isPreviewRoute ? 'SAMEORIGIN' : 'DENY');
         $response->headers->set('X-XSS-Protection', '1; mode=block');
