@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\UserDeletion;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 /**
  * What LinkHop holds for one account, for the hub (signed requests, see
@@ -39,10 +40,31 @@ class AccountDataController extends Controller
     }
 
     /** DELETE /internal/accounts/{user}: remove this app's rows and files for the account (the hub deletes the user). */
-    public function purge(User $user, UserDeletion $deletion): JsonResponse
+    public function purge(int $user, Request $request, UserDeletion $deletion): JsonResponse
     {
-        $stats = $deletion->purge($user);
+        $stats = $deletion->purgeById(
+            $user,
+            (array) $request->input('qr_codes', []),
+            (array) $request->input('bio_uploads', []),
+        );
 
         return response()->json(['ok' => true, 'app' => 'linkhop', 'data' => $stats]);
+    }
+
+    /** POST /hop/events: handle account lifecycle events from the hub. */
+    public function events(Request $request, UserDeletion $deletion): JsonResponse
+    {
+        $type = (string) $request->input('type', '');
+        $data = (array) $request->input('data', []);
+        if ($type === 'account.deleted') {
+            $userId = (int) ($data['sub'] ?? $data['hop_id'] ?? 0);
+            $deletion->purgeById(
+                $userId,
+                (array) ($data['qr_codes'] ?? []),
+                (array) ($data['bio_uploads'] ?? []),
+            );
+        }
+
+        return response()->json(['ok' => true]);
     }
 }
