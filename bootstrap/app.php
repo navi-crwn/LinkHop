@@ -33,8 +33,8 @@ return Application::configure(basePath: dirname(__DIR__))
             CheckSuspended::class,
             ContentSecurityPolicyMiddleware::class,
         ]);
-        // Browsers POST CSP reports without a CSRF token.
-        $middleware->validateCsrfTokens(except: ['csp-report']);
+        // Browsers POST CSP reports without a CSRF token; hub server-to-server calls are HMAC-signed.
+        $middleware->validateCsrfTokens(except: ['csp-report', 'internal/*', 'hop/events']);
         $middleware->alias([
             'admin' => AdminMiddleware::class,
             'ip.ban' => CheckIpBan::class,
