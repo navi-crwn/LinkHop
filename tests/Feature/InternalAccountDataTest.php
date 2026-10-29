@@ -60,3 +60,33 @@ test('an unsigned, mis-signed or stale request is refused', function () {
     hubSigned('DELETE', "/internal/accounts/{$user->id}", secret: 'another-secret-that-is-also-long-enough-xx')->assertUnauthorized();
     expect(User::find($user->id))->not->toBeNull();
 });
+
+test('the purge deletes qr files passed in body even after the user row was cascaded', function () {
+    Storage::fake('public');
+    Storage::disk('public')->put('qrcodes/link-99.svg', '<svg/>');
+    Storage::disk('public')->put('qrcodes/keep.svg', '<svg/>');
+
+    // Simulate hub having already cascaded the users/links rows or calling with explicit qr_codes
+    hubSigned('DELETE', '/internal/accounts/999999', [
+        'qr_codes' => ['qrcodes/link-99.svg', '../outside.txt'],
+    ])->assertOk();
+
+    Storage::disk('public')->assertMissing('qrcodes/link-99.svg');
+    Storage::disk('public')->assertExists('qrcodes/keep.svg');
+});
+
+test('hop events account.deleted deletes qr files', function () {
+    Storage::fake('public');
+    Storage::disk('public')->put('qrcodes/event-qr.png', 'png');
+
+    hubSigned('POST', '/hop/events', [
+        'id' => 'evt-1',
+        'type' => 'account.deleted',
+        'data' => [
+            'sub' => '888888',
+            'qr_codes' => ['qrcodes/event-qr.png'],
+        ],
+    ])->assertOk();
+
+    Storage::disk('public')->assertMissing('qrcodes/event-qr.png');
+});

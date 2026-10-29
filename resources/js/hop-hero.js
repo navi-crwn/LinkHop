@@ -15,7 +15,7 @@ function start(root) {
     try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); } catch (e) { return; } // no WebGL: the static picture stays
     root.querySelector('[data-hop-fallback]')?.remove();
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(el.clientWidth, el.clientHeight);
-    renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.enabled = true;
     el.appendChild(renderer.domElement);
     renderer.domElement.setAttribute('aria-hidden', 'true');
     const scene = new THREE.Scene();
