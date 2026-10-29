@@ -51,11 +51,16 @@ test('client ip comes from cloudflare forwarded headers only when cloudflare pro
     TrustProxies::flushState();
 });
 
-test('pages carry a per-request script nonce and accept csp reports', function () {
+test('pages carry a unified nonce-based csp header and accept csp reports', function () {
     $response = $this->get('/l/login');
-    preg_match("/'nonce-([^']+)'/", $response->headers->get('Content-Security-Policy-Report-Only'), $m);
+    $csp = (string) $response->headers->get('Content-Security-Policy');
+
+    expect($response->headers->has('Content-Security-Policy-Report-Only'))->toBeFalse();
+    preg_match("/'nonce-([^']+)'/", $csp, $m);
 
     expect($m[1] ?? null)->not->toBeNull();
+    expect($csp)->toContain("'strict-dynamic'")
+        ->toContain('report-uri '.route('csp.report', [], false));
     $response->assertSee('nonce="'.$m[1].'"', false);
     $this->postJson('/csp-report', ['csp-report' => ['violated-directive' => 'script-src-attr']])->assertNoContent();
 });
