@@ -115,3 +115,37 @@ test('hop events account.deleted deletes qr files with both hex and hop1 signatu
     ], $json)->assertOk();
     Storage::disk('public')->assertMissing('qrcodes/hop1-qr.png');
 });
+
+test('requests signed with previous secret during rotation transition are accepted', function () {
+    $currentSecret = 'linkhop-new-secret-that-is-long-enough-1234';
+    $previousSecret = 'linkhop-old-secret-that-is-long-enough-5678';
+
+    config([
+        'hop-auth.secret' => $currentSecret,
+        'hop-auth.secret_prev' => $previousSecret,
+    ]);
+
+    $user = User::factory()->create();
+
+    // Request signed with current secret is accepted
+    hubSigned('GET', "/internal/accounts/{$user->id}/export", secret: $currentSecret)->assertOk();
+
+    // Request signed with previous secret during transition is accepted
+    hubSigned('GET', "/internal/accounts/{$user->id}/export", secret: $previousSecret)->assertOk();
+
+    // HOP-1 signed request with previous secret is also accepted
+    $ts = (string) time();
+    $nonce = HopSignature::b64(random_bytes(16));
+    $path = "/internal/accounts/{$user->id}/export";
+    $sig = HopSignature::b64(hash_hmac('sha256', HopSignature::stringToSign('helink', $ts, $nonce, 'GET', $path, ''), $previousSecret, true));
+    test()->call('GET', $path, [], [], [], [
+        'HTTP_ACCEPT' => 'application/json',
+        'HTTP_X_HOP_APP' => 'helink',
+        'HTTP_X_HOP_TIMESTAMP' => $ts,
+        'HTTP_X_HOP_NONCE' => $nonce,
+        'HTTP_X_HOP_SIGNATURE' => $sig,
+    ])->assertOk();
+
+    // Request signed with an unknown secret is refused
+    hubSigned('GET', "/internal/accounts/{$user->id}/export", secret: 'unknown-secret-that-is-long-enough-9999')->assertUnauthorized();
+});
