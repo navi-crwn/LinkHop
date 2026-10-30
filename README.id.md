@@ -3,7 +3,7 @@
 <p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/hero-id-light.webp"><img src="docs/readme/hero-id-dark.webp" alt="LinkHop: link pendek, halaman bio yang cantik" width="100%"></picture></p>
 
 <p align="center">
-  <b>Pendekkan link, hitung setiap klik, dan punya halaman link in bio.<br>Gratis, open source, dan bisa kamu host sendiri.</b>
+  <b>Pendekkan link, hitung setiap klik, dan analisis pengunjungmu.<br>Gratis, open source, dan bisa kamu host sendiri.</b>
 </p>
 
 <p align="center">
@@ -29,9 +29,20 @@
 
 ## Apa itu LinkHop?
 
-**LinkHop** adalah pemendek link dari keluarga HOP ("Hop Easy Link"). Satu keluarga memakai satu akun, **HOP ID**, yang dipegang [hub](https://github.com/navi-crwn/HEL.ink) di `hel.ink` / `hub.hel.ink`; dashboard LinkHop ada di `link.hel.ink`, short link tetap di `hel.ink/l/slug`, dan pemindah app dari hub membawa kamu ke [BioHop](https://github.com/navi-crwn/BioHop) (link in bio) dan [PixelHop](https://github.com/navi-crwn/pixelhop) (gambar). LinkHop tidak punya halaman login, daftar, atau profil sendiri: hub yang memasukkan kamu lewat tiket SSO singkat, dan semua app berbagi satu database.
+**LinkHop** adalah pemendek link dari keluarga HOP ("Hop Easy Link"). Satu keluarga memakai satu akun, **HOP ID**, yang dipegang [hub](https://github.com/navi-crwn/HEL.ink) di `hel.ink` / `hub.hel.ink`; dashboard LinkHop ada di `link.hel.ink`, short link tetap di `hel.ink/l/slug`, dan pemindah app dari hub membawa kamu ke [BioHop](https://github.com/navi-crwn/BioHop) (link in bio), [PixelHop](https://github.com/navi-crwn/PixelHop) (hosting gambar), dan [NoteHop](https://github.com/navi-crwn/NoteHop) (catatan terenkripsi). LinkHop tidak punya halaman login, daftar, atau profil sendiri: hub yang memasukkan kamu lewat tiket SSO singkat, dan semua app berbagi satu database.
 
-Link yang panjang susah dibagikan, dan kamu tidak pernah tahu siapa yang mengkliknya. LinkHop membuatnya **pendek** (bisa dengan slug pilihanmu), **menghitung setiap klik** per negara, perangkat, dan referrer, dan memberi kamu satu **halaman link in bio** di `hel.ink/b/namamu` untuk semua yang ingin kamu tunjukkan.
+Link yang panjang susah dibagikan, dan kamu tidak pernah tahu siapa yang mengkliknya. LinkHop membuatnya **pendek** (bisa dengan slug pilihanmu), **menghitung setiap klik** per negara, perangkat, dan referrer, serta melindungi pengunjung dengan pemindai ancaman otomatis. Halaman personal link-in-bio kini dikelola secara khusus oleh [BioHop](https://github.com/navi-crwn/BioHop) di `hel.ink/b/kamu`.
+
+### Ekosistem Keluarga HOP
+
+| App | Alamat Live | Repository | Kegunaan |
+| --- | --- | --- | --- |
+| **Hub** | `hel.ink` · `hub.hel.ink` | [navi-crwn/HEL.ink](https://github.com/navi-crwn/HEL.ink) | Akun HOP ID, SSO issuer, launcher, admin pusat |
+| **LinkHop** (repo ini) | `link.hel.ink` · `hel.ink/l/{slug}` | [navi-crwn/LinkHop](https://github.com/navi-crwn/LinkHop) | Pemendek link, QR code, analitik klik, API |
+| **BioHop** | `bio.hel.ink` · `hel.ink/b/{slug}` | [navi-crwn/BioHop](https://github.com/navi-crwn/BioHop) | Halaman link-in-bio dengan blok, tema, statistik |
+| **PixelHop** | `p.hel.ink` (segera `pixel.hel.ink`) | [navi-crwn/PixelHop](https://github.com/navi-crwn/PixelHop) | Hosting media & gambar, pembersihan GPS, studio foto |
+| **NoteHop** | `note.hel.ink` | [navi-crwn/NoteHop](https://github.com/navi-crwn/NoteHop) | Catatan kolaboratif real-time terenkripsi zero-knowledge |
+| **Imperium** | Internal / Tailscale | Privat | Konsol operasional & admin terpadu lintas aplikasi |
 
 Semua fitur sudah termasuk untuk setiap akun. Tanpa paket premium, tanpa fitur yang dikunci. Dan karena open source, kamu juga bisa menjalankan semuanya di server dan domain sendiri.
 
