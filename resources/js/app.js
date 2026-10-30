@@ -4,13 +4,11 @@ import collapse from '@alpinejs/collapse';
 import Sortable from 'sortablejs';
 import modal from './modal';
 import installInlineActions from './inline-actions';
-import installHopFloat from './hop-float';
 Alpine.plugin(collapse);
 Alpine.plugin(modal);
 window.Alpine = Alpine;
 window.Sortable = Sortable;
 installInlineActions();
-installHopFloat();
 // Use requestAnimationFrame to ensure inline scripts in blade templates have executed
 // This handles the race condition with module script execution
 requestAnimationFrame(() => {

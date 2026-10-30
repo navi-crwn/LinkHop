@@ -9,10 +9,10 @@
 
     {{-- Hero: the free guest shortener on the left, a small copy of the hop scene on the right --}}
     <section class="mx-auto grid max-w-6xl items-center gap-6 px-4 pb-4 pt-10 sm:pt-14 lg:grid-cols-[1.05fr_1fr]">
-        <div class="text-center lg:text-left">
+        <div class="min-w-0 text-center lg:text-left">
         <p class="font-mono text-[11px] font-medium uppercase tracking-[0.3em] text-slate-500 dark:text-white/50">LinkHop · by hel.ink</p>
-        <h1 class="mt-4 text-5xl font-extrabold leading-[1.02] tracking-[-0.045em] sm:text-7xl lg:text-[76px]">
-            hel.ink/<span class="hop-serif bg-linear-to-r from-sky-500 via-indigo-500 to-fuchsia-500 bg-clip-text pr-2 text-transparent dark:from-sky-300 dark:via-indigo-300 dark:to-fuchsia-300">anything</span>
+        <h1 class="mt-4 text-[clamp(2rem,10vw,3rem)] font-extrabold leading-[1.02] tracking-[-0.045em] [overflow-wrap:anywhere] sm:text-7xl lg:text-[76px]">
+            hel.ink/<span class="hop-serif block bg-linear-to-r from-sky-500 via-indigo-500 to-fuchsia-500 bg-clip-text pr-2 text-transparent dark:from-sky-300 dark:via-indigo-300 dark:to-fuchsia-300">anything</span>
         </h1>
         <p class="mx-auto mt-5 max-w-xl text-base text-slate-600 sm:text-lg lg:mx-0 dark:text-white/65">
             Turn a long, ugly link into one that's short, trackable and safe to share. Free, open source, no tracking ads.
