@@ -3,29 +3,29 @@
         [
             'title' => 'Company',
             'items' => [
-                ['label' => 'Tentang — HOP hub (sementara)', 'route' => hub_url('about')],
-                ['label' => 'Kontak — HOP hub (sementara)', 'route' => hub_url('contact')],
-                ['label' => 'FAQ — HOP hub (sementara)', 'route' => hub_url('faq')],
-                ['label' => 'Pusat Bantuan — HOP hub (sementara)', 'route' => hub_url('help')],
+                ['label' => 'About', 'route' => hub_url('about')],
+                ['label' => 'Contact', 'route' => hub_url('contact')],
+                ['label' => 'FAQ', 'route' => hub_url('faq')],
+                ['label' => 'Help Center', 'route' => hub_url('help')],
             ],
         ],
         [
             'title' => 'Policies',
             'items' => [
-                ['label' => 'Kebijakan privasi — HOP hub (sementara)', 'route' => hub_url('privacy')],
-                ['label' => 'Ketentuan layanan — HOP hub (sementara)', 'route' => hub_url('terms')],
-                ['label' => 'Paket penggunaan — HOP hub (sementara)', 'route' => hub_url('plans')],
-                ['label' => 'Ajukan fitur — HOP hub (sementara)', 'route' => hub_url('contact')],
+                ['label' => 'Privacy policy', 'route' => hub_url('privacy')],
+                ['label' => 'Terms of service', 'route' => hub_url('terms')],
+                ['label' => 'Usage tiers', 'route' => hub_url('plans')],
+                ['label' => 'Request a feature', 'route' => hub_url('contact')],
             ],
         ],
         [
             'title' => 'Explore',
             'items' => [
-                ['label' => 'Produk — HOP hub (sementara)', 'route' => hub_url('products')],
+                ['label' => 'Products', 'route' => hub_url('products')],
                 ['label' => 'Check a link', 'route' => route('link.check')],
                 ['label' => 'Report abuse', 'route' => route('report.create')],
                 ['label' => 'Features', 'route' => route('home').'#features'],
-                ['label' => 'Analitik — HOP hub (sementara)', 'route' => hub_url('products').'#analytics-feature'],
+                ['label' => 'Analytics', 'route' => hub_url('products').'#analytics-feature'],
             ],
         ],
         [
