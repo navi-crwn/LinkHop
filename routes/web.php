@@ -10,6 +10,7 @@ use App\Http\Controllers\LegacySlugController;
 use App\Http\Controllers\LinkCheckController;
 use App\Http\Controllers\LinkCommentController;
 use App\Http\Controllers\LinkController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\PublicLinkController;
 use App\Http\Controllers\QrController;
 use App\Http\Controllers\RedirectController;
@@ -101,6 +102,11 @@ Route::middleware('ip.ban')->group(function () {
     // Pages left open past the session lifetime fetch a new token before submitting (resources/js/app.js).
     Route::get('/csrf-token', fn () => response()->json(['token' => csrf_token()])->header('Cache-Control', 'no-store, private'))
         ->middleware('throttle:30,1,csrf-token')->name('csrf.token');
+    // Dedicated pages on LinkHop's own domain (U-07); menus link here, not to the hub.
+    foreach (PageController::PAGES as $page) {
+        Route::get('/'.$page, [PageController::class, 'show'])->defaults('page', $page)->name('pages.'.$page);
+    }
+    Route::get('/status', [PageController::class, 'status'])->name('pages.status');
     Route::get('/check', LinkCheckController::class)->middleware('throttle:30,1,link-check')->name('link.check');
     Route::get('/report-abuse', [AbuseReportController::class, 'create'])->name('report.create');
     Route::post('/report-abuse', [AbuseReportController::class, 'store'])->middleware('throttle:5,10,report-abuse')->name('report.store');
