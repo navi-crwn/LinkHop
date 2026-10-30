@@ -8,6 +8,7 @@ use App\Models\HopApp;
 use App\Models\HopAudit;
 use App\Models\IpBan;
 use App\Models\Link;
+use App\Models\LinkClick;
 use App\Models\SeoSetting;
 use App\Models\User;
 use App\Support\HopSignature;
@@ -156,5 +157,29 @@ class HopContentApiTest extends TestCase
         $sig = HopSignature::b64(hash_hmac('sha256', HopSignature::stringToSign('notehop', $ts, $nonce, 'GET', '/api/hop/content?type=link', $json), 'notehop-secret-that-is-long-enough-12345', true));
         $this->call('GET', '/api/hop/content?type=link', [], [], [], ['HTTP_ACCEPT' => 'application/json', 'HTTP_X_HOP_APP' => 'notehop',
             'HTTP_X_HOP_TIMESTAMP' => $ts, 'HTTP_X_HOP_NONCE' => $nonce, 'HTTP_X_HOP_SIGNATURE' => $sig])->assertStatus(403);
+    }
+
+    public function test_global_analytics_extension(): void
+    {
+        $u = User::factory()->create();
+        $l1 = Link::create(['slug' => 'toplink', 'target_url' => 'https://example.com/top', 'user_id' => $u->id, 'clicks' => 15]);
+        $l2 = Link::create(['slug' => 'otherlink', 'target_url' => 'https://example.com/other', 'user_id' => $u->id, 'clicks' => 2]);
+
+        LinkClick::create(['link_id' => $l1->id, 'country' => 'ID', 'country_name' => 'Indonesia', 'referer' => 'https://google.com', 'clicked_at' => now()->subDays(2)]);
+        LinkClick::create(['link_id' => $l1->id, 'country' => 'ID', 'country_name' => 'Indonesia', 'referer' => 'https://google.com', 'clicked_at' => now()->subDays(1)]);
+        LinkClick::create(['link_id' => $l1->id, 'country' => 'US', 'country_name' => 'United States', 'referer' => 'https://twitter.com', 'clicked_at' => now()->subHours(5)]);
+
+        // Manifest should expose analytics extension
+        $this->signed('GET', '/api/hop/manifest')->assertOk()->assertJsonPath('data.extensions', ['ip', 'domains', 'queue', 'analytics']);
+
+        $res = $this->signed('GET', '/api/hop/x/analytics');
+        $res->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('data.total_links', 2)
+            ->assertJsonPath('data.total_clicks', 17)
+            ->assertJsonPath('data.clicks_30d', 3)
+            ->assertJsonPath('data.countries.0.country', 'ID')
+            ->assertJsonPath('data.countries.0.clicks', 2)
+            ->assertJsonPath('data.top_links.0.slug', 'toplink');
     }
 }
