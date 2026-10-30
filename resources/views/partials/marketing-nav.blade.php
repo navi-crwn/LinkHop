@@ -1,10 +1,10 @@
 @php
     $marketingLinks = [
-        ['label' => 'Features', 'href' => route('home').'#features'],
+        ['label' => 'Features', 'href' => route('pages.features')],
         ['label' => 'Check a link', 'href' => route('link.check')],
-        ['label' => 'Products', 'href' => hub_url('products')],
-        ['label' => 'Help', 'href' => hub_url('help')],
-        ['label' => 'FAQ', 'href' => hub_url('faq')],
+        ['label' => 'API', 'href' => route('pages.docs')],
+        ['label' => 'Help', 'href' => route('pages.help')],
+        ['label' => 'FAQ', 'href' => route('pages.faq')],
     ];
 @endphp
 <header class="sticky top-0 z-40 px-3 pt-3 sm:px-5" x-data="{ open: false }" @keydown.escape.window="open = false">
