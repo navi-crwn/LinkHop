@@ -21,7 +21,7 @@
             <nav class="mx-auto flex h-14 max-w-6xl items-center justify-between rounded-2xl border border-white/10 bg-slate-900/50 px-3 backdrop-blur-xl sm:px-4">
                 <a href="{{ route('home') }}" class="flex items-center gap-2.5 text-white" aria-label="LinkHop"><x-wordmark class="h-11 w-auto" /></a>
                 <div class="flex items-center gap-2 text-sm">
-                    <a href="{{ route('home') }}" class="text-white/70 hover:text-white">Kembali ke LinkHop</a>
+                    <a href="{{ route('home') }}" class="text-white/70 hover:text-white">&larr; Back to LinkHop</a>
                     <x-hop::badge />
                     @auth
                         <a href="{{ route('dashboard') }}" class="rounded-xl bg-white px-3.5 py-1.5 font-semibold text-slate-900 hover:bg-white/90">Dashboard</a>
@@ -35,7 +35,7 @@
             {{ $slot }}
         </main>
         <footer class="mx-auto max-w-6xl px-4 py-8 text-center text-xs text-white/50">
-            <a href="{{ hub_url('terms') }}" class="hover:text-white">Ketentuan — HOP hub (sementara)</a> · <a href="{{ hub_url('privacy') }}" class="hover:text-white">Privasi — HOP hub (sementara)</a> · <a href="{{ route('report.create') }}" class="hover:text-white">Report abuse</a> · <a href="{{ hub_url('help') }}" class="hover:text-white">Bantuan — HOP hub (sementara)</a>
+            <a href="{{ hub_url('terms') }}" class="hover:text-white">Terms</a> · <a href="{{ hub_url('privacy') }}" class="hover:text-white">Privacy</a> · <a href="{{ route('report.create') }}" class="hover:text-white">Report abuse</a> · <a href="{{ hub_url('help') }}" class="hover:text-white">Help</a>
         </footer>
         <x-cookie-consent />
     </body>
