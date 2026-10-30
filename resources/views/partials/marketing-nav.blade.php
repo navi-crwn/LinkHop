@@ -2,9 +2,9 @@
     $marketingLinks = [
         ['label' => 'Features', 'href' => route('home').'#features'],
         ['label' => 'Check a link', 'href' => route('link.check')],
-        ['label' => 'Products — HOP hub', 'href' => hub_url('products')],
-        ['label' => 'Help — HOP hub', 'href' => hub_url('help')],
-        ['label' => 'FAQ — HOP hub', 'href' => hub_url('faq')],
+        ['label' => 'Produk — HOP hub (sementara)', 'href' => hub_url('products')],
+        ['label' => 'Bantuan — HOP hub (sementara)', 'href' => hub_url('help')],
+        ['label' => 'FAQ — HOP hub (sementara)', 'href' => hub_url('faq')],
     ];
 @endphp
 <header class="sticky top-0 z-40 px-3 pt-3 sm:px-5" x-data="{ open: false }" @keydown.escape.window="open = false">
