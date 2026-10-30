@@ -1,6 +1,6 @@
 <p align="center"><a href="README.md">English</a> · <b>Bahasa Indonesia</b></p>
 
-<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/hero-id-light.webp"><img src="docs/readme/hero-id-dark.webp" alt="LinkHop: link pendek, halaman bio yang cantik" width="100%"></picture></p>
+<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/hero-id-light.webp"><img src="docs/readme/hero-id-dark.webp" alt="LinkHop: link pendek, kode QR, dan analitik klik" width="100%"></picture></p>
 
 <p align="center">
   <b>Pendekkan link, hitung setiap klik, dan analisis pengunjungmu.<br>Gratis, open source, dan bisa kamu host sendiri.</b>
@@ -35,25 +35,27 @@ Link yang panjang susah dibagikan, dan kamu tidak pernah tahu siapa yang mengkli
 
 ### Ekosistem Keluarga HOP
 
-| App | Alamat Live | Repository | Kegunaan |
+<!-- hop-family:start -->
+<!-- Generated from HEL.ink resources/hop-assets/apps.source.json; edit there, then run scripts/hop_assets.py build. -->
+| App | Address | Repository | What it does |
 | --- | --- | --- | --- |
-| **Hub** | `hel.ink` · `hub.hel.ink` | [navi-crwn/HEL.ink](https://github.com/navi-crwn/HEL.ink) | Akun HOP ID, SSO issuer, launcher, admin pusat |
-| **LinkHop** (repo ini) | `link.hel.ink` · `hel.ink/l/{slug}` | [navi-crwn/LinkHop](https://github.com/navi-crwn/LinkHop) | Pemendek link, QR code, analitik klik, API |
-| **BioHop** | `bio.hel.ink` · `hel.ink/b/{slug}` | [navi-crwn/BioHop](https://github.com/navi-crwn/BioHop) | Halaman link-in-bio dengan blok, tema, statistik |
-| **PixelHop** | `p.hel.ink` (segera `pixel.hel.ink`) | [navi-crwn/PixelHop](https://github.com/navi-crwn/PixelHop) | Hosting media & gambar, pembersihan GPS, studio foto |
-| **NoteHop** | `note.hel.ink` | [navi-crwn/NoteHop](https://github.com/navi-crwn/NoteHop) | Catatan kolaboratif real-time terenkripsi zero-knowledge |
-| **Imperium** | Internal / Tailscale | Privat | Konsol operasional & admin terpadu lintas aplikasi |
+| **HOP ID** | [hel.ink](https://hel.ink) · accounts at `hub.hel.ink` | [navi-crwn/HEL.ink](https://github.com/navi-crwn/HEL.ink) | One account for every HOP app. |
+| **LinkHop** | [link.hel.ink](https://link.hel.ink) · `hel.ink/l/…` | [navi-crwn/LinkHop](https://github.com/navi-crwn/LinkHop) | Short links, QR codes and click analytics. |
+| **BioHop** | [bio.hel.ink](https://bio.hel.ink) · `hel.ink/b/…` | [navi-crwn/BioHop](https://github.com/navi-crwn/BioHop) | One link-in-bio page for everything you do. |
+| **PixelHop** | [p.hel.ink](https://p.hel.ink) | [navi-crwn/PixelHop](https://github.com/navi-crwn/PixelHop) | Image hosting with albums and direct links. |
+| **NoteHop** | [note.hel.ink](https://note.hel.ink) · `n.hel.ink/…` | [navi-crwn/NoteHop](https://github.com/navi-crwn/NoteHop) | Encrypted notes you share with a link. |
+| **Imperium** | private (owner only) | private | The HOP control panel. |
+<!-- hop-family:end -->
 
 Semua fitur sudah termasuk untuk setiap akun. Tanpa paket premium, tanpa fitur yang dikunci. Dan karena open source, kamu juga bisa menjalankan semuanya di server dan domain sendiri.
 
 **Cocok untuk kamu yang:**
 - sering membagikan link di media sosial dan ingin tahu mana yang berhasil,
-- butuh satu halaman rapi untuk semua link, toko, musik, dan video,
 - ingin pemendek link yang kamu kendalikan sendiri, di server sendiri.
 
 <p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/features-id-light.webp"><img src="docs/readme/features-id-dark.webp" alt="Semua yang bisa dilakukan LinkHop" width="100%"></picture></p>
 
-<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/bio-id-light.webp"><img src="docs/readme/bio-id-dark.webp" alt="Link in Bio: satu halaman, semua link" width="100%"></picture></p>
+Butuh satu halaman untuk semua link? Itu [BioHop](https://github.com/navi-crwn/BioHop), app saudara LinkHop di [bio.hel.ink](https://bio.hel.ink), dengan HOP ID yang sama.
 
 📖 **Tur lengkap, panduan self-host, dan FAQ:** [navi-crwn.github.io/hel.ink](https://navi-crwn.github.io/hel.ink/)
 
@@ -61,7 +63,7 @@ Semua fitur sudah termasuk untuk setiap akun. Tanpa paket premium, tanpa fitur y
 
 <img src="docs/readme/example-bio.webp" alt="Contoh halaman bio di hel.ink/b/hel" width="280" align="right">
 
-**Halaman bio:** [hel.ink/b/hel](https://hel.ink/b/hel), halaman milik LinkHop sendiri dengan tema Galaxy, tombol link berikon brand, blok teks, FAQ, dan kartu kontak.
+**Halaman bio:** [hel.ink/b/hel](https://hel.ink/b/hel), dibuat dengan [BioHop](https://bio.hel.ink): tema Galaxy, tombol link berikon brand, blok teks, FAQ, dan kartu kontak.
 
 **Link pendek:**
 
@@ -81,17 +83,13 @@ Untuk memuat contoh yang sama di instalasi kamu sendiri, jalankan `php artisan d
 
 - **🔗 Link pendek.** Slug acak atau custom, password dan tanggal kedaluwarsa opsional, dan QR code (PNG, SVG, atau JPG) untuk setiap link.
 - **🙋 Tanpa akun pun bisa.** Siapa saja bisa memendekkan link. Link tamu dihapus setelah 14 hari tanpa klik, dan paling lama setelah 30 hari; daftar untuk menyimpannya dan melihat statistiknya.
-- **🪪 Link in Bio.** Halamanmu sendiri di `hel.ink/b/namamu`, disusun dari blok: link, teks, gambar, YouTube, Spotify, peta, hitung mundur, FAQ, vCard, dan potongan kode.
-- **🎨 20 tema.** Galaxy, Neon, Cyberpunk, Aurora, Cherry Blossom, Midnight, Matrix, Ice, Lavender, dan lainnya, atau warna, font, dan CSS kamu sendiri. Editornya menampilkan pratinjau langsung.
-- **✨ Animasi.** Hujan, salju, bintang, hati, daun, atau confetti di latar halaman; tombol yang muncul, bergeser, memantul, bersinar, berdenyut, atau bergoyang.
-- **🏷️ 150+ ikon brand.** Ikon media sosial dari Simple Icons, ditaruh di posisi yang kamu mau.
-- **📊 Analitik.** Klik, pengunjung unik, negara dan kota, perangkat, browser, dan referrer, secara real time, dengan ekspor CSV. Halaman bio punya statistik kunjungan dan klik per blok sendiri.
+- **🪪 Halaman bio ada di BioHop.** Di hel.ink, halaman `hel.ink/b/namamu` (blok, 20 tema, animasi, ikon brand, halaman privat) dibuat di [BioHop](https://github.com/navi-crwn/BioHop). Instalasi satu server tetap bisa menyalakan paket bio bawaan (`BIO_ENABLED=true`, lihat FAQ).
+- **📊 Analitik.** Klik, pengunjung unik, negara dan kota, perangkat, browser, dan referrer, secara real time, dengan ekspor CSV.
 - **🗂️ Folder & tag.** Kelompokkan, beri tag, dan cari link, kelola banyak link sekaligus, dan tinggalkan komentar di link.
-- **🔒 Halaman bio privat.** Kunci halaman dengan password atau cek usia. Google Analytics, Facebook Pixel, dan TikTok Pixel baru dimuat setelah pengunjung setuju.
 - **🔌 API & ShareX.** REST API dengan token Bearer, plus konfigurasi ShareX siap pakai di Settings → API.
 - **🔐 Login aman.** Email dan password atau login Google, kode dua langkah (TOTP), dan riwayat login.
 - **🛡️ Perlindungan abuse.** Batas kecepatan dan kuota, blacklist domain, cek proxy/VPN, formulir laporan, dan pemindaian tiap jam untuk phishing, penipuan, dan link berbahaya lainnya, dengan pengecekan Google Safe Browsing dan URLhaus (opsional).
-- **🧰 Panel admin.** Pengguna, link, halaman bio, blokir IP, blacklist domain, laporan abuse, dan antrean job dalam satu tempat.
+- **🏛️ Pusat kendali HOP.** Moderasi dan pengaturan (pengguna, link, laporan abuse, blokir IP, blacklist domain, SEO, antrean job) ada di Imperium, pusat kendali HOP, lewat API admin bertanda tangan (`/api/hop/*`); `/admin` mengarahkan admin ke sana (`HOP_CONTROL_URL`).
 - **🏠 Bisa di-host sendiri.** Laravel 12 di server kamu sendiri dengan MySQL, PostgreSQL, atau SQLite.
 
 ## Cara pasang
@@ -187,7 +185,7 @@ LinkHop tetap jalan di `hel.ink` dengan `APP_URL=https://hel.ink` sampai semua a
 | Apa | URL |
 | --- | --- |
 | Short link | `hel.ink/l/slug` |
-| Halaman bio | `hel.ink/b/nama` |
+| Halaman bio (BioHop) | `hel.ink/b/nama` |
 | Bentuk lama short link | `hel.ink/slug`: dialihkan ke `hel.ink/l/slug` sampai **27 November 2026**, lalu berhenti |
 | Dashboard dan API | `link.hel.ink` (masuk lewat hub, `hub.hel.ink`) |
 | Akunmu | `hub.hel.ink`: profil, password, 2FA, token API, unduh data, hapus akun |
@@ -195,11 +193,7 @@ LinkHop tetap jalan di `hel.ink` dengan `APP_URL=https://hel.ink` sampai semua a
 hel.ink menjadi rumah beberapa app HOP, jadi sejak 28 Oktober 2026 short link punya jalurnya sendiri. Tidak ada yang dihapus; dashboard, kode QR, API, dan ekspor akun sudah menampilkan bentuk baru. Di instalasi sendiri, host publiknya adalah `PUBLIC_URL` (default `APP_URL`), tanggalnya `LEGACY_SLUG_UNTIL`, dan `php artisan links:announce-migration` mengirim email ke setiap pemilik link berisi link mereka dalam bentuk baru (`--reminder` untuk email kedua).
 
 **Membuat halaman bio**
-1. Buka **Dashboard → Link in Bio**.
-2. Buat halaman dengan namamu.
-3. Tambahkan blok: link, teks, gambar, video, musik.
-4. Pilih tema dan warnamu.
-5. Bagikan: `hel.ink/b/namamu`.
+Halaman bio dibuat di BioHop: masuk di [bio.hel.ink](https://bio.hel.ink) dengan HOP ID yang sama, pilih nama, lalu bagikan `hel.ink/b/namamu`.
 
 ## API
 
@@ -244,16 +238,16 @@ Ya. Tidak ada paket berbayar dan tidak ada fitur yang dikunci, dan kodenya berli
 Ya, HOP ID (gratis, dibuat di hub); akun itu juga untuk masuk ke app HOP lainnya. Link tamu yang dibuat di beranda lama tetap jalan dan dihapus setelah 14 hari tanpa klik, paling lama setelah 30 hari.
 
 **Di mana halaman bio saya?**
-Di `hel.ink/b/` lalu nama yang kamu pilih, misalnya [hel.ink/b/hel](https://hel.ink/b/hel).
+Di BioHop, di `hel.ink/b/` lalu nama yang kamu pilih, misalnya [hel.ink/b/hel](https://hel.ink/b/hel). Ubah di [bio.hel.ink](https://bio.hel.ink).
 
 **Bisa pakai domain sendiri?**
 Bisa, dengan meng-host salinan sendiri di samping hub: `APP_URL` host dashboard, `PUBLIC_URL` host publik untuk short link, dan `HOP_HUB_URL` hub-nya.
 
-**Bisa jalan tanpa Link in Bio?**
-Bisa: `BIO_ENABLED=false` di `.env`. Bio hidup di paket `hop/bio` (`packages/bio`); saat mati, tidak ada route yang didaftarkan dan tidak butuh tabel.
+**Apakah LinkHop masih berisi halaman bio?**
+Hanya untuk instalasi satu server tanpa BioHop: `BIO_ENABLED=true` di `.env` menyalakan paket bawaan `hop/bio` (`packages/bio`). Bila BioHop berjalan di sampingnya, seperti di hel.ink, biarkan `false`; saat mati, tidak ada route yang didaftarkan dan tidak butuh tabel.
 
 **Apa yang tercatat dari sebuah klik?**
-Waktu, negara dan kota, perangkat, browser, dan referrer. Pixel pelacak di halaman bio baru dimuat setelah pengunjung setuju.
+Waktu, negara dan kota, perangkat, browser, dan referrer.
 
 **Bagaimana melaporkan link berbahaya?**
 Pakai formulir laporan (`/report-abuse`). Laporan masuk ke antrean abuse di pusat kendali HOP, bersama temuan dari pemindaian otomatis.
