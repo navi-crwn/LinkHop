@@ -23,11 +23,11 @@ class ContentSecurityPolicyMiddleware
         $assets = $assets !== '' ? ' '.$assets : '';
         $csp = [
             "default-src 'self'",
-            "script-src 'self'{$assets} 'nonce-{$nonce}' 'strict-dynamic' 'unsafe-eval' https: 'unsafe-inline' https://challenges.cloudflare.com https://fonts.bunny.net https://fonts.googleapis.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://cdn.tailwindcss.com https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net",
+            "script-src 'self'{$assets} https://hel.ink 'nonce-{$nonce}' 'strict-dynamic' 'unsafe-eval' https: 'unsafe-inline' https://challenges.cloudflare.com https://fonts.bunny.net https://fonts.googleapis.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://cdn.tailwindcss.com https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net",
             "script-src-attr 'none'",
-            "style-src 'self'{$assets} 'unsafe-inline' https://fonts.bunny.net https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com",
+            "style-src 'self'{$assets} 'unsafe-inline' https://hel.ink https://fonts.bunny.net https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com",
             "img-src 'self' data: https: blob: https://flagcdn.com https://*.tile.openstreetmap.org https://www.google-analytics.com https://www.facebook.com",
-            "font-src 'self'{$assets} https://fonts.bunny.net https://fonts.gstatic.com data:",
+            "font-src 'self'{$assets} https://hel.ink https://fonts.bunny.net https://fonts.gstatic.com data:",
             "connect-src 'self'{$assets} data: blob: https://challenges.cloudflare.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://cdn.jsdelivr.net https://unpkg.com https://www.google-analytics.com https://analytics.google.com https://www.facebook.com",
             "frame-src 'self' https://challenges.cloudflare.com https://maps.google.com https://www.google.com https://youtube.com ".implode(' ', BioEmbed::FRAME_HOSTS),
             "object-src 'none'",

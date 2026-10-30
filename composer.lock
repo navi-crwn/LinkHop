@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e20e3570a265255a3a2ec65fe3565d79",
+    "content-hash": "f8d0dbd1b4394b6d920d195852c20bf8",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1415,23 +1415,22 @@
         },
         {
             "name": "hop/ui",
-            "version": "dev-main",
+            "version": "v0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/navi-crwn/hop-ui.git",
-                "reference": "aae6adc936a600db4fdfb655816b66e9377c2717"
+                "reference": "68c13f26ee16b74f33b620e82e73e46345e9f0c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-ui/zipball/aae6adc936a600db4fdfb655816b66e9377c2717",
-                "reference": "aae6adc936a600db4fdfb655816b66e9377c2717",
+                "url": "https://api.github.com/repos/navi-crwn/hop-ui/zipball/68c13f26ee16b74f33b620e82e73e46345e9f0c6",
+                "reference": "68c13f26ee16b74f33b620e82e73e46345e9f0c6",
                 "shasum": ""
             },
             "require": {
                 "illuminate/support": "^12.0",
                 "php": "^8.3"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -1450,10 +1449,10 @@
             ],
             "description": "HOP shared package: ui.",
             "support": {
-                "source": "https://github.com/navi-crwn/hop-ui/tree/main",
+                "source": "https://github.com/navi-crwn/hop-ui/tree/v0.2.0",
                 "issues": "https://github.com/navi-crwn/hop-ui/issues"
             },
-            "time": "2026-10-28T11:10:50+00:00"
+            "time": "2026-10-30T17:04:36+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
@@ -11285,8 +11284,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "hop/bio": 20,
-        "hop/safety": 20,
-        "hop/ui": 20
+        "hop/safety": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
