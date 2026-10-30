@@ -1,31 +1,30 @@
 @php
     $footerBlocks = [
         [
-            'title' => 'Company',
+            'title' => 'LinkHop',
             'items' => [
-                ['label' => 'About', 'route' => hub_url('about')],
-                ['label' => 'Contact', 'route' => hub_url('contact')],
-                ['label' => 'FAQ', 'route' => hub_url('faq')],
-                ['label' => 'Help Center', 'route' => hub_url('help')],
+                ['label' => 'About', 'route' => route('pages.about')],
+                ['label' => 'Features', 'route' => route('pages.features')],
+                ['label' => 'API', 'route' => route('pages.docs')],
+                ['label' => 'Status', 'route' => route('pages.status')],
+            ],
+        ],
+        [
+            'title' => 'Support',
+            'items' => [
+                ['label' => 'Help', 'route' => route('pages.help')],
+                ['label' => 'FAQ', 'route' => route('pages.faq')],
+                ['label' => 'Contact', 'route' => route('pages.contact')],
+                ['label' => 'Request a feature', 'route' => 'https://github.com/navi-crwn/LinkHop/issues/new/choose', 'external' => true],
             ],
         ],
         [
             'title' => 'Policies',
             'items' => [
-                ['label' => 'Privacy policy', 'route' => hub_url('privacy')],
-                ['label' => 'Terms of service', 'route' => hub_url('terms')],
-                ['label' => 'Usage tiers', 'route' => hub_url('plans')],
-                ['label' => 'Request a feature', 'route' => hub_url('contact')],
-            ],
-        ],
-        [
-            'title' => 'Explore',
-            'items' => [
-                ['label' => 'Products', 'route' => hub_url('products')],
+                ['label' => 'Privacy', 'route' => route('pages.privacy')],
+                ['label' => 'Terms', 'route' => route('pages.terms')],
                 ['label' => 'Check a link', 'route' => route('link.check')],
                 ['label' => 'Report abuse', 'route' => route('report.create')],
-                ['label' => 'Features', 'route' => route('home').'#features'],
-                ['label' => 'Analytics', 'route' => hub_url('products').'#analytics-feature'],
             ],
         ],
         [
