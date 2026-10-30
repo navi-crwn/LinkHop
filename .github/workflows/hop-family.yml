@@ -1,0 +1,20 @@
+name: HOP family table
+
+on:
+  push:
+    branches: [main]
+    paths: [README.md, scripts/check-hop-family.sh, .github/workflows/hop-family.yml]
+  pull_request:
+    paths: [README.md, scripts/check-hop-family.sh, .github/workflows/hop-family.yml]
+  schedule:
+    - cron: '17 6 * * 1' # weekly, so a change in HEL.ink's table shows up here
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash scripts/check-hop-family.sh
