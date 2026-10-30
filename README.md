@@ -1,6 +1,6 @@
 <p align="center"><b>English</b> · <a href="README.id.md">Bahasa Indonesia</a></p>
 
-<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/hero-en-light.webp"><img src="docs/readme/hero-en-dark.webp" alt="LinkHop: short links, beautiful bio pages" width="100%"></picture></p>
+<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/hero-en-light.webp"><img src="docs/readme/hero-en-dark.webp" alt="LinkHop: short links, QR codes and click analytics" width="100%"></picture></p>
 
 <p align="center">
   <b>Shorten links, count every click, and analyze your audience.<br>Free, open source, and yours to host.</b>
@@ -35,25 +35,27 @@ Long links are hard to share and you never know who clicks them. LinkHop makes t
 
 ### HOP Family Ecosystem
 
-| App | Live Address | Repository | Purpose |
+<!-- hop-family:start -->
+<!-- Generated from HEL.ink resources/hop-assets/apps.source.json; edit there, then run scripts/hop_assets.py build. -->
+| App | Address | Repository | What it does |
 | --- | --- | --- | --- |
-| **Hub** | `hel.ink` · `hub.hel.ink` | [navi-crwn/HEL.ink](https://github.com/navi-crwn/HEL.ink) | Account portal, HOP ID, SSO issuer, launcher, admin |
-| **LinkHop** (this repo) | `link.hel.ink` · `hel.ink/l/{slug}` | [navi-crwn/LinkHop](https://github.com/navi-crwn/LinkHop) | URL shortener, QR codes, click analytics, API |
-| **BioHop** | `bio.hel.ink` · `hel.ink/b/{slug}` | [navi-crwn/BioHop](https://github.com/navi-crwn/BioHop) | Link-in-bio pages with custom blocks, themes, stats |
-| **PixelHop** | `p.hel.ink` (soon `pixel.hel.ink`) | [navi-crwn/PixelHop](https://github.com/navi-crwn/PixelHop) | Image & media hosting, EXIF/GPS scrubbing, studio |
-| **NoteHop** | `note.hel.ink` | [navi-crwn/NoteHop](https://github.com/navi-crwn/NoteHop) | Zero-knowledge client-encrypted live notes & docs |
-| **Imperium** | Internal / Tailscale | Private | Unified admin & operations console across all apps |
+| **HOP ID** | [hel.ink](https://hel.ink) · accounts at `hub.hel.ink` | [navi-crwn/HEL.ink](https://github.com/navi-crwn/HEL.ink) | One account for every HOP app. |
+| **LinkHop** | [link.hel.ink](https://link.hel.ink) · `hel.ink/l/…` | [navi-crwn/LinkHop](https://github.com/navi-crwn/LinkHop) | Short links, QR codes and click analytics. |
+| **BioHop** | [bio.hel.ink](https://bio.hel.ink) · `hel.ink/b/…` | [navi-crwn/BioHop](https://github.com/navi-crwn/BioHop) | One link-in-bio page for everything you do. |
+| **PixelHop** | [p.hel.ink](https://p.hel.ink) | [navi-crwn/PixelHop](https://github.com/navi-crwn/PixelHop) | Image hosting with albums and direct links. |
+| **NoteHop** | [note.hel.ink](https://note.hel.ink) · `n.hel.ink/…` | [navi-crwn/NoteHop](https://github.com/navi-crwn/NoteHop) | Encrypted notes you share with a link. |
+| **Imperium** | private (owner only) | private | The HOP control panel. |
+<!-- hop-family:end -->
 
 Everything is included for every account. No premium tier, no locked features. And because it's open source, you can also run the whole thing on your own server and your own domain.
 
 **Good for you if you:**
 - share links on social media and want to see what works,
-- need one tidy page for all your links, shop, music and videos,
 - want a link shortener you control, on your own server.
 
 <p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/features-en-light.webp"><img src="docs/readme/features-en-dark.webp" alt="Everything LinkHop can do" width="100%"></picture></p>
 
-<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/bio-en-light.webp"><img src="docs/readme/bio-en-dark.webp" alt="Link in Bio: one page, every link" width="100%"></picture></p>
+Looking for one page for all your links? That is [BioHop](https://github.com/navi-crwn/BioHop), LinkHop's sister app at [bio.hel.ink](https://bio.hel.ink), on the same HOP ID.
 
 📖 **The full tour, the self-host guide and the FAQ:** [navi-crwn.github.io/hel.ink](https://navi-crwn.github.io/hel.ink/)
 
@@ -61,7 +63,7 @@ Everything is included for every account. No premium tier, no locked features. A
 
 <img src="docs/readme/example-bio.webp" alt="The example bio page at hel.ink/b/hel" width="280" align="right">
 
-**Bio page:** [hel.ink/b/hel](https://hel.ink/b/hel), LinkHop's own page with the Galaxy theme, link buttons with brand icons, a text block, an FAQ and a contact card.
+**Bio page:** [hel.ink/b/hel](https://hel.ink/b/hel), made with [BioHop](https://bio.hel.ink): the Galaxy theme, link buttons with brand icons, a text block, an FAQ and a contact card.
 
 **Short links:**
 
@@ -81,13 +83,9 @@ To load the same example on your own install, run `php artisan db:seed --class=E
 
 - **🔗 Short links.** Random or custom slugs, an optional password and expiry date, and a QR code (PNG, SVG or JPG) for every link.
 - **🙋 No account needed.** Anyone can shorten a link. Guest links are deleted after 14 days without a click, and after 30 days at most; sign up to keep them and see their stats.
-- **🪪 Link in Bio.** Your own page at `hel.ink/b/you`, built from blocks: links, text, images, YouTube, Spotify, maps, countdowns, FAQ, vCard and code snippets.
-- **🎨 20 themes.** Galaxy, Neon, Cyberpunk, Aurora, Cherry Blossom, Midnight, Matrix, Ice, Lavender and more, or your own colors, fonts and custom CSS. The editor shows a live preview.
-- **✨ Animations.** Rain, snow, stars, hearts, leaves or confetti behind the page; buttons that fade, slide, pop, glow, pulse or wiggle.
-- **🏷️ 150+ brand icons.** Social icons from Simple Icons, placed where you want them.
-- **📊 Analytics.** Clicks, unique visitors, countries and cities, devices, browsers and referrers, in real time, with CSV export. Bio pages get their own views and clicks per block.
+- **🪪 Bio pages live in BioHop.** On hel.ink, pages at `hel.ink/b/you` (blocks, 20 themes, animations, brand icons, private pages) are made in [BioHop](https://github.com/navi-crwn/BioHop). A single-server install can still turn on the bundled bio package (`BIO_ENABLED=true`, see the FAQ).
+- **📊 Analytics.** Clicks, unique visitors, countries and cities, devices, browsers and referrers, in real time, with CSV export.
 - **🗂️ Folders & tags.** Sort, tag and search your links, act on many at once, and leave comments on a link.
-- **🔒 Private bio pages.** Lock a page with a password or an age check. Google Analytics, Facebook Pixel and TikTok Pixel only load after the visitor agrees.
 - **🔌 API & ShareX.** A REST API with Bearer tokens, plus a ready-made ShareX config in Settings → API.
 - **🔐 Safe sign-in.** Email and password or Google login, two-factor codes (TOTP) and a login history.
 - **🛡️ Abuse protection.** Rate limits and quotas, a domain blacklist, proxy/VPN checks, a report form, and an hourly scan for phishing, scams and other harmful links, with optional Google Safe Browsing and URLhaus lookups.
@@ -187,7 +185,7 @@ LinkHop keeps running at `hel.ink` with `APP_URL=https://hel.ink` until every HO
 | What | URL |
 | --- | --- |
 | Short link | `hel.ink/l/slug` |
-| Bio page | `hel.ink/b/name` |
+| Bio page (BioHop) | `hel.ink/b/name` |
 | Old short link form | `hel.ink/slug`: redirects to `hel.ink/l/slug` until **27 November 2026**, then stops |
 | Dashboard and API | `link.hel.ink` (sign in through the hub, `hub.hel.ink`) |
 | Your account | `hub.hel.ink`: profile, password, two-factor, API tokens, data download, deleting the account |
@@ -195,11 +193,7 @@ LinkHop keeps running at `hel.ink` with `APP_URL=https://hel.ink` until every HO
 hel.ink is becoming the home of several HOP apps, so short links got their own path on 28 October 2026. Nothing was deleted; the dashboard, QR codes, the API and the account export show the new form. On your own install the public host is `PUBLIC_URL` (default `APP_URL`), the date is `LEGACY_SLUG_UNTIL`, and `php artisan links:announce-migration` mails every link owner their links in the new form (`--reminder` for the second mail).
 
 **Make a bio page**
-1. Go to **Dashboard → Link in Bio**.
-2. Create a page with your name.
-3. Add blocks: links, text, images, videos, music.
-4. Pick a theme and your colors.
-5. Share it: `hel.ink/b/yourname`.
+Bio pages are made in BioHop: sign in at [bio.hel.ink](https://bio.hel.ink) with the same HOP ID, pick a name and share `hel.ink/b/yourname`.
 
 ## API
 
@@ -244,16 +238,16 @@ Yes. There's no paid plan and no locked feature, and the code is MIT licensed, s
 Yes, a HOP ID (free, made at the hub); it also signs you in to the other HOP apps. Guest links made on the old home page still work and are deleted after 14 days without a click, and after 30 days at most.
 
 **Where is my bio page?**
-At `hel.ink/b/` followed by the name you pick, for example [hel.ink/b/hel](https://hel.ink/b/hel).
+In BioHop, at `hel.ink/b/` followed by the name you pick, for example [hel.ink/b/hel](https://hel.ink/b/hel). Edit it at [bio.hel.ink](https://bio.hel.ink).
 
 **Can I use my own domain?**
 Yes, by hosting your own copy next to the hub: `APP_URL` is the dashboard's host, `PUBLIC_URL` the public one for short links, and `HOP_HUB_URL` the hub.
 
-**Can I run it without Link in Bio?**
-Yes: `BIO_ENABLED=false` in `.env`. Bio lives in the `hop/bio` package (`packages/bio`); off, it registers no routes and needs no tables.
+**Does LinkHop still include bio pages?**
+Only for a single-server install without BioHop: `BIO_ENABLED=true` in `.env` turns on the bundled `hop/bio` package (`packages/bio`). With BioHop next to it, as on hel.ink, keep it `false`; off, it registers no routes and needs no tables.
 
 **What does a click record?**
-The time, country and city, device, browser and referrer. Tracking pixels on bio pages only load after the visitor agrees.
+The time, country and city, device, browser and referrer.
 
 **How do I report a bad link?**
 Use the report form (`/report-abuse`). Reports land in the HOP control center's abuse queue, next to the findings of the automatic scan.
