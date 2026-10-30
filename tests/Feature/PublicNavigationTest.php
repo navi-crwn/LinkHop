@@ -25,16 +25,39 @@ test('public layout offers an explicit static back link to LinkHop home', functi
 test('marketing nav labels hub links as the HOP hub interim', function () {
     $html = $this->get('/')->assertOk()->getContent();
 
-    expect($html)->toContain('Products — HOP hub');
-    expect($html)->toContain('Help — HOP hub');
-    expect($html)->toContain('FAQ — HOP hub');
+    expect($html)->toContain('Produk — HOP hub (sementara)');
+    expect($html)->toContain('Bantuan — HOP hub (sementara)');
+    expect($html)->toContain('FAQ — HOP hub (sementara)');
+});
+
+test('marketing nav marks hub links explicitly temporary', function () {
+    $html = $this->get('/')->assertOk()->getContent();
+
+    // The hub detour is explicitly temporary, not just a named hub.
+    expect($html)->toContain('sementara');
+});
+
+test('marketing footer marks hub links explicitly temporary', function () {
+    $html = $this->get('/')->assertOk()->getContent();
+
+    expect($html)->toContain('sementara');
+});
+
+test('compact public-layout footer labels its hub destinations explicitly temporary', function () {
+    $html = $this->get('/check?return=https://example.invalid')->assertOk()->getContent();
+
+    expect($html)->toContain('Ketentuan — HOP hub (sementara)');
+    expect($html)->toContain('Privasi — HOP hub (sementara)');
+    expect($html)->toContain('Bantuan — HOP hub (sementara)');
+    // The local report-abuse route stays unlabeled: it is not a hub detour.
+    expect($html)->not->toContain('Laporkan penyalahgunaan — HOP hub');
 });
 
 test('marketing footer labels hub links as the HOP hub interim', function () {
     $html = $this->get('/')->assertOk()->getContent();
 
-    expect($html)->toContain('About — HOP hub');
-    expect($html)->toContain('Contact — HOP hub');
-    expect($html)->toContain('Privacy policy — HOP hub');
-    expect($html)->toContain('Terms of service — HOP hub');
+    expect($html)->toContain('Tentang — HOP hub (sementara)');
+    expect($html)->toContain('Kontak — HOP hub (sementara)');
+    expect($html)->toContain('Kebijakan privasi — HOP hub (sementara)');
+    expect($html)->toContain('Ketentuan layanan — HOP hub (sementara)');
 });
