@@ -3,29 +3,29 @@
         [
             'title' => 'Company',
             'items' => [
-                ['label' => 'About', 'route' => hub_url('about')],
-                ['label' => 'Contact', 'route' => hub_url('contact')],
-                ['label' => 'FAQ', 'route' => hub_url('faq')],
-                ['label' => 'Help Center', 'route' => hub_url('help')],
+                ['label' => 'About — HOP hub', 'route' => hub_url('about')],
+                ['label' => 'Contact — HOP hub', 'route' => hub_url('contact')],
+                ['label' => 'FAQ — HOP hub', 'route' => hub_url('faq')],
+                ['label' => 'Help Center — HOP hub', 'route' => hub_url('help')],
             ],
         ],
         [
             'title' => 'Policies',
             'items' => [
-                ['label' => 'Privacy policy', 'route' => hub_url('privacy')],
-                ['label' => 'Terms of service', 'route' => hub_url('terms')],
-                ['label' => 'Usage tiers', 'route' => hub_url('plans')],
-                ['label' => 'Request a feature', 'route' => hub_url('contact')],
+                ['label' => 'Privacy policy — HOP hub', 'route' => hub_url('privacy')],
+                ['label' => 'Terms of service — HOP hub', 'route' => hub_url('terms')],
+                ['label' => 'Usage tiers — HOP hub', 'route' => hub_url('plans')],
+                ['label' => 'Request a feature — HOP hub', 'route' => hub_url('contact')],
             ],
         ],
         [
             'title' => 'Explore',
             'items' => [
-                ['label' => 'Products', 'route' => hub_url('products')],
+                ['label' => 'Products — HOP hub', 'route' => hub_url('products')],
                 ['label' => 'Check a link', 'route' => route('link.check')],
                 ['label' => 'Report abuse', 'route' => route('report.create')],
                 ['label' => 'Features', 'route' => route('home').'#features'],
-                ['label' => 'Analytics', 'route' => hub_url('products').'#analytics-feature'],
+                ['label' => 'Analytics — HOP hub', 'route' => hub_url('products').'#analytics-feature'],
             ],
         ],
         [
