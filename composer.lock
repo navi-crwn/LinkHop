@@ -1415,16 +1415,16 @@
         },
         {
             "name": "hop/ui",
-            "version": "v0.2.0",
+            "version": "v0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/navi-crwn/hop-ui.git",
-                "reference": "68c13f26ee16b74f33b620e82e73e46345e9f0c6"
+                "reference": "d8672a2b6419836b1a1da58125bca9d170bd7c79"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-ui/zipball/68c13f26ee16b74f33b620e82e73e46345e9f0c6",
-                "reference": "68c13f26ee16b74f33b620e82e73e46345e9f0c6",
+                "url": "https://api.github.com/repos/navi-crwn/hop-ui/zipball/d8672a2b6419836b1a1da58125bca9d170bd7c79",
+                "reference": "d8672a2b6419836b1a1da58125bca9d170bd7c79",
                 "shasum": ""
             },
             "require": {
@@ -1449,10 +1449,10 @@
             ],
             "description": "HOP shared package: ui.",
             "support": {
-                "source": "https://github.com/navi-crwn/hop-ui/tree/v0.2.0",
+                "source": "https://github.com/navi-crwn/hop-ui/tree/v0.2.1",
                 "issues": "https://github.com/navi-crwn/hop-ui/issues"
             },
-            "time": "2026-10-30T17:04:36+00:00"
+            "time": "2026-10-30T17:13:16+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
