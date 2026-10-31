@@ -33,6 +33,10 @@
 
 Long links are hard to share and you never know who clicks them. LinkHop makes them **short** (with your own slug if you like), **counts every click** by country, device and referrer, and protects visitors with automated URL threat detection. Personal landing pages are now powered by [BioHop](https://github.com/navi-crwn/BioHop) at `hel.ink/b/you`.
 
+### Explore before you sign up
+
+The homepage restores the interactive 3D island-and-rabbit scene. Move your pointer or touch the islands, play sharing and password scenarios, or pause the motion. A scroll-led tour also works with navigation buttons: try a custom slug, unlock a sample protected link, and switch sample analytics ranges. These demos stay in your browser; the real guest shortener remains at the top. Mobile and reduced-motion visitors can use the same controls.
+
 ### HOP Family Ecosystem
 
 <!-- hop-family:start -->

@@ -1,4 +1,6 @@
 /* Product introductions: editorial typography, dimensional scenes, and focused app links. */
+.scene-preview { min-width: 0; text-decoration: none; }
+.scene-preview span { display: block; text-align: center; padding: 12px; font-size: 12px; color: var(--text); }
 :root { --maxw: 76rem; }
 .product-art { overflow: clip; }
 body { font-family: var(--hop-font-body, 'Inter', system-ui, sans-serif); }

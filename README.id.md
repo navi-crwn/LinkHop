@@ -29,6 +29,8 @@ Pemendek tautan cepat dan menjaga privasi dengan slug kustom, kode QR, analitik 
 
 ## Fitur Utama
 
+Beranda menghadirkan kembali pulau dan kelinci 3D interaktif. Gerakkan penunjuk atau sentuh pulau, pilih skenario berbagi dan kata sandi, atau jeda gerakan. Tur dengan gulir dan tombol menyediakan demo slug, perlindungan kata sandi, dan analitik lokal tanpa membuat data. Pemendek tautan sungguhan tetap tersedia di atas, dengan dukungan ponsel dan pengurangan gerakan.
+
 - **Pemendekan Secepat Kilat**: Slug kustom atau ID acak disajikan seketika di hel.ink/l/{slug} dengan latensi rendah.
 - **Kode QR Dinamis**: Buat kode QR SVG/PNG resolusi tinggi untuk cetak, kemasan, maupun berbagi digital.
 - **Analitik Klik Mendalam**: Pantau negara pengunjung (GeoIP), perangkat, peramban, sistem operasi, dan perujuk secara langsung.
