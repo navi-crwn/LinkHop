@@ -17,11 +17,11 @@ test('short links live at PUBLIC_URL/l/{slug} and PUBLIC_URL may differ from APP
         ->and(url('/'))->toBe(config('app.url'));
 });
 
-test('/l/{slug} opens the link and the old /{slug} answers 301 to it', function () {
+test('/l/{slug} opens the link and the retired old form /{slug} answers 404', function () {
     Link::create(['slug' => 'promo1', 'target_url' => 'https://example.com/p', 'status' => 'active']);
 
     $this->get('/l/promo1')->assertRedirect('https://example.com/p')->assertStatus(302);
-    $this->get('/promo1')->assertStatus(301)->assertRedirect(public_url('l/promo1'));
+    $this->get('/promo1')->assertNotFound();
     $this->get('/l/nothere')->assertNotFound();
     $this->get('/nothere')->assertNotFound();
     $this->get('/l/promo1/extra')->assertNotFound();
@@ -34,16 +34,11 @@ test('a password-protected link asks for the password at /l/ and the form posts 
     $this->post('/l/secret1', ['password' => 'pw'])->assertRedirect('https://example.com/s');
 });
 
-test('once the legacy date has passed the old form is a 404 while /l/ keeps working', function () {
+test('the retired old form is a 404 while /l/ keeps working', function () {
     Link::create(['user_id' => User::factory()->create()->id, 'slug' => 'promo2', 'target_url' => 'https://example.com/p', 'status' => 'active']);
-    config(['shortener.legacy_slug_until' => '2026-11-27']);
 
-    Carbon::setTestNow('2026-11-27 23:59:00');
-    $this->get('/promo2')->assertStatus(301);
-    Carbon::setTestNow('2026-11-28 00:00:01');
     $this->get('/promo2')->assertNotFound();
     $this->get('/l/promo2')->assertRedirect('https://example.com/p');
-    Carbon::setTestNow();
 });
 
 test('the API, the dashboard and the sitemap use the /l/ form', function () {

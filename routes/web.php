@@ -143,7 +143,3 @@ if (env('E2E_HOOKS') === true && ! app()->isProduction()) {
 // Short links: hel.ink/l/{slug}. GET opens the link, POST submits a link password.
 Route::middleware('ip.ban')->match(['GET', 'POST'], '/l/{slug}', RedirectController::class)
     ->where('slug', '[A-Za-z0-9-]+')->name('links.open');
-// The old form hel.ink/{slug}: 301 to /l/{slug} until shortener.legacy_slug_until (LegacySlugController).
-// Registered last, so every app route above wins; a path that is not a slug is a 404.
-Route::middleware('ip.ban')->get('/{slug}', LegacySlugController::class)
-    ->where('slug', '[A-Za-z0-9-]+')->name('links.legacy');
