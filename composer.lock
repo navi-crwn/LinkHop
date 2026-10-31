@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f8d0dbd1b4394b6d920d195852c20bf8",
+    "content-hash": "5b2c67178730a258756a8e9519ed52d6",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1342,7 +1342,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/bio",
-                "reference": "ba32bf07fedb8ff15ab7ce96d421b18c6ea215bb"
+                "reference": "2d2990165eb46f077c55adc200d559ce80337681"
             },
             "require": {
                 "illuminate/support": "^12.0",
@@ -1415,22 +1415,23 @@
         },
         {
             "name": "hop/ui",
-            "version": "v0.2.1",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/navi-crwn/hop-ui.git",
-                "reference": "d8672a2b6419836b1a1da58125bca9d170bd7c79"
+                "reference": "b29d1345df007ef893bef2e36469c20cc924bafa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-ui/zipball/d8672a2b6419836b1a1da58125bca9d170bd7c79",
-                "reference": "d8672a2b6419836b1a1da58125bca9d170bd7c79",
+                "url": "https://api.github.com/repos/navi-crwn/hop-ui/zipball/b29d1345df007ef893bef2e36469c20cc924bafa",
+                "reference": "b29d1345df007ef893bef2e36469c20cc924bafa",
                 "shasum": ""
             },
             "require": {
                 "illuminate/support": "^12.0",
                 "php": "^8.3"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -1449,10 +1450,10 @@
             ],
             "description": "HOP shared package: ui.",
             "support": {
-                "source": "https://github.com/navi-crwn/hop-ui/tree/v0.2.1",
+                "source": "https://github.com/navi-crwn/hop-ui/tree/main",
                 "issues": "https://github.com/navi-crwn/hop-ui/issues"
             },
-            "time": "2026-10-30T17:13:16+00:00"
+            "time": "2026-10-31T10:30:53+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
@@ -11280,11 +11281,19 @@
             "time": "2026-10-05T23:14:19+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "hop/ui",
+            "version": "dev-main",
+            "alias": "0.2.99",
+            "alias_normalized": "0.2.99.0"
+        }
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
         "hop/bio": 20,
-        "hop/safety": 20
+        "hop/safety": 20,
+        "hop/ui": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

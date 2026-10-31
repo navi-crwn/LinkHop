@@ -27,6 +27,12 @@ class RedirectController extends Controller
         if ($link?->isGuestExpired() || (! $link && RetiredSlug::isBlocked($slug))) {
             return response()->view('errors.link-missing', ['slug' => $slug, 'expired' => true], 410);
         }
+        // Recover a browser-cached legacy 301 only when no link owns the name.
+        // The query changes the cache key, avoiding the old /name -> /l/name loop.
+        if (! $link && $request->isMethodSafe() && in_array($slug, config('hub-pages'), true)) {
+            return redirect()->away('https://hel.ink/'.rawurlencode($slug).'?r=l', 302)
+                ->header('Cache-Control', 'no-store');
+        }
         if (! $link || $link->status !== Link::STATUS_ACTIVE || $link->isExpired() || $link->user?->isSuspended()) {
             return $this->notFound($slug);
         }

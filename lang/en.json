@@ -1,4 +1,6 @@
 {
+    "Advanced": "Advanced",
+    "Custom slug (optional)": "Custom slug (optional)",
     "Content warning": "Content warning",
     "None": "None",
     "Sensitive content": "Sensitive content",
@@ -135,5 +137,15 @@
     "I understand — Continue": "I understand — Continue",
     "Go Back": "Go Back",
     "Remember for 24 hours on this device": "Remember for 24 hours on this device",
-    "By continuing, you confirm that you are of legal age to view adult content in your jurisdiction.": "By continuing, you confirm that you are of legal age to view adult content in your jurisdiction."
+    "By continuing, you confirm that you are of legal age to view adult content in your jurisdiction.": "By continuing, you confirm that you are of legal age to view adult content in your jurisdiction.",
+    "Changelog": "Changelog",
+    "Commits, releases and merged pull requests, newest first.": "Commits, releases and merged pull requests, newest first.",
+    "Newer": "Newer",
+    "Older": "Older",
+    "Source revisions": "Source revisions",
+    "Commit": "Commit",
+    "Merged pull request": "Merged pull request",
+    "Release": "Release",
+    "All apps": "All apps",
+    "Pagination": "Pagination"
 }
