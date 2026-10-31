@@ -14,7 +14,7 @@
         "hop/auth": "^0.1.1",
         "hop/bio": "@dev",
         "hop/safety": "dev-main",
-        "hop/ui": "dev-main#b29d1345df007ef893bef2e36469c20cc924bafa as 0.2.99",
+        "hop/ui": "dev-main#5c4a5f47276b86923cd19c20b14f99b5db93fc2c as 0.2.99",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "matomo/device-detector": "^6.5",

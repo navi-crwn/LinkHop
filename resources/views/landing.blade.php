@@ -7,7 +7,7 @@
         $btnSecondary = 'rounded-xl border border-slate-300 px-4 py-2.5 text-sm text-slate-700 transition hover:bg-slate-900/5 dark:border-white/15 dark:text-white/80 dark:hover:bg-white/10';
     @endphp
 
-    {{-- Hero: the free guest shortener on the left, a small copy of the hop scene on the right --}}
+    <div class="product-showcase link-showcase">
     <section class="mx-auto grid max-w-6xl items-center gap-6 px-4 pb-4 pt-10 sm:pt-14 lg:grid-cols-[1.05fr_1fr]">
         <div class="min-w-0 text-center lg:text-left">
         <p class="font-mono text-[11px] font-medium uppercase tracking-[0.3em] text-slate-500 dark:text-white/50">LinkHop · by hel.ink</p>
@@ -93,14 +93,22 @@
             @endif
         </div>
         </div>
-        <div class="link-sculpture" aria-hidden="true">
-            <span class="link-sculpture-ring"></span><span class="link-sculpture-ring"></span>
-            <span class="link-sculpture-url">hel.ink/l/hello ↗</span>
+        <div class="link-world" data-hop-scene data-mini>
+            <p class="showcase-kicker">{{ __('A small link. A whole world.') }}</p>
+            <div class="link-world-canvas" data-hop-canvas><img data-hop-fallback src="{{ route('brand.asset', 'linkhop-mark-gradient.svg') }}" alt="" width="160" height="160"></div>
+            <p class="link-world-caption" data-hop-story>{{ __('A bunny takes your link from here to anywhere.') }}</p>
+            <div class="link-world-controls" role="group" aria-label="{{ __('Play a scenario') }}">
+                @foreach (['hop' => 'Hop to a link', 'share' => 'Share a link', 'pass-ok' => 'Password: right', 'pass-fail' => 'Password: wrong'] as $key => $label)
+                    <button type="button" data-hop-play="{{ $key }}" aria-pressed="false">{{ __($label) }}</button>
+                @endforeach
+                <button type="button" data-hop-pause aria-pressed="false">{{ __('Pause motion') }}</button>
+            </div>
+            <p class="showcase-caption">{{ __('Move your pointer or touch the islands. Choose a story to play.') }}</p>
         </div>
     </section>
 
     {{-- The hop: a holographic sea; islands rise, bunnies hop through hel.ink to where a link goes (resources/js/hop-hero.js) --}}
-    <details class="mx-auto mt-4 max-w-6xl select-none px-2 pb-8 sm:px-4" data-hop-demo>
+    <details class="mx-auto mt-4 max-w-6xl select-none px-2 pb-8 sm:px-4 link-expanded-world" data-hop-demo>
         <summary class="cursor-pointer rounded-2xl border border-slate-200 px-5 py-4 text-sm font-semibold dark:border-white/10">{{ __('How a short link works') }}</summary>
     <section class="pt-5" aria-label="{{ __('How a short link works') }}" data-hop-scene>
         <div class="flex flex-col items-center gap-2 px-2">
@@ -118,17 +126,19 @@
     </details>
     @vite('resources/js/hop-hero.js')
 
-    <section class="mx-auto max-w-6xl px-4 py-16" aria-labelledby="tour-heading">
+    @include('partials.home-experience')
+
+    <section class="showcase-wrap showcase-section" aria-labelledby="tour-heading">
         <p class="font-mono text-xs tracking-widest text-indigo-600 dark:text-indigo-300">01 / {{ __('Features') }}</p>
-        <h2 id="tour-heading" class="mt-3 text-3xl font-bold sm:text-5xl">{{ __('Short links') }}. {{ __('Analytics') }}.</h2>
-        <div class="mt-8 grid items-start gap-8 md:grid-cols-2">
+        <h2 id="tour-heading">{{ __('Your links,') }} <span class="hop-serif">{{ __('in focus.') }}</span></h2>
+        <div class="mt-8 grid items-start gap-8 md:grid-cols-2 link-product-previews">
             <article class="min-w-0"><x-feature-demo name="links" label="Short links" /><h3 class="text-xl font-semibold">{{ __('Short links') }}</h3><p class="mt-2 text-sm text-slate-600 dark:text-white/60">{{ __('Folders and tags, search, bulk actions, and comments on a link.') }}</p></article>
             <article class="min-w-0 md:pt-16"><x-feature-demo name="analytics" label="Analytics" /><h3 class="text-xl font-semibold">{{ __('Analytics') }}</h3><p class="mt-2 text-sm text-slate-600 dark:text-white/60">{{ __('Clicks, unique visitors, countries and cities, devices, browsers and referrers, in real time, with CSV export. Visitors are counted with a keyed hash of their IP address, never the address itself.') }}</p></article>
         </div>
     </section>
 
     {{-- Features --}}
-    <section id="features" class="mx-auto max-w-6xl scroll-mt-24 px-4 py-10">
+    <section id="features" class="showcase-wrap showcase-section">
         <p class="mb-6 font-mono text-xs tracking-widest text-indigo-600 dark:text-indigo-300">02 / {{ __('Features') }}</p>
         @php
             $features = [
@@ -138,20 +148,21 @@
                 ['icon' => 'M4 7h16M4 12h10M4 17h7', 'title' => 'Organised', 'body' => 'Folders, tags, bulk actions and a REST API for ShareX and tools.'],
             ];
         @endphp
-        <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <h2>{{ __('Small URL.') }} <span class="hop-serif">{{ __('Serious possibilities.') }}</span></h2>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             @foreach ($features as $f)
-                <article class="{{ $card }} p-4 sm:p-5">
+                <article class="showcase-card link-feature-card">
                     <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br from-indigo-500/15 to-fuchsia-500/15 dark:from-indigo-400/20 dark:to-fuchsia-400/15">
                         <svg class="h-[18px] w-[18px] text-indigo-600 dark:text-indigo-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ $f['icon'] }}"/></svg>
                     </div>
-                    <h3 class="mt-4 font-semibold">{{ $f['title'] }}</h3>
-                    <p class="mt-1 text-[13px] leading-relaxed text-slate-600 sm:text-sm dark:text-white/60">{{ $f['body'] }}</p>
+                    <h3 class="mt-4 font-semibold">{{ __($f['title']) }}</h3>
+                    <p class="mt-1 text-[13px] leading-relaxed text-slate-600 sm:text-sm dark:text-white/60">{{ __($f['body']) }}</p>
                 </article>
             @endforeach
         </div>
     </section>
 
-    <section class="mx-auto max-w-6xl px-4 py-16" aria-labelledby="home-faq">
+    <section class="showcase-wrap showcase-section showcase-faq" aria-labelledby="home-faq">
         <p class="font-mono text-xs tracking-widest text-indigo-600 dark:text-indigo-300">03 / {{ __('FAQ') }}</p>
         <h2 id="home-faq" class="my-6 text-3xl font-bold">{{ __('FAQ') }}</h2>
         @foreach (['Is it really free?' => 'Yes. There is no paid plan and no locked feature, and the code is MIT licensed.', 'Do I need an account?' => 'Not to shorten a link. A free HOP ID keeps your links, shows their stats, and also signs you in to BioHop, PixelHop and NoteHop.', 'What does a click record?' => 'The time, country and city, device, browser and referrer, plus a keyed hash of the IP address for counting unique visitors. Never the IP address itself.'] as $question => $answer)
@@ -188,4 +199,5 @@
             <p class="mt-4 text-sm font-medium text-cyan-700 group-hover:underline dark:text-cyan-200">note.hel.ink →</p>
         </a>
     </section>
+    </div>
 </x-marketing-layout>
