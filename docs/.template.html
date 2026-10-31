@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}" dir="{{DIR}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{PAGE_TITLE}}</title>
+  <meta name="description" content="{{PAGE_DESC}}">
+  <link rel="canonical" href="https://navi-crwn.github.io/LinkHop/{{CANON_PATH}}">
+  <link rel="icon" href="{{REL}}assets/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="{{REL}}assets/styles.css">
+  <link rel="stylesheet" href="https://hel.ink/hop-assets/v1/fonts.css" integrity="sha384-T1Y2aaMQ8CSfi7J2t9d1ZAbVcQ1FcO27Jwn3WtNWB+UVK137YCl3hIPvz0G4K22L" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://hel.ink/hop-assets/v1/hop-float.css" integrity="sha384-sl7D409xEmIT5gkArlQLoQQ4rOkqF7tOGf1VhI/iMb7c2/s9w9NtDEjLbJMU/MQ/" crossorigin="anonymous">
+  <link rel="alternate" hreflang="x-default" href="https://navi-crwn.github.io/LinkHop/">
+{{HREFLANGS}}
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="LinkHop">
+  <meta property="og:title" content="{{OG_TITLE}}">
+  <meta property="og:description" content="{{PAGE_DESC}}">
+  <meta property="og:url" content="https://navi-crwn.github.io/LinkHop/{{CANON_PATH}}">
+  <meta property="og:image" content="https://navi-crwn.github.io/LinkHop/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+  <div data-hop-float></div>
+  <a class="skip" href="#main">{{SKIP}}</a>
+
+  <header class="site-header">
+    <a class="brand" href="{{SELF_URL}}">
+      <img src="{{REL}}assets/mark.svg" alt="" width="28" height="28">
+      <span>LinkHop</span>
+    </a>
+    <nav aria-label="{{NAV_LABEL}}">
+      <a href="#features">{{NAV_FEATURES}}</a>
+      <a href="#run">{{NAV_RUN}}</a>
+      <a href="#faq">{{NAV_FAQ}}</a>
+      <a href="#family">{{NAV_FAMILY}}</a>
+    </nav>
+    <div class="header-actions">
+      {{LANG_MENU}}
+      <button id="theme-toggle" type="button" data-action="dark" data-label-light="{{THEME_BTN_LIGHT}}" data-label-dark="{{THEME_BTN_DARK}}">{{THEME_BTN}}</button>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="hero">
+      <div>
+        <p class="kicker">HOP &middot; {{KICKER}}</p>
+        <h1>{{H1}}</h1>
+        <p class="lede">{{LEDE}}</p>
+        <div class="cta-row">
+          <a class="btn primary" href="https://link.hel.ink">{{CTA_MAIN}}</a>
+          <a class="btn" href="https://hel.ink/l/demo">{{CTA_DEMO}}</a>
+          <a class="btn" href="https://github.com/navi-crwn/LinkHop">{{CTA_CODE}}</a>
+        </div>
+        <p class="note">{{HERO_NOTE}}</p>
+      </div>
+      <div class="tile-wrap" aria-hidden="true">
+        <img class="tile" src="{{REL}}assets/tile.svg" alt="" width="220" height="260">
+      </div>
+    </div>
+
+    <section id="features" aria-labelledby="features-h">
+      <h2 id="features-h">{{FEATURES_H}}</h2>
+      <ul class="features">
+        <li><strong>{{F1_T}}</strong><p>{{F1_D}}</p></li>
+        <li><strong>{{F2_T}}</strong><p>{{F2_D}}</p></li>
+        <li><strong>{{F3_T}}</strong><p>{{F3_D}}</p></li>
+        <li><strong>{{F4_T}}</strong><p>{{F4_D}}</p></li>
+        <li><strong>{{F5_T}}</strong><p>{{F5_D}}</p></li>
+        <li><strong>{{F6_T}}</strong><p>{{F6_D}}</p></li>
+        <li><strong>{{F7_T}}</strong><p>{{F7_D}}</p></li>
+        <li><strong>{{F8_T}}</strong><p>{{F8_D}}</p></li>
+      </ul>
+    </section>
+
+    <section id="run" aria-labelledby="run-h">
+      <h2 id="run-h">{{RUN_H}}</h2>
+      <div class="panel">
+        <p>{{RUN_INTRO}}</p>
+        <pre><code>git clone https://github.com/navi-crwn/LinkHop.git
+cd LinkHop
+composer install
+cp .env.example .env && php artisan key:generate
+php artisan migrate
+npm install && npm run build
+php artisan serve</code></pre>
+        <h3>{{RUN_REQ_H}}</h3>
+        <p>{{RUN_REQ}}</p>
+        <h3>{{RUN_SSO_H}}</h3>
+        <p>{{RUN_SSO}}</p>
+        <h3>{{RUN_DB_H}}</h3>
+        <p>{{RUN_DB}}</p>
+        <p class="note">{{RUN_NOTE}}</p>
+      </div>
+    </section>
+
+    <section id="faq" aria-labelledby="faq-h">
+      <h2 id="faq-h">{{FAQ_H}}</h2>
+      <details>
+        <summary>{{Q1}}</summary>
+        <p>{{A1}}</p>
+      </details>
+      <details>
+        <summary>{{Q2}}</summary>
+        <p>{{A2}}</p>
+      </details>
+      <details>
+        <summary>{{Q3}}</summary>
+        <p>{{A3}}</p>
+      </details>
+      <details>
+        <summary>{{Q4}}</summary>
+        <p>{{A4}}</p>
+      </details>
+    </section>
+
+    <section id="family" aria-labelledby="family-h">
+      <h2 id="family-h">{{FAMILY_H}}</h2>
+      <p>{{FAMILY_INTRO}}</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">{{TH_APP}}</th><th scope="col">{{TH_WHAT}}</th><th scope="col">{{TH_LIVE}}</th><th scope="col">{{TH_CODE}}</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>HOP ID</strong></td><td>{{HUB_WHAT}}</td><td><code>hel.ink</code> <span class="live">&middot; <code>hub.hel.ink</code></span></td><td><a href="https://github.com/navi-crwn/HEL.ink">navi-crwn/HEL.ink</a></td></tr>
+            <tr><td><strong>LinkHop</strong></td><td>{{LINKHOP_WHAT}}</td><td><code>link.hel.ink</code> <span class="live">&middot; <code>hel.ink/l/{slug}</code></span></td><td>{{THIS_REPO}}</td></tr>
+            <tr><td><strong>BioHop</strong></td><td>{{BIOHOP_WHAT}}</td><td><code>bio.hel.ink</code> <span class="live">&middot; <code>hel.ink/b/{slug}</code></span></td><td><a href="https://github.com/navi-crwn/BioHop">navi-crwn/BioHop</a></td></tr>
+            <tr><td><strong>PixelHop</strong></td><td>{{PIXELHOP_WHAT}}</td><td><code>pixel.hel.ink</code> <span class="live">&middot; <code>p.hel.ink</code></span></td><td><a href="https://github.com/navi-crwn/PixelHop">navi-crwn/PixelHop</a></td></tr>
+            <tr><td><strong>NoteHop</strong></td><td>{{NOTEHOP_WHAT}}</td><td><code>note.hel.ink</code> <span class="live">&middot; <code>n.hel.ink</code></span></td><td><a href="https://github.com/navi-crwn/NoteHop">navi-crwn/NoteHop</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="help" aria-labelledby="help-h">
+      <h2 id="help-h">{{HELP_H}}</h2>
+      <p>{{HELP_TEXT}} <a href="https://github.com/navi-crwn/LinkHop/issues">{{HELP_ISSUES}}</a>{{HELP_TAIL}}</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="inner">
+      <p><strong>LinkHop</strong> &middot; {{FOOTER_TAG}}</p>
+      <p>{{FOOTER_LICENSE}} <a href="https://github.com/navi-crwn/LinkHop/blob/main/LICENSE">MIT</a>{{FOOTER_MID}}<a href="https://github.com/navi-crwn/LinkHop">GitHub</a>{{FOOTER_MID2}}<a href="https://link.hel.ink">link.hel.ink</a></p>
+    </div>
+  </footer>
+
+  <script src="https://hel.ink/hop-assets/v1/hop-float.js" integrity="sha384-kNviPsMEO9lt9+b4n2S5lX6zHRVnePzGuj9VdgCETTsQwzt/5YJRnv842Xg0gRC+" crossorigin="anonymous" defer></script>
+  <script src="{{REL}}assets/theme.js"></script>
+</body>
+</html>
