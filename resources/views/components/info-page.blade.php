@@ -1,8 +1,8 @@
 {{-- A dedicated page on LinkHop's own domain (features, about, help, …): the marketing
      header and footer, a back link to LinkHop's home, a title and the page body. --}}
-@props(['title', 'lead' => null])
+@props(['title', 'lead' => null, 'wide' => false])
 <x-marketing-layout :title="$title.' · LinkHop'" :themed="true">
-    <main id="main" class="mx-auto max-w-3xl px-4 pb-6 pt-8 sm:px-6">
+    <main id="main" class="mx-auto {{ $wide ? 'max-w-6xl' : 'max-w-3xl' }} px-4 pb-6 pt-8 sm:px-6">
         <a href="{{ route('home') }}" class="inline-flex items-center gap-1.5 text-sm text-slate-500 transition hover:text-slate-900 dark:text-white/60 dark:hover:text-white">
             <span aria-hidden="true">&larr;</span> {{ __('Back to :app', ['app' => 'LinkHop']) }}
         </a>
