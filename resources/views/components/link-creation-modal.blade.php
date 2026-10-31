@@ -137,6 +137,7 @@
                         <div class="p-6">
                             <form @submit.prevent="submitForm()" class="space-y-5">
                             @csrf
+                            <x-content-warning-fields :model="true" prefix="modal-warning" />
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                                     Destination URL
@@ -898,6 +899,8 @@ function linkCreationModal() {
             generateQr: false
         },
         formData: {
+            content_warning: 'none',
+            warning_reason: '',
             target_url: '',
             slug: '',
             folder_id: '',
@@ -940,6 +943,8 @@ function linkCreationModal() {
             // Set default folder again on reset
             const defaultFolder = this.folders.find(f => f.is_default);
             this.formData = {
+                content_warning: 'none',
+                warning_reason: '',
                 target_url: '',
                 slug: '',
                 folder_id: defaultFolder ? defaultFolder.id : '',
@@ -972,6 +977,8 @@ function linkCreationModal() {
             this.formData.target_url = this.normalizedUrl();
             this.isLoading = true;
             const payload = {
+                content_warning: this.formData.content_warning,
+                warning_reason: this.formData.warning_reason || null,
                 target_url: this.formData.target_url,
                 slug: this.formData.slug || '',
                 status: this.formData.status || 'active',
