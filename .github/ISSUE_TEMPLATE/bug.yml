@@ -1,0 +1,63 @@
+name: Bug report
+description: Something in LinkHop does not work as expected (not a security issue).
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. **Security problems must be reported privately** — see
+        [SECURITY.md](https://github.com/navi-crwn/LinkHop/security/policy).
+  - type: checkboxes
+    id: not-security
+    attributes:
+      label: Before you continue
+      options:
+        - label: This is not a security vulnerability.
+          required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where did it happen?
+      options:
+        - The hosted service (link.hel.ink, hel.ink/l/…)
+        - My own self-hosted install
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Page or feature
+      description: The address or the screen where you saw the problem. Leave out private links and keys.
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to …
+        2. Click …
+        3. See …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened instead
+      description: Error messages, screenshots (with personal data removed).
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      placeholder: "e.g. Safari 18 on iPhone, Chrome 131 on Windows"
+  - type: input
+    id: version
+    attributes:
+      label: Version (self-hosted only)
+      description: Release or commit you run.
