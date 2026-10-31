@@ -46,6 +46,25 @@ class RedirectController extends Controller
                 return response()->view('link-password', compact('link'));
             }
         }
+        if ($link->requiresContentWarning()) {
+            $sessionKey = 'link_gate_passed_'.$link->id;
+            $cookieKey = 'hop_gate_link_'.$link->slug;
+            $isUnlocked = session($sessionKey) || $request->cookie($cookieKey);
+
+            if (! $isUnlocked) {
+                if ($request->isMethod('post') && in_array($request->input('gate_confirm'), ['yes', '1', 'continue'], true)) {
+                    session([$sessionKey => true]);
+                    $response = redirect()->to($request->fullUrl(), 303);
+                    if ($request->boolean('remember')) {
+                        $response->withCookie(cookie($cookieKey, '1', 1440, null, null, null, false, false, 'Lax'));
+                    }
+
+                    return $response;
+                }
+
+                return response()->view('link-gate', compact('link'));
+            }
+        }
         $this->logClick($request, $link);
         if ($link->enable_preview && $request->query('skip_preview') !== '1') {
             return response()->view('preview', ['targetUrl' => $link->target_url]);

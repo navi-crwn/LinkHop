@@ -45,6 +45,8 @@ class ManageLinkRequest extends FormRequest
             // Editing must not fail just because a link already expired.
             'expires_at' => $linkId ? ['nullable', 'date'] : ['nullable', 'date', 'after:now'],
             'redirect_type' => ['nullable', Rule::in(['301', '302', '307'])],
+            'content_warning' => ['nullable', Rule::in(['none', 'sensitive', 'adult'])],
+            'warning_reason' => ['nullable', 'string', 'max:255'],
             'custom_title' => ['nullable', 'string', 'max:255'],
             'custom_description' => ['nullable', 'string', 'max:1000'],
             'custom_image_url' => ['nullable', 'url', 'max:500'],
