@@ -4,10 +4,9 @@
 // two bunnies, and a password that works or doesn't. The sea ripples and lights up under the
 // cursor; colours follow the site's light/dark theme. Paused off screen; one still frame under
 // prefers-reduced-motion. Loaded on the home page only.
-import * as THREE from 'three';
-
-function start(root) {
-    if (!root.offsetParent) return; // hidden (the miniature on phones): don't start a WebGL context for nothing
+async function start(root) {
+    if (!root.offsetParent) return;
+    const THREE = await import('three');
     const isDark = () => document.documentElement.classList.contains('dark');
 
     const el = root.querySelector('[data-hop-canvas]');
