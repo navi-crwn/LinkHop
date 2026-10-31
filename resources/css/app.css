@@ -291,7 +291,6 @@ a.hop-family-link:hover { border-color: rgb(255 255 255 / 0.3); background: rgb(
 .hop-family-item.is-current .hop-family-link { border-color: rgb(129 140 248 / 0.5); }
 .hop-back { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.875rem; color: rgb(255 255 255 / 0.7); }
 .hop-back:hover { color: #fff; }
-
 /* Dedicated pages (<x-info-page>): readable text without the typography plugin. */
 .info-prose { color: rgb(71 85 105); line-height: 1.7; }
 .dark .info-prose { color: rgb(255 255 255 / 0.75); }
