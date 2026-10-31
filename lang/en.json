@@ -120,5 +120,15 @@
     "Yes. There is no paid plan and no locked feature, and the code is MIT licensed.": "Yes. There is no paid plan and no locked feature, and the code is MIT licensed.",
     "Your data": "Your data",
     "Your links, their settings, folders, tags and comments. With an account, they belong to your HOP ID; the account itself (email, password, two-factor) is kept by the hub.": "Your links, their settings, folders, tags and comments. With an account, they belong to your HOP ID; the account itself (email, password, two-factor) is kept by the hub.",
-    "last seen :time": "last seen :time"
+    "last seen :time": "last seen :time",
+    "Age Verification Required": "Age Verification Required",
+    "Sensitive Content Warning": "Sensitive Content Warning",
+    "This link contains adult content intended strictly for viewers aged 18 and older.": "This link contains adult content intended strictly for viewers aged 18 and older.",
+    "The creator has marked this link as containing sensitive material.": "The creator has marked this link as containing sensitive material.",
+    "Note from creator:": "Note from creator:",
+    "I am 18+ — Continue": "I am 18+ — Continue",
+    "I understand — Continue": "I understand — Continue",
+    "Go Back": "Go Back",
+    "Remember for 24 hours on this device": "Remember for 24 hours on this device",
+    "By continuing, you confirm that you are of legal age to view adult content in your jurisdiction.": "By continuing, you confirm that you are of legal age to view adult content in your jurisdiction."
 }
