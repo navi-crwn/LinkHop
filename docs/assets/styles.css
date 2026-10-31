@@ -12,7 +12,7 @@
   --border: #e2e8f0;
   --shadow: 0 18px 44px rgba(99, 102, 241, 0.12);
   --code-bg: #f1f5f9;
-  --maxw: 64rem;
+  --maxw: 76rem;
 }
 
 [data-theme="dark"] {
@@ -49,13 +49,13 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
   line-height: 1.6;
   font-size: 1rem;
 }
 
 h1, h2, h3 {
-  font-family: "Syne", "Plus Jakarta Sans", system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   line-height: 1.2;
   color: var(--text);
 }
@@ -177,12 +177,19 @@ main {
 }
 
 .hero {
+  position: relative;
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
   align-items: center;
-  gap: 2.5rem;
-  padding: 3rem 0;
+  gap: 1.5rem;
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+  margin-block: 1rem 4rem;
+  border: 1px solid var(--border);
+  border-radius: 2rem;
+  background: radial-gradient(ellipse at 100% 0%, #6366f112, transparent 65%), var(--surface);
+  box-shadow: var(--shadow);
 }
+.hero > div { min-width: 0; }
 .kicker {
   color: var(--accent);
   text-transform: uppercase;
@@ -191,8 +198,8 @@ main {
   font-size: 0.85rem;
   margin: 0 0 0.5rem;
 }
-.hero h1 { font-size: 2.75rem; margin: 0 0 1rem; }
-.lede { font-size: 1.2rem; color: var(--muted); margin: 0 0 1.75rem; max-width: 36rem; }
+.hero h1 { font-size: clamp(2rem, 3.5vw, 3rem); letter-spacing: -0.035em; text-wrap: balance; margin: 0 0 1.25rem; }
+.lede { font-size: 1.05rem; color: var(--muted); margin: 0 0 1.75rem; max-width: 36rem; }
 .cta-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; }
 .btn {
   display: inline-flex;
@@ -214,9 +221,22 @@ main {
 .btn:hover { text-decoration: none; opacity: 0.92; }
 .note { font-size: 0.85rem; color: var(--muted); margin: 0; }
 
+.link-art { position: relative; min-height: 340px; isolation: isolate; }
+.link-art-grid { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(ellipse, #6366f119, transparent 70%); }
+.link-art-grid::after { content: ""; position: absolute; inset: 12%; border: 1px dashed #818cf84d; border-radius: 50%; transform: rotate(-25deg) scaleY(.75); }
+.link-ring { position: absolute; z-index: 2; left: 50%; top: 39%; width: 175px; height: 106px; border: 25px solid #38bdf8; border-radius: 60px; transform: translate(-77%, -60%) rotate(-37deg); box-shadow: inset 4px 4px 0 #bae6fd, 7px 9px 0 #0284c7, 16px 25px 28px #0284c726; }
+.link-ring-back { z-index: 1; border-color: #818cf8; transform: translate(-23%, -4%) rotate(-37deg); box-shadow: inset 4px 4px 0 #c7d2fe, 7px 9px 0 #4f46e5, 16px 25px 28px #4f46e526; }
+.link-address { position: absolute; z-index: 3; inset-inline: 9%; bottom: 5%; display: flex; align-items: center; gap: .75rem; padding: 1rem; border: 1px solid var(--border); border-radius: 1rem; color: var(--text); background: var(--surface); box-shadow: var(--shadow); font: .95rem "JetBrains Mono", monospace; direction: ltr; transform: rotate(-4deg); }
+.link-address img { flex-shrink: 0; }
+.link-arrow { margin-left: auto; color: var(--accent); font-size: 1.5rem; }
+.link-spark { position: absolute; width: 10px; height: 10px; border-radius: 3px; background: #38bdf8; transform: rotate(25deg); }
+.link-spark-one { top: 9%; right: 19%; }
+.link-spark-two { left: 12%; bottom: 29%; width: 7px; height: 7px; background: #818cf8; }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+
 .features {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
   gap: 1.25rem;
   padding: 0;
   list-style: none;
@@ -293,6 +313,18 @@ tr:last-child td { border-bottom: none; }
   .hero { grid-template-columns: 1fr; text-align: center; }
   .lede { margin-left: auto; margin-right: auto; }
   .cta-row { justify-content: center; }
-  .tile-wrap { margin: 0 auto; }
+  .link-art { width: min(100%, 340px); min-height: 300px; margin: 0 auto; }
   .site-header nav { display: none; }
+}
+@media (max-width: 420px) {
+  main { padding: .75rem; }
+  .site-header { padding: 1rem .75rem; gap: .5rem; flex-wrap: wrap; }
+  .hero { padding: 1.5rem 1rem; border-radius: 1.25rem; }
+  .hero h1 { font-size: 2rem; }
+  .link-ring { width: 145px; height: 90px; border-width: 21px; }
+  .link-address { inset-inline: 2%; font-size: .85rem; }
+  .btn { justify-content: center; width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
 }

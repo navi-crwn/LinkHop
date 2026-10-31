@@ -4,6 +4,7 @@ use App\Http\Controllers\AbuseReportController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ApiTokenController;
 use App\Http\Controllers\BrandAssetController;
+use App\Http\Controllers\ChangelogController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\Internal\AccountDataController;
 use App\Http\Controllers\LegacySlugController;
@@ -35,6 +36,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('ip.ban')->group(function () {
+    Route::get('/changelog', ChangelogController::class)->name('changelog');
     Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
     // Brand images, all from resources/brand (BrandAssetController). route() links carry a version ({v},
     // see AppServiceProvider) that changes with the files; the plain paths stay for emails and old pages.
@@ -150,7 +152,7 @@ Route::match(['GET', 'HEAD'], '/l/', function (Request $request) {
 
 // Short links: hel.ink/l/{slug}. GET opens the link, POST submits a link password.
 Route::middleware('ip.ban')->match(['GET', 'POST'], '/l/{slug}', RedirectController::class)
-    ->where('slug', '[A-Za-z0-9-]+')->name('links.open');
+    ->where('slug', '[A-Za-z0-9._-]+')->name('links.open');
 // The old form hel.ink/{slug}: 301 to /l/{slug} until shortener.legacy_slug_until (LegacySlugController).
 // Registered last, so every app route above wins; a path that is not a slug is a 404.
 Route::middleware('ip.ban')->get('/{slug}', LegacySlugController::class)

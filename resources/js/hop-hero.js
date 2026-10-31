@@ -321,4 +321,13 @@ async function start(root) {
     }).observe(root);
 }
 
-document.querySelectorAll('[data-hop-scene]').forEach(start);
+// The CSS hero is immediately visible. Load the interactive tour only on request.
+document.querySelectorAll('[data-hop-demo]').forEach(details => {
+    let started = false;
+    details.addEventListener('toggle', () => {
+        if (details.open && !started) {
+            started = true;
+            details.querySelectorAll('[data-hop-scene]').forEach(start);
+        }
+    });
+});

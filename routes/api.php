@@ -29,6 +29,8 @@ Route::middleware(['web', 'hop.auth'])->group(function () {
 // queue, IP bans, the domain blacklist and site settings (HOP App Protocol,
 // signed requests from an app registered with the admin_client capability).
 Route::middleware(['hop.signed', 'throttle:600,1,hop', 'hop.admin_client'])->prefix('hop')->group(function () {
+    Route::get('/health', [HopContentController::class, 'health']);
+    Route::get('/stats', [HopContentController::class, 'stats']);
     Route::get('/manifest', [HopContentController::class, 'manifest']);
     Route::get('/content', [HopContentController::class, 'index']);
     Route::get('/content/{type}/{id}', [HopContentController::class, 'show'])->where(['type' => 'link|bio', 'id' => '[0-9]+']);

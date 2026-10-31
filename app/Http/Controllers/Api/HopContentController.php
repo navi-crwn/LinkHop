@@ -22,6 +22,8 @@ use Hop\Safety\Models\DomainBlacklist;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -33,12 +35,65 @@ class HopContentController extends Controller
 {
     public function __construct(private readonly LinkService $links) {}
 
+    public function health(): JsonResponse
+    {
+        try {
+            DB::select('select 1');
+            $db = 'ok';
+        } catch (\Throwable) {
+            $db = 'error';
+        }
+        $version = Cache::remember('hop:linkhop:version', 300, function () {
+            try {
+                $result = Process::path(base_path())->timeout(2)->run(['git', 'rev-parse', '--short', 'HEAD']);
+
+                return $result->successful() ? trim($result->output()) : 'dev';
+            } catch (\Throwable) {
+                return 'dev';
+            }
+        });
+
+        return response()->json(['ok' => true, 'data' => ['app' => 'linkhop', 'version' => $version, 'db' => $db]]);
+    }
+
+    public function stats(Request $request): JsonResponse
+    {
+        $now = Carbon::now('UTC');
+        $request->validate([
+            'since' => ['nullable', 'date_format:Y-m-d'],
+            'until' => ['nullable', 'date_format:Y-m-d'],
+        ]);
+        $until = $request->filled('until') ? Carbon::parse($request->query('until'), 'UTC')->endOfDay() : $now->copy()->endOfDay();
+        $since = $request->filled('since') ? Carbon::parse($request->query('since'), 'UTC')->startOfDay() : $until->copy()->subDays(13)->startOfDay();
+        if ($since->gt($until) || $since->diffInDays($until) > 366) {
+            return $this->fail('bad_range', 'range must be ordered and at most 366 days', 422);
+        }
+        $counts = LinkClick::query()->selectRaw('DATE(clicked_at) as day, COUNT(*) as n')
+            ->whereBetween('clicked_at', [$since, $until])->groupBy('day')->pluck('n', 'day');
+        $series = [];
+        for ($day = $since->copy(); $day->lte($until); $day->addDay()) {
+            $series[] = [$day->toDateString(), (int) ($counts[$day->toDateString()] ?? 0)];
+        }
+
+        return response()->json(['ok' => true, 'data' => [
+            'kpi' => [
+                'links' => Link::count(),
+                'links_live' => Link::where('status', Link::STATUS_ACTIVE)->where(fn ($q) => $q->whereNull('expires_at')->orWhere('expires_at', '>', $now))->count(),
+                'clicks_today' => LinkClick::where('clicked_at', '>=', $now->copy()->startOfDay())->count(),
+                'clicks_30d' => LinkClick::where('clicked_at', '>=', $now->copy()->subDays(30))->count(),
+                'open_reports' => AbuseReport::where('status', 'open')->count(),
+                'open_flags' => AbuseFlag::where('status', 'open')->count(),
+            ],
+            'series' => ['clicks' => $series],
+        ]]);
+    }
+
     /** GET /api/hop/manifest: what Imperium can show and do here. */
     public function manifest(): JsonResponse
     {
         return response()->json(['ok' => true, 'data' => [
             'app' => 'linkhop', 'name' => config('app.name'), 'icon' => 'link', 'base_url' => config('app.url'),
-            'capabilities' => ['admin_api', 'account_server', 'reports', 'settings', 'search', 'metrics'],
+            'capabilities' => ['admin_api', 'reports', 'settings', 'search', 'metrics'],
             'content_types' => array_values(array_filter([
                 ['type' => 'link', 'label' => 'Links', 'actions' => ['disable', 'enable', 'delete', 'transfer', 'rescan', 'mark_nsfw', 'unmark_nsfw', 'mark_sensitive']],
                 bio_enabled() ? ['type' => 'bio', 'label' => 'Bio pages', 'actions' => ['unpublish', 'publish', 'delete', 'transfer']] : null,

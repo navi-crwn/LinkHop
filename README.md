@@ -1,14 +1,14 @@
 <p align="center">🌐 <b>English</b> · <a href="README.zh.md">简体中文</a> · <a href="README.es.md">Español</a> · <a href="README.ar.md">العربية</a> · <a href="README.pt.md">Português</a> · <a href="README.fr.md">Français</a> · <a href="README.ja.md">日本語</a> · <a href="README.id.md">Bahasa Indonesia</a></p>
 
-<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/hero-en-dark.webp"><img src="docs/readme/hero-en-light.webp" alt="LinkHop: short links, QR codes and click analytics" width="100%"></picture></p>
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/hero-en-dark.webp"><img src="docs/readme/hero-en-light.webp" alt="LinkHop: short links, QR codes and click analytics" width="100%"></picture></p>
 
 <p align="center">
   <b>Shorten links, count every click, and analyze your audience.<br>Free, open source, and yours to host.</b>
 </p>
 
 <p align="center">
-  <a href="https://hel.ink"><b>🔗 Try hel.ink</b></a> ·
-  <a href="https://navi-crwn.github.io/hel.ink/">Website</a> ·
+  <a href="https://link.hel.ink"><b>🔗 Try LinkHop</b></a> ·
+  <a href="https://navi-crwn.github.io/LinkHop/">Website</a> ·
   <a href="https://bio.hel.ink">BioHop</a> ·
   <a href="#install">Install</a> ·
   <a href="#api">API</a> ·
@@ -19,10 +19,10 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Laravel-12-FF2D20?style=flat-square&logo=laravel&logoColor=white" alt="Laravel 12"/>
-  <img src="https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat-square&logo=php&logoColor=white" alt="PHP 8.2+"/>
+  <img src="https://img.shields.io/badge/PHP-8.3+-777BB4?style=flat-square&logo=php&logoColor=white" alt="PHP 8.3+"/>
   <img src="https://img.shields.io/badge/Tailwind-4.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS"/>
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="MIT License"/>
-  <img src="https://img.shields.io/github/stars/navi-crwn/hel.ink?style=flat-square&color=yellow" alt="Stars"/>
+  <img src="https://img.shields.io/github/stars/navi-crwn/LinkHop?style=flat-square&color=yellow" alt="Stars"/>
 </p>
 
 ---
@@ -57,7 +57,7 @@ Everything is included for every account. No premium tier, no locked features. A
 
 Looking for one page for all your links? That is [BioHop](https://github.com/navi-crwn/BioHop), LinkHop's sister app at [bio.hel.ink](https://bio.hel.ink), on the same HOP ID.
 
-📖 **The full tour, the self-host guide and the FAQ:** [navi-crwn.github.io/hel.ink](https://navi-crwn.github.io/hel.ink/)
+📖 **The full tour, the self-host guide and the FAQ:** [navi-crwn.github.io/LinkHop](https://navi-crwn.github.io/LinkHop/)
 
 ## Example
 
@@ -65,17 +65,17 @@ Looking for one page for all your links? That is [BioHop](https://github.com/nav
 
 **Bio page:** [hel.ink/b/hel](https://hel.ink/b/hel), made with [BioHop](https://bio.hel.ink): the Galaxy theme, link buttons with brand icons, a text block, an FAQ and a contact card.
 
-**Short links:**
+**Project resources:**
 
-| Short link | Goes to |
+| Resource | Direct link |
 | --- | --- |
-| [hel.ink/l/github](https://hel.ink/l/github) | The source code |
-| [hel.ink/l/website](https://hel.ink/l/website) | The website |
-| [hel.ink/l/selfhost](https://hel.ink/l/selfhost) | The self-host guide |
-| [hel.ink/l/documentation](https://hel.ink/l/documentation) | The API reference |
-| [hel.ink/l/changelog](https://hel.ink/l/changelog) | What changed in each release |
+| Source code | [GitHub repository](https://github.com/navi-crwn/LinkHop) |
+| Website | [LinkHop website](https://navi-crwn.github.io/LinkHop/) |
+| Self-host guide | [Installation guide](#install) |
+| API reference | [REST API documentation](#api) |
+| Release history | [Changelog](CHANGELOG.md) |
 
-To load the same example on your own install, run `php artisan db:seed --class=ExampleBioSeeder`.
+On your own development install, `php artisan db:seed --class=ExampleBioSeeder` creates the example bio page and the short-link slugs `github`, `website`, `selfhost`, `documentation`, and `changelog`. These are seeded examples, not built-in routes or guaranteed public links. Publishing this README does not create them on a running server.
 
 <br clear="right">
 
@@ -286,4 +286,4 @@ Please follow PSR-12 and add tests for new features.
 
 ---
 
-<p align="center">MIT License · Made by <a href="https://github.com/navi-crwn">Ivan Novskies (@navi-crwn)</a> · <a href="https://hel.ink">hel.ink</a> · <a href="https://navi-crwn.github.io/hel.ink/">Website</a></p>
+<p align="center">MIT License · Made by <a href="https://github.com/navi-crwn">Ivan Novskies (@navi-crwn)</a> · <a href="https://link.hel.ink">LinkHop</a> · <a href="https://navi-crwn.github.io/LinkHop/">Website</a></p>
