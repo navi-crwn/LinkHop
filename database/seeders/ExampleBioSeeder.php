@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * The example bio page (/b/hel) and short links shown on the GitHub Pages site and in the READMEs.
+ * Optional development examples: a bio page (/b/hel) and project-resource short links.
  * Run with `php artisan db:seed --class=ExampleBioSeeder`; running it again resets the example.
  * A slug already taken by another account is left alone, so this never touches real users' pages.
  * To give the example to an existing account (e.g. the site owner who already has /b/hel), set
@@ -18,23 +18,23 @@ use Illuminate\Support\Facades\Storage;
  */
 class ExampleBioSeeder extends Seeder
 {
-    public const REPO = 'https://github.com/navi-crwn/hel.ink';
+    public const REPO = 'https://github.com/navi-crwn/LinkHop';
 
-    public const SITE = 'https://navi-crwn.github.io/hel.ink/';
+    public const SITE = 'https://navi-crwn.github.io/LinkHop/';
 
     /** Short slug => where it goes. */
     public const SHORT_LINKS = [
         'github' => self::REPO,
         'website' => self::SITE,
-        'selfhost' => self::SITE.'#install',
+        'selfhost' => self::REPO.'/blob/main/README.md#install',
         // Not 'api-docs': hel.ink/api-docs is the app's own API page for members, which wins over short links.
-        'documentation' => self::SITE.'#api',
+        'documentation' => self::REPO.'/blob/main/README.md#api',
         'changelog' => self::REPO.'/blob/main/CHANGELOG.md',
     ];
 
     /** Short links earlier versions made; removed when they still belong to the owner and point where they did. */
     public const OLD_SHORT_LINKS = [
-        'api-docs' => self::SITE.'#api',
+        'api-docs' => 'https://navi-crwn.github.io/hel.ink/#api',
     ];
 
     public function run(): void

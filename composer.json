@@ -14,7 +14,7 @@
         "hop/auth": "^0.1.1",
         "hop/bio": "@dev",
         "hop/safety": "dev-main",
-        "hop/ui": "^0.2",
+        "hop/ui": "dev-main#b29d1345df007ef893bef2e36469c20cc924bafa as 0.2.99",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "matomo/device-detector": "^6.5",
@@ -105,7 +105,8 @@
             "type": "path",
             "url": "packages/bio",
             "options": {
-                "symlink": true
+                "symlink": true,
+                "versions": {"hop/bio": "dev-main"}
             }
         },
         {
