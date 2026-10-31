@@ -1,357 +1,170 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>HEL.ink: open-source link shortener & link in bio</title>
-<meta name="description" content="Shorten links, track clicks and build a link in bio page. Free, open source and self-hostable, built with Laravel.">
-<meta name="theme-color" content="#07070a" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#f7f7fb" media="(prefers-color-scheme: light)">
-<meta property="og:type" content="website">
-<meta property="og:title" content="HEL.ink">
-<meta property="og:description" content="Open-source link shortener & link in bio. Free, self-hostable, no premium tier.">
-<meta property="og:url" content="https://navi-crwn.github.io/hel.ink/">
-<meta property="og:image" content="https://navi-crwn.github.io/hel.ink/social.jpg">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="logo.png">
-<script>
-// Runs before paint: pick the language and theme, and tell CSS that JS is on.
-// ?lang=id|en and ?theme=light|dark override both (used to render the README images); ?shot hides the nav.
-(function(){var d=document.documentElement,q=new URLSearchParams(location.search),l=null,t=null;d.classList.add('js');
-try{l=localStorage.getItem('lang');t=localStorage.getItem('theme')}catch(e){}
-l=q.get('lang')||l;t=q.get('theme')||t;if(q.has('shot'))d.classList.add('shot');
-d.lang=l==='id'||l==='en'?l:((navigator.language||'').indexOf('id')===0?'id':'en');
-if(t==='light'||t==='dark')d.setAttribute('data-theme',t);})();
-</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@1&display=swap">
-<link rel="stylesheet" href="assets/css/site.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LinkHop · Short links, QR codes & click analytics</title>
+  <meta name="description" content="Fast, privacy-respecting link shortener with custom slugs, QR codes, deep analytics, and threat scanning. Part of the HOP family.">
+  <link rel="canonical" href="https://navi-crwn.github.io/LinkHop/">
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="https://hel.ink/hop-assets/v1/fonts.css" integrity="sha384-T1Y2aaMQ8CSfi7J2t9d1ZAbVcQ1FcO27Jwn3WtNWB+UVK137YCl3hIPvz0G4K22L" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://hel.ink/hop-assets/v1/hop-float.css" integrity="sha384-sl7D409xEmIT5gkArlQLoQQ4rOkqF7tOGf1VhI/iMb7c2/s9w9NtDEjLbJMU/MQ/" crossorigin="anonymous">
+  <link rel="alternate" hreflang="x-default" href="https://navi-crwn.github.io/LinkHop/">
+  <link rel="alternate" hreflang="en" href="https://navi-crwn.github.io/LinkHop/en/">
+  <link rel="alternate" hreflang="id" href="https://navi-crwn.github.io/LinkHop/id/">
+  <link rel="alternate" hreflang="zh" href="https://navi-crwn.github.io/LinkHop/zh/">
+  <link rel="alternate" hreflang="es" href="https://navi-crwn.github.io/LinkHop/es/">
+  <link rel="alternate" hreflang="ar" href="https://navi-crwn.github.io/LinkHop/ar/">
+  <link rel="alternate" hreflang="pt" href="https://navi-crwn.github.io/LinkHop/pt/">
+  <link rel="alternate" hreflang="fr" href="https://navi-crwn.github.io/LinkHop/fr/">
+  <link rel="alternate" hreflang="ja" href="https://navi-crwn.github.io/LinkHop/ja/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="LinkHop">
+  <meta property="og:title" content="LinkHop · HOP Link Shortener">
+  <meta property="og:description" content="Fast, privacy-respecting link shortener with custom slugs, QR codes, deep analytics, and threat scanning. Part of the HOP family.">
+  <meta property="og:url" content="https://navi-crwn.github.io/LinkHop/">
+  <meta property="og:image" content="https://navi-crwn.github.io/LinkHop/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
-<a class="skip" href="#main"><span data-en>Skip to content</span><span data-id>Langsung ke isi</span></a>
-<div class="noise" aria-hidden="true"></div>
+  <div data-hop-float></div>
+  <a class="skip" href="#main">Skip to main content</a>
 
-<!-- icon sprite: generic shapes, plus the GitHub mark (Octicons, MIT) -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
-    <symbol id="i-github" viewBox="0 0 16 16"><path fill="currentColor" d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></symbol>
-    <symbol id="i-fork" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="18" cy="5" r="2.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="19" r="2.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6 7.2v1.3a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V7.2M12 11.5v5.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
-    <symbol id="i-issue" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2" fill="currentColor"/></symbol>
-    <symbol id="i-arrow-c" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 12h8m-3-3 3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-chev-r" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
-    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
-  </defs>
-</svg>
-
-<header class="nav">
-  <div class="wrap">
-    <a class="brand" href="#top"><img src="logo.png" alt="" width="30" height="30">HEL.ink</a>
-    <nav class="nav-links" aria-label="Sections">
-      <a href="#features"><span data-en>Features</span><span data-id>Fitur</span></a>
-      <a href="#bio">Link in Bio</a>
-      <a href="#shorten"><span data-en>Shortener</span><span data-id>Pemendek link</span></a>
-      <a href="#api">API</a>
-      <a href="#install"><span data-en>Self-host</span><span data-id>Self-host</span></a>
-      <a href="#faq">FAQ</a>
-    </nav>
-    <div class="nav-r">
-      <button type="button" class="theme" id="theme" aria-label="Light or dark"><svg class="t-sun"><use href="#i-sun"/></svg><svg class="t-moon"><use href="#i-moon"/></svg></button>
-      <div class="lang" role="group" aria-label="Language">
-        <button type="button" id="lang-en" aria-pressed="true" lang="en">EN</button>
-        <button type="button" id="lang-id" aria-pressed="false" lang="id">ID</button>
-      </div>
-      <a class="btn main" href="https://hel.ink"><span data-en>Open hel.ink</span><span data-id>Buka hel.ink</span></a>
-    </div>
-  </div>
-</header>
-
-<main id="main">
-
-<!-- HERO -->
-<section class="hero" id="top">
-  <div class="hero-bg" aria-hidden="true"><i class="hb-dots"></i><i class="hb-beam"></i></div>
-  <div class="glow" style="width:520px;height:520px;background:var(--indigo);right:-120px;top:10%" aria-hidden="true"></div>
-  <div class="glow" style="width:420px;height:420px;background:var(--cyan);left:-160px;bottom:-80px;opacity:.18" aria-hidden="true"></div>
-  <div class="wrap two">
-    <div class="hero-copy">
-      <a class="hbadge" href="https://github.com/navi-crwn/hel.ink"><span class="hb-ver" data-gh="version">v2.0</span><svg><use href="#i-github"/></svg><span data-en>Open source on GitHub</span><span data-id>Open source di GitHub</span><svg class="hb-go"><use href="#i-chev-r"/></svg></a>
-      <h1>
-        <span data-en>Short links.<br><em>Beautiful</em> bio pages.<span class="after">All of it free, all of it yours.</span></span>
-        <span data-id>Link pendek.<br>Halaman bio yang <em>cantik.</em><span class="after">Semuanya gratis, semuanya milikmu.</span></span>
-      </h1>
-      <p class="lead">
-        <span data-en>HEL.ink shortens your links, counts every click and gives you a link in bio page at <b>hel.ink/b/you</b>. Every feature is included, with no premium tier, and you can run the whole thing on your own server.</span>
-        <span data-id>HEL.ink memendekkan link, menghitung setiap klik, dan memberi kamu halaman link in bio di <b>hel.ink/b/namamu</b>. Semua fitur sudah termasuk, tanpa paket premium, dan kamu bisa menjalankan semuanya di server sendiri.</span>
-      </p>
-      <div class="cta">
-        <a class="btn main" href="https://hel.ink"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg><span data-en>Try hel.ink</span><span data-id>Coba hel.ink</span></a>
-        <a class="btn ghost star" href="https://github.com/navi-crwn/hel.ink"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-github"/></svg><span data-en>Star this repo</span><span data-id>Kasih star repo ini</span></a>
-        <a class="plink" href="#install"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow-c"/></svg><span data-en>Host it yourself</span><span data-id>Pasang di server sendiri</span></a>
-      </div>
-      <div class="term"><code>git clone https://github.com/navi-crwn/hel.ink.git</code><button class="copy" type="button">Copy</button></div>
-      <p class="meta"><span data-en>Free & open source · MIT · Laravel 12 · PHP 8.2+</span><span data-id>Gratis & open source · MIT · Laravel 12 · PHP 8.2+</span></p>
-    </div>
-    <div class="mark" aria-hidden="true">
-      <svg class="rings" viewBox="0 0 400 400">
-        <defs><linearGradient id="g-brand" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset=".5" stop-color="#6366f1"/><stop offset="1" stop-color="#ec4899"/></linearGradient></defs>
-        <circle class="r1" cx="200" cy="200" r="190" fill="none" stroke="url(#g-brand)" stroke-opacity=".5" stroke-dasharray="2 10"/>
-        <circle class="r2" cx="200" cy="200" r="150" fill="none" stroke-dasharray="60 20 4 20"/>
-        <circle cx="200" cy="200" r="112" fill="none" stroke="url(#g-brand)" stroke-opacity=".35"/>
-        <circle cx="200" cy="10" r="4" fill="#22d3ee"/>
-        <circle cx="350" cy="200" r="3" fill="#ec4899"/>
-      </svg>
-      <img src="logo.png" alt="" width="512" height="512">
-    </div>
-    <a class="repo-card hero-repo" href="https://github.com/navi-crwn/hel.ink">
-      <span class="rc-top"><svg><use href="#i-github"/></svg><b>navi-crwn/hel.ink</b><span class="rc-pub">Public</span></span>
-      <span class="rc-desc"><span data-en>Open-source link shortener and link in bio platform. Self-hostable, free forever.</span><span data-id>Pemendek link dan platform link in bio open source. Bisa di-host sendiri, gratis selamanya.</span></span>
-      <span class="rc-meta"><span>MIT</span><span data-gh="version">v2.0</span><span><i style="--c:#8b5cf6"></i>PHP</span><span><i style="--c:var(--orange)"></i>Blade</span><span><i style="--c:#eab308"></i>JavaScript</span></span>
+  <header class="site-header">
+    <a class="brand" href="https://navi-crwn.github.io/LinkHop/">
+      <img src="assets/mark.svg" alt="" width="28" height="28">
+      <span>LinkHop</span>
     </a>
-  </div>
-</section>
+    <nav aria-label="Main navigation">
+      <a href="#features">Features</a>
+      <a href="#run">Run your own</a>
+      <a href="#faq">FAQ</a>
+      <a href="#family">HOP Family</a>
+    </nav>
+    <div class="header-actions">
+      <details class="langmenu"><summary aria-label="Language"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg>EN</summary><ul>
+        <li><a href="./" hreflang="en" lang="en" aria-current="page">English<small>EN</small></a></li>
+        <li><a href="id/" hreflang="id" lang="id">Bahasa Indonesia<small>ID</small></a></li>
+        <li><a href="zh/" hreflang="zh" lang="zh">简体中文<small>ZH</small></a></li>
+        <li><a href="es/" hreflang="es" lang="es">Español<small>ES</small></a></li>
+        <li><a href="ar/" hreflang="ar" lang="ar">العربية<small>AR</small></a></li>
+        <li><a href="pt/" hreflang="pt" lang="pt">Português<small>PT</small></a></li>
+        <li><a href="fr/" hreflang="fr" lang="fr">Français<small>FR</small></a></li>
+        <li><a href="ja/" hreflang="ja" lang="ja">日本語<small>JA</small></a></li>
+      </ul></details>
+      <button id="theme-toggle" type="button" data-action="dark" data-label-light="Light" data-label-dark="Dark">Dark</button>
+    </div>
+  </header>
 
-<!-- 01 features -->
-<section class="ref" id="features">
-  <div class="glow" style="width:520px;height:520px;background:var(--indigo);left:-200px;top:10%;opacity:.12" aria-hidden="true"></div>
-  <div class="wrap">
-    <div class="head rv">
-      <p class="label"><span class="n">01</span> · <span data-en>Features</span><span data-id>Fitur</span></p>
-      <h2><span data-en>Everything included. <em>No premium tier.</em></span><span data-id>Semua sudah termasuk. <em>Tanpa paket premium.</em></span></h2>
-      <p class="lead"><span data-en>Everything HEL.ink can do, at a glance. Every account gets all of it.</span><span data-id>Semua yang bisa dilakukan HEL.ink, sekilas. Setiap akun mendapat semuanya.</span></p>
-    </div>
-    <div class="feats rv">
-      <div><h3><span data-en>Short links</span><span data-id>Link pendek</span></h3><p><span data-en>Random or custom slugs, with a password, an expiry date and a QR code when you want one.</span><span data-id>Slug acak atau custom, plus password, tanggal kedaluwarsa, dan QR code kalau perlu.</span></p></div>
-      <div><h3>Link in Bio</h3><p><span data-en>One page for all your links at hel.ink/b/you: 20 themes, animations, embeds and 150+ brand icons.</span><span data-id>Satu halaman untuk semua link kamu di hel.ink/b/namamu: 20 tema, animasi, embed, dan 150+ ikon brand.</span></p></div>
-      <div><h3><span data-en>Click analytics</span><span data-id>Analitik klik</span></h3><p><span data-en>Clicks, countries and cities, devices, browsers and referrers, in real time.</span><span data-id>Klik, negara dan kota, perangkat, browser, dan referrer, secara real time.</span></p></div>
-      <div><h3>QR codes</h3><p><span data-en>Download a QR for any link or bio page as PNG, SVG or JPG.</span><span data-id>Unduh QR untuk link atau halaman bio mana pun, dalam PNG, SVG, atau JPG.</span></p></div>
-      <div><h3><span data-en>Folders & tags</span><span data-id>Folder & tag</span></h3><p><span data-en>Sort links into folders, tag them, search, act in bulk and export to CSV.</span><span data-id>Kelompokkan link ke folder, beri tag, cari, kelola sekaligus, dan ekspor ke CSV.</span></p></div>
-      <div><h3><span data-en>API & ShareX</span><span data-id>API & ShareX</span></h3><p><span data-en>A REST API with Bearer tokens, plus a ready-made ShareX config in Settings.</span><span data-id>REST API dengan token Bearer, plus konfigurasi ShareX siap pakai di Settings.</span></p></div>
-      <div><h3><span data-en>Safe sign-in</span><span data-id>Login aman</span></h3><p><span data-en>Email and password or Google, with two-factor codes (TOTP) and a login history.</span><span data-id>Email dan password atau Google, dengan kode dua langkah (TOTP) dan riwayat login.</span></p></div>
-      <div><h3><span data-en>Private bio pages</span><span data-id>Halaman bio privat</span></h3><p><span data-en>Lock a page with a password or an age check. Trackers only run after the visitor agrees.</span><span data-id>Kunci halaman dengan password atau cek usia. Tracker baru berjalan setelah pengunjung setuju.</span></p></div>
-      <div><h3><span data-en>Link comments</span><span data-id>Komentar link</span></h3><p><span data-en>Leave notes on a link so you remember why it exists.</span><span data-id>Tinggalkan catatan di link supaya kamu ingat kenapa link itu dibuat.</span></p></div>
-      <div><h3><span data-en>Admin panel</span><span data-id>Panel admin</span></h3><p><span data-en>Users, links, bio pages, IP bans, domain blacklist and the job queue in one place.</span><span data-id>Pengguna, link, halaman bio, blokir IP, blacklist domain, dan antrean job dalam satu tempat.</span></p></div>
-      <div><h3><span data-en>Abuse protection</span><span data-id>Perlindungan abuse</span></h3><p><span data-en>Rate limits, quotas, a domain blacklist, proxy/VPN checks and an hourly scan for phishing, scams and worse.</span><span data-id>Batas kecepatan, kuota, blacklist domain, cek proxy/VPN, dan pemindaian tiap jam untuk phishing, penipuan, dan lainnya.</span></p></div>
-      <div><h3><span data-en>Self-hostable</span><span data-id>Bisa di-host sendiri</span></h3><p><span data-en>Laravel 12 on your own server, with MySQL, PostgreSQL or SQLite. Your data stays with you.</span><span data-id>Laravel 12 di server kamu sendiri, dengan MySQL, PostgreSQL, atau SQLite. Datamu tetap di tanganmu.</span></p></div>
-    </div>
-  </div>
-</section>
-
-<!-- 02 link in bio -->
-<section class="stage" id="bio">
-  <div class="glow" style="width:560px;height:560px;background:var(--pink);right:-200px;top:20%;opacity:.14" aria-hidden="true"></div>
-  <div class="wrap two">
-    <div class="rv">
-      <p class="label"><span class="n">02</span> · Link in Bio</p>
-      <h2 style="margin-top:20px"><span data-en>One page. <em>Every link.</em></span><span data-id>Satu halaman. <em>Semua link.</em></span></h2>
-      <p class="lead" style="margin-top:20px"><span data-en>Put one link in your profile and let it carry the rest. Build the page with blocks, pick a theme, and watch the preview change as you type.</span><span data-id>Taruh satu link di profilmu, biar halaman ini yang membawa sisanya. Susun halaman dengan blok, pilih tema, dan lihat pratinjau berubah saat kamu mengetik.</span></p>
-      <ul class="facts">
-        <li><span data-en><b>20 themes</b>, from Galaxy and Neon to Cherry Blossom and Matrix, or your own colors, fonts and CSS.</span><span data-id><b>20 tema</b>, dari Galaxy dan Neon sampai Cherry Blossom dan Matrix, atau warna, font, dan CSS kamu sendiri.</span></li>
-        <li><span data-en><b>Blocks</b> for links, text, images, YouTube, Spotify, maps, countdowns, FAQ, vCard and code.</span><span data-id><b>Blok</b> untuk link, teks, gambar, YouTube, Spotify, peta, hitung mundur, FAQ, vCard, dan kode.</span></li>
-        <li><span data-en><b>Animations</b>: rain, snow, stars or confetti behind the page, and buttons that fade, pop, glow or pulse.</span><span data-id><b>Animasi</b>: hujan, salju, bintang, atau confetti di latar, dan tombol yang muncul, memantul, bersinar, atau berdenyut.</span></li>
-        <li><span data-en><b>Its own analytics</b>: views, clicks per block, referrers, devices and countries.</span><span data-id><b>Analitik sendiri</b>: kunjungan, klik per blok, referrer, perangkat, dan negara.</span></li>
-      </ul>
-      <div class="chips" aria-label="Themes"><span>Galaxy</span><span>Neon</span><span>Cyberpunk</span><span>Aurora</span><span>Cherry</span><span>Midnight</span><span>Matrix</span><span>Ice</span><span>Lavender</span><span>+11</span></div>
-    </div>
-    <div class="phone rv" aria-hidden="true">
-      <div class="ph-screen">
-        <i class="ph-stars"></i>
-        <div class="ph-ava"><img src="logo.png" alt="" width="58" height="58" style="border-radius:22%"></div>
-        <p class="ph-name">HEL.ink</p>
-        <p class="ph-bio"><span data-en>Short links & bio pages</span><span data-id>Link pendek & halaman bio</span></p>
-        <div class="ph-soc"><i>IG</i><i>X</i><i>YT</i><i>GH</i></div>
-        <div class="ph-link glow1"><span data-en>My new video</span><span data-id>Video terbaru</span></div>
-        <div class="ph-link"><span data-en>Shop</span><span data-id>Toko</span></div>
-        <div class="ph-embed"><span class="ph-play"></span><span><b>Spotify</b><small><span data-en>Now playing</span><span data-id>Sedang diputar</span></small></span></div>
-        <div class="ph-count"><span>12<small><span data-en>days</span><span data-id>hari</span></small></span><span>08<small><span data-en>hours</span><span data-id>jam</span></small></span><span>45<small><span data-en>min</span><span data-id>menit</span></small></span></div>
-        <div class="ph-link"><span data-en>Contact me</span><span data-id>Hubungi saya</span></div>
+  <main id="main">
+    <div class="hero">
+      <div>
+        <p class="kicker">HOP &middot; The HOP Shortener</p>
+        <h1>Short links, QR codes, and click analytics.</h1>
+        <p class="lede">Shorten links, count every click, analyze your visitors by country and device, and protect them with automated threat detection.</p>
+        <div class="cta-row">
+          <a class="btn primary" href="https://link.hel.ink">Open Dashboard</a>
+          <a class="btn" href="https://hel.ink/l/demo">Try a short link</a>
+          <a class="btn" href="https://github.com/navi-crwn/LinkHop">View on GitHub</a>
+        </div>
+        <p class="note">Free and open source under the MIT license. Looking for bio pages? Check out BioHop.</p>
       </div>
-      <p class="ph-url"><span>hel.ink/b/</span><b data-en>you</b><b data-id>namamu</b></p>
-    </div>
-  </div>
-</section>
-
-<!-- example bio + short links -->
-<section class="stage" id="example" style="padding-top:0">
-  <div class="wrap two">
-    <div class="rv">
-      <p class="label"><span data-en>Example</span><span data-id>Contoh</span></p>
-      <h2 style="margin-top:20px"><span data-en>See it <em>live.</em></span><span data-id>Lihat <em>langsung.</em></span></h2>
-      <p class="lead" style="margin-top:20px"><span data-en>HEL.ink's own bio page uses the Galaxy theme with a header, link buttons with brand icons, a text block, an FAQ and a contact card.</span><span data-id>Halaman bio milik HEL.ink sendiri memakai tema Galaxy, dengan header, tombol link berikon brand, blok teks, FAQ, dan kartu kontak.</span></p>
-      <p style="margin-top:24px"><a class="btn main" href="https://hel.ink/b/hel"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg>hel.ink/b/hel</a></p>
-      <ul class="facts">
-        <li><b>hel.ink/github</b> → <span data-en>the source code</span><span data-id>kode sumber</span></li>
-        <li><b>hel.ink/website</b> → <span data-en>this website</span><span data-id>website ini</span></li>
-        <li><b>hel.ink/selfhost</b> → <span data-en>the self-host guide</span><span data-id>panduan self-host</span></li>
-        <li><b>hel.ink/documentation</b> → <span data-en>the API reference</span><span data-id>referensi API</span></li>
-        <li><b>hel.ink/changelog</b> → <span data-en>what changed in each release</span><span data-id>perubahan di setiap rilis</span></li>
-      </ul>
-    </div>
-    <div class="phone rv">
-      <div class="ph-scroll" tabindex="0" role="region" aria-label="hel.ink/b/hel">
-        <img src="readme/example-bio.webp" alt="The example bio page at hel.ink/b/hel" width="420" height="1388" loading="lazy">
+      <div class="tile-wrap" aria-hidden="true">
+        <img class="tile" src="assets/tile.svg" alt="" width="220" height="260">
       </div>
-      <p class="ph-url"><span>hel.ink/b/</span><b>hel</b></p>
     </div>
-  </div>
-</section>
 
-<!-- 03 shortener -->
-<section class="stage" id="shorten" style="padding-top:0">
-  <div class="wrap two">
-    <div class="shorten rv" aria-hidden="true">
-      <div class="sh-in"><span>https://example.com/blog/2026/a-very-long-article-title?utm_source=newsletter</span><b><span data-en>Shorten</span><span data-id>Pendekkan</span></b></div>
-      <div class="sh-out"><svg width="18" height="18" viewBox="0 0 24 24" style="color:var(--green)"><use href="#i-link"/></svg><b>hel.ink/launch</b><small>QR · <span data-en>password</span><span data-id>password</span> · 30d</small></div>
-      <div class="sh-stats">
-        <div><small><span data-en>Clicks</span><span data-id>Klik</span></small><b>1,284</b></div>
-        <div><small><span data-en>Countries</span><span data-id>Negara</span></small><b>23</b></div>
-        <div><small><span data-en>Unique</span><span data-id>Unik</span></small><b>947</b></div>
-      </div>
-      <div class="bars"><i style="--h:30%"></i><i style="--h:45%"></i><i style="--h:38%"></i><i style="--h:62%"></i><i style="--h:55%"></i><i style="--h:80%"></i><i style="--h:72%"></i><i style="--h:94%"></i><i style="--h:66%"></i><i style="--h:58%"></i><i style="--h:76%"></i><i style="--h:88%"></i></div>
-    </div>
-    <div class="rv">
-      <p class="label"><span class="n">03</span> · <span data-en>Shortener</span><span data-id>Pemendek link</span></p>
-      <h2 style="margin-top:20px"><span data-en>Paste. Shorten. <em>Know who clicked.</em></span><span data-id>Tempel. Pendekkan. <em>Tahu siapa yang klik.</em></span></h2>
-      <p class="lead" style="margin-top:20px"><span data-en>Choose your own slug or take a random one. Add a password, an expiry date or a QR code, then follow every click by country, device and referrer.</span><span data-id>Pilih slug sendiri atau pakai yang acak. Tambahkan password, tanggal kedaluwarsa, atau QR code, lalu ikuti setiap klik per negara, perangkat, dan referrer.</span></p>
-      <ul class="facts">
-        <li><span data-en><b>No account needed</b> to shorten a link. Guest links are deleted after 14 days without a click, and after 30 days at most; sign up to keep them and see their stats.</span><span data-id><b>Tanpa akun</b> pun bisa memendekkan link. Link tamu dihapus setelah 14 hari tanpa klik, dan paling lama setelah 30 hari; daftar untuk menyimpannya dan melihat statistiknya.</span></li>
-        <li><span data-en><b>Unsafe links are stopped</b> before they go live: blacklisted domains, phishing patterns and risky URLs.</span><span data-id><b>Link berbahaya dihentikan</b> sebelum aktif: domain yang diblacklist, pola phishing, dan URL berisiko.</span></li>
+    <section id="features" aria-labelledby="features-h">
+      <h2 id="features-h">Features</h2>
+      <ul class="features">
+        <li><strong>Lightning-Fast Shortening</strong><p>Custom memorable slugs or random IDs served instantly at hel.ink/l/{slug} with low-latency redirects.</p></li>
+        <li><strong>Dynamic QR Codes</strong><p>Generate high-resolution SVG/PNG QR codes for print, packaging, and digital sharing.</p></li>
+        <li><strong>Deep Click Analytics</strong><p>Track visitor countries (GeoIP), devices, browsers, operating systems, and referrers in real time.</p></li>
+        <li><strong>Automated Threat Safety</strong><p>Proactive scanning via hop/safety and shared domain blacklists to safeguard your audience.</p></li>
+        <li><strong>Granular Link Controls</strong><p>Set expiration dates, maximum click counts, and password protection for sensitive destinations.</p></li>
+        <li><strong>Organization & Tags</strong><p>Group links into folders and tag campaigns for clean team management and aggregated reports.</p></li>
+        <li><strong>HOP ID Single Sign-On</strong><p>Sign in once with your central HOP ID; no duplicate accounts or fragmented sessions.</p></li>
+        <li><strong>Developer REST API</strong><p>Full API with scoped token authentication to programmatically create and monitor links.</p></li>
       </ul>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- 04 API -->
-<section class="ref" id="api">
-  <div class="wrap two">
-    <div class="rv">
-      <p class="label"><span class="n">04</span> · API</p>
-      <h2 style="margin-top:20px"><span data-en>Shorten from <em>anywhere.</em></span><span data-id>Pendekkan dari <em>mana saja.</em></span></h2>
-      <p class="lead" style="margin-top:20px"><span data-en>Make a token in Settings → API and send one request. It works from scripts, the command line, and ShareX (the config file is ready to download in Settings).</span><span data-id>Buat token di Settings → API, lalu kirim satu request. Bisa dari script, command line, dan ShareX (file konfigurasinya siap diunduh di Settings).</span></p>
-    </div>
-    <div class="card rv">
-      <pre class="code" id="api-code">curl -X POST https://hel.ink/api/shorten \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"url": "https://example.com", "alias": "my-link"}'</pre>
-      <p class="small"><span data-en><code>alias</code> is optional. The reply holds the short <code>url</code> and its <code>slug</code>.</span><span data-id><code>alias</code> boleh dikosongkan. Balasannya berisi <code>url</code> pendek dan <code>slug</code>-nya.</span></p>
-    </div>
-  </div>
-</section>
-
-<!-- 05 self-host -->
-<section class="ref" id="install">
-  <div class="wrap">
-    <div class="head rv">
-      <p class="label"><span class="n">05</span> · Self-host</p>
-      <h2><span data-en>Your server. <em>Your links.</em></span><span data-id>Server kamu. <em>Link kamu.</em></span></h2>
-      <p class="lead"><span data-en>Use hel.ink as it is, or run your own copy. You need PHP 8.2+, Composer, Node.js 18+ and a database (MySQL 8, PostgreSQL 13 or SQLite). Redis is optional.</span><span data-id>Pakai hel.ink apa adanya, atau jalankan salinanmu sendiri. Kamu butuh PHP 8.2+, Composer, Node.js 18+, dan database (MySQL 8, PostgreSQL 13, atau SQLite). Redis opsional.</span></p>
-    </div>
-    <div class="grid3 rv">
-      <div class="card">
-        <span class="n">1 · <span data-en>Get the code</span><span data-id>Ambil kodenya</span></span>
-        <pre class="code">git clone https://github.com/navi-crwn/hel.ink.git
-cd hel.ink
+    <section id="run" aria-labelledby="run-h">
+      <h2 id="run-h">Run your own LinkHop</h2>
+      <div class="panel">
+        <p>LinkHop runs on standard modern PHP and Laravel infrastructure.</p>
+        <pre><code>git clone https://github.com/navi-crwn/LinkHop.git
+cd LinkHop
 composer install
-npm install</pre>
-      </div>
-      <div class="card">
-        <span class="n">2 · <span data-en>Set it up</span><span data-id>Siapkan</span></span>
-        <pre class="code">cp .env.example .env
-php artisan key:generate
+cp .env.example .env && php artisan key:generate
 php artisan migrate
-php artisan storage:link</pre>
-        <p class="small"><span data-en>Fill in the database, mail and (optionally) Google login in <code>.env</code>.</span><span data-id>Isi database, email, dan (opsional) login Google di <code>.env</code>.</span></p>
+npm install && npm run build
+php artisan serve</code></pre>
+        <h3>Prerequisites</h3>
+        <p>PHP 8.3+, Composer, Node.js 22+, and SQLite or MySQL/MariaDB.</p>
+        <h3>Single Sign-On Setup</h3>
+        <p>Configure HOP_HUB_URL, HOP_APP=linkhop, and HOP_SSO_SECRET to authenticate users against your HOP ID hub.</p>
+        <h3>Shared Database Support</h3>
+        <p>LinkHop can share a database with the hub and BioHop; its migrations are tracked in migrations_linkhop.</p>
+        <p class="note">See .env.example for comprehensive configuration keys and comments.</p>
       </div>
-      <div class="card">
-        <span class="n">3 · <span data-en>Run it</span><span data-id>Jalankan</span></span>
-        <pre class="code">npm run build
-php artisan serve
-<span class="c"># production: also run</span>
-php artisan queue:work</pre>
-        <p class="small"><span data-en>Then open <code>http://localhost:8000</code>.</span><span data-id>Lalu buka <code>http://localhost:8000</code>.</span></p>
-      </div>
-    </div>
-    <p class="note rv"><span><span data-en>The full guide, with every <code>.env</code> setting, is in the <a href="https://github.com/navi-crwn/hel.ink#install">README</a>.</span><span data-id>Panduan lengkap, dengan semua pengaturan <code>.env</code>, ada di <a href="https://github.com/navi-crwn/hel.ink/blob/main/README.id.md#cara-pasang">README</a>.</span></span></p>
-  </div>
-</section>
+    </section>
 
-<!-- 06 FAQ -->
-<section class="ref" id="faq">
-  <div class="wrap">
-    <div class="head rv">
-      <p class="label"><span class="n">06</span> · FAQ</p>
-      <h2><span data-en>Questions, <em>answered.</em></span><span data-id>Pertanyaan, <em>terjawab.</em></span></h2>
-    </div>
-    <div class="faq rv">
-      <div>
-        <details><summary><span data-en>Is it really free?</span><span data-id>Benar-benar gratis?</span></summary><p><span data-en>Yes. hel.ink has no paid plan and no locked features, and the code is MIT licensed, so you can run, change and share it.</span><span data-id>Ya. hel.ink tidak punya paket berbayar dan tidak ada fitur yang dikunci, dan kodenya berlisensi MIT, jadi kamu boleh menjalankan, mengubah, dan membagikannya.</span></p></details>
-        <details><summary><span data-en>Do I need an account?</span><span data-id>Perlu akun?</span></summary><p><span data-en>Not to shorten a link. Guest links are deleted after 14 days without a click, and after 30 days at most. With an account you keep your links, get analytics, folders, the API and a bio page.</span><span data-id>Tidak untuk memendekkan link. Link tamu dihapus setelah 14 hari tanpa klik, dan paling lama setelah 30 hari. Dengan akun, link kamu tersimpan, dan kamu dapat analitik, folder, API, dan halaman bio.</span></p></details>
-        <details><summary><span data-en>Where is my bio page?</span><span data-id>Di mana halaman bio saya?</span></summary><p><span data-en>At hel.ink/b/ followed by the name you pick, for example <a href="https://hel.ink/b/hel">hel.ink/b/hel</a>. Create it under Dashboard → Link in Bio.</span><span data-id>Di hel.ink/b/ lalu nama yang kamu pilih, misalnya <a href="https://hel.ink/b/hel">hel.ink/b/hel</a>. Buat lewat Dashboard → Link in Bio.</span></p></details>
-      </div>
-      <div>
-        <details><summary><span data-en>Can I use my own domain?</span><span data-id>Bisa pakai domain sendiri?</span></summary><p><span data-en>Yes, by hosting your own copy: set <code>APP_URL</code> in <code>.env</code> to your domain and every short link and bio page uses it.</span><span data-id>Bisa, dengan meng-host salinan sendiri: isi <code>APP_URL</code> di <code>.env</code> dengan domainmu, maka semua link pendek dan halaman bio memakainya.</span></p></details>
-        <details><summary><span data-en>What do visitors' clicks record?</span><span data-id>Apa yang tercatat dari klik pengunjung?</span></summary><p><span data-en>The time, country and city, device, browser and referrer, so you can see where clicks come from. Tracking pixels on bio pages only load after the visitor agrees.</span><span data-id>Waktu, negara dan kota, perangkat, browser, dan referrer, supaya kamu tahu asal klik. Pixel pelacak di halaman bio baru dimuat setelah pengunjung setuju.</span></p></details>
-        <details><summary><span data-en>How do I report a bad link?</span><span data-id>Bagaimana melaporkan link berbahaya?</span></summary><p><span data-en>Use the report form on hel.ink. Reports go to the admin Abuse page, next to the findings of the automatic scan.</span><span data-id>Pakai formulir laporan di hel.ink. Laporan masuk ke halaman Abuse di panel admin, bersama temuan dari pemindaian otomatis.</span></p></details>
-      </div>
-    </div>
-  </div>
-</section>
+    <section id="faq" aria-labelledby="faq-h">
+      <h2 id="faq-h">Frequently asked questions</h2>
+      <details>
+        <summary>What happened to link-in-bio pages?</summary>
+        <p>Bio pages have moved to BioHop (bio.hel.ink) as a dedicated, feature-rich app. Existing bio links redirect seamlessly.</p>
+      </details>
+      <details>
+        <summary>Can I use custom slugs?</summary>
+        <p>Yes, authenticated users can pick custom slugs for any link as long as they are available and allowed.</p>
+      </details>
+      <details>
+        <summary>How does click tracking protect privacy?</summary>
+        <p>Clicks are aggregated without storing raw personal data or selling user profiles, and logs are routinely pruned.</p>
+      </details>
+      <details>
+        <summary>Is LinkHop free and open source?</summary>
+        <p>Yes, LinkHop is released under the permissive MIT license for everyone to use and self-host.</p>
+      </details>
+    </section>
 
-<section class="final">
-  <div class="glow" style="width:600px;height:600px;background:var(--indigo);left:50%;top:50%;transform:translate(-50%,-50%);opacity:.25" aria-hidden="true"></div>
-  <div class="wrap" style="position:relative">
-    <img src="logo.png" alt="" width="96" height="96" loading="lazy">
-    <h2><span data-en>Make your links <em>hop.</em></span><span data-id>Bikin link kamu <em>melompat.</em></span></h2>
-    <p class="pun"><span data-en>Short, fast, and yours. The rabbit agrees.</span><span data-id>Pendek, cepat, dan milikmu. Kelincinya setuju.</span></p>
-    <div class="cta">
-      <a class="btn main" href="https://hel.ink"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-link"/></svg><span data-en>Try hel.ink</span><span data-id>Coba hel.ink</span></a>
-      <a class="btn ghost" href="https://github.com/navi-crwn/hel.ink"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-github"/></svg>GitHub</a>
-      <a class="btn ghost" href="https://github.com/navi-crwn/hel.ink/fork"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-fork"/></svg>Fork</a>
-    </div>
-  </div>
-</section>
-</main>
-
-<footer class="site-foot">
-  <div class="wrap">
-    <div class="ft-top">
-      <div class="ft-brand">
-        <a class="brand" href="#top"><img src="logo.png" alt="" width="30" height="30">HEL.ink</a>
-        <p class="ft-tag"><span data-en>Open-source link shortener and link in bio. Free, self-hostable, no premium tier.</span><span data-id>Pemendek link dan link in bio open source. Gratis, bisa di-host sendiri, tanpa paket premium.</span></p>
-        <a class="ft-repo" href="https://github.com/navi-crwn/hel.ink">
-          <svg><use href="#i-github"/></svg>
-          <span class="ft-repo-t"><b>navi-crwn/hel.ink</b><small>MIT · <span data-gh="version">v2.0</span></small></span>
-        </a>
+    <section id="family" aria-labelledby="family-h">
+      <h2 id="family-h">The HOP family</h2>
+      <p>LinkHop is part of the HOP family of self-hostable open-source apps.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">App</th><th scope="col">What it does</th><th scope="col">Live address</th><th scope="col">Code</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>HOP ID</strong></td><td>Account portal, HOP ID sign-in</td><td><code>hel.ink</code> <span class="live">&middot; <code>hub.hel.ink</code></span></td><td><a href="https://github.com/navi-crwn/HEL.ink">navi-crwn/HEL.ink</a></td></tr>
+            <tr><td><strong>LinkHop</strong></td><td>Short links, QR codes & analytics</td><td><code>link.hel.ink</code> <span class="live">&middot; <code>hel.ink/l/{slug}</code></span></td><td>this repo</td></tr>
+            <tr><td><strong>BioHop</strong></td><td>Link-in-bio pages and themes</td><td><code>bio.hel.ink</code> <span class="live">&middot; <code>hel.ink/b/{slug}</code></span></td><td><a href="https://github.com/navi-crwn/BioHop">navi-crwn/BioHop</a></td></tr>
+            <tr><td><strong>PixelHop</strong></td><td>Image and media hosting</td><td><code>pixel.hel.ink</code> <span class="live">&middot; <code>p.hel.ink</code></span></td><td><a href="https://github.com/navi-crwn/PixelHop">navi-crwn/PixelHop</a></td></tr>
+            <tr><td><strong>NoteHop</strong></td><td>Client-encrypted private notes</td><td><code>note.hel.ink</code> <span class="live">&middot; <code>n.hel.ink</code></span></td><td><a href="https://github.com/navi-crwn/NoteHop">navi-crwn/NoteHop</a></td></tr>
+          </tbody>
+        </table>
       </div>
-      <nav class="ft-cols" aria-label="Footer">
-        <div><p class="ft-h"><span data-en>Product</span><span data-id>Produk</span></p><ul>
-          <li><a href="#features"><span data-en>Features</span><span data-id>Fitur</span></a></li>
-          <li><a href="#bio">Link in Bio</a></li>
-          <li><a href="#shorten"><span data-en>Shortener</span><span data-id>Pemendek link</span></a></li>
-          <li><a href="#api">API</a></li>
-          <li><a href="#faq">FAQ</a></li></ul></div>
-        <div><p class="ft-h"><span data-en>Source</span><span data-id>Sumber</span></p><ul>
-          <li><a href="https://github.com/navi-crwn/hel.ink"><span data-en>Repository</span><span data-id>Repositori</span></a></li>
-          <li><a href="https://github.com/navi-crwn/hel.ink/blob/main/CHANGELOG.md">Changelog</a></li>
-          <li><a href="https://github.com/navi-crwn/hel.ink/issues">Issues</a></li>
-          <li><a href="https://github.com/navi-crwn/hel.ink/blob/main/CREDITS.md">Credits</a></li></ul></div>
-        <div><p class="ft-h"><span data-en>Live</span><span data-id>Live</span></p><ul>
-          <li><a href="https://hel.ink">hel.ink</a></li>
-          <li><a href="https://hel.ink/b/hel"><span data-en>Bio example</span><span data-id>Contoh bio</span></a></li>
-          <li><a href="https://github.com/navi-crwn/hel.ink/blob/main/LICENSE"><span data-en>License (MIT)</span><span data-id>Lisensi (MIT)</span></a></li></ul></div>
-      </nav>
-    </div>
-    <div class="ft-bot">
-      <p><span data-en>© 2026 navi-crwn. Free and open source under the MIT license.</span><span data-id>© 2026 navi-crwn. Gratis dan open source dengan lisensi MIT.</span></p>
-      <p class="ft-tm"><span data-en>YouTube, Spotify, Google, ShareX, GitHub and other names are trademarks of their respective owners. HEL.ink is an independent project and is not affiliated with or endorsed by any of them.</span><span data-id>YouTube, Spotify, Google, ShareX, GitHub, dan nama lain adalah merek dagang dari pemiliknya masing-masing. HEL.ink adalah proyek independen, tidak berafiliasi dengan dan tidak didukung oleh mereka.</span></p>
-    </div>
-  </div>
-</footer>
+    </section>
 
-<script defer src="assets/js/site.js"></script>
+    <section id="help" aria-labelledby="help-h">
+      <h2 id="help-h">Help & Support</h2>
+      <p>Found a bug or need assistance? Open an issue on <a href="https://github.com/navi-crwn/LinkHop/issues">GitHub Issues</a>or submit a pull request.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="inner">
+      <p><strong>LinkHop</strong> &middot; part of the HOP family</p>
+      <p>Released under <a href="https://github.com/navi-crwn/LinkHop/blob/main/LICENSE">MIT</a>· Source code on<a href="https://github.com/navi-crwn/LinkHop">GitHub</a>· Live at<a href="https://link.hel.ink">link.hel.ink</a></p>
+    </div>
+  </footer>
+
+  <script src="https://hel.ink/hop-assets/v1/hop-float.js" integrity="sha384-kNviPsMEO9lt9+b4n2S5lX6zHRVnePzGuj9VdgCETTsQwzt/5YJRnv842Xg0gRC+" crossorigin="anonymous" defer></script>
+  <script src="assets/theme.js"></script>
 </body>
 </html>
