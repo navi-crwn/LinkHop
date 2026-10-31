@@ -25,6 +25,8 @@ class ShortenLinkRequest extends FormRequest
                 ReservedSlugs::rule(),
             ],
             'cf-turnstile-response' => ['nullable', 'string'],
+            'content_warning' => ['nullable', 'in:none,sensitive,adult'],
+            'warning_reason' => ['nullable', 'string', 'max:255'],
         ];
     }
 

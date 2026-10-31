@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
+use Symfony\Component\HttpFoundation\Cookie;
 
 /**
  * hel.ink/l/{slug}: the short link itself. Bio pages live under /b/ only.
@@ -29,7 +30,8 @@ class RedirectController extends Controller
         if (! $link || $link->status !== Link::STATUS_ACTIVE || $link->isExpired() || $link->user?->isSuspended()) {
             return $this->notFound($slug);
         }
-        if ($link->requiresPassword()) {
+        $passwordKey = 'link_password_'.$link->id;
+        if ($link->requiresPassword() && session($passwordKey) !== hash('sha256', $link->password_hash)) {
             if ($request->isMethod('post')) {
                 $request->validate(['password' => ['required', 'string']]);
                 $key = 'link-password:'.$link->id.':'.$request->ip();
@@ -42,8 +44,28 @@ class RedirectController extends Controller
                     return back()->withErrors(['password' => 'Incorrect password.']);
                 }
                 RateLimiter::clear($key);
+                session([$passwordKey => hash('sha256', $link->password_hash)]);
             } else {
                 return response()->view('link-password', compact('link'));
+            }
+        }
+        if ($link->requiresContentWarning()) {
+            $sessionKey = 'link_gate_passed_'.$link->id;
+            $cookieKey = 'hop_gate_link_'.$link->slug;
+            $isUnlocked = session($sessionKey) || $request->cookie($cookieKey);
+
+            if (! $isUnlocked) {
+                if ($request->isMethod('post') && in_array($request->input('gate_confirm'), ['yes', '1', 'continue'], true)) {
+                    session([$sessionKey => true]);
+                    $response = redirect()->to($request->fullUrl(), 303);
+                    if ($request->boolean('remember')) {
+                        $response->withCookie(new Cookie($cookieKey, '1', now()->addDay(), '/', null, $request->isSecure(), true, false, 'lax'));
+                    }
+
+                    return $response;
+                }
+
+                return response()->view('link-gate', compact('link'));
             }
         }
         $this->logClick($request, $link);

@@ -20,6 +20,9 @@ class SitemapController extends Controller
             ->where('is_published', true)
             ->where('allow_indexing', true)
             ->where('is_adult_content', false)
+            ->where(function ($q) {
+                $q->whereNull('content_warning')->orWhere('content_warning', 'none');
+            })
             ->latest('updated_at')
             ->limit(1000)
             ->get(['slug', 'updated_at']);

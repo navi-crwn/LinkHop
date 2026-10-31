@@ -47,6 +47,8 @@ class PublicLinkController extends Controller
             'target_url' => $data['target_url'],
             'slug' => $this->prepareSlug($data['slug'] ?? null),
             'status' => Link::STATUS_ACTIVE,
+            'content_warning' => $data['content_warning'] ?? 'none',
+            'warning_reason' => $data['warning_reason'] ?? null,
         ]);
         $this->links->generateQr($link);
         $this->links->forgetCache($link);

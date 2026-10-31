@@ -72,6 +72,8 @@ class ShortenController extends Controller
             'slug' => $link->slug,
             'target_url' => $link->target_url,
             'status' => $link->status,
+            'content_warning' => $link->content_warning ?? 'none',
+            'warning_reason' => $link->warning_reason,
             'created_at' => $link->created_at->toIso8601String(),
             'expires_at' => $link->expires_at?->toIso8601String(),
         ];
@@ -90,6 +92,8 @@ class ShortenController extends Controller
             'url' => 'required|url|max:2048',
             'alias' => "nullable|string|min:{$minSlugLength}|max:255|regex:/^[a-zA-Z0-9_-]+$/",
             'folder' => 'nullable|string',
+            'content_warning' => 'nullable|string|in:none,sensitive,adult',
+            'warning_reason' => 'nullable|string|max:255',
             'expires_at' => 'nullable|date|after:now',
             'password' => 'nullable|string|min:4|max:50',
         ]);
@@ -160,6 +164,8 @@ class ShortenController extends Controller
                 'target_url' => $targetUrl,
                 'slug' => $slug,
                 'status' => Link::STATUS_ACTIVE,
+                'content_warning' => $request->input('content_warning', 'none') ?: 'none',
+                'warning_reason' => $request->input('warning_reason'),
                 'folder_id' => $folderId,
                 'redirect_type' => '302',
                 'expires_at' => $request->input('expires_at'),
