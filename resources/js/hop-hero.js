@@ -4,6 +4,8 @@
 // two bunnies, and a password that works or doesn't. The sea ripples and lights up under the
 // cursor; colours follow the site's light/dark theme. Paused off screen; one still frame under
 // prefers-reduced-motion. Loaded on the home page only.
+import './showcase';
+
 async function start(root) {
     if (!root.offsetParent) return;
     const THREE = await import('three');
@@ -13,7 +15,7 @@ async function start(root) {
     let renderer;
     try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); } catch (e) { return; } // no WebGL: the static picture stays
     root.querySelector('[data-hop-fallback]')?.remove();
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(el.clientWidth, el.clientHeight);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, innerWidth < 640 ? 1.25 : 1.5)); renderer.setSize(el.clientWidth, el.clientHeight);
     renderer.shadowMap.enabled = true;
     el.appendChild(renderer.domElement);
     renderer.domElement.setAttribute('aria-hidden', 'true');
@@ -22,7 +24,7 @@ async function start(root) {
     cam.position.set(0, 17, 15.5); cam.lookAt(0, 0, 1.2);
     const hemi = new THREE.HemisphereLight(0xffffff, 0x6366f1, 1.4); scene.add(hemi);
     const sun = new THREE.DirectionalLight(0xffffff, 2); sun.position.set(-6, 12, 8); sun.castShadow = true;
-    sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -16, right: 16, top: 11, bottom: -11 }); scene.add(sun);
+    sun.shadow.mapSize.set(1024, 1024); Object.assign(sun.shadow.camera, { left: -16, right: 16, top: 11, bottom: -11 }); scene.add(sun);
     const cursorLight = new THREE.PointLight(0xd946ef, 20, 8, 1.5); scene.add(cursorLight);
 
     const SKY = new THREE.Color('#0ea5e9'), IND = new THREE.Color('#6366f1'), FUC = new THREE.Color('#d946ef');
@@ -167,7 +169,19 @@ async function start(root) {
       run.dur = { hop: 8, share: 9.5, 'pass-ok': 9.5, 'pass-fail': 8.5, loop: 10.8 }[type];
       return run;
     }
-    function disposeRun(run) { for (const k of ['bunnyA', 'bunnyB', 'building', 'lock', 'packet', 'trail', 'label']) if (run[k]) scene.remove(run[k]); }
+    function disposeRun(run) {
+      const geometries = new Set(), materials = new Set();
+      for (const key of ['bunnyA', 'bunnyB', 'building', 'lock', 'packet', 'trail', 'label']) {
+        if (!run[key]) continue;
+        run[key].traverse(object => {
+          if (object.geometry) geometries.add(object.geometry);
+          if (object.material) materials.add(object.material);
+        });
+        scene.remove(run[key]);
+      }
+      geometries.forEach(geometry => geometry.dispose());
+      materials.forEach(material => { material.map?.dispose(); material.dispose(); });
+    }
     const hopPos = (a, b, h, k) => new THREE.Vector3(a.x + (b.x - a.x) * k, a.y + (b.y - a.y) * k + Math.sin(k * Math.PI) * h, a.z + (b.z - a.z) * k);
     const ABC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/_-.?=&%#';
     function scramble(from, to, k, seed) {
@@ -237,7 +251,7 @@ async function start(root) {
       });
       sea.instanceMatrix.needsUpdate = true; sea.instanceColor.needsUpdate = true;
 
-      const ty = run.type, [slug, , long] = run.link, short = `hel.ink/${slug}`;
+      const ty = run.type, [slug, , long] = run.link, short = `hel.ink/l/${slug}`;
       const gy = h => Math.round(h / .1) * .1 * .95;
       const A = run.A.clone().setY(gy(1.1 * .9)), H = run.hub.clone().setY(gy(.7 * .9)), Dd = run.D.clone().add(new THREE.Vector3(-1.6, gy(1.3 * .7), 1.1));
       const loop = ty === 'loop', sink = loop ? clamp((t - 8.8) / 1) : clamp((t - (run.dur - 1.1)) / 1), show = loop || (t > .8 && sink < .7);
@@ -295,39 +309,53 @@ async function start(root) {
     }
 
     // keep the canvas sized to its box
-    new ResizeObserver(() => { const w = el.clientWidth, h = el.clientHeight; renderer.setSize(w, h, false); cam.aspect = w / h; cam.position.z = mini ? 17 : w < 640 ? 22 : 18.5; cam.position.y = mini ? 18 : w < 640 ? 21 : 16.5; cam.lookAt(0, 0, mini ? .6 : .9); cam.updateProjectionMatrix(); }).observe(el);
+    new ResizeObserver(() => { const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return; renderer.setSize(w, h, false); cam.aspect = w / h; cam.position.z = mini ? 17 : w < 640 ? 22 : 18.5; cam.position.y = mini ? 18 : w < 640 ? 21 : 16.5; cam.lookAt(0, 0, mini ? .6 : .9); cam.updateProjectionMatrix(); renderer.render(scene, cam); }).observe(el);
 
     let run = makeRun(0), n = 0, t0 = performance.now(), raf = 0, visible = false, paused = 0;
-    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const motion = matchMedia('(prefers-reduced-motion: reduce)');
+    let still = motion.matches, userPaused = false;
     // scenario pills: autoplay keeps going, a click plays that scenario now
     const pills = [...root.querySelectorAll('[data-hop-play]')];
     const mark = () => pills.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.hopPlay === run.type)));
     pills.forEach(b => b.addEventListener('click', () => {
-      disposeRun(run); run = makeRun(++n, b.dataset.hopPlay); t0 = performance.now(); mark();
-      if (still) render(run, 6.2);
+      disposeRun(run); run = makeRun(++n, b.dataset.hopPlay); t0 = performance.now(); if (paused) paused = t0; mark();
+      if (still || userPaused) render(run, 6.2);
     }));
     mark();
-    if (still) { render(run, 6.2); return; } // one still moment, no motion
+    render(run, 6.2);
     const loop = (now) => {
       let t = (now - t0) / 1000;
       if (t > run.dur) { if (run.type === 'loop') { t0 = now; t = 0; } else { disposeRun(run); run = makeRun(++n); t0 = now; t = 0; mark(); } }
       render(run, t);
-      raf = visible ? requestAnimationFrame(loop) : 0;
+       raf = visible && !still && !userPaused && !document.hidden ? requestAnimationFrame(loop) : 0;
     };
-    new IntersectionObserver(([e]) => {
-      visible = e.isIntersecting;
-      if (visible && !raf) { if (paused) t0 += performance.now() - paused; raf = requestAnimationFrame(loop); }
-      else if (!visible) paused = performance.now();
-    }).observe(root);
+    const sync = () => {
+      const playing = visible && !still && !userPaused && !document.hidden;
+      if (playing && !raf) { if (paused) t0 += performance.now() - paused; paused = 0; raf = requestAnimationFrame(loop); }
+      else if (!playing) { if (!paused) paused = performance.now(); cancelAnimationFrame(raf); raf = 0; }
+      root.querySelector('[data-hop-pause]')?.setAttribute('aria-pressed', String(userPaused || still));
+    };
+    root.querySelector('[data-hop-pause]')?.addEventListener('click', () => { userPaused = !userPaused; sync(); });
+    motion.addEventListener('change', () => { still = motion.matches; if (still) render(run, 6.2); sync(); });
+    document.addEventListener('visibilitychange', sync);
+    new MutationObserver(() => { if (still || userPaused) render(run, 6.2); }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync(); }).observe(root);
 }
 
-// The CSS hero is immediately visible. Load the interactive tour only on request.
+// One live scene in the hero; the larger secondary scene loads only when opened.
+const launch = root => start(root).catch(() => { root.dataset.webgl = 'unavailable'; });
+document.querySelectorAll('[data-hop-scene][data-mini]').forEach(root => {
+    const observer = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) { observer.disconnect(); launch(root); }
+    }, { rootMargin: '100px' });
+    observer.observe(root);
+});
 document.querySelectorAll('[data-hop-demo]').forEach(details => {
     let started = false;
     details.addEventListener('toggle', () => {
         if (details.open && !started) {
             started = true;
-            details.querySelectorAll('[data-hop-scene]').forEach(start);
+            details.querySelectorAll('[data-hop-scene]').forEach(launch);
         }
     });
 });
