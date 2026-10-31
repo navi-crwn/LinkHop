@@ -5,11 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Report abuse - LinkHop</title>
         <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png">
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=inter:400,500,600&display=swap" rel="stylesheet" />
+        <x-hop::fonts />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="min-h-full bg-linear-to-br from-slate-950 via-slate-900 to-slate-950 font-['Inter']">
+    <body class="min-h-full bg-linear-to-br from-slate-950 via-slate-900 to-slate-950 font-sans">
         <x-session-expired-notice />
         <div class="mx-auto flex min-h-screen max-w-2xl flex-col justify-center px-6 py-12">
             <div class="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-sm">

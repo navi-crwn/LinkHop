@@ -29,12 +29,12 @@
             ],
         ],
         [
-            'title' => 'LinkHop Family',
-            'items' => [
-                ['label' => 'PixelHop - Image Hosting', 'route' => 'https://p.hel.ink', 'external' => true],
-                ['label' => 'Image Tools', 'route' => 'https://p.hel.ink/features.php', 'external' => true],
-                ['label' => 'NoteHop - Encrypted Notes', 'route' => 'https://note.hel.ink', 'external' => true],
-            ],
+            // The HOP family, from the hub's asset manifest (hop/ui), so every app lists the same apps.
+            'title' => 'HOP family',
+            'items' => collect(\Hop\Ui\Assets::family('linkhop'))
+                ->reject(fn ($app) => $app['current'])
+                ->map(fn ($app) => ['label' => $app['name'], 'route' => $app['url'], 'external' => true])
+                ->values()->all(),
         ],
     ];
 @endphp

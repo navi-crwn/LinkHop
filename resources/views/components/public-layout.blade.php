@@ -8,8 +8,7 @@
         <title>{{ $title ?? config('app.name') }}</title>
         <meta name="description" content="LinkHop: short links, QR codes and click analytics, a HOP app.">
         <link rel="icon" href="{{ route('brand.favicon') }}">
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
+        <x-hop::fonts />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="min-h-full bg-[#070a17] font-sans text-white antialiased">
