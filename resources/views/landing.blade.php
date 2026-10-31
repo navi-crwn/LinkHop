@@ -63,6 +63,10 @@
                         @endforeach
                     </div>
                 @endif
+                <details class="m-2 rounded-xl border border-slate-200 p-3 dark:border-white/15">
+                    <summary class="cursor-pointer text-sm">{{ __('Content warning') }}</summary>
+                    <div class="mt-3"><x-content-warning-fields prefix="guest-warning" /></div>
+                </details>
             </form>
 
             @if ($shortened = session('shortened_link'))
@@ -112,8 +116,18 @@
     </section>
     @vite('resources/js/hop-hero.js')
 
+    <section class="mx-auto max-w-6xl px-4 py-16" aria-labelledby="tour-heading">
+        <p class="font-mono text-xs tracking-widest text-indigo-600 dark:text-indigo-300">01 / {{ __('Features') }}</p>
+        <h2 id="tour-heading" class="mt-3 text-3xl font-bold sm:text-5xl">{{ __('Short links') }}. {{ __('Analytics') }}.</h2>
+        <div class="mt-8 grid items-start gap-8 md:grid-cols-2">
+            <article class="min-w-0"><x-feature-demo name="links" label="Short links" /><h3 class="text-xl font-semibold">{{ __('Short links') }}</h3><p class="mt-2 text-sm text-slate-600 dark:text-white/60">{{ __('Folders and tags, search, bulk actions, and comments on a link.') }}</p></article>
+            <article class="min-w-0 md:pt-16"><x-feature-demo name="analytics" label="Analytics" /><h3 class="text-xl font-semibold">{{ __('Analytics') }}</h3><p class="mt-2 text-sm text-slate-600 dark:text-white/60">{{ __('Clicks, unique visitors, countries and cities, devices, browsers and referrers, in real time, with CSV export. Visitors are counted with a keyed hash of their IP address, never the address itself.') }}</p></article>
+        </div>
+    </section>
+
     {{-- Features --}}
     <section id="features" class="mx-auto max-w-6xl scroll-mt-24 px-4 py-10">
+        <p class="mb-6 font-mono text-xs tracking-widest text-indigo-600 dark:text-indigo-300">02 / {{ __('Features') }}</p>
         @php
             $features = [
                 ['icon' => 'M4 20V10m6 10V4m6 16v-7', 'title' => 'Analytics', 'body' => 'Clicks over time, countries, cities, devices, referrers and networks.'],
@@ -135,6 +149,14 @@
         </div>
     </section>
 
+    <section class="mx-auto max-w-6xl px-4 py-16" aria-labelledby="home-faq">
+        <p class="font-mono text-xs tracking-widest text-indigo-600 dark:text-indigo-300">03 / {{ __('FAQ') }}</p>
+        <h2 id="home-faq" class="my-6 text-3xl font-bold">{{ __('FAQ') }}</h2>
+        @foreach (['Is it really free?' => 'Yes. There is no paid plan and no locked feature, and the code is MIT licensed.', 'Do I need an account?' => 'Not to shorten a link. A free HOP ID keeps your links, shows their stats, and also signs you in to BioHop, PixelHop and NoteHop.', 'What does a click record?' => 'The time, country and city, device, browser and referrer, plus a keyed hash of the IP address for counting unique visitors. Never the IP address itself.'] as $question => $answer)
+            <details class="border-b border-slate-200 py-5 dark:border-white/15"><summary class="cursor-pointer text-lg font-semibold">{{ __($question) }}</summary><p class="mt-4 max-w-3xl text-slate-600 dark:text-white/65">{{ __($answer) }}</p></details>
+        @endforeach
+    </section>
+
     {{-- Call to action + family --}}
     <section class="mx-auto grid max-w-6xl gap-3 px-4 pb-6 md:grid-cols-3">
         <div class="{{ $card }} p-6 md:col-span-3">
@@ -151,11 +173,11 @@
             <p class="mt-2 text-sm text-slate-600 dark:text-white/60">All your links on one page: themes, social icons, embeds and click stats.</p>
             <p class="mt-4 text-sm font-medium text-cyan-700 group-hover:underline dark:text-cyan-200">bio.hel.ink →</p>
         </a>
-        <a href="https://p.hel.ink" target="_blank" rel="noopener" class="{{ $card }} group block p-6 transition hover:bg-white dark:hover:bg-white/8">
+        <a href="https://pixel.hel.ink" target="_blank" rel="noopener" class="{{ $card }} group block p-6 transition hover:bg-white dark:hover:bg-white/8">
             <p class="text-xs font-semibold uppercase tracking-wider text-cyan-700 dark:text-cyan-200/80">HOP family</p>
             <h2 class="mt-2 text-xl font-semibold">PixelHop</h2>
             <p class="mt-2 text-sm text-slate-600 dark:text-white/60">Free image hosting with compress, resize, convert, OCR and background removal.</p>
-            <p class="mt-4 text-sm font-medium text-cyan-700 group-hover:underline dark:text-cyan-200">p.hel.ink →</p>
+            <p class="mt-4 text-sm font-medium text-cyan-700 group-hover:underline dark:text-cyan-200">pixel.hel.ink →</p>
         </a>
         <a href="https://note.hel.ink" target="_blank" rel="noopener" class="{{ $card }} group block p-6 transition hover:bg-white dark:hover:bg-white/8">
             <p class="text-xs font-semibold uppercase tracking-wider text-cyan-700 dark:text-cyan-200/80">HOP family</p>
