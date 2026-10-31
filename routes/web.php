@@ -140,6 +140,14 @@ Route::get('/health/queue', function () {
 if (env('E2E_HOOKS') === true && ! app()->isProduction()) {
     require __DIR__.'/e2e.php';
 }
+// Root redirect fallback for hel.ink/l/ and /l when routed here (U-05).
+Route::match(['GET', 'HEAD'], '/l', function (Request $request) {
+    return redirect()->away('https://link.hel.ink/'.($request->getQueryString() ? '?'.$request->getQueryString() : ''), 301);
+});
+Route::match(['GET', 'HEAD'], '/l/', function (Request $request) {
+    return redirect()->away('https://link.hel.ink/'.($request->getQueryString() ? '?'.$request->getQueryString() : ''), 301);
+});
+
 // Short links: hel.ink/l/{slug}. GET opens the link, POST submits a link password.
 Route::middleware('ip.ban')->match(['GET', 'POST'], '/l/{slug}', RedirectController::class)
     ->where('slug', '[A-Za-z0-9-]+')->name('links.open');
