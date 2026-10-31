@@ -32,7 +32,7 @@
                 <div class="flex-1">
                     <p class="text-xs text-gray-600 dark:text-gray-300 leading-snug">
                         We use cookies to enhance your experience. 
-                        <a href="{{ hub_url('privacy') }}" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Learn more</a>
+                        <a href="{{ route('pages.privacy') }}" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Learn more</a>
                     </p>
                 </div>
             </div>
