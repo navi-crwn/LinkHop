@@ -119,7 +119,7 @@
                 </div>
             </div>
         </div>
-        <div x-show="!createdLink" class="flex flex-col h-full">
+        <div x-show="!createdLink" class="flex min-h-0 flex-col overflow-hidden">
             <div class="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-slate-800">
                 <div>
                     <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Create New Link</h3>
@@ -131,8 +131,8 @@
                     </svg>
                 </button>
             </div>
-            <div class="flex-1 overflow-hidden">
-                <div class="grid lg:grid-cols-2 h-full overflow-y-auto">
+            <div class="min-h-0 flex-1 overflow-y-auto">
+                <div class="grid lg:grid-cols-2">
                     <div class="border-r border-slate-200 dark:border-slate-800">
                         <div class="p-6">
                             <form @submit.prevent="submitForm()" class="space-y-5">
