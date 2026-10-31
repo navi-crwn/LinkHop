@@ -1,4 +1,6 @@
 {
+    "Advanced": "Opsi lanjutan",
+    "Custom slug (optional)": "Nama tautan khusus (opsional)",
     "Content warning": "Peringatan konten",
     "None": "Tidak ada",
     "Sensitive content": "Konten sensitif",
@@ -135,5 +137,15 @@
     "I understand — Continue": "Saya Mengerti — Lanjutkan",
     "Go Back": "Kembali",
     "Remember for 24 hours on this device": "Ingat selama 24 jam di perangkat ini",
-    "By continuing, you confirm that you are of legal age to view adult content in your jurisdiction.": "Dengan melanjutkan, Anda mengonfirmasi bahwa Anda memenuhi usia legal untuk melihat konten dewasa di wilayah hukum Anda."
+    "By continuing, you confirm that you are of legal age to view adult content in your jurisdiction.": "Dengan melanjutkan, Anda mengonfirmasi bahwa Anda memenuhi usia legal untuk melihat konten dewasa di wilayah hukum Anda.",
+    "Changelog": "Riwayat perubahan",
+    "Commits, releases and merged pull requests, newest first.": "Commit, rilis, dan pull request yang sudah digabungkan, dari yang terbaru.",
+    "Newer": "Lebih baru",
+    "Older": "Lebih lama",
+    "Source revisions": "Revisi sumber",
+    "Commit": "Commit",
+    "Merged pull request": "Pull request digabungkan",
+    "Release": "Rilis",
+    "All apps": "Semua aplikasi",
+    "Pagination": "Navigasi halaman"
 }

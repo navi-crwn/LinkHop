@@ -2,8 +2,8 @@
 
 Tanggal: 2026-10-27
 Repo:
-- `navi-crwn/hel.ink` branch `claude/charming-mccarthy-1kr2x5`
-- `navi-crwn/pixelhop` branch `claude/charming-mccarthy-1kr2x5`
+- `navi-crwn/LinkHop` (sebelumnya `navi-crwn/hel.ink`)
+- `navi-crwn/PixelHop`
 
 Label bukti: **TERBUKTI** = dibuktikan dengan kode + tes yang gagal sebelum perbaikan dan lulus sesudahnya. **DUGAAN** = belum bisa dibuktikan tanpa akses ke server.
 
@@ -82,7 +82,7 @@ Tidak ada migrasi database.
 Cara mengukur di VPS (read-only):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/navi-crwn/hel.ink/claude/charming-mccarthy-1kr2x5/scripts/auth-timing.sh -o /tmp/auth-timing.sh
+curl -fsSL https://raw.githubusercontent.com/navi-crwn/LinkHop/main/scripts/auth-timing.sh -o /tmp/auth-timing.sh
 sudo bash /tmp/auth-timing.sh /var/www/helink/shortlink-app
 ```
 
@@ -101,11 +101,11 @@ Kirim output-nya untuk dianalisis.
 File `07-sso-check.sh` sebelumnya hanya dikirim sebagai lampiran, jadi tidak ada di server. Sekarang bisa diunduh langsung:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/navi-crwn/hel.ink/claude/charming-mccarthy-1kr2x5/scripts/sso-check.sh -o /tmp/sso-check.sh
+curl -fsSL https://raw.githubusercontent.com/navi-crwn/LinkHop/main/scripts/sso-check.sh -o /tmp/sso-check.sh
 sudo bash /tmp/sso-check.sh /var/www/helink/shortlink-app /pixelhop /remotehop /notehop
 ```
 
-Ganti path kalau folder aplikasinya berbeda; kosongkan argumen untuk aplikasi yang tidak ada. Setelah PR di-merge, ganti `claude/charming-mccarthy-1kr2x5` di URL dengan `main`.
+Ganti path kalau folder aplikasinya berbeda; kosongkan argumen untuk aplikasi yang tidak ada. Perintah ini adalah catatan historis; cocokkan dengan tata letak deployment saat ini sebelum menjalankannya.
 
 Script ini tidak menampilkan isi secret, hanya sidik jari (12 karakter pertama sha256). Yang perlu dilaporkan:
 1. Apakah ada dua aplikasi dengan sidik jari secret yang sama. Seharusnya setiap aplikasi punya secret sendiri.

@@ -28,11 +28,13 @@ class LinkCheckController extends Controller
         // Both the app host (APP_URL) and the public host (PUBLIC_URL) are ours.
         $ownHosts = array_unique([preg_replace('/^www\./', '', strtolower((string) parse_url(config('app.url'), PHP_URL_HOST))), strtolower(public_host())]);
         $path = $input;
-        if (preg_match('#^(https?://)?([^/\s]+\.[^/\s]+)(/.*)?$#i', $input, $m)) {
-            if (! in_array(preg_replace(['/^www\./', '/:\d+$/'], '', strtolower($m[2])), $ownHosts, true)) {
-                return ['type' => 'foreign', 'host' => $m[2]];
+        if (preg_match('#^https?://#i', $input) || preg_match('#^[^/\s]+\.[^/\s]+(?:/|$)#', $input)) {
+            $url = parse_url(preg_match('#^https?://#i', $input) ? $input : 'https://'.$input);
+            $host = strtolower($url['host'] ?? '');
+            if (! in_array(preg_replace('/^www\./', '', $host), $ownHosts, true)) {
+                return ['type' => 'foreign', 'host' => $host];
             }
-            $path = $m[3] ?? '';
+            $path = $url['path'] ?? '';
         }
         $path = trim(strtok($path, '?#') ?: '', '/');
 

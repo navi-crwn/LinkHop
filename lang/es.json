@@ -1,4 +1,6 @@
 {
+    "Advanced": "Opciones avanzadas",
+    "Custom slug (optional)": "Nombre de enlace personalizado (opcional)",
     "Content warning": "Advertencia de contenido",
     "None": "Ninguna",
     "Sensitive content": "Contenido sensible",
@@ -135,5 +137,15 @@
     "I understand — Continue": "Entendido — Continuar",
     "Go Back": "Volver",
     "Remember for 24 hours on this device": "Recordar durante 24 horas en este dispositivo",
-    "By continuing, you confirm that you are of legal age to view adult content in your jurisdiction.": "Al continuar, confirmas que tienes la edad legal para ver contenido para adultos en tu jurisdicción."
+    "By continuing, you confirm that you are of legal age to view adult content in your jurisdiction.": "Al continuar, confirmas que tienes la edad legal para ver contenido para adultos en tu jurisdicción.",
+    "Changelog": "Historial de cambios",
+    "Commits, releases and merged pull requests, newest first.": "Commits, versiones y solicitudes de incorporación fusionadas, de más reciente a más antiguo.",
+    "Newer": "Más recientes",
+    "Older": "Más antiguos",
+    "Source revisions": "Revisiones del código",
+    "Commit": "Commit",
+    "Merged pull request": "Solicitud fusionada",
+    "Release": "Versión",
+    "All apps": "Todas las aplicaciones",
+    "Pagination": "Paginación"
 }

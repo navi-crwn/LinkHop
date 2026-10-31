@@ -52,7 +52,7 @@ test('client ip comes from cloudflare forwarded headers only when cloudflare pro
 });
 
 test('pages carry a unified nonce-based csp header and accept csp reports', function () {
-    $response = $this->get('/l/login');
+    $response = $this->get('/');
     $csp = (string) $response->headers->get('Content-Security-Policy');
 
     expect($response->headers->has('Content-Security-Policy-Report-Only'))->toBeFalse();

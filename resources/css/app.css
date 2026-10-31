@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import './link-hero.css';
 
 @plugin '@tailwindcss/forms';
 
@@ -222,7 +223,7 @@
 [x-cloak] { display: none !important; }
 
 @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
 /* Auth pages: map Breeze's gray utilities onto the theme tokens. */
@@ -269,9 +270,9 @@
 
 /* Home hero: the accent word, in the family display face. */
 .hop-serif {
-    font-family: var(--font-display);
-    font-style: normal;
-    font-weight: 700;
+    font-family: var(--hop-font-serif, Georgia, serif);
+    font-style: italic;
+    font-weight: 400;
     letter-spacing: -0.01em;
 }
 

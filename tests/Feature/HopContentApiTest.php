@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Support\HopSignature;
 use Hop\Bio\Models\BioPage;
 use Hop\Safety\Models\DomainBlacklist;
+use Illuminate\Support\Facades\Process;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
@@ -66,6 +67,28 @@ class HopContentApiTest extends TestCase
         $this->signed('GET', '/api/hop/content?type=bio&status=published')->assertOk()->assertJsonPath('page.total', 1)->assertJsonPath('data.0.slug', 'rani');
         $this->signed('GET', '/api/hop/content?type=nope')->assertStatus(422);
         $this->signed('GET', '/api/hop/content?type=link&limit=1')->assertOk()->assertJsonPath('page.next', (string) Link::where('slug', 'guest1')->first()->id);
+    }
+
+    public function test_health_and_statistics_belong_to_links_not_accounts(): void
+    {
+        Process::fake(['*' => Process::result(output: 'link-version')]);
+        User::factory()->count(3)->create();
+        Link::create(['slug' => 'stats-live', 'target_url' => 'https://example.com/', 'status' => 'active']);
+        Link::create(['slug' => 'stats-off', 'target_url' => 'https://example.com/', 'status' => 'inactive']);
+        $this->signed('GET', '/api/hop/health')->assertOk()->assertJsonPath('data.app', 'linkhop')->assertJsonPath('data.version', 'link-version');
+        $response = $this->signed('GET', '/api/hop/stats')->assertOk()->assertJsonPath('data.kpi.links', 2)->assertJsonPath('data.kpi.links_live', 1);
+        $this->assertArrayNotHasKey('users', $response->json('data.kpi'));
+        $this->getJson('/api/hop/stats')->assertNotFound();
+        $this->getJson('/api/hop/health')->assertNotFound();
+    }
+
+    public function test_statistics_honour_bounded_date_ranges(): void
+    {
+        $response = $this->signed('GET', '/api/hop/stats?since=2026-01-01&until=2026-01-03')->assertOk();
+        $this->assertSame([['2026-01-01', 0], ['2026-01-02', 0], ['2026-01-03', 0]], $response->json('data.series.clicks'));
+        $this->signed('GET', '/api/hop/stats?since=2026-01-03&until=2026-01-01')->assertStatus(422);
+        $this->signed('GET', '/api/hop/stats?since=2020-01-01&until=2026-01-01')->assertStatus(422);
+        $this->signed('GET', '/api/hop/stats?since=invalid')->assertStatus(422);
     }
 
     public function test_link_actions_and_owner_protection(): void

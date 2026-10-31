@@ -20,13 +20,13 @@
 
         <div class="{{ $card }} mx-auto mt-8 max-w-2xl p-2 text-left lg:mx-0 shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500/10 dark:shadow-2xl dark:shadow-black/30 dark:ring-0">
             <form
-                x-data="Object.assign({ custom: {{ old('slug') ? 'true' : 'false' }} }, turnstileForm(@js(config('services.turnstile.site_key'))))"
+                x-data="turnstileForm(@js(config('services.turnstile.site_key')))"
                 x-on:submit="handleSubmit($event)"
                 method="POST"
                 action="{{ route('shorten.store') }}"
             >
                 @csrf
-                {{-- Row 1: link + Shorten. Row 2: custom slug and sign-up hint on the left; the security check
+                {{-- Row 1: link + Shorten. Row 2: advanced options and sign-up hint; the security check
                      (normal size) right under Shorten, shown only when Cloudflare asks for a click. --}}
                 <div class="flex flex-col gap-2 sm:flex-row">
                     <label for="target_url" class="sr-only">Long URL</label>
@@ -40,16 +40,20 @@
                 </div>
                 <div class="flex flex-col-reverse px-2 pb-1 pt-2 sm:flex-row sm:items-start sm:gap-4">
                     <div class="min-w-0 flex-1">
-                        <div x-show="!custom" class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs"
+                        <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs"
                             x-bind:class="challenge && 'sm:flex-col sm:items-start sm:pt-2 sm:gap-y-3'">
-                            <button type="button" class="text-slate-500 hover:text-slate-900 dark:text-white/55 dark:hover:text-white" @click="custom = true">+ Custom slug</button>
                             <a href="{{ route('register') }}" class="font-medium text-indigo-600 hover:underline dark:text-indigo-300">Join LinkHop for more features →</a>
                         </div>
-                        <div x-show="custom" x-cloak class="flex items-center gap-2">
+                        <details id="guest-advanced" class="mt-2" @if(old('slug') || old('content_warning', 'none') !== 'none' || old('warning_reason') || $errors->hasAny(['slug', 'content_warning', 'warning_reason'])) open @endif>
+                            <summary class="cursor-pointer py-2 text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-white/70 dark:hover:text-white">{{ __('Advanced') }}</summary>
+                            <label for="slug" class="label">{{ __('Custom slug (optional)') }}</label>
+                            <div class="flex items-center gap-2">
                             <span class="text-sm text-slate-400 dark:text-white/45">{{ public_host() }}/l/</span>
                             <input id="slug" type="text" name="slug" value="{{ old('slug') }}" placeholder="my-link" pattern="[A-Za-z0-9\-]+"
                                 class="min-w-0 flex-1 rounded-xl border-0 bg-slate-100 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-400/50 dark:bg-white/6 dark:text-white dark:placeholder-white/30">
-                        </div>
+                            </div>
+                            <div class="py-4"><x-content-warning-fields prefix="guest-warning" /></div>
+                        </details>
                     </div>
                     {{-- Kept rendered but collapsed (Turnstile needs a live container). --}}
                     <x-turnstile class="flex-none self-center sm:self-auto"
@@ -63,10 +67,6 @@
                         @endforeach
                     </div>
                 @endif
-                <details class="m-2 rounded-xl border border-slate-200 p-3 dark:border-white/15">
-                    <summary class="cursor-pointer text-sm">{{ __('Content warning') }}</summary>
-                    <div class="mt-3"><x-content-warning-fields prefix="guest-warning" /></div>
-                </details>
             </form>
 
             @if ($shortened = session('shortened_link'))
@@ -93,15 +93,16 @@
             @endif
         </div>
         </div>
-        {{-- the miniature: plain hops only, desktop only (phones get the full scene below) --}}
-        <div class="relative hidden h-[460px] select-none lg:block" data-hop-scene data-mini aria-hidden="true">
-            <div class="absolute inset-0" data-hop-canvas></div>
-            <p class="absolute inset-x-0 top-2 text-center text-xs font-semibold text-slate-500 dark:text-white/55" data-hop-story></p>
+        <div class="link-sculpture" aria-hidden="true">
+            <span class="link-sculpture-ring"></span><span class="link-sculpture-ring"></span>
+            <span class="link-sculpture-url">hel.ink/l/hello ↗</span>
         </div>
     </section>
 
     {{-- The hop: a holographic sea; islands rise, bunnies hop through hel.ink to where a link goes (resources/js/hop-hero.js) --}}
-    <section class="mx-auto mt-4 max-w-6xl select-none px-2 pb-8 sm:px-4" aria-label="How a short link works" data-hop-scene>
+    <details class="mx-auto mt-4 max-w-6xl select-none px-2 pb-8 sm:px-4" data-hop-demo>
+        <summary class="cursor-pointer rounded-2xl border border-slate-200 px-5 py-4 text-sm font-semibold dark:border-white/10">{{ __('How a short link works') }}</summary>
+    <section class="pt-5" aria-label="{{ __('How a short link works') }}" data-hop-scene>
         <div class="flex flex-col items-center gap-2 px-2">
             <div class="flex flex-wrap justify-center gap-2" role="group" aria-label="Play a scenario">
                 @foreach (['hop' => 'Hop to a link', 'share' => 'Share a link', 'pass-ok' => 'Password: right', 'pass-fail' => 'Password: wrong'] as $key => $label)
@@ -114,6 +115,7 @@
             <img data-hop-fallback src="{{ route('brand.asset', 'linkhop-mark-gradient.svg') }}" alt="" class="absolute inset-0 m-auto h-32 w-auto opacity-80">
         </div>
     </section>
+    </details>
     @vite('resources/js/hop-hero.js')
 
     <section class="mx-auto max-w-6xl px-4 py-16" aria-labelledby="tour-heading">

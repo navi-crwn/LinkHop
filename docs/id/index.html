@@ -8,8 +8,8 @@
   <link rel="canonical" href="https://navi-crwn.github.io/LinkHop/id/">
   <link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/styles.css">
-  <link rel="stylesheet" href="https://hel.ink/hop-assets/v1/fonts.css" integrity="sha384-T1Y2aaMQ8CSfi7J2t9d1ZAbVcQ1FcO27Jwn3WtNWB+UVK137YCl3hIPvz0G4K22L" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://hel.ink/hop-assets/v1/hop-float.css" integrity="sha384-sl7D409xEmIT5gkArlQLoQQ4rOkqF7tOGf1VhI/iMb7c2/s9w9NtDEjLbJMU/MQ/" crossorigin="anonymous">
+  <link rel="stylesheet" href="../assets/product.css">
+  <link rel="stylesheet" href="https://hel.ink/hop-assets/v1/fonts-amnesia.css" integrity="sha384-750KEkFNx2ykcIsUyi1pZ0JC/Z6jfrK7OJtntqOzB8HKfEpjeostGTWJGAxh/5Zi" crossorigin="anonymous">
   <link rel="alternate" hreflang="x-default" href="https://navi-crwn.github.io/LinkHop/">
   <link rel="alternate" hreflang="en" href="https://navi-crwn.github.io/LinkHop/en/">
   <link rel="alternate" hreflang="id" href="https://navi-crwn.github.io/LinkHop/id/">
@@ -30,7 +30,7 @@
   <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
-  <div data-hop-float></div>
+
   <a class="skip" href="#main">Langsung ke konten utama</a>
 
   <header class="site-header">
@@ -60,25 +60,30 @@
   </header>
 
   <main id="main">
-    <div class="hero">
+    <div class="hero product-hero">
       <div>
         <p class="kicker">HOP &middot; Pemendek Tautan HOP</p>
         <h1>Pemendek tautan, kode QR, dan analitik klik.</h1>
         <p class="lede">Pendekkan tautan, hitung setiap klik, analisis pengunjung berdasarkan negara dan perangkat, serta lindungi mereka dengan deteksi ancaman otomatis.</p>
         <div class="cta-row">
           <a class="btn primary" href="https://link.hel.ink">Buka Dashboard</a>
-          <a class="btn" href="https://hel.ink/l/demo">Coba tautan demo</a>
+          <a class="btn" href="#features">Fitur</a>
           <a class="btn" href="https://github.com/navi-crwn/LinkHop">Lihat di GitHub</a>
         </div>
         <p class="note">Gratis dan open source di bawah lisensi MIT. Mencari halaman bio? Kunjungi BioHop.</p>
       </div>
-      <div class="tile-wrap" aria-hidden="true">
-        <img class="tile" src="../assets/tile.svg" alt="" width="220" height="260">
+      <div class="link-art" aria-hidden="true">
+        <div class="link-art-grid"></div>
+        <span class="link-ring"></span>
+        <span class="link-ring link-ring-back"></span>
+        <div class="link-address"><img src="../assets/mark.svg" alt="" width="24" height="24"><span>hel.ink/l/…</span><span class="link-arrow">↗</span></div>
+        <div class="link-spark link-spark-one"></div>
+        <div class="link-spark link-spark-two"></div>
       </div>
     </div>
 
     <section id="features" aria-labelledby="features-h">
-      <h2 id="features-h">Fitur Utama</h2>
+      <span class="section-number" aria-hidden="true">01</span><h2 id="features-h">Fitur Utama</h2>
       <ul class="features">
         <li><strong>Pemendekan Secepat Kilat</strong><p>Slug kustom atau ID acak disajikan seketika di hel.ink/l/{slug} dengan latensi rendah.</p></li>
         <li><strong>Kode QR Dinamis</strong><p>Buat kode QR SVG/PNG resolusi tinggi untuk cetak, kemasan, maupun berbagi digital.</p></li>
@@ -91,25 +96,14 @@
       </ul>
     </section>
 
-    <section id="run" aria-labelledby="run-h">
-      <h2 id="run-h">Pasang LinkHop sendiri</h2>
-      <div class="panel">
-        <p>LinkHop berjalan di atas infrastruktur PHP dan Laravel modern standar.</p>
-        <pre><code>git clone https://github.com/navi-crwn/LinkHop.git
-cd LinkHop
-composer install
-cp .env.example .env && php artisan key:generate
-php artisan migrate
-npm install && npm run build
-php artisan serve</code></pre>
-        <h3>Prasyarat</h3>
-        <p>PHP 8.3+, Composer, Node.js 22+, serta SQLite atau MySQL/MariaDB.</p>
-        <h3>Konfigurasi SSO</h3>
-        <p>Atur HOP_HUB_URL, HOP_APP=linkhop, dan HOP_SSO_SECRET untuk autentikasi terhadap hub HOP ID.</p>
-        <h3>Dukungan Basis Data Bersama</h3>
-        <p>LinkHop dapat berbagi basis data dengan hub dan BioHop; migrasinya dicatat di migrations_linkhop.</p>
-        <p class="note">Lihat .env.example untuk opsi konfigurasi lengkap beserta penjelasannya.</p>
-      </div>
+    <section id="run" class="source-card" aria-labelledby="run-h">
+      <div><span class="section-number" aria-hidden="true">02 / OPEN SOURCE</span><h2 id="run-h">Pasang LinkHop sendiri</h2><p>Gratis dan open source di bawah lisensi MIT. Mencari halaman bio? Kunjungi BioHop.</p></div>
+      <div class="cta-row"><a class="btn" href="https://github.com/navi-crwn/LinkHop/blob/main/README.md">Pasang sendiri ↗</a><a class="btn" href="https://github.com/navi-crwn/LinkHop">Lihat di GitHub ↗</a></div>
+    </section>
+
+    <section class="product-preview" aria-labelledby="preview-h">
+      <div class="preview-caption"><div><span class="section-number" aria-hidden="true">03</span><h2 id="preview-h">LinkHop</h2></div><a class="btn primary" href="https://link.hel.ink">Buka Dashboard ↗</a></div>
+      <a class="preview-screen" href="https://link.hel.ink" aria-label="Buka Dashboard"><img class="preview-light" src="../assets/product-light.webp" alt="LinkHop" width="1280" height="900" loading="lazy"><img class="preview-dark" src="../assets/product-dark.webp" alt="LinkHop" width="1280" height="900" loading="lazy"></a>
     </section>
 
     <section id="faq" aria-labelledby="faq-h">
@@ -153,18 +147,17 @@ php artisan serve</code></pre>
 
     <section id="help" aria-labelledby="help-h">
       <h2 id="help-h">Bantuan & Dukungan</h2>
-      <p>Menemukan bug atau butuh bantuan? Buka isu di <a href="https://github.com/navi-crwn/LinkHop/issues">GitHub Issues</a>atau kirimkan pull request.</p>
+      <p>Menemukan bug atau butuh bantuan? Buka isu di <a href="https://github.com/navi-crwn/LinkHop/issues">GitHub Issues</a> atau kirimkan pull request.</p>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="inner">
       <p><strong>LinkHop</strong> &middot; bagian dari keluarga HOP</p>
-      <p>Dilisensikan di bawah <a href="https://github.com/navi-crwn/LinkHop/blob/main/LICENSE">MIT</a>· Kode sumber di<a href="https://github.com/navi-crwn/LinkHop">GitHub</a>· Langsung di<a href="https://link.hel.ink">link.hel.ink</a></p>
+      <p>Dilisensikan di bawah <a href="https://github.com/navi-crwn/LinkHop/blob/main/LICENSE">MIT</a> · Kode sumber di <a href="https://github.com/navi-crwn/LinkHop">GitHub</a> · Langsung di <a href="https://link.hel.ink">link.hel.ink</a></p>
     </div>
   </footer>
 
-  <script src="https://hel.ink/hop-assets/v1/hop-float.js" integrity="sha384-kNviPsMEO9lt9+b4n2S5lX6zHRVnePzGuj9VdgCETTsQwzt/5YJRnv842Xg0gRC+" crossorigin="anonymous" defer></script>
   <script src="../assets/theme.js"></script>
 </body>
 </html>

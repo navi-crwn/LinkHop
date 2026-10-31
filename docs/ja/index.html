@@ -8,8 +8,8 @@
   <link rel="canonical" href="https://navi-crwn.github.io/LinkHop/ja/">
   <link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/styles.css">
-  <link rel="stylesheet" href="https://hel.ink/hop-assets/v1/fonts.css" integrity="sha384-T1Y2aaMQ8CSfi7J2t9d1ZAbVcQ1FcO27Jwn3WtNWB+UVK137YCl3hIPvz0G4K22L" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://hel.ink/hop-assets/v1/hop-float.css" integrity="sha384-sl7D409xEmIT5gkArlQLoQQ4rOkqF7tOGf1VhI/iMb7c2/s9w9NtDEjLbJMU/MQ/" crossorigin="anonymous">
+  <link rel="stylesheet" href="../assets/product.css">
+  <link rel="stylesheet" href="https://hel.ink/hop-assets/v1/fonts-amnesia.css" integrity="sha384-750KEkFNx2ykcIsUyi1pZ0JC/Z6jfrK7OJtntqOzB8HKfEpjeostGTWJGAxh/5Zi" crossorigin="anonymous">
   <link rel="alternate" hreflang="x-default" href="https://navi-crwn.github.io/LinkHop/">
   <link rel="alternate" hreflang="en" href="https://navi-crwn.github.io/LinkHop/en/">
   <link rel="alternate" hreflang="id" href="https://navi-crwn.github.io/LinkHop/id/">
@@ -30,7 +30,7 @@
   <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
-  <div data-hop-float></div>
+
   <a class="skip" href="#main">メインコンテンツへスキップ</a>
 
   <header class="site-header">
@@ -60,25 +60,30 @@
   </header>
 
   <main id="main">
-    <div class="hero">
+    <div class="hero product-hero">
       <div>
         <p class="kicker">HOP &middot; HOP 短縮 URL サービス</p>
         <h1>短縮 URL、QR コード、そしてクリック解析。</h1>
         <p class="lede">リンクを短縮し、すべてのクリックを記録。国別・端末別にアクセスを分析し、自動脅威検知で安全を確保します。</p>
         <div class="cta-row">
           <a class="btn primary" href="https://link.hel.ink">ダッシュボードを開く</a>
-          <a class="btn" href="https://hel.ink/l/demo">短縮リンクを試す</a>
+          <a class="btn" href="#features">機能紹介</a>
           <a class="btn" href="https://github.com/navi-crwn/LinkHop">GitHub で見る</a>
         </div>
         <p class="note">MIT ライセンスの無料オープンソース。リンクインバイオをお探しですか？ BioHop をご覧ください。</p>
       </div>
-      <div class="tile-wrap" aria-hidden="true">
-        <img class="tile" src="../assets/tile.svg" alt="" width="220" height="260">
+      <div class="link-art" aria-hidden="true">
+        <div class="link-art-grid"></div>
+        <span class="link-ring"></span>
+        <span class="link-ring link-ring-back"></span>
+        <div class="link-address"><img src="../assets/mark.svg" alt="" width="24" height="24"><span>hel.ink/l/…</span><span class="link-arrow">↗</span></div>
+        <div class="link-spark link-spark-one"></div>
+        <div class="link-spark link-spark-two"></div>
       </div>
     </div>
 
     <section id="features" aria-labelledby="features-h">
-      <h2 id="features-h">主な機能</h2>
+      <span class="section-number" aria-hidden="true">01</span><h2 id="features-h">主な機能</h2>
       <ul class="features">
         <li><strong>超高速な短縮リンク</strong><p>カスタムの分かりやすいスラッグやランダム ID を hel.ink/l/{slug} で即座にリダイレクト。</p></li>
         <li><strong>ダイナミック QR コード</strong><p>印刷物やデジタル共有に適した高解像度 SVG/PNG QR コードを生成。</p></li>
@@ -91,25 +96,14 @@
       </ul>
     </section>
 
-    <section id="run" aria-labelledby="run-h">
-      <h2 id="run-h">独自の LinkHop を構築する</h2>
-      <div class="panel">
-        <p>LinkHop は標準的なモダン PHP と Laravel 環境で動作します。</p>
-        <pre><code>git clone https://github.com/navi-crwn/LinkHop.git
-cd LinkHop
-composer install
-cp .env.example .env && php artisan key:generate
-php artisan migrate
-npm install && npm run build
-php artisan serve</code></pre>
-        <h3>前提条件</h3>
-        <p>PHP 8.3 以上、Composer、Node.js 22 以上、SQLite または MySQL/MariaDB。</p>
-        <h3>SSO の設定</h3>
-        <p>HOP_HUB_URL、HOP_APP=linkhop、HOP_SSO_SECRET を設定して HOP ID ハブと連携します。</p>
-        <h3>共有データベース対応</h3>
-        <p>Hub や BioHop とデータベースを共有可能で、マイグレーションは migrations_linkhop に分離されます。</p>
-        <p class="note">詳細な設定項目は .env.example を確認してください。</p>
-      </div>
+    <section id="run" class="source-card" aria-labelledby="run-h">
+      <div><span class="section-number" aria-hidden="true">02 / OPEN SOURCE</span><h2 id="run-h">独自の LinkHop を構築する</h2><p>MIT ライセンスの無料オープンソース。リンクインバイオをお探しですか？ BioHop をご覧ください。</p></div>
+      <div class="cta-row"><a class="btn" href="https://github.com/navi-crwn/LinkHop/blob/main/README.md">セルフホスト ↗</a><a class="btn" href="https://github.com/navi-crwn/LinkHop">GitHub で見る ↗</a></div>
+    </section>
+
+    <section class="product-preview" aria-labelledby="preview-h">
+      <div class="preview-caption"><div><span class="section-number" aria-hidden="true">03</span><h2 id="preview-h">LinkHop</h2></div><a class="btn primary" href="https://link.hel.ink">ダッシュボードを開く ↗</a></div>
+      <a class="preview-screen" href="https://link.hel.ink" aria-label="ダッシュボードを開く"><img class="preview-light" src="../assets/product-light.webp" alt="LinkHop" width="1280" height="900" loading="lazy"><img class="preview-dark" src="../assets/product-dark.webp" alt="LinkHop" width="1280" height="900" loading="lazy"></a>
     </section>
 
     <section id="faq" aria-labelledby="faq-h">
@@ -153,18 +147,17 @@ php artisan serve</code></pre>
 
     <section id="help" aria-labelledby="help-h">
       <h2 id="help-h">ヘルプとサポート</h2>
-      <p>バグの報告やサポートが必要ですか？ 次の場所で Issue を開いてください： <a href="https://github.com/navi-crwn/LinkHop/issues">GitHub Issues</a>またはプルリクエストを送信してください。</p>
+      <p>バグの報告やサポートが必要ですか？ 次の場所で Issue を開いてください： <a href="https://github.com/navi-crwn/LinkHop/issues">GitHub Issues</a> またはプルリクエストを送信してください。</p>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="inner">
       <p><strong>LinkHop</strong> &middot; HOP ファミリーの一員</p>
-      <p>ライセンス： <a href="https://github.com/navi-crwn/LinkHop/blob/main/LICENSE">MIT</a>· ソースコード：<a href="https://github.com/navi-crwn/LinkHop">GitHub</a>· 公開サイト：<a href="https://link.hel.ink">link.hel.ink</a></p>
+      <p>ライセンス： <a href="https://github.com/navi-crwn/LinkHop/blob/main/LICENSE">MIT</a> · ソースコード： <a href="https://github.com/navi-crwn/LinkHop">GitHub</a> · 公開サイト： <a href="https://link.hel.ink">link.hel.ink</a></p>
     </div>
   </footer>
 
-  <script src="https://hel.ink/hop-assets/v1/hop-float.js" integrity="sha384-kNviPsMEO9lt9+b4n2S5lX6zHRVnePzGuj9VdgCETTsQwzt/5YJRnv842Xg0gRC+" crossorigin="anonymous" defer></script>
   <script src="../assets/theme.js"></script>
 </body>
 </html>
