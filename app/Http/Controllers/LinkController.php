@@ -486,6 +486,8 @@ class LinkController extends Controller
             'slug' => $this->prepareSlug($data['slug'] ?? null, $link),
             'folder_id' => blank($data['folder_id'] ?? null) ? null : $data['folder_id'],
             'redirect_type' => $data['redirect_type'] ?? '302',
+            'content_warning' => $data['content_warning'] ?? $link?->content_warning ?? 'none',
+            'warning_reason' => array_key_exists('warning_reason', $data) ? $data['warning_reason'] : $link?->warning_reason,
             'custom_title' => $data['custom_title'] ?? null,
             'custom_description' => blank($data['custom_description'] ?? null) ? null : $data['custom_description'],
             'custom_image_url' => blank($data['custom_image_url'] ?? null) ? null : $data['custom_image_url'],

@@ -19,6 +19,8 @@ class Link extends Model
         'target_url',
         'user_id',
         'status',
+        'content_warning',
+        'warning_reason',
         'clicks',
         'last_clicked_at',
         'folder_id',
@@ -43,6 +45,27 @@ class Link extends Model
     public const STATUS_ACTIVE = 'active';
 
     public const STATUS_INACTIVE = 'inactive';
+
+    public const WARNING_NONE = 'none';
+
+    public const WARNING_SENSITIVE = 'sensitive';
+
+    public const WARNING_ADULT = 'adult';
+
+    public function isAdult(): bool
+    {
+        return $this->content_warning === self::WARNING_ADULT;
+    }
+
+    public function isSensitive(): bool
+    {
+        return $this->content_warning === self::WARNING_SENSITIVE;
+    }
+
+    public function requiresContentWarning(): bool
+    {
+        return in_array($this->content_warning, [self::WARNING_SENSITIVE, self::WARNING_ADULT], true);
+    }
 
     public function user(): BelongsTo
     {
