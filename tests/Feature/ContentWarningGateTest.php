@@ -127,3 +127,43 @@ test('api shorten accepts and returns content warning', function () {
     $response->assertJsonPath('data.content_warning', 'sensitive');
     $response->assertJsonPath('data.warning_reason', 'Graphic medical demonstration.');
 });
+
+test('password protected links can complete the content gate without losing the password unlock', function () {
+    $link = Link::create([
+        'user_id' => User::factory()->create()->id,
+        'slug' => 'protected-adult',
+        'target_url' => 'https://example.com/protected',
+        'status' => Link::STATUS_ACTIVE,
+        'content_warning' => 'adult',
+        'password_hash' => bcrypt('demo-password'),
+    ]);
+
+    $this->post('/l/'.$link->slug, ['password' => 'demo-password'])->assertSee('Age Verification Required');
+    $this->post('/l/'.$link->slug, ['gate_confirm' => 'yes'])->assertStatus(303);
+    $this->get('/l/'.$link->slug)->assertRedirect($link->target_url);
+});
+
+test('sensitive gate makes no age claim and remember cookie is host only', function () {
+    config(['session.domain' => '.hel.ink']);
+    $link = Link::create([
+        'user_id' => User::factory()->create()->id,
+        'slug' => 'sensitive-host',
+        'target_url' => 'https://example.com/sensitive',
+        'status' => Link::STATUS_ACTIVE,
+        'content_warning' => 'sensitive',
+    ]);
+
+    $this->get('/l/'.$link->slug)->assertDontSee('legal age');
+    $response = $this->post('/l/'.$link->slug, ['gate_confirm' => 'yes', 'remember' => '1']);
+    $cookie = collect($response->headers->getCookies())->first(fn ($cookie) => $cookie->getName() === 'hop_gate_link_'.$link->slug);
+    expect($cookie->getDomain())->toBeNull();
+    expect($cookie->isHttpOnly())->toBeTrue();
+    expect($cookie->getExpiresTime() - time())->toBeGreaterThan(86390)->toBeLessThanOrEqual(86400);
+});
+
+test('dashboard create and edit forms expose content classification', function () {
+    $user = User::factory()->create(['email_verified_at' => now()]);
+    $link = Link::create(['user_id' => $user->id, 'slug' => 'editable-warning', 'target_url' => 'https://example.com', 'status' => Link::STATUS_ACTIVE]);
+    $this->actingAs($user)->get(route('links.create'))->assertOk()->assertSee('name="content_warning"', false);
+    $this->get(route('links.edit', $link))->assertOk()->assertSee('name="content_warning"', false)->assertSee('name="warning_reason"', false);
+});

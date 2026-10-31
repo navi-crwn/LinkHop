@@ -134,6 +134,7 @@
                     <label for="flinked-6" class="label">Image URL</label>
                     <input id="flinked-6" type="url" name="custom_image_url" value="{{ old('custom_image_url', $link->custom_image_url) }}" class="input" placeholder="https://">
                 </div>
+                <x-content-warning-fields :link="$link" />
             </div>
         </div>
 
