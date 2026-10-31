@@ -43,7 +43,18 @@
                             @else
                                 <span class="rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-semibold text-white/70">{{ ucfirst($result['state']) }}</span>
                             @endif
+                            @if ($link->isAdult())
+                                <span class="rounded-full bg-rose-500/20 px-2 py-0.5 text-[11px] font-semibold text-rose-300 ring-1 ring-rose-500/30">18+ Adult</span>
+                            @elseif ($link->isSensitive())
+                                <span class="rounded-full bg-amber-500/20 px-2 py-0.5 text-[11px] font-semibold text-amber-300 ring-1 ring-amber-500/30">Content Warning</span>
+                            @endif
                         </div>
+
+                        @if ($link->warning_reason)
+                            <p class="mt-2 text-xs text-amber-200/90 bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/20">
+                                <strong class="uppercase text-[10px] tracking-wider text-amber-300/80">Creator Note:</strong> {{ $link->warning_reason }}
+                            </p>
+                        @endif
 
                         @if ($result['protected'])
                             <p class="mt-4 font-medium">This link is password protected.</p>

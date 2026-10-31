@@ -120,5 +120,15 @@
     "Yes. There is no paid plan and no locked feature, and the code is MIT licensed.": "はい。有料プランや有料専用機能はなく、コードはMITライセンスで提供されています。",
     "Your data": "データ管理",
     "Your links, their settings, folders, tags and comments. With an account, they belong to your HOP ID; the account itself (email, password, two-factor) is kept by the hub.": "作成したリンク、設定、フォルダ、タグ、メモ。アカウントを所持している場合HOP IDに紐付き、アカウント認証情報はハブで安全に保持されます。",
-    "last seen :time": "最終確認 :time"
+    "last seen :time": "最終確認 :time",
+    "Age Verification Required": "年齢確認が必要です",
+    "Sensitive Content Warning": "センシティブなコンテンツの警告",
+    "This link contains adult content intended strictly for viewers aged 18 and older.": "このリンクには18歳以上の方のみを対象としたアダルトコンテンツが含まれています。",
+    "The creator has marked this link as containing sensitive material.": "作成者がこのリンクにセンシティブな内容が含まれていると設定しています。",
+    "Note from creator:": "作成者からのメモ：",
+    "I am 18+ — Continue": "18歳以上です — 続ける",
+    "I understand — Continue": "理解して続ける",
+    "Go Back": "戻る",
+    "Remember for 24 hours on this device": "この端末で24時間記憶する",
+    "By continuing, you confirm that you are of legal age to view adult content in your jurisdiction.": "続行することにより、お住まいの管辖地域でアダルトコンテンツを閲覧する法定年齢に達していることを確認したことになります。"
 }

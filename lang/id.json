@@ -120,5 +120,15 @@
     "Yes. There is no paid plan and no locked feature, and the code is MIT licensed.": "Ya. Tidak ada paket berbayar atau fitur terkunci, dan kodenya berlisensi MIT.",
     "Your data": "Data Anda",
     "Your links, their settings, folders, tags and comments. With an account, they belong to your HOP ID; the account itself (email, password, two-factor) is kept by the hub.": "Link Anda, pengaturannya, folder, label, serta catatan. Jika memiliki akun, semuanya tertaut ke HOP ID Anda; data akun (email, kata sandi, dua faktor) disimpan di hub.",
-    "last seen :time": "terakhir aktif :time"
+    "last seen :time": "terakhir aktif :time",
+    "Age Verification Required": "Verifikasi Usia Diperlukan",
+    "Sensitive Content Warning": "Peringatan Konten Sensitif",
+    "This link contains adult content intended strictly for viewers aged 18 and older.": "Tautan ini memuat konten dewasa khusus untuk pengguna berusia 18 tahun ke atas.",
+    "The creator has marked this link as containing sensitive material.": "Pembuat menandai tautan ini memuat materi sensitif.",
+    "Note from creator:": "Catatan dari pembuat:",
+    "I am 18+ — Continue": "Saya berusia 18+ — Lanjutkan",
+    "I understand — Continue": "Saya Mengerti — Lanjutkan",
+    "Go Back": "Kembali",
+    "Remember for 24 hours on this device": "Ingat selama 24 jam di perangkat ini",
+    "By continuing, you confirm that you are of legal age to view adult content in your jurisdiction.": "Dengan melanjutkan, Anda mengonfirmasi bahwa Anda memenuhi usia legal untuk melihat konten dewasa di wilayah hukum Anda."
 }

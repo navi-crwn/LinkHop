@@ -172,6 +172,18 @@ class HopContentController extends Controller
                     $this->links->forgetCache($l);
                     AbuseFlag::where('subject_type', 'link')->where('subject_id', $l->id)->update(['status' => AbuseFlag::STATUS_DISMISSED]);
                     break;
+                case 'mark_nsfw':
+                    $l->forceFill(['content_warning' => 'adult'])->save();
+                    $this->links->forgetCache($l);
+                    break;
+                case 'unmark_nsfw':
+                    $l->forceFill(['content_warning' => 'none'])->save();
+                    $this->links->forgetCache($l);
+                    break;
+                case 'mark_sensitive':
+                    $l->forceFill(['content_warning' => 'sensitive'])->save();
+                    $this->links->forgetCache($l);
+                    break;
                 case 'delete':
                     if ($l->qr_code_path) {
                         Storage::disk('public')->delete($l->qr_code_path);
@@ -518,7 +530,13 @@ class HopContentController extends Controller
             'owner' => $l->user ? ['sub' => (string) $l->user->id, 'username' => $l->user->username, 'name' => $l->user->name] : null,
             'status' => $live ? 'live' : ($l->status === Link::STATUS_ACTIVE ? 'expired' : 'disabled'),
             'clicks' => (int) $l->clicks, 'expires_at' => $l->expires_at?->toIso8601String(), 'created_at' => $l->created_at?->toIso8601String(),
-            'url' => $l->short_url, 'flags' => array_values(array_filter([$l->password_hash ? 'password' : null, $l->safety_status && $l->safety_status !== 'safe' ? 'safety:'.$l->safety_status : null])),
+            'content_warning' => $l->content_warning ?? 'none',
+            'warning_reason' => $l->warning_reason,
+            'url' => $l->short_url, 'flags' => array_values(array_filter([
+                $l->password_hash ? 'password' : null,
+                $l->isAdult() ? 'adult' : ($l->isSensitive() ? 'sensitive' : null),
+                $l->safety_status && $l->safety_status !== 'safe' ? 'safety:'.$l->safety_status : null,
+            ])),
         ];
     }
 

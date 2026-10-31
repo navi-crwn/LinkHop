@@ -120,5 +120,15 @@
     "Yes. There is no paid plan and no locked feature, and the code is MIT licensed.": "نعم. لا توجد خطط مدفوعة ولا ميزات مقفلة، والشفرة مرخصة بموجب MIT.",
     "Your data": "بياناتك",
     "Your links, their settings, folders, tags and comments. With an account, they belong to your HOP ID; the account itself (email, password, two-factor) is kept by the hub.": "روابطك وإعداداتها والمجلدات والوسوم والتعليقات. مع وجود حساب، ترتبط بـ HOP ID الخاص بك، وتُحفظ بيانات الحساب في المركز.",
-    "last seen :time": "آخر نشاط :time"
+    "last seen :time": "آخر نشاط :time",
+    "Age Verification Required": "مطلوب التحقق من العمر",
+    "Sensitive Content Warning": "تحذير من محتوى حساس",
+    "This link contains adult content intended strictly for viewers aged 18 and older.": "يحتوي هذا الرابط على محتوى للبالغين مخصص فقط لمن يبلغون 18 عامًا فما فوق.",
+    "The creator has marked this link as containing sensitive material.": "وضع منشئ الرابط علامة على أنه يتضمن محتوى حساسًا.",
+    "Note from creator:": "ملاحظة من المنشئ:",
+    "I am 18+ — Continue": "عمري 18+ — متابعة",
+    "I understand — Continue": "فهمت ذلك — متابعة",
+    "Go Back": "رجوع",
+    "Remember for 24 hours on this device": "تذكر لمدة 24 ساعة على هذا الجهاز",
+    "By continuing, you confirm that you are of legal age to view adult content in your jurisdiction.": "بالمتابعة، فإنك تؤكد أنك في السن القانونية لعرض محتوى البالغين في منطقتك."
 }

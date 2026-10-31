@@ -120,5 +120,15 @@
     "Yes. There is no paid plan and no locked feature, and the code is MIT licensed.": "Oui. Aucun forfait payant, aucune fonctionnalité restreinte, et le code est sous licence libre MIT.",
     "Your data": "Vos données personnelles",
     "Your links, their settings, folders, tags and comments. With an account, they belong to your HOP ID; the account itself (email, password, two-factor) is kept by the hub.": "Vos liens, configurations, dossiers, tags et notes. Reliés à un compte, ils appartiennent à votre HOP ID ; le profil est géré par le hub central.",
-    "last seen :time": "dernière activité :time"
+    "last seen :time": "dernière activité :time",
+    "Age Verification Required": "Vérification de l'âge requise",
+    "Sensitive Content Warning": "Avertissement de contenu sensible",
+    "This link contains adult content intended strictly for viewers aged 18 and older.": "Ce lien contient du contenu pour adultes réservé aux personnes de 18 ans et plus.",
+    "The creator has marked this link as containing sensitive material.": "Le créateur a signalé ce lien comme contenant du contenu sensible.",
+    "Note from creator:": "Note du créateur :",
+    "I am 18+ — Continue": "J'ai 18 ans ou plus — Continuer",
+    "I understand — Continue": "J'ai compris — Continuer",
+    "Go Back": "Retour",
+    "Remember for 24 hours on this device": "Se souvenir pendant 24 heures sur cet appareil",
+    "By continuing, you confirm that you are of legal age to view adult content in your jurisdiction.": "En continuant, vous confirmez que vous avez l'âge légal pour visionner du contenu pour adultes dans votre juridiction."
 }
