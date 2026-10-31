@@ -32,6 +32,7 @@
                 </select>
             </div>
         @endif
+        <x-content-warning-fields />
         <div class="flex justify-end gap-2">
             <a href="{{ route('links.index') }}" class="btn-ghost btn-sm">Cancel</a>
             <button type="submit" class="btn-primary btn-sm">Create link</button>
