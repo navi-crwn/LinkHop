@@ -40,7 +40,7 @@ class HopContentController extends Controller
             'app' => 'linkhop', 'name' => config('app.name'), 'icon' => 'link', 'base_url' => config('app.url'),
             'capabilities' => ['admin_api', 'account_server', 'reports', 'settings', 'search', 'metrics'],
             'content_types' => array_values(array_filter([
-                ['type' => 'link', 'label' => 'Links', 'actions' => ['disable', 'enable', 'delete', 'transfer', 'rescan']],
+                ['type' => 'link', 'label' => 'Links', 'actions' => ['disable', 'enable', 'delete', 'transfer', 'rescan', 'mark_nsfw', 'unmark_nsfw', 'mark_sensitive']],
                 bio_enabled() ? ['type' => 'bio', 'label' => 'Bio pages', 'actions' => ['unpublish', 'publish', 'delete', 'transfer']] : null,
             ])),
             'extensions' => ['ip', 'domains', 'queue', 'analytics'],

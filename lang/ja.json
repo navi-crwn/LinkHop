@@ -1,4 +1,9 @@
 {
+    "Content warning": "コンテンツの警告",
+    "None": "なし",
+    "Sensitive content": "センシティブな内容",
+    "Adult 18+": "成人向け（18歳以上）",
+    "Reason (optional)": "理由（任意）",
     "<code>GET /api/links/{slug}</code> returns the link with its clicks (<code>link:read</code>). <code>DELETE /api/links/{slug}</code> removes it (<code>link:delete</code>).": "<code>GET /api/links/{slug}</code> でリンクとクリック数を取得（<code>link:read</code>）、<code>DELETE /api/links/{slug}</code> で削除（<code>link:delete</code>）します。",
     "<strong>A harmful short link?</strong> Use the <a href=\":url\">report form</a>.": "<strong>危険な短縮リンクを通報したい場合</strong> <a href=\":url\">通報フォーム</a>をご利用ください。",
     "<strong>Abuse protection</strong>: rate limits, a domain blacklist, proxy and VPN checks, an hourly scan for phishing and scams, and a <a href=\":url\">report form</a>.": "<strong>不正防止対策</strong>：レート制限、ドメインブラックリスト、プロキシ/VPN検知、定期フィッシングスキャン、<a href=\":url\">通報窓口</a>を備えています。",

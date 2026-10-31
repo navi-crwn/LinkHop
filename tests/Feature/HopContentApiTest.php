@@ -92,6 +92,22 @@ class HopContentApiTest extends TestCase
         $this->assertSame('7', HopAudit::first()->actor);
     }
 
+    public function test_moderation_classification_updates_public_gate_and_manifest(): void
+    {
+        $link = Link::create(['slug' => 'moderated', 'target_url' => 'https://example.com', 'user_id' => User::factory()->create()->id]);
+        $actions = $this->signed('GET', '/api/hop/manifest')->assertOk()->json('data.content_types.0.actions');
+        foreach (['mark_sensitive' => 'sensitive', 'mark_nsfw' => 'adult', 'unmark_nsfw' => 'none'] as $action => $warning) {
+            $this->assertContains($action, $actions);
+            $this->act('link', $link->id, $action)->assertOk()->assertJsonPath('data.content_warning', $warning);
+            $response = $this->get('/l/moderated');
+            if ($warning === 'none') {
+                $response->assertRedirect('https://example.com');
+            } else {
+                $response->assertOk()->assertSee($warning === 'adult' ? 'Age Verification Required' : 'Sensitive Content Warning');
+            }
+        }
+    }
+
     public function test_bio_actions(): void
     {
         $u = User::factory()->create();
