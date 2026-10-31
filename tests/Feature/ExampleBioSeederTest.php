@@ -53,15 +53,19 @@ test('every example short link opens its target instead of an app page', functio
     foreach (ExampleBioSeeder::SHORT_LINKS as $slug => $target) {
         expect(ReservedSlugs::isReserved($slug))->toBeFalse("/{$slug} is reserved");
         $this->get("/l/{$slug}")->assertRedirect($target);
-        $this->get("/{$slug}")->assertRedirect(public_url("l/{$slug}"))->assertStatus(301);
+        if ($slug === 'changelog') {
+            $this->get('/changelog')->assertOk()->assertSee('Commits, releases');
+        } else {
+            $this->get("/{$slug}")->assertRedirect(public_url("l/{$slug}"))->assertStatus(301);
+        }
     }
-    expect(ExampleBioSeeder::SHORT_LINKS['documentation'] ?? null)->toBe(ExampleBioSeeder::SITE.'#api');
+    expect(ExampleBioSeeder::SHORT_LINKS['documentation'] ?? null)->toBe('https://github.com/navi-crwn/LinkHop/blob/main/README.md#api');
 });
 
 test('example bio seeder removes its old api-docs link but not anyone else\'s', function () {
     Storage::fake('public');
     $owner = User::factory()->create(['email' => 'owner@example.com']);
-    Link::create(['user_id' => $owner->id, 'slug' => 'api-docs', 'target_url' => ExampleBioSeeder::SITE.'#api', 'status' => 'active']);
+    Link::create(['user_id' => $owner->id, 'slug' => 'api-docs', 'target_url' => ExampleBioSeeder::OLD_SHORT_LINKS['api-docs'], 'status' => 'active']);
     putenv('EXAMPLE_BIO_OWNER=owner@example.com');
     try {
         $this->seed(ExampleBioSeeder::class);
@@ -72,7 +76,7 @@ test('example bio seeder removes its old api-docs link but not anyone else\'s', 
 
     // Someone else's, or the owner's own link pointing elsewhere, stays.
     $other = User::factory()->create();
-    Link::create(['user_id' => $other->id, 'slug' => 'api-docs', 'target_url' => ExampleBioSeeder::SITE.'#api', 'status' => 'active']);
+    Link::create(['user_id' => $other->id, 'slug' => 'api-docs', 'target_url' => ExampleBioSeeder::OLD_SHORT_LINKS['api-docs'], 'status' => 'active']);
     $this->seed(ExampleBioSeeder::class);
     expect(Link::where('slug', 'api-docs')->value('user_id'))->toBe($other->id);
 });

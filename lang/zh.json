@@ -1,4 +1,6 @@
 {
+    "Advanced": "高级选项",
+    "Custom slug (optional)": "自定义短链接名称（可选）",
     "Content warning": "内容警告",
     "None": "无",
     "Sensitive content": "敏感内容",
@@ -135,5 +137,15 @@
     "I understand — Continue": "我了解 — 继续",
     "Go Back": "返回",
     "Remember for 24 hours on this device": "在此设备上记住24小时",
-    "By continuing, you confirm that you are of legal age to view adult content in your jurisdiction.": "继续操作即表示您确认符合您所在司法管辖区观看成人内容的法定年龄。"
+    "By continuing, you confirm that you are of legal age to view adult content in your jurisdiction.": "继续操作即表示您确认符合您所在司法管辖区观看成人内容的法定年龄。",
+    "Changelog": "更新日志",
+    "Commits, releases and merged pull requests, newest first.": "提交、版本发布和已合并的拉取请求，按时间从新到旧排列。",
+    "Newer": "较新",
+    "Older": "较早",
+    "Source revisions": "源代码版本",
+    "Commit": "提交",
+    "Merged pull request": "已合并的拉取请求",
+    "Release": "版本发布",
+    "All apps": "所有应用",
+    "Pagination": "分页"
 }
