@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://navi-crwn.github.io/LinkHop/sitemap.xml

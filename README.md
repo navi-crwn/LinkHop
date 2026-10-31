@@ -1,6 +1,6 @@
-<p align="center"><b>English</b> · <a href="README.id.md">Bahasa Indonesia</a></p>
+<p align="center">🌐 <b>English</b> · <a href="README.zh.md">简体中文</a> · <a href="README.es.md">Español</a> · <a href="README.ar.md">العربية</a> · <a href="README.pt.md">Português</a> · <a href="README.fr.md">Français</a> · <a href="README.ja.md">日本語</a> · <a href="README.id.md">Bahasa Indonesia</a></p>
 
-<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/hero-en-light.webp"><img src="docs/readme/hero-en-dark.webp" alt="LinkHop: short links, QR codes and click analytics" width="100%"></picture></p>
+<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/hero-en-dark.webp"><img src="docs/readme/hero-en-light.webp" alt="LinkHop: short links, QR codes and click analytics" width="100%"></picture></p>
 
 <p align="center">
   <b>Shorten links, count every click, and analyze your audience.<br>Free, open source, and yours to host.</b>
@@ -9,7 +9,7 @@
 <p align="center">
   <a href="https://hel.ink"><b>🔗 Try hel.ink</b></a> ·
   <a href="https://navi-crwn.github.io/hel.ink/">Website</a> ·
-  <a href="https://hel.ink/b/hel">Bio example</a> ·
+  <a href="https://bio.hel.ink">BioHop</a> ·
   <a href="#install">Install</a> ·
   <a href="#api">API</a> ·
   <a href="#faq">FAQ</a> ·
