@@ -14,7 +14,7 @@
         </a>
         <div class="hidden items-center gap-1 text-sm text-slate-600 md:flex dark:text-white/70">
             @foreach ($marketingLinks as $item)
-                <a href="{{ $item['href'] }}" class="rounded-lg px-3 py-1.5 transition hover:bg-slate-900/5 hover:text-slate-900 dark:hover:bg-white/10 dark:hover:text-white">{{ $item['label'] }}</a>
+                <a href="{{ $item['href'] }}" class="rounded-lg px-3 py-1.5 transition hover:bg-slate-900/5 hover:text-slate-900 dark:hover:bg-white/10 dark:hover:text-white">{{ __($item['label']) }}</a>
             @endforeach
         </div>
         <div class="flex items-center gap-2 text-sm">
@@ -26,10 +26,10 @@
                 </button>
             @endif
             @auth
-                <a href="{{ route('dashboard') }}" class="rounded-xl bg-slate-900 px-3.5 py-1.5 font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-white/90">Dashboard</a>
+                <a href="{{ route('dashboard') }}" class="rounded-xl bg-slate-900 px-3.5 py-1.5 font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-white/90">{{ __('Dashboard') }}</a>
             @else
-                <a href="{{ route('login') }}" class="hidden rounded-xl px-3 py-1.5 text-slate-600 transition hover:text-slate-900 sm:inline-block dark:text-white/80 dark:hover:text-white">Log in</a>
-                <a href="{{ route('register') }}" class="rounded-xl bg-slate-900 px-3.5 py-1.5 font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-white/90">Sign up</a>
+                <a href="{{ route('login') }}" class="hidden rounded-xl px-3 py-1.5 text-slate-600 transition hover:text-slate-900 sm:inline-block dark:text-white/80 dark:hover:text-white">{{ __('Log in') }}</a>
+                <a href="{{ route('register') }}" class="rounded-xl bg-slate-900 px-3.5 py-1.5 font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-white/90">{{ __('Sign up') }}</a>
             @endauth
             <button type="button" class="inline-flex h-9 w-9 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-900/5 md:hidden dark:text-white/80 dark:hover:bg-white/10" @click="open = !open" aria-label="Menu">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path x-show="!open" stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/><path x-show="open" x-cloak stroke-linecap="round" d="M6 6l12 12M18 6 6 18"/></svg>
@@ -38,10 +38,10 @@
     </nav>
     <div x-show="open" x-cloak x-transition.origin.top @click.outside="open = false" class="mx-auto mt-2 max-w-6xl rounded-2xl border border-slate-200/80 bg-white/90 p-2 dark:border-white/10 dark:bg-slate-900/80 backdrop-blur-xl md:hidden">
         @foreach ($marketingLinks as $item)
-            <a href="{{ $item['href'] }}" @click="open = false" class="block rounded-xl px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-900/5 hover:text-slate-900 dark:text-white/80 dark:hover:bg-white/10 dark:hover:text-white">{{ $item['label'] }}</a>
+            <a href="{{ $item['href'] }}" @click="open = false" class="block rounded-xl px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-900/5 hover:text-slate-900 dark:text-white/80 dark:hover:bg-white/10 dark:hover:text-white">{{ __($item['label']) }}</a>
         @endforeach
         @guest
-            <a href="{{ route('login') }}" class="block rounded-xl px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-900/5 hover:text-slate-900 dark:text-white/80 dark:hover:bg-white/10 dark:hover:text-white">Log in</a>
+            <a href="{{ route('login') }}" class="block rounded-xl px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-900/5 hover:text-slate-900 dark:text-white/80 dark:hover:bg-white/10 dark:hover:text-white">{{ __('Log in') }}</a>
         @endguest
     </div>
 </header>
