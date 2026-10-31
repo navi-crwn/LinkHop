@@ -8,6 +8,7 @@ use App\Http\Middleware\CheckSuspended;
 use App\Http\Middleware\ContentSecurityPolicyMiddleware;
 use App\Http\Middleware\RemoveWwwPrefix;
 use App\Http\Middleware\RequireHopAdminClient;
+use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\VerifyHopSignature;
 use App\Http\Middleware\VerifyHubRequest;
 use Illuminate\Foundation\Application;
@@ -29,10 +30,12 @@ return Application::configure(basePath: dirname(__DIR__))
         // Global middleware to remove www prefix
         $middleware->prepend(RemoveWwwPrefix::class);
         $middleware->appendToGroup('web', [
+            SetLocale::class,
             AutoLogout::class,
             CheckSuspended::class,
             ContentSecurityPolicyMiddleware::class,
         ]);
+        $middleware->encryptCookies(except: [SetLocale::COOKIE]);
         // Browsers POST CSP reports without a CSRF token; hub server-to-server calls are HMAC-signed.
         $middleware->validateCsrfTokens(except: ['csp-report', 'internal/*', 'hop/events']);
         $middleware->alias([
