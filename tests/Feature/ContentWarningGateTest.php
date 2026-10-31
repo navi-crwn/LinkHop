@@ -2,7 +2,25 @@
 
 use App\Models\Link;
 use App\Models\User;
+use App\Services\TurnstileService;
 use Hop\Auth\Models\ApiToken;
+
+test('guest shortener preserves content classification', function () {
+    $this->mock(TurnstileService::class, function ($mock) {
+        $mock->shouldReceive('verify')->once()->andReturn(true);
+    });
+    $this->post(route('shorten.store'), [
+        'target_url' => 'https://example.com/story',
+        'slug' => 'guest-warning',
+        'content_warning' => 'sensitive',
+        'warning_reason' => 'Story spoilers',
+    ])->assertSessionHasNoErrors()->assertRedirect();
+    $this->assertDatabaseHas('links', [
+        'slug' => 'guest-warning',
+        'content_warning' => 'sensitive',
+        'warning_reason' => 'Story spoilers',
+    ]);
+});
 
 test('standard link redirects immediately without gate', function () {
     $user = User::factory()->create();
@@ -166,4 +184,10 @@ test('dashboard create and edit forms expose content classification', function (
     $link = Link::create(['user_id' => $user->id, 'slug' => 'editable-warning', 'target_url' => 'https://example.com', 'status' => Link::STATUS_ACTIVE]);
     $this->actingAs($user)->get(route('links.create'))->assertOk()->assertSee('name="content_warning"', false);
     $this->get(route('links.edit', $link))->assertOk()->assertSee('name="content_warning"', false)->assertSee('name="warning_reason"', false);
+    $this->put(route('links.update', $link), [
+        'target_url' => $link->target_url, 'status' => 'active', 'slug' => $link->slug,
+        'content_warning' => 'sensitive', 'warning_reason' => 'Demo spoilers',
+    ])->assertSessionHasNoErrors()->assertRedirect();
+    expect($link->fresh()->content_warning)->toBe('sensitive');
+    expect($link->fresh()->warning_reason)->toBe('Demo spoilers');
 });
