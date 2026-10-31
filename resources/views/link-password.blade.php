@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Protected Link - {{ config('app.name') }}</title>
     <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png">
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600" rel="stylesheet" />
+    <x-hop::fonts />
     @if($link->custom_title)
         <meta property="og:title" content="{{ $link->custom_title }}" />
     @endif
@@ -17,7 +16,7 @@
         <meta property="og:image" content="{{ $link->custom_image_url }}" />
     @endif
     <style>
-        body {font-family: 'Inter', sans-serif; background:#020617; color:#f8fafc; display:flex;align-items:center;justify-content:center;min-height:100vh;}
+        body {font-family: var(--hop-font-body, system-ui, sans-serif); background:#020617; color:#f8fafc; display:flex;align-items:center;justify-content:center;min-height:100vh;}
         .card {background:rgba(15,23,42,0.85); padding:2rem; border-radius:1.5rem; width:100%; max-width:420px; box-shadow:0 25px 50px -12px rgba(15,23,42,0.6);}
         input[type="password"] {width:100%; padding:0.9rem 1rem; border-radius:0.75rem; border:1px solid rgba(148,163,184,0.4); background:rgba(15,23,42,0.6); color:#f8fafc;}
         button {margin-top:1rem; width:100%; padding:0.9rem; border-radius:0.75rem; background:#2563eb; color:#fff; font-weight:600; border:none;}
