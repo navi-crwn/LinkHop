@@ -2,6 +2,7 @@
 
 use App\Models\Link;
 use App\Models\User;
+use Hop\Auth\Models\ApiToken;
 
 test('standard link redirects immediately without gate', function () {
     $user = User::factory()->create();
@@ -113,7 +114,7 @@ test('check page displays warning badge and creator note', function () {
 
 test('api shorten accepts and returns content warning', function () {
     $user = User::factory()->create(['email_verified_at' => now()]);
-    $token = \Hop\Auth\Models\ApiToken::generate($user->id, 'cli', 100, null, ['link:create'])['plain_token'];
+    $token = ApiToken::generate($user->id, 'cli', 100, null, ['link:create'])['plain_token'];
 
     $response = $this->withHeader('Authorization', 'Bearer '.$token)->postJson('/api/shorten', [
         'url' => 'https://example.com/api-target',
