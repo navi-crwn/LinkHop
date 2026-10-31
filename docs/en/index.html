@@ -8,8 +8,8 @@
   <link rel="canonical" href="https://navi-crwn.github.io/LinkHop/en/">
   <link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/styles.css">
-  <link rel="stylesheet" href="https://hel.ink/hop-assets/v1/fonts.css" integrity="sha384-T1Y2aaMQ8CSfi7J2t9d1ZAbVcQ1FcO27Jwn3WtNWB+UVK137YCl3hIPvz0G4K22L" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://hel.ink/hop-assets/v1/hop-float.css" integrity="sha384-sl7D409xEmIT5gkArlQLoQQ4rOkqF7tOGf1VhI/iMb7c2/s9w9NtDEjLbJMU/MQ/" crossorigin="anonymous">
+  <link rel="stylesheet" href="../assets/product.css">
+  <link rel="stylesheet" href="https://hel.ink/hop-assets/v1/fonts-amnesia.css" integrity="sha384-750KEkFNx2ykcIsUyi1pZ0JC/Z6jfrK7OJtntqOzB8HKfEpjeostGTWJGAxh/5Zi" crossorigin="anonymous">
   <link rel="alternate" hreflang="x-default" href="https://navi-crwn.github.io/LinkHop/">
   <link rel="alternate" hreflang="en" href="https://navi-crwn.github.io/LinkHop/en/">
   <link rel="alternate" hreflang="id" href="https://navi-crwn.github.io/LinkHop/id/">
@@ -30,7 +30,7 @@
   <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
-  <div data-hop-float></div>
+
   <a class="skip" href="#main">Skip to main content</a>
 
   <header class="site-header">
@@ -60,25 +60,30 @@
   </header>
 
   <main id="main">
-    <div class="hero">
+    <div class="hero product-hero">
       <div>
         <p class="kicker">HOP &middot; The HOP Shortener</p>
         <h1>Short links, QR codes, and click analytics.</h1>
         <p class="lede">Shorten links, count every click, analyze your visitors by country and device, and protect them with automated threat detection.</p>
         <div class="cta-row">
           <a class="btn primary" href="https://link.hel.ink">Open Dashboard</a>
-          <a class="btn" href="https://hel.ink/l/demo">Try a short link</a>
+          <a class="btn" href="#features">Features</a>
           <a class="btn" href="https://github.com/navi-crwn/LinkHop">View on GitHub</a>
         </div>
         <p class="note">Free and open source under the MIT license. Looking for bio pages? Check out BioHop.</p>
       </div>
-      <div class="tile-wrap" aria-hidden="true">
-        <img class="tile" src="../assets/tile.svg" alt="" width="220" height="260">
+      <div class="link-art" aria-hidden="true">
+        <div class="link-art-grid"></div>
+        <span class="link-ring"></span>
+        <span class="link-ring link-ring-back"></span>
+        <div class="link-address"><img src="../assets/mark.svg" alt="" width="24" height="24"><span>hel.ink/l/…</span><span class="link-arrow">↗</span></div>
+        <div class="link-spark link-spark-one"></div>
+        <div class="link-spark link-spark-two"></div>
       </div>
     </div>
 
     <section id="features" aria-labelledby="features-h">
-      <h2 id="features-h">Features</h2>
+      <span class="section-number" aria-hidden="true">01</span><h2 id="features-h">Features</h2>
       <ul class="features">
         <li><strong>Lightning-Fast Shortening</strong><p>Custom memorable slugs or random IDs served instantly at hel.ink/l/{slug} with low-latency redirects.</p></li>
         <li><strong>Dynamic QR Codes</strong><p>Generate high-resolution SVG/PNG QR codes for print, packaging, and digital sharing.</p></li>
@@ -91,25 +96,14 @@
       </ul>
     </section>
 
-    <section id="run" aria-labelledby="run-h">
-      <h2 id="run-h">Run your own LinkHop</h2>
-      <div class="panel">
-        <p>LinkHop runs on standard modern PHP and Laravel infrastructure.</p>
-        <pre><code>git clone https://github.com/navi-crwn/LinkHop.git
-cd LinkHop
-composer install
-cp .env.example .env && php artisan key:generate
-php artisan migrate
-npm install && npm run build
-php artisan serve</code></pre>
-        <h3>Prerequisites</h3>
-        <p>PHP 8.3+, Composer, Node.js 22+, and SQLite or MySQL/MariaDB.</p>
-        <h3>Single Sign-On Setup</h3>
-        <p>Configure HOP_HUB_URL, HOP_APP=linkhop, and HOP_SSO_SECRET to authenticate users against your HOP ID hub.</p>
-        <h3>Shared Database Support</h3>
-        <p>LinkHop can share a database with the hub and BioHop; its migrations are tracked in migrations_linkhop.</p>
-        <p class="note">See .env.example for comprehensive configuration keys and comments.</p>
-      </div>
+    <section id="run" class="source-card" aria-labelledby="run-h">
+      <div><span class="section-number" aria-hidden="true">02 / OPEN SOURCE</span><h2 id="run-h">Run your own LinkHop</h2><p>Free and open source under the MIT license. Looking for bio pages? Check out BioHop.</p></div>
+      <div class="cta-row"><a class="btn" href="https://github.com/navi-crwn/LinkHop/blob/main/README.md">Run your own ↗</a><a class="btn" href="https://github.com/navi-crwn/LinkHop">View on GitHub ↗</a></div>
+    </section>
+
+    <section class="product-preview" aria-labelledby="preview-h">
+      <div class="preview-caption"><div><span class="section-number" aria-hidden="true">03</span><h2 id="preview-h">LinkHop</h2></div><a class="btn primary" href="https://link.hel.ink">Open Dashboard ↗</a></div>
+      <a class="preview-screen" href="https://link.hel.ink" aria-label="Open Dashboard"><img class="preview-light" src="../assets/product-light.webp" alt="LinkHop" width="1280" height="900" loading="lazy"><img class="preview-dark" src="../assets/product-dark.webp" alt="LinkHop" width="1280" height="900" loading="lazy"></a>
     </section>
 
     <section id="faq" aria-labelledby="faq-h">
@@ -153,18 +147,17 @@ php artisan serve</code></pre>
 
     <section id="help" aria-labelledby="help-h">
       <h2 id="help-h">Help & Support</h2>
-      <p>Found a bug or need assistance? Open an issue on <a href="https://github.com/navi-crwn/LinkHop/issues">GitHub Issues</a>or submit a pull request.</p>
+      <p>Found a bug or need assistance? Open an issue on <a href="https://github.com/navi-crwn/LinkHop/issues">GitHub Issues</a> or submit a pull request.</p>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="inner">
       <p><strong>LinkHop</strong> &middot; part of the HOP family</p>
-      <p>Released under <a href="https://github.com/navi-crwn/LinkHop/blob/main/LICENSE">MIT</a>· Source code on<a href="https://github.com/navi-crwn/LinkHop">GitHub</a>· Live at<a href="https://link.hel.ink">link.hel.ink</a></p>
+      <p>Released under <a href="https://github.com/navi-crwn/LinkHop/blob/main/LICENSE">MIT</a> · Source code on <a href="https://github.com/navi-crwn/LinkHop">GitHub</a> · Live at <a href="https://link.hel.ink">link.hel.ink</a></p>
     </div>
   </footer>
 
-  <script src="https://hel.ink/hop-assets/v1/hop-float.js" integrity="sha384-kNviPsMEO9lt9+b4n2S5lX6zHRVnePzGuj9VdgCETTsQwzt/5YJRnv842Xg0gRC+" crossorigin="anonymous" defer></script>
   <script src="../assets/theme.js"></script>
 </body>
 </html>

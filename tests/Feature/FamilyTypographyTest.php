@@ -4,7 +4,7 @@ test('public pages load the HOP family fonts from hel.ink, not a font CDN', func
     foreach (['/', '/check', '/report-abuse'] as $path) {
         $html = $this->get($path)->assertOk()->getContent();
 
-        expect($html)->toContain('https://hel.ink/hop-assets/v1/fonts.css')
+        expect($html)->toContain('https://hel.ink/hop-assets/v1/fonts-amnesia.css')
             ->toContain('integrity="sha384-')
             ->not->toContain('fonts.bunny.net');
     }
@@ -15,7 +15,7 @@ test('the footer lists the HOP family from the shared manifest', function () {
 
     expect($html)->toContain('HOP family')
         ->toContain('href="https://bio.hel.ink"')
-        ->toContain('href="https://p.hel.ink"')
+        ->toContain('href="https://pixel.hel.ink"')
         ->toContain('href="https://note.hel.ink"')
         ->not->toContain('features.php');
 });

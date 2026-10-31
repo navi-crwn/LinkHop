@@ -1,7 +1,7 @@
 # Brief: Satu Halaman Login untuk Semua Aplikasi HEL.ink
 
-Untuk: sesi Claude di VPS yang merapikan semua halaman login (HEL.ink, PixelHop, NoteHop, dan aplikasi berikutnya).
-Disusun: 2026-10-27 oleh sesi cloud. Keputusan desain di bawah sudah disetujui pemilik.
+Tujuan: menyeragamkan halaman login HEL.ink, PixelHop, NoteHop, dan aplikasi berikutnya.
+Disusun: 2026-10-27. Keputusan desain di bawah sudah disetujui pemilik.
 
 Aturan kerja yang berlaku:
 - Production read-only kecuali pemilik mengizinkan.
