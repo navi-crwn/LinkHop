@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Link Preview - {{ config('app.name') }}</title>
     <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png">
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <x-hop::fonts />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <meta http-equiv="refresh" content="5;url={{ $targetUrl }}">
 </head>

@@ -5,11 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Page not found - LinkHop</title>
         <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png">
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=inter:400,500,600&display=swap" rel="stylesheet" />
+        <x-hop::fonts />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <style>
-            body {font-family: 'Inter', sans-serif;}
+            body {font-family: var(--hop-font-body, system-ui, sans-serif);}
         </style>
     </head>
     <body class="min-h-full bg-linear-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
