@@ -1,4 +1,9 @@
 {
+    "Content warning": "تحذير بشأن المحتوى",
+    "None": "لا يوجد",
+    "Sensitive content": "محتوى حساس",
+    "Adult 18+": "للبالغين 18+",
+    "Reason (optional)": "السبب (اختياري)",
     "<code>GET /api/links/{slug}</code> returns the link with its clicks (<code>link:read</code>). <code>DELETE /api/links/{slug}</code> removes it (<code>link:delete</code>).": "<code>GET /api/links/{slug}</code> يرجع الرابط مع نقراته (<code>link:read</code>). <code>DELETE /api/links/{slug}</code> يقوم بحذفه (<code>link:delete</code>).",
     "<strong>A harmful short link?</strong> Use the <a href=\":url\">report form</a>.": "<strong>رابط قصير ضار؟</strong> استخدم <a href=\":url\">نموذج الإبلاغ</a>.",
     "<strong>Abuse protection</strong>: rate limits, a domain blacklist, proxy and VPN checks, an hourly scan for phishing and scams, and a <a href=\":url\">report form</a>.": "<strong>الحماية من الإساءة</strong>: حدود للطلبات، قائمة سوداء للنطاقات، فحص البروكسي وVPN، فحص دوري للاحتيال و<a href=\":url\">نموذج إبلاغ</a>.",

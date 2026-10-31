@@ -1,4 +1,9 @@
 {
+    "Content warning": "Peringatan konten",
+    "None": "Tidak ada",
+    "Sensitive content": "Konten sensitif",
+    "Adult 18+": "Dewasa 18+",
+    "Reason (optional)": "Alasan (opsional)",
     "<code>GET /api/links/{slug}</code> returns the link with its clicks (<code>link:read</code>). <code>DELETE /api/links/{slug}</code> removes it (<code>link:delete</code>).": "<code>GET /api/links/{slug}</code> mengembalikan data link beserta statistiknya (<code>link:read</code>). <code>DELETE /api/links/{slug}</code> menghapus link (<code>link:delete</code>).",
     "<strong>A harmful short link?</strong> Use the <a href=\":url\">report form</a>.": "<strong>Link pendek berbahaya?</strong> Gunakan <a href=\":url\">formulir laporan</a>.",
     "<strong>Abuse protection</strong>: rate limits, a domain blacklist, proxy and VPN checks, an hourly scan for phishing and scams, and a <a href=\":url\">report form</a>.": "<strong>Perlindungan penyalahgunaan</strong>: pembatasan frekuensi, daftar hitam domain, pemeriksaan proksi dan VPN, pemindaian phishing berkala, dan <a href=\":url\">formulir laporan</a>.",
