@@ -53,7 +53,7 @@ test('every example short link opens its target instead of an app page', functio
     foreach (ExampleBioSeeder::SHORT_LINKS as $slug => $target) {
         expect(ReservedSlugs::isReserved($slug))->toBeFalse("/{$slug} is reserved");
         $this->get("/l/{$slug}")->assertRedirect($target);
-        $this->get("/{$slug}")->assertRedirect(public_url("l/{$slug}"))->assertStatus(301);
+        $this->get("/{$slug}")->assertNotFound();
     }
     expect(ExampleBioSeeder::SHORT_LINKS['documentation'] ?? null)->toBe(ExampleBioSeeder::SITE.'#api');
 });
