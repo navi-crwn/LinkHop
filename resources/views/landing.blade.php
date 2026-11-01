@@ -94,6 +94,7 @@
         <h1 id="link-title">{{ __('Small URL.') }} <em>{{ __('Serious possibilities.') }}</em></h1>
         <p class="h-lead">{{ __('Turn a long link into one that is short, trackable and safe to share.') }}</p>
         <div class="h-cta"><a class="h-pill" href="#link-tour">{{ __('Take the interactive tour') }} ↓</a><a class="h-pill" href="{{ route('link.check') }}">{{ __('Check a link') }}</a></div>
+        <ul class="lx-hero-facts" aria-label="{{ __('What you get') }}"><li><b>{{ __('Free forever') }}</b><span>{{ __('No paid plan, no locked feature.') }}</span></li><li><b>{{ __('No tracking') }}</b><span>{{ __('Clicks are counted, people are not followed.') }}</span></li><li><b>QR</b><span>{{ __('A print-ready code for every link.') }}</span></li></ul>
         </div>
         <div class="link-world" data-hop-scene data-mini data-copy="{{ json_encode($sceneCopy) }}" data-rotate-label="{{ __('Rotate scene') }}">
             <p class="showcase-kicker">{{ __('A small link. A whole world.') }}</p>
