@@ -71,6 +71,7 @@
                     @else
                         <p class="mt-0.5 text-xs text-muted">{{ __('No clicks last week to compare with') }}</p>
                     @endif
+                    <p class="mt-0.5 text-xs text-muted">{{ __(':count unique visitors', ['count' => number_format($week['unique'])]) }}</p>
                 </div>
                 <div class="flex min-h-24 min-w-0 flex-1 items-stretch gap-1.5 sm:max-w-md" role="img" aria-label="{{ __('Clicks per day, last seven days') }}">
                     @foreach ($week['week'] as $i => $n)
@@ -144,6 +145,9 @@
                                 @elseif ($link->max_clicks)
                                     <span class="chip-gray whitespace-nowrap">{{ number_format($link->clicks) }}/{{ number_format($link->max_clicks) }}</span>
                                 @endif
+                                @if ($link->isBroken())
+                                    <span class="chip-amber whitespace-nowrap" title="{{ __('Since :date', ['date' => $link->broken_since->toDateString()]) }}{{ $link->last_status ? ' · HTTP '.$link->last_status : '' }}">{{ __('Destination not responding') }}</span>
+                                @endif
                                 @if ($link->password_hash)<span class="chip-gray" title="{{ __('Password') }}">{{ __('Password') }}</span>@endif
                             </div>
                             <p class="truncate text-xs text-muted">{{ $link->target_url }}</p>
@@ -154,7 +158,7 @@
                             <p class="text-[11px] text-muted">{{ __('clicks') }}</p>
                         </div>
                         <div class="flex items-center">
-                            <button type="button" class="icon-btn" title="{{ __('Copy link') }}" x-data @click="navigator.clipboard.writeText(@js($link->short_url)); $el.classList.add('text-emerald-500!'); setTimeout(() => $el.classList.remove('text-emerald-500!'), 1200)">
+                            <button type="button" class="icon-btn" title="{{ __('Copy link') }}" aria-label="{{ __('Copy link') }}" data-copied="{{ __('Copied') }}" data-failed="{{ __('Copy failed') }}" x-data @click="hopCopy(@js($link->short_url), $el)">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
                             </button>
                             <a href="{{ route('links.edit', $link) }}" class="icon-btn" title="{{ __('Edit') }}">

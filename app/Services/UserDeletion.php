@@ -24,6 +24,8 @@ class UserDeletion
      */
     public function purge(User $user): array
     {
+        // first, so deleting the links below sends no "deleted" events to an account that is going away
+        $user->webhookEndpoints()->delete();
         $bioFiles = bio_enabled() ? BioUploads::ofUser($user) : [];
         $stats = ['links' => 0, 'folders' => 0, 'tags' => 0, 'bio_pages' => 0];
         $user->links()->each(function ($link) use (&$stats) {

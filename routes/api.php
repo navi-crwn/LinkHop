@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\HopContentController;
 use App\Http\Controllers\Api\LinkController;
 use App\Http\Controllers\Api\ShortenController;
+use App\Http\Middleware\IdempotentRequest;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,7 +15,8 @@ use Illuminate\Support\Facades\Route;
 | A token without scopes (made before scopes existed) may do everything.
 | Scopes used here: link:create, link:read, link:delete. Documented in README, "API".
 */
-Route::post('/shorten', [ShortenController::class, 'store'])->middleware('hop.token:link:create');
+// `Idempotency-Key` (IdempotentRequest) makes a retried create safe; it has to run after the token middleware.
+Route::post('/shorten', [ShortenController::class, 'store'])->middleware(['hop.token:link:create', IdempotentRequest::class]);
 Route::get('/links/{slug}', [ShortenController::class, 'show'])->where('slug', '[A-Za-z0-9-]+')->middleware('hop.token:link:read');
 Route::delete('/links/{slug}', [ShortenController::class, 'destroy'])->where('slug', '[A-Za-z0-9-]+')->middleware('hop.token:link:delete');
 // The dashboard's own JavaScript (web session, not an API token).

@@ -37,6 +37,7 @@ class User extends Authenticatable
         'locale',
         'timezone',
         'show_owner',
+        'monitor_destinations',
         'role',
         'status',
         'last_login_ip',
@@ -68,6 +69,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'role' => 'string',
             'status' => 'string',
+            'monitor_destinations' => 'boolean',
             'last_login_at' => 'datetime',
             'two_factor_confirmed_at' => 'datetime',
             'show_owner' => 'boolean',
@@ -93,6 +95,11 @@ class User extends Authenticatable
     public function tags(): HasMany
     {
         return $this->hasMany(Tag::class);
+    }
+
+    public function webhookEndpoints(): HasMany
+    {
+        return $this->hasMany(WebhookEndpoint::class);
     }
 
     public function apiTokens(): HasMany

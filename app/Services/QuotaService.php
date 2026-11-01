@@ -51,4 +51,14 @@ class QuotaService
 
         return $dayCount < $limits['max_links_per_day'] && $activeCount < $limits['max_active_links'];
     }
+
+    /** How many more links the account may create right now (today's allowance and the active-link cap, whichever is smaller). */
+    public function remainingFor(int $userId): int
+    {
+        $limits = config('limits.user');
+        $dayCount = Link::where('user_id', $userId)->whereDate('created_at', today())->count();
+        $activeCount = Link::where('user_id', $userId)->where('status', Link::STATUS_ACTIVE)->count();
+
+        return max(0, min($limits['max_links_per_day'] - $dayCount, $limits['max_active_links'] - $activeCount));
+    }
 }
