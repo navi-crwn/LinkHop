@@ -133,7 +133,8 @@ class BioPage extends Model
 
     public function incrementViews(): void
     {
-        $this->increment('view_count');
+        // Traffic is not an editor change; preserve the optimistic-lock timestamp.
+        static::withoutTimestamps(fn () => $this->increment('view_count'));
     }
 
     public function getTotalClicks(): int
