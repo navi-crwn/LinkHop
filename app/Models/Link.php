@@ -29,6 +29,8 @@ class Link extends Model
         'max_clicks',
         'starts_at',
         'fallback_url',
+        'routing_rules',
+        'ab_variants',
         'redirect_type',
         'custom_title',
         'custom_description',
@@ -45,6 +47,8 @@ class Link extends Model
         'expires_at' => 'datetime',
         'starts_at' => 'datetime',
         'max_clicks' => 'integer',
+        'routing_rules' => 'array',
+        'ab_variants' => 'array',
     ];
 
     public const STATUS_ACTIVE = 'active';
