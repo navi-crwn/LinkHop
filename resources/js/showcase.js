@@ -9,7 +9,10 @@ document.querySelectorAll('[data-story]').forEach(root => {
     const pinned = () => desktop.matches && !reduced.matches;
     const select = index => {
         active = Math.max(0, Math.min(buttons.length - 1, index));
-        buttons.forEach((button, i) => button.setAttribute('aria-pressed', String(i === active)));
+        buttons.forEach((button, i) => {
+            button.setAttribute('aria-selected', String(i === active));
+            button.tabIndex = i === active ? 0 : -1;
+        });
         panels.forEach((panel, i) => { panel.hidden = i !== active; });
         root.querySelector('[data-story-progress]').style.width = `${(active + 1) / buttons.length * 100}%`;
         root.dataset.activeStep = String(active);
@@ -24,12 +27,32 @@ document.querySelectorAll('[data-story]').forEach(root => {
         }
         select(index);
     };
-    buttons.forEach((button, index) => button.addEventListener('click', () => move(index)));
+    root.querySelector('.showcase-story-nav').setAttribute('role', 'tablist');
+    buttons.forEach((button, index) => {
+        button.id = `link-feature-tab-${index}`;
+        button.setAttribute('role', 'tab');
+        button.removeAttribute('aria-pressed');
+        button.setAttribute('aria-controls', `link-feature-panel-${index}`);
+        panels[index].id = `link-feature-panel-${index}`;
+        panels[index].setAttribute('role', 'tabpanel');
+        panels[index].setAttribute('aria-labelledby', button.id);
+        button.addEventListener('click', () => move(index));
+        button.addEventListener('keydown', event => {
+            let next = index;
+            const rtl = document.documentElement.dir === 'rtl';
+            if (event.key === 'ArrowRight') next += rtl ? -1 : 1;
+            else if (event.key === 'ArrowLeft') next += rtl ? 1 : -1;
+            else if (event.key === 'Home') next = 0;
+            else if (event.key === 'End') next = buttons.length - 1;
+            else return;
+            event.preventDefault(); move(next); buttons[active].focus();
+        });
+    });
     root.querySelector('[data-story-prev]').addEventListener('click', () => move(active - 1));
     root.querySelector('[data-story-next]').addEventListener('click', () => move(active + 1));
     const update = () => {
         frame = 0;
-        if (!pinned() || panels.some(panel => panel.contains(document.activeElement))) return;
+        if (!pinned() || root.contains(document.activeElement)) return;
         const distance = root.offsetHeight - root.querySelector('.showcase-story-pin').offsetHeight;
         const progress = Math.max(0, Math.min(.999, (84 - root.getBoundingClientRect().top) / Math.max(1, distance)));
         select(Math.floor(progress * buttons.length));

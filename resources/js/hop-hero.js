@@ -6,8 +6,16 @@
 // prefers-reduced-motion. Loaded on the home page only.
 import './showcase';
 
+// Keep the original two island scenes, with only one animation running at a time.
+const scenes = [];
+function chooseScene() {
+    const active = scenes.filter(scene => scene.visible).sort((a, b) => b.ratio - a.ratio)[0];
+    scenes.forEach(scene => { scene.active = scene === active; scene.sync(); });
+}
+
 async function start(root) {
     if (!root.offsetParent) return;
+    const copy = JSON.parse(root.dataset.copy);
     const THREE = await import('three');
     const isDark = () => document.documentElement.classList.contains('dark');
 
@@ -18,7 +26,27 @@ async function start(root) {
     renderer.setPixelRatio(Math.min(devicePixelRatio, innerWidth < 640 ? 1.25 : 1.5)); renderer.setSize(el.clientWidth, el.clientHeight);
     renderer.shadowMap.enabled = true;
     el.appendChild(renderer.domElement);
-    renderer.domElement.setAttribute('aria-hidden', 'true');
+    renderer.domElement.tabIndex = 0;
+    renderer.domElement.setAttribute('aria-label', root.dataset.rotateLabel);
+    renderer.domElement.style.touchAction = 'pan-y';
+    let drag = null;
+    renderer.domElement.addEventListener('pointerdown', event => { drag = {x:event.clientX,y:event.clientY}; renderer.domElement.setPointerCapture(event.pointerId); });
+    renderer.domElement.addEventListener('pointermove', event => {
+        if (!drag) return;
+        scene.rotation.y += (event.clientX - drag.x) * .006;
+        scene.rotation.x = Math.max(-.35, Math.min(.35, scene.rotation.x + (event.clientY - drag.y) * .003));
+        drag = {x:event.clientX,y:event.clientY}; renderer.render(scene,cam);
+    });
+    ['pointerup','pointercancel','lostpointercapture'].forEach(type => renderer.domElement.addEventListener(type, () => { drag = null; }));
+    renderer.domElement.addEventListener('keydown', event => {
+        if (!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home'].includes(event.key)) return;
+        event.preventDefault();
+        if (event.key === 'Home') scene.rotation.set(0,0,0);
+        else if (event.key === 'ArrowLeft') scene.rotation.y -= .15;
+        else if (event.key === 'ArrowRight') scene.rotation.y += .15;
+        else scene.rotation.x = Math.max(-.35,Math.min(.35,scene.rotation.x + (event.key === 'ArrowUp' ? -.1 : .1)));
+        renderer.render(scene,cam);
+    });
     const scene = new THREE.Scene();
     const cam = new THREE.PerspectiveCamera(30, el.clientWidth / el.clientHeight, .1, 200);
     cam.position.set(0, 17, 15.5); cam.lookAt(0, 0, 1.2);
@@ -203,7 +231,6 @@ async function start(root) {
     }
 
     // ------------------------------------------------ the URL, floating in the sea in front of the islands
-    const PLACE = { school: 'school', mall: 'mall', government: 'city hall', stadium: 'stadium', tv: 'TV station', concert: 'concert', hospital: 'clinic' };
     const bc = document.createElement('canvas'); bc.width = 4096; bc.height = 160;
     const bctx = bc.getContext('2d'), btex = new THREE.CanvasTexture(bc); btex.colorSpace = THREE.SRGBColorSpace; btex.anisotropy = 4;
     const banner = new THREE.Sprite(new THREE.SpriteMaterial({ map: btex, depthTest: false, transparent: true }));
@@ -269,7 +296,7 @@ async function start(root) {
         if (t > 2 && t < 3.1) trail(A, H, 2.4, h1); else if (t > 4.4 && t < 5.5) trail(H, Dd, 2.2, h2);
         placeBuilding(run.building, run.D.clone().setY(gy(1.3 * .9)), clamp((t - 3.5) / 1.4) * (1 - sink));
         url = t < 3 ? long : t < 3.8 ? scramble(long, short, (t - 3) / .8, 1) : t < 4.4 ? short : t < 5.2 ? scramble(short, long, (t - 4.4) / .8, 2) : long;
-        caption = t < 2 ? 'A bunny has a long link to share' : t < 3 ? 'Hop to hel.ink…' : t < 4.4 ? 'hel.ink makes it short' : t < 5.4 ? 'then on to where the link goes' : `Arrived at the ${PLACE[run.link[1]]} ✓`;
+        caption = t < 2 ? copy['A bunny has a long link to share'] : t < 3 ? copy['Hop to hel.ink…'] : t < 4.4 ? copy['hel.ink makes it short'] : t < 5.4 ? copy['On to the destination'] : copy['Arrived ✓'];
       } else if (ty === 'share') {
         const B = run.B.clone().setY(gy(1.1 * .9));
         placeBunny(run.bunnyA, A, face(A, H), BS, show);
@@ -279,7 +306,7 @@ async function start(root) {
         if (t > 6.2 && t < 7.2) trail(B, Dd, 2.4, h3);
         placeBuilding(run.building, run.D.clone().setY(gy(1.3 * .9)), clamp((t - 5.3) / 1.4) * (1 - sink));
         url = t < 4 ? long : t < 4.8 ? scramble(long, short, (t - 4) / .8, 3) : t < 6.2 ? short : t < 7 ? scramble(short, long, (t - 6.2) / .8, 4) : long;
-        caption = t < 3 ? 'Two bunnies, far apart' : t < 5 ? 'One sends a long link; hel.ink makes it short on the way' : t < 6.2 ? `The other gets ${short}` : t < 7.2 ? 'and hops to where it goes' : `Arrived at the ${PLACE[run.link[1]]} ✓`;
+        caption = t < 3 ? copy['Two bunnies, far apart'] : t < 5 ? copy['One sends a link; hel.ink makes it short'] : t < 6.2 ? copy['The other gets :link'].replace(':link', short) : t < 7.2 ? copy['On to the destination'] : copy['Arrived ✓'];
       } else {
         // 2–3 hop to hel.ink · 3–3.8 the link gets short · 3.8 the lock appears · 4.2–5.2 password · 5.2 open (or not)
         // · 6.2–7.2 hop to the destination (or home, when it failed) · loop: 8.4–9.6 hop home, the rest sinks
@@ -299,11 +326,11 @@ async function start(root) {
         url = t < 3 ? long : t < 3.8 ? scramble(long, short, (t - 3) / .8, 5) : short;
         if (ok && t > 6.2) url = t < 7 ? scramble(short, long, (t - 6.2) / .8, 6) : long;
         if (loop && t > 8.4) url = long;
-        caption = t < 2 ? 'A bunny has a long link to share' : t < 3 ? 'Hop to hel.ink…' : t < 3.8 ? 'hel.ink makes it short' : t < 4.2 ? 'This link has a password' : t < 5.2 ? `Password ${dots}`
-          : ok ? (t < 6.2 ? 'Unlocked ✓' : t < 7.3 ? 'Off to where the link goes' : loop && t > 8.4 ? 'Back home for the next link' : `Arrived at the ${PLACE[run.link[1]]} ✓`)
-          : (t < 5.9 ? 'Wrong password ✕' : 'No hop this time');
+        caption = t < 2 ? copy['A bunny has a long link to share'] : t < 3 ? copy['Hop to hel.ink…'] : t < 3.8 ? copy['hel.ink makes it short'] : t < 4.2 ? copy['This link has a password'] : t < 5.2 ? copy['Password :dots'].replace(':dots', dots)
+          : ok ? (t < 6.2 ? copy['Unlocked ✓'] : t < 7.3 ? copy['On to the destination'] : loop && t > 8.4 ? copy['Back home for the next link'] : copy['Arrived ✓'])
+          : (t < 5.9 ? copy['Wrong password ✕'] : copy['No hop this time']);
       }
-      if (story) story.textContent = caption;
+      if (story && story.textContent !== caption) story.textContent = caption;
       drawBanner(url, url === short, dark);
       renderer.render(scene, cam);
     }
@@ -323,39 +350,46 @@ async function start(root) {
     }));
     mark();
     render(run, 6.2);
+    let lastFrame = 0;
     const loop = (now) => {
+      if (now - lastFrame < 1000 / 30) { raf = requestAnimationFrame(loop); return; }
+      lastFrame = now;
       let t = (now - t0) / 1000;
       if (t > run.dur) { if (run.type === 'loop') { t0 = now; t = 0; } else { disposeRun(run); run = makeRun(++n); t0 = now; t = 0; mark(); } }
       render(run, t);
-       raf = visible && !still && !userPaused && !document.hidden ? requestAnimationFrame(loop) : 0;
+       raf = visible && state.active && !still && !userPaused && !document.hidden ? requestAnimationFrame(loop) : 0;
     };
     const sync = () => {
-      const playing = visible && !still && !userPaused && !document.hidden;
+      const playing = visible && state.active && !still && !userPaused && !document.hidden;
+      renderer.domElement.dataset.animating = String(playing);
       if (playing && !raf) { if (paused) t0 += performance.now() - paused; paused = 0; raf = requestAnimationFrame(loop); }
       else if (!playing) { if (!paused) paused = performance.now(); cancelAnimationFrame(raf); raf = 0; }
       root.querySelector('[data-hop-pause]')?.setAttribute('aria-pressed', String(userPaused || still));
     };
+    const state = {visible:false,ratio:0,active:false,sync};
+    scenes.push(state);
     root.querySelector('[data-hop-pause]')?.addEventListener('click', () => { userPaused = !userPaused; sync(); });
     motion.addEventListener('change', () => { still = motion.matches; if (still) render(run, 6.2); sync(); });
     document.addEventListener('visibilitychange', sync);
     new MutationObserver(() => { if (still || userPaused) render(run, 6.2); }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync(); }).observe(root);
+    new IntersectionObserver(([e]) => { visible = state.visible = e.isIntersecting; state.ratio = e.intersectionRatio; chooseScene(); }, {threshold:[0,.25,.5,.75,1]}).observe(root);
 }
 
-// One live scene in the hero; the larger secondary scene loads only when opened.
+// Start after the initial content has painted and the latest LCP candidate is quiet.
+// Three.js is retained because the island/rabbit artwork is an owner requirement.
 const launch = root => start(root).catch(() => { root.dataset.webgl = 'unavailable'; });
-document.querySelectorAll('[data-hop-scene][data-mini]').forEach(root => {
+function observeScenes() { document.querySelectorAll('[data-hop-scene]').forEach(root => {
     const observer = new IntersectionObserver(([entry]) => {
         if (entry.isIntersecting) { observer.disconnect(); launch(root); }
     }, { rootMargin: '100px' });
     observer.observe(root);
-});
-document.querySelectorAll('[data-hop-demo]').forEach(details => {
-    let started = false;
-    details.addEventListener('toggle', () => {
-        if (details.open && !started) {
-            started = true;
-            details.querySelectorAll('[data-hop-scene]').forEach(launch);
-        }
-    });
-});
+}); }
+function afterPaint() {
+    let timer, observer;
+    const queue = () => { clearTimeout(timer); timer = setTimeout(() => { observer?.disconnect(); observeScenes(); }, 1500); };
+    if (PerformanceObserver.supportedEntryTypes?.includes('largest-contentful-paint')) {
+        observer = new PerformanceObserver(queue); observer.observe({type:'largest-contentful-paint',buffered:true});
+    }
+    requestAnimationFrame(() => requestAnimationFrame(queue));
+}
+if (document.readyState === 'complete') afterPaint(); else addEventListener('load', afterPaint, {once:true});

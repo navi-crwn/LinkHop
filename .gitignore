@@ -18,6 +18,7 @@
 /public/storage
 /storage/*.key
 /storage/pail
+/storage/framework/bio-upload.lock
 /vendor
 Homestead.json
 Homestead.yaml

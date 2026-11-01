@@ -35,6 +35,7 @@
         @endif
         <x-hop::fonts />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @stack('head')
     </head>
     @if ($themed)
     <body class="min-h-full bg-slate-50 font-sans text-slate-900 antialiased dark:bg-[#0e1322] dark:text-slate-100">

@@ -465,6 +465,7 @@ class BioPageController extends Controller
                 'success' => true,
                 'avatar_url' => $path, // Return just the path
                 'full_url' => '/storage/'.$path,
+                'page_updated_at' => $bioPage->updated_at->toJSON(),
             ]);
         } catch (\Exception $e) {
             return response()->json([
