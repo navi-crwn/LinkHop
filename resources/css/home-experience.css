@@ -128,3 +128,11 @@
 .link-product-previews h3 { font-size: 24px; }
 .link-feature-card h3 { font-size: 19px; }
 @media (max-width: 800px) { .link-use-grid { grid-template-columns: minmax(0, 1fr); }.link-product-previews article:nth-child(2) { margin-top: 0; }.link-world-canvas { height: 300px; }.link-showcase > section:first-child { padding-top: 40px; } }
+/* P7: the long page */
+.link-showcase .h-rail a { color: var(--showcase-ink); }
+.link-showcase .h-story-panel .link-demo-window { min-width: 0; }
+.link-showcase .link-qr-demo img { display: block; width: 180px; height: 180px; margin: 0 auto 8px; border-radius: 14px; background: #fff; padding: 8px; border: 1px solid var(--showcase-line); }
+.link-showcase .h-final :is(.h-sub, .h-cta) { margin-inline: auto; justify-content: center; }
+.link-showcase .h-hero.h-tool .h-tool-box { margin-bottom: 18px; }
+.link-showcase .link-world { padding-top: 0; }
+.link-showcase .link-world-canvas { height: 300px; }
