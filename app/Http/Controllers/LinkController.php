@@ -13,6 +13,7 @@ use App\Services\UserAgentService;
 use App\Support\ClickInsights;
 use App\Support\DashboardStats;
 use App\Support\LinkRouting;
+use App\Support\RemoteUrl;
 use GuzzleHttp\Client;
 use Hop\Safety\UrlGuard;
 use Illuminate\Http\Request;
@@ -612,16 +613,16 @@ class LinkController extends Controller
                 $ogData['description'] = html_entity_decode($matches[1], ENT_QUOTES);
             }
             if (preg_match('/<meta[^>]+property=[\"\\\']og:image[\"\\\'][^>]+content=[\"\\\'](.*?)[\"\\\']/i', $html, $matches)) {
-                $ogData['image'] = $matches[1];
+                $ogData['image'] = RemoteUrl::resolve($request->url, $matches[1]);
             }
             if (preg_match('/<meta[^>]+property=[\"\\\']og:url[\"\\\'][^>]+content=[\"\\\'](.*?)[\"\\\']/i', $html, $matches)) {
-                $ogData['url'] = $matches[1];
+                $ogData['url'] = RemoteUrl::resolve($request->url, $matches[1]);
             }
             if (preg_match('/<meta[^>]+property=[\"\\\']og:site_name[\"\\\'][^>]+content=[\"\\\'](.*?)[\"\\\']/i', $html, $matches)) {
                 $ogData['site_name'] = html_entity_decode($matches[1], ENT_QUOTES);
             }
             if (preg_match('/<link[^>]+rel=[\"\\\'](?:shortcut icon|icon)[\"\\\'][^>]+href=[\"\\\'](.*?)[\"\\\']/i', $html, $matches)) {
-                $ogData['favicon'] = $matches[1];
+                $ogData['favicon'] = RemoteUrl::resolve($request->url, $matches[1]);
             }
 
             return response()->json(['success' => true, 'data' => $ogData]);

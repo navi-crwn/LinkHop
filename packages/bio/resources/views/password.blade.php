@@ -245,7 +245,7 @@
                     <span class="page-title">{{ $bioPage->title }}</span>
                 @endif
             </div>
-            <form method="POST" action="{{ url()->current() }}">
+            <form method="POST" action="{{ request()->url() }}">
                 @csrf
                 <div class="form-group">
                     <div class="input-wrapper">
