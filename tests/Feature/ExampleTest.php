@@ -31,4 +31,6 @@ it('lets the logout chain leave for every HOP host (form-action covers the redir
     foreach (['https://hub.hel.ink', 'https://hel.ink', 'https://link.hel.ink', 'https://bio.hel.ink', 'https://p.hel.ink'] as $origin) {
         expect($m[1])->toContain($origin);
     }
+    // NoteHop is a step of the chain too but is not in hop.apps: the family's subdomains cover it.
+    expect($m[1])->toContain('https://*.hel.ink');
 });
