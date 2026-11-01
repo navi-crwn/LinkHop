@@ -15,9 +15,9 @@ Source: the owner's blueprint built from the `awesome-url-shortener` directory (
 | 8 | Fallback URL when expired | **Done now** (Batch A: also when the clicks run out; loops refused) |
 | 9 | Scheduled start | **Done now** (Batch A: "Not live yet" page before the start) |
 | 10 | Password | Have |
-| 11-13 | Redirect by country, device, OS, browser, language | **Next 4** (BioHop's routing rules are the model) |
-| 15 | A/B split by weight | **Next 5** (consistent hash of the visitor) |
-| 16 | UTM builder with presets | **Next 6** (form helper, no storage) |
+| 11-13 | Redirect by country, device, OS, browser, language | **Done now** (Batch B: up to 20 rules per link, first match wins, conditions combine, crawlers get the default) |
+| 15 | A/B split by weight | **Done now** (Batch B: 2 to 5 variants, keyed visitor hash, clicks per variant) |
+| 16 | UTM builder with presets | **Done now** (Batch B: `x-utm-builder`, presets in code, nothing stored) |
 | 17 | Forward query parameters | Later |
 | 18 | Custom social card (title, description, picture) | Have (served to chat bots) |
 | 19 | Link cloaking in an iframe | No (hides the destination, bad for abuse handling) |

@@ -41,6 +41,8 @@
         </div>
     </div>
 
+    <x-ab-results :link="$link" :card="true" />
+
     <div class="grid gap-3 lg:grid-cols-3">
         <section class="glass-card lg:col-span-2">
             <h2 class="section-title">Daily clicks</h2>

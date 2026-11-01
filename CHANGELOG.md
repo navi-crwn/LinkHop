@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Routing, A/B split and campaign tags
+- A link can have up to **20 routing rules**: send visitors to another address by country, language (their first Accept-Language entry), device, operating system or browser. A rule can combine conditions (all must fit), the first rule that fits decides, and everyone else goes to the link's own address. The country is looked up only when a rule that gets that far asks for it.
+- A link can have an **A/B split** of 2 to 5 addresses with weights. The visitor's keyed hash (no raw IP) picks the address, so a returning visitor keeps seeing the same one. Each click records which variant it went to, and the link's analytics and edit page show clicks per variant. A rule that fits comes before the split.
+- Crawlers and link-preview bots always get the link's own address, never a rule or a variant. Every rule and variant address goes through the same safety checks as the main address and cannot be another short link.
+- A **campaign tags (UTM) builder** with presets (newsletter, social networks, Google Ads, QR on print, ...) writes `utm_source`, `utm_medium`, `utm_campaign`, `utm_term` and `utm_content` into the destination field of the create form and the edit page. Presets live in the code; nothing else is stored.
+- The API takes and returns `routing_rules` and `ab_variants`. My links marks a link with "N rules" or "A/B".
+
 ### Link limits
 - A link can **stop after a number of clicks**. The click is taken before the visitor is sent on, so exactly that many people get through even when many arrive at once; crawlers and link-preview bots are not counted and do not use clicks up.
 - A link can have a **start time**: before it, visitors see "Not live yet" (HTTP 404, never cached).

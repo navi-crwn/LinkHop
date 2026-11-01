@@ -25,7 +25,9 @@ class LogLinkClick implements ShouldQueue
         protected ?string $referer,
         protected ?string $userAgent,
         // true when the redirect already added this visit to the link's count (links with a click limit)
-        protected bool $counted = false
+        protected bool $counted = false,
+        // which A/B variant (1-based) the redirect chose, null when the link has no split
+        protected ?int $variant = null
     ) {}
 
     public function handle(GeoIpService $geoIp): void
@@ -64,6 +66,7 @@ class LogLinkClick implements ShouldQueue
                 'proxy_type' => $proxyData['type'],
                 'proxy_confidence' => $proxyData['confidence'],
                 'user_agent' => substr($this->userAgent ?? 'unknown', 0, 255),
+                'variant' => $this->variant,
                 'clicked_at' => now(),
             ]);
             if (! $this->counted) {
