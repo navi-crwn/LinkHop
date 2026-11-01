@@ -1,7 +1,9 @@
 @push('head')
 <link rel="stylesheet" href="{{ asset('hop-home/hop-home.css') }}">
-<script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-motion.js') }}" defer></script>
+<script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-motion.js') }}?v={{ substr(md5_file(public_path('hop-home/hop-motion.js')), 0, 8) }}" defer></script>
 <script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-home.js') }}" defer></script>
+<script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-hero3d.js') }}?v={{ substr(md5_file(public_path('hop-home/hop-hero3d.js')), 0, 8) }}" defer></script>
+@vite(['resources/css/home.css', 'resources/js/home.js'])
 @endpush
 <x-marketing-layout :title="'LinkHop · '.__('Short links')" :themed="true">
     @php
