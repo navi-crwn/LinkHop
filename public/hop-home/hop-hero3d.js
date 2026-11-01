@@ -5,6 +5,10 @@
 // A canvas with data-morph="phone" (BioHop) goes one step further: once the
 // logo has settled, its blocks glide into the outline of a phone and the
 // canvas hands over to the HTML phone behind it (data-morph="done").
+// data-morph="cycle" (BioHop) never stops: logo -> the word BIO -> the phone -> the canvas fades and the page
+// inside the phone is shown (a live iframe next to the canvas) -> the blocks come back, scatter and start over.
+// Once the page is shown the cycle stops there, so it can be read, scrolled and clicked; it plays again from the start
+// when the stage has left the screen and comes back.
 (function () {
   'use strict';
   var scenes = [], scheduled = 0, instances = new WeakMap();
@@ -13,9 +17,11 @@
     if (scheduled || document.hidden || preference.matches || !scenes.some(function (s) { return s.visible && !s.dead; })) return;
     scheduled = requestAnimationFrame(function tick(now) {
       scheduled = 0;
-      var active = scenes.filter(function (s) { return s.visible && !s.dead; }).sort(function (a, b) { return b.ratio - a.ratio; })[0];
-      scenes.forEach(function (s) { var state = String(s === active); if (s.canvas.dataset.animating !== state) s.canvas.dataset.animating = state; });
-      if (active && !document.hidden && !preference.matches) { active.draw(now); schedule(); }
+      // The few most visible scenes animate together (the app marks sit side by side and each must settle);
+      // anything beyond that waits for a slot.
+      var live = scenes.filter(function (s) { return s.visible && !s.dead; }).sort(function (a, b) { return b.ratio - a.ratio; }).slice(0, 4);
+      scenes.forEach(function (s) { var state = String(live.indexOf(s) !== -1); if (s.canvas.dataset.animating !== state) s.canvas.dataset.animating = state; });
+      if (live.length && !document.hidden && !preference.matches) { live.forEach(function (s) { s.draw(now); }); schedule(); }
     });
   }
   function pause() {
@@ -39,7 +45,8 @@
     // the PixelHop mark: the pixel rabbit
     pixelhop: ['.#....#.', '.#....#.', '.##..##.', '.######.', '##.##.##', '########', '########', '.######.']
   };
-  MAPS.linkhop = MAPS.hub;
+  // the LinkHop mark: a rabbit head, two tall ears over a ring-shaped face
+  MAPS.linkhop = ['..#...#..', '..#...#..', '..#...#..', '..#####..', '.##...##.', '##.....##', '##.....##', '.##...##.', '..#####..'];
   var STOPS = {
     notehop: [[.639, .902, .208], [.133, .827, .933], [.545, .361, .965]],
     hub: [[.13, .83, .93], [.55, .36, .97], [.96, .28, .65]],
@@ -70,6 +77,20 @@
     var i = 0;
     while (all.length < n && i < inner.length) { var p = inner[i++]; if (!screen.some(function (s) { return s[0] === p[0] && s[1] === p[1]; })) all.push([p[0], p[1], 'back']); }
     return all.slice(0, n).map(function (p) { return { at: [p[0] - (W - 1) / 2, (H - 1) / 2 - p[1], p[2] === 'back' ? -.6 : 0], kind: p[2] }; });
+  }
+
+  // The word BIO in a 3x5 pixel font, two layers deep: one block per lit cell, the second layer behind it.
+  var LETTERS = { B: ['##.', '#.#', '##.', '#.#', '##.'], I: ['###', '.#.', '.#.', '.#.', '###'], O: ['###', '#.#', '#.#', '#.#', '###'] };
+  function wordCells(n) {
+    var cells = [], x = 0;
+    'BIO'.split('').forEach(function (ch, li) {
+      LETTERS[ch].forEach(function (row, r) { row.split('').forEach(function (c, ci) { if (c === '#') cells.push([x + ci, r, li]); }); });
+      x += 4;
+    });
+    var W = 11, H = 5, out = [];
+    cells.forEach(function (c) { out.push({ at: [c[0] - (W - 1) / 2, (H - 1) / 2 - c[1], 0], letter: c[2], frac: (c[0] + c[1]) / (W + H) }); });
+    cells.forEach(function (c) { out.push({ at: [c[0] - (W - 1) / 2, (H - 1) / 2 - c[1], -1], letter: c[2], frac: (c[0] + c[1]) / (W + H) }); });
+    return out.slice(0, n);
   }
 
   function mount(cv, options) {
@@ -182,7 +203,8 @@
   // The phone morph (BioHop): each block gets a place in the phone and a colour for it.
   var morph = options.morph || cv.dataset.morph;
   var morphK = 0, morphAt = null, morphDone = false, phone = null;
-  if (morph === 'phone') {
+  var cycle = morph === 'cycle', word = null;
+  if (morph === 'phone' || cycle) {
     phone = phoneCells(blocks.length);
     blocks.forEach(function (b, i) {
       var p = phone[i % phone.length];
@@ -190,6 +212,20 @@
       b.toCol = p.kind === 'edge' || p.kind === 'back' ? DARK : p.kind === 'avatar' ? stops[0] : p.kind === 'button' ? stops[2] : WHITE;
     });
   }
+  if (cycle) {
+    word = wordCells(blocks.length);
+    blocks.forEach(function (b, i) {
+      var w = word[i];
+      // a block with no cell in the word waits behind it, in the colour of the end of the gradient
+      b.word = w ? w.at : [b.home[0] * .3, b.home[1] * .3, -2.4];
+      b.wordCol = w ? grad(w.frac) : stops[2];
+    });
+  }
+  // cycle clock: [time ms, stage] keyframes; the stage is where the blocks are at that moment.
+  var KEYS = [[0, 'home'], [1600, 'home'], [3000, 'word'], [5200, 'word'], [6800, 'phone'], [7200, 'phone'], [16200, 'phone'], [17600, 'scatter'], [19000, 'home']];
+  var REVEAL = [7200, 7700, 15700, 16200]; // canvas out, in the page, canvas back
+  var cycleT = 0, lastNow = null;
+  function restartCycle() { cycleT = 0; lastNow = null; }
 
   // ---------- drawing ----------
   var eye = [0, 0, 22 * extent / 8], eyeHome = eye[2], VP, dpr = Math.min(window.devicePixelRatio || 1, mobile ? 1.25 : 2);
@@ -234,8 +270,26 @@
     lastFrame = now;
     if (t0 === null) t0 = now;
     var t = (now - t0) / 1000, all = true;
+    var wts = null, phoneW = 0;
+    if (cycle) {
+      var dtms = lastNow === null ? 0 : Math.min(80, now - lastNow); lastNow = now;
+      var shownNow = cycleT >= REVEAL[1] && cycleT < REVEAL[2];
+      if (settled && !drag && !shownNow) cycleT = (cycleT + dtms) % 19000;
+      var i = 0; while (i < KEYS.length - 2 && cycleT >= KEYS[i + 1][0]) i++;
+      var a = KEYS[i], bk = KEYS[i + 1], e = Math.min(1, Math.max(0, (cycleT - a[0]) / (bk[0] - a[0]))); e = e * e * (3 - 2 * e);
+      wts = { home: 0, word: 0, phone: 0, scatter: 0 };
+      wts[a[1]] += 1 - e; wts[bk[1]] += e;
+      phoneW = wts.phone;
+      var wordW = wts.word;
+      var op = cycleT < REVEAL[0] ? 1 : cycleT < REVEAL[1] ? 1 - (cycleT - REVEAL[0]) / (REVEAL[1] - REVEAL[0]) : cycleT < REVEAL[2] ? 0 : cycleT < REVEAL[3] ? (cycleT - REVEAL[2]) / (REVEAL[3] - REVEAL[2]) : 1;
+      cv.style.opacity = String(op);
+      var shown = op < .3 ? 'true' : 'false';
+      if (cv.dataset.reveal !== shown) { cv.dataset.reveal = shown; cv.dispatchEvent(new CustomEvent('hop-hero-reveal', { bubbles: true, detail: { shown: shown === 'true' } })); }
+      morphK = Math.max(phoneW, wordW);
+      eye[2] = eyeHome + (22 * 16 / 8 - eyeHome) * phoneW; size();
+    }
     // The morph: 1.4 s after the logo has settled, 1.6 s to the phone, then the HTML phone takes over.
-    if (phone && settled && !morphDone && !drag) {
+    if (phone && !cycle && settled && !morphDone && !drag) {
       if (morphAt === null) morphAt = now + 1400;
       morphK = Math.min(1, Math.max(0, (now - morphAt) / 1600));
       morphK = morphK * morphK * (3 - 2 * morphK);
@@ -256,7 +310,12 @@
       var p = [0, 1, 2].map(function (i) { return b.from[i] + (b.home[i] - b.from[i]) * e; });
       if (k >= 1 && !reduce) p[2] = Math.sin(t * 1.6 + b.home[0] * .7 + b.home[1] * .5) * .18 * (1 - morphK);
       var col = b.col;
-      if (morphK > 0) { p = mix(p, b.to, morphK); col = mix(b.col, b.toCol, Math.min(1, morphK * 1.5)); }
+      if (wts) {
+        var base = p, sc = [b.from[0] * 1.15, b.from[1] * 1.15, b.from[2] * 1.15];
+        p = [0, 1, 2].map(function (j) { return base[j] * wts.home + b.word[j] * wts.word + b.to[j] * wts.phone + sc[j] * wts.scatter; });
+        col = [0, 1, 2].map(function (j) { return b.col[j] * (wts.home + wts.scatter) + b.wordCol[j] * wts.word + b.toCol[j] * wts.phone; });
+        if (wts.phone < .5) p[2] += Math.sin(t * 1.6 + b.home[0] * .7) * .12 * (1 - morphK);
+      } else if (morphK > 0) { p = mix(p, b.to, morphK); col = mix(b.col, b.toCol, Math.min(1, morphK * 1.5)); }
       draw(CUBE, mul(group, mul(T(p[0], p[1], p[2]), mul(RX(b.spin[0] * (1 - e)), RY(b.spin[1] * (1 - e))))), col);
     });
     flush(CUBE);
@@ -299,6 +358,7 @@
   var scene = { canvas: cv, draw: frame, visible: false, ratio: 0, dead: false };
   scenes.push(scene);
   var observer = new IntersectionObserver(function (es) {
+    if (scene.visible && !es[0].isIntersecting && cycle) restartCycle();
     scene.visible = es[0].isIntersecting;
     scene.ratio = es[0].intersectionRatio;
     schedule();

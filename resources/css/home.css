@@ -1,0 +1,83 @@
+/* The LinkHop home scenes (resources/js/home.js adds the motion; every scene is complete without it).
+   Colours come from the shared home tokens (--home-*) defined by hop-home.css. */
+.hop-home .lk-sec { scroll-margin-top: 90px; }
+
+/* the window every demo sits in */
+.hop-home .lk-win { border: 1px solid var(--home-line); background: var(--home-panel); border-radius: 22px; overflow: hidden; min-width: 0; }
+.hop-home .lk-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--home-line); font: 11px var(--h-mono); color: var(--home-muted); }
+.hop-home .lk-body { padding: 18px 18px 20px; display: grid; gap: 10px; }
+.hop-home .lk-lab { margin: 0; font: 11px var(--h-mono); letter-spacing: .04em; color: var(--home-muted); }
+.hop-home .lk-in { width: 100%; min-height: 44px; padding: 10px 12px; color: var(--home-text); background: transparent; border: 1px solid var(--home-line); border-radius: 12px; font: inherit; }
+
+/* 01 shorten */
+.hop-home .lk-pin { margin-top: 28px; display: grid; place-items: center; }
+.hop-home .lk-pin .lk-win { width: min(100%, 720px); box-shadow: 0 40px 90px -50px #6366f1; }
+.hop-home .lk-long { margin: 0; padding: 14px 16px; border-radius: 12px; border: 1px dashed var(--home-line); font: 13px/1.6 var(--h-mono); word-break: break-all; color: var(--home-text); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.hop-home .lk-long .c { display: inline-block; white-space: pre; }
+.hop-home .lk-slug { display: flex; align-items: center; gap: 0; border: 1px solid var(--home-line); border-radius: 12px; overflow: hidden; font: 15px var(--h-mono); }
+.hop-home .lk-slug span { padding: 12px 0 12px 14px; color: var(--home-muted); }
+.hop-home .lk-slug input { flex: 1; min-width: 0; padding: 12px 14px 12px 0; background: transparent; border: 0; outline: 0; color: var(--home-text); font: inherit; }
+.hop-home .lk-slug:focus-within { border-color: #6366f1; box-shadow: 0 0 0 3px #6366f133; }
+.hop-home .lk-result { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; align-items: center; padding: 14px 16px; border-radius: 14px; background: linear-gradient(135deg, #22d3ee1a, #a78bfa22 60%, #f472b61a); border: 1px solid #818cf855; }
+.hop-home .lk-result b { font: 600 18px var(--h-mono); word-break: break-all; }
+.hop-home .lk-result i { font-style: normal; background: var(--h-ink); background-clip: text; -webkit-background-clip: text; color: transparent; }
+.hop-home .lk-result small { grid-column: 2; color: var(--home-muted); font-size: 12px; }
+.hop-home .lk-ok { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: #10b981; color: #fff; font-weight: 700; grid-row: span 2; }
+.hop-home .lk-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.hop-home .lk-chips li { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--home-line); font: 12px var(--h-mono); color: var(--home-muted); }
+
+/* 03 share preview */
+.hop-home .lk-tones { display: flex; gap: 8px; }
+.hop-home .lk-tones button { width: 36px; height: 36px; border-radius: 10px; border: 2px solid transparent; cursor: pointer; padding: 0; }
+.hop-home .lk-tones button[aria-pressed=true] { border-color: var(--home-text); }
+.hop-home .lk-card { display: grid; grid-template-columns: 112px 1fr; gap: 0; border: 1px solid var(--home-line); border-radius: 16px; overflow: hidden; background: color-mix(in srgb, var(--home-panel) 70%, transparent); margin-top: 4px; }
+.hop-home .lk-card-img { min-height: 104px; transition: background .4s; }
+.hop-home .lk-card-text { padding: 12px 14px; display: grid; gap: 2px; align-content: center; min-width: 0; }
+.hop-home .lk-card-text small { font: 11px var(--h-mono); color: var(--home-muted); }
+.hop-home .lk-card-text b { font-size: 15px; overflow-wrap: anywhere; }
+.hop-home .lk-card-text p { margin: 0; font-size: 13px; color: var(--home-muted); overflow-wrap: anywhere; }
+
+/* QR colours */
+.hop-home .lk-qr-tones { justify-content: center; }
+.hop-home .lk-qr-tones button { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--home-line); }
+.hop-home .lk-qr-tones button[aria-pressed=true] { border-color: var(--home-text); }
+.hop-home .link-qr-demo img { transition: opacity .25s; }
+
+/* 06 analytics */
+.hop-home .lk-kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.hop-home .lk-kpis > div { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--home-line); display: grid; gap: 2px; min-width: 0; }
+.hop-home .lk-kpis small { font: 10px var(--h-mono); color: var(--home-muted); text-transform: uppercase; letter-spacing: .05em; }
+.hop-home .lk-kpis b { font-size: clamp(15px, 1.8vw, 21px); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hop-home .lk-up { font: 600 11px var(--h-mono); color: #10b981; -webkit-text-fill-color: #10b981; background: none; }
+.hop-home .lk-chart { width: 100%; height: 130px; display: block; }
+.hop-home .lk-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 16px; align-items: center; }
+.hop-home .lk-bars { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font: 12px var(--h-mono); }
+.hop-home .lk-bars li { display: grid; grid-template-columns: 2.2em 1fr 3em; gap: 8px; align-items: center; }
+.hop-home .lk-bars i { display: block; height: 8px; width: var(--w); max-width: 100%; border-radius: 99px; background: linear-gradient(90deg, #22d3ee, #6366f1, #c026d3); transform-origin: left; }
+.hop-home .lk-bars b { text-align: right; font-weight: 600; }
+.hop-home .lk-heat { display: grid; grid-template-columns: repeat(24, minmax(0, 1fr)); gap: 2px; }
+.hop-home .lk-heat i { display: block; aspect-ratio: 1; border-radius: 2px; background: rgb(99 102 241 / var(--a)); }
+
+/* terminals: a caret while the line types */
+.hop-home .h-term code.lk-typing::after { content: '▍'; margin-inline-start: 1px; animation: lk-blink 1s steps(2) infinite; color: #22d3ee; }
+@keyframes lk-blink { 50% { opacity: 0; } }
+
+/* FAQ cards */
+.hop-home .h-faq-grid details { transition: transform .25s, border-color .25s; }
+.hop-home .h-faq-grid details[open] { border-color: #818cf8; }
+
+/* 11 family: four app marks, each its own canvas */
+.hop-home .lk-family { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 28px; }
+.hop-home .lk-fam { display: grid; gap: 6px; justify-items: center; text-align: center; padding: 18px 12px 16px; border: 1px solid var(--home-line); background: var(--home-panel); border-radius: 22px; min-width: 0; }
+.hop-home .lk-fam .h-art { max-width: 210px; }
+.hop-home .lk-fam b { font-size: 17px; }
+.hop-home .lk-fam a { font: 12px var(--h-mono); color: var(--home-muted); text-decoration: none; }
+.hop-home .lk-fam a:hover { color: var(--home-text); }
+@media (max-width: 900px) { .hop-home .lk-family { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hop-home .lk-split { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 520px) { .hop-home .lk-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hop-home .lk-kpis > div:nth-child(3) { display: none; } .hop-home .lk-card { grid-template-columns: 84px 1fr; } }
+@media (prefers-reduced-motion: reduce) { .hop-home .h-term code.lk-typing::after { animation: none; } }
+
+/* Lenis owns the smooth scrolling while it runs */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
