@@ -59,6 +59,13 @@
                                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M6 6l12 12M18 6 6 18"/></svg>
                             </button>
                         </div>
+                        <div class="px-3 pb-2">
+                            <button type="button" @click="$dispatch('open-palette')" class="nav-item w-full" aria-haspopup="dialog">
+                                <svg class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="m20 20-3.5-3.5"/></svg>
+                                <span class="flex-1 text-left">{{ __('Search') }}</span>
+                                <kbd class="font-mono text-[11px] text-muted" x-text="/Mac|iPhone|iPad/.test(navigator.platform) ? '⌘K' : 'Ctrl K'">Ctrl K</kbd>
+                            </button>
+                        </div>
                         <nav class="flex-1 overflow-y-auto px-3 pb-3">
                             @include('components.partials.nav', ['isAdmin' => $isAdmin, 'abuseCount' => $abuseCount])
                         </nav>
@@ -121,6 +128,7 @@
                         @endif
                     </div>
                 </main>
+                <x-command-palette />
             </div>
         @else
             <div class="min-h-screen">

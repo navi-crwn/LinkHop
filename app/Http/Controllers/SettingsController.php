@@ -31,6 +31,7 @@ class SettingsController extends Controller
             'activityLogs' => $activityLogs,
             'folders' => $folders,
             'tags' => $tags,
+            'webhooks' => $user->webhookEndpoints()->with(['deliveries' => fn ($q) => $q->latest('id')->limit(10)])->orderBy('id')->get(),
         ]);
     }
 

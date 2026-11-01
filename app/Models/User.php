@@ -95,6 +95,11 @@ class User extends Authenticatable
         return $this->hasMany(Tag::class);
     }
 
+    public function webhookEndpoints(): HasMany
+    {
+        return $this->hasMany(WebhookEndpoint::class);
+    }
+
     public function apiTokens(): HasMany
     {
         return $this->hasMany(ApiToken::class);
