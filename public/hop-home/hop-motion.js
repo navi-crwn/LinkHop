@@ -75,7 +75,7 @@
       if (reduce) { el.textContent = fmt(n); return; }
       var t0 = performance.now();
       (function step(now) {
-        var k = Math.min(1, (now - t0) / 1100);
+        var k = Math.min(1, Math.max(0, (now - t0) / 1100)); // a frame time can precede t0: never count below zero
         el.textContent = fmt(Math.round(n * (1 - Math.pow(1 - k, 3))));
         if (k < 1) requestAnimationFrame(step);
       })(t0);

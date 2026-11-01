@@ -75,8 +75,14 @@
         {{-- Key metrics --}}
         <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
             <div class="stat">
-                <p class="stat-label">Clicks</p>
+                <p class="stat-label">{{ __('Clicks') }}</p>
                 <p class="stat-value">{{ number_format($totalClicks) }}</p>
+                @if ($previousClicks > 0)
+                    @php $delta = (int) round(($totalClicks - $previousClicks) / $previousClicks * 100); @endphp
+                    <p class="mt-0.5 text-xs {{ $delta >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500' }}">{{ $delta >= 0 ? '+' : '' }}{{ $delta }}% {{ __('against the period before') }}</p>
+                @else
+                    <p class="mt-0.5 text-xs text-muted">{{ __('Nothing before this period to compare with') }}</p>
+                @endif
             </div>
             <div class="stat">
                 <p class="stat-label">Top country</p>
@@ -100,12 +106,35 @@
         </div>
 
         {{-- Timeline --}}
-        <section class="glass-card">
+        <section class="glass-card min-w-0">
             <div class="mb-2 flex items-center justify-between">
                 <h2 class="section-title">Clicks over time</h2>
                 <span class="text-[11px] text-muted">scroll / pinch to zoom</span>
             </div>
             <div class="relative h-56 sm:h-64"><canvas id="analyticsChart"></canvas></div>
+        </section>
+
+        {{-- When people click: weekday by hour over the last 30 days, with the filters above --}}
+        @php $heatMax = max(1, ...array_map('max', $heatmap)); $days = [__('Mon'), __('Tue'), __('Wed'), __('Thu'), __('Fri'), __('Sat'), __('Sun')]; @endphp
+        <section class="glass-card min-w-0" aria-labelledby="heat-title">
+            <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <h2 id="heat-title" class="section-title">{{ __('Busiest hours') }}</h2>
+                <span class="text-[11px] text-muted">{{ __('Last 30 days, in UTC') }}</span>
+            </div>
+            <div class="max-w-full overflow-x-auto">
+                <div class="grid min-w-[560px] gap-[3px]" style="grid-template-columns: 2.5rem repeat(24, minmax(0, 1fr))" role="img" aria-label="{{ __('Clicks by weekday and hour') }}">
+                    @foreach ($heatmap as $d => $row)
+                        <span class="self-center text-[10px] text-muted">{{ $days[$d] }}</span>
+                        @foreach ($row as $h => $n)
+                            <span class="block aspect-square rounded-[3px]" style="background: rgb(99 102 241 / {{ $n ? round(0.15 + 0.85 * $n / $heatMax, 2) : 0.06 }})" title="{{ $days[$d] }} {{ sprintf('%02d:00', $h) }}: {{ $n }}"></span>
+                        @endforeach
+                    @endforeach
+                    <span></span>
+                    @foreach (range(0, 23) as $h)
+                        <span class="text-center text-[9px] text-muted">{{ $h % 6 === 0 ? $h : '' }}</span>
+                    @endforeach
+                </div>
+            </div>
         </section>
 
         {{-- Geography: map + one ranked list (countries / cities / regions) --}}
@@ -140,7 +169,7 @@
 
         {{-- Breakdown cards --}}
         <div class="grid gap-4 md:grid-cols-2">
-            <section class="glass-card" x-data="{ tab: 'links' }">
+            <section class="glass-card min-w-0" x-data="{ tab: 'links' }">
                 <div class="mb-3 flex items-center justify-between gap-2">
                     <h2 class="section-title">Top links</h2>
                     <div class="flex gap-0.5">
@@ -161,7 +190,7 @@
                 </div>
             </section>
 
-            <section class="glass-card" x-data="{ tab: 'domains' }">
+            <section class="glass-card min-w-0" x-data="{ tab: 'domains' }">
                 <div class="mb-3 flex items-center justify-between gap-2">
                     <h2 class="section-title">Sources</h2>
                     <div class="flex gap-0.5">
@@ -177,7 +206,7 @@
                 </div>
             </section>
 
-            <section class="glass-card" x-data="{ tab: 'devices' }">
+            <section class="glass-card min-w-0" x-data="{ tab: 'devices' }">
                 <div class="mb-3 flex items-center justify-between gap-2">
                     <h2 class="section-title">Technology</h2>
                     <div class="flex gap-0.5">
@@ -191,7 +220,7 @@
                 <div x-show="tab === 'os'" x-cloak><x-analytics.rank-list :items="$rows($osStats)" color="bg-amber-500/70" empty="No OS data." /></div>
             </section>
 
-            <section class="glass-card">
+            <section class="glass-card min-w-0">
                 <div class="mb-3 flex items-center justify-between gap-2">
                     <h2 class="section-title">Internet providers</h2>
                     @if (($proxyStats['total'] ?? 0) > 0)
