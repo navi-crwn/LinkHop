@@ -1419,12 +1419,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/navi-crwn/hop-ui.git",
-                "reference": "5c4a5f47276b86923cd19c20b14f99b5db93fc2c"
+                "reference": "2b44fa163c9bba7d10ac5f372587bc5cec124668"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-ui/zipball/5c4a5f47276b86923cd19c20b14f99b5db93fc2c",
-                "reference": "5c4a5f47276b86923cd19c20b14f99b5db93fc2c",
+                "url": "https://api.github.com/repos/navi-crwn/hop-ui/zipball/2b44fa163c9bba7d10ac5f372587bc5cec124668",
+                "reference": "2b44fa163c9bba7d10ac5f372587bc5cec124668",
                 "shasum": ""
             },
             "require": {
