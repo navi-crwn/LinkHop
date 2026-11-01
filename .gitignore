@@ -34,3 +34,8 @@ docs/AI_BRIEFING.md
 /PROD-*.md
 /*HANDOFF*.md
 /*-handoff/
+
+# Written by install.sh / update.sh
+/start.sh
+/backups/
+/.env.backup-*

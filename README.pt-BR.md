@@ -1,4 +1,4 @@
-<p align="center">🌐 <a href="README.md">English</a> · <a href="README.zh.md">简体中文</a> · <a href="README.es.md">Español</a> · <a href="README.ar.md">العربية</a> · <b>Português</b> · <a href="README.fr.md">Français</a> · <a href="README.ja.md">日本語</a> · <a href="README.id.md">Bahasa Indonesia</a></p>
+<p align="center">🌐 <a href="README.md">English</a> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.de.md">Deutsch</a> · <a href="README.id.md">Bahasa Indonesia</a> · <a href="README.ja.md">日本語</a> · <b>Português (Brasil)</b> · <a href="README.es.md">Español</a> · <a href="README.fr.md">Français</a> · <a href="README.ru.md">Русский</a></p>
 
 # LinkHop — LinkHop · Links curtos, códigos QR e análise de cliques
 
@@ -20,6 +20,14 @@
 </p>
 
 ---
+
+Instale com um comando (ele verifica seu computador primeiro, faz poucas perguntas e pode instalar o hub HOP ID para você):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/navi-crwn/LinkHop/main/install.sh | bash
+```
+
+A partir de um clone: `./install.sh` · atualizar: `./update.sh` · remover: `./uninstall.sh`. Use `--yes` para aceitar todos os padrões; `--help` lista as opções.
 
 ## O encurtador de links HOP
 
