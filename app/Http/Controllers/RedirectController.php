@@ -7,6 +7,7 @@ use App\Models\Link;
 use App\Models\RetiredSlug;
 use App\Services\LinkService;
 use App\Services\UserAgentService;
+use App\Support\LinkRouting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
@@ -95,9 +96,11 @@ class RedirectController extends Controller
             }
             $counted = true;
         }
-        $this->logClick($request, $link, $counted);
+        // Routing rules and the A/B split may pick another address; crawlers and plain links keep the link's own.
+        $route = LinkRouting::resolve($link, $request);
+        $this->logClick($request, $link, $counted, $route['variant']);
         if ($link->enable_preview && $request->query('skip_preview') !== '1') {
-            return response()->view('preview', ['targetUrl' => $link->target_url]);
+            return response()->view('preview', ['targetUrl' => $route['url']]);
         }
         if ($this->shouldServePreview($request, $link)) {
             return response()
@@ -105,17 +108,18 @@ class RedirectController extends Controller
                 ->header('Refresh', '0;url='.$link->target_url);
         }
 
-        return redirect()->away($link->target_url, (int) ($link->redirect_type ?? 302));
+        return redirect()->away($route['url'], (int) ($link->redirect_type ?? 302));
     }
 
-    protected function logClick(Request $request, Link $link, bool $counted = false): void
+    protected function logClick(Request $request, Link $link, bool $counted = false, ?int $variant = null): void
     {
         LogLinkClick::dispatch(
             $link->id,
             $request->ip(),
             $request->headers->get('referer'),
             $request->userAgent(),
-            $counted
+            $counted,
+            $variant
         );
     }
 

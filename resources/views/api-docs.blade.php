@@ -48,9 +48,23 @@ Content-Type: application/json</code></pre>
                                 <tr><td class="font-mono text-ink">max_clicks</td><td class="text-muted">No</td><td class="text-muted">Stops after this many counted clicks (crawlers and preview bots are not counted)</td></tr>
                                 <tr><td class="font-mono text-ink">fallback_url</td><td class="text-muted">No</td><td class="text-muted">Where visitors go after the expiry date or when the clicks run out; cannot be another short link</td></tr>
                                 <tr><td class="font-mono text-ink">redirect_type</td><td class="text-muted">No</td><td class="text-muted">301, 302 (default), 307 or 308</td></tr>
+                                <tr><td class="font-mono text-ink">routing_rules</td><td class="text-muted">No</td><td class="text-muted">Up to 20 rules; the first that fits the visitor decides, everyone else (and every crawler) goes to <code>url</code>. A rule needs at least one of <code>country</code> (list of ISO codes), <code>language</code> (list, first Accept-Language entry), <code>device</code> (mobile, tablet, desktop), <code>os</code> (ios, android, windows, macos, linux, chromeos) or <code>browser</code> (chrome, safari, firefox, edge, opera, samsung), and a <code>url</code> that passes the same safety checks as <code>url</code></td></tr>
+                                <tr><td class="font-mono text-ink">ab_variants</td><td class="text-muted">No</td><td class="text-muted">2 to 5 objects with <code>url</code> and a whole-number <code>weight</code> (1 to 1000, default 1). The same visitor always gets the same one; a matching routing rule comes first</td></tr>
                             </tbody>
                         </table>
                     </div>
+                    <p class="eyebrow mb-1.5 mt-3">Routing rules and A/B split</p>
+                    <pre class="{{ $code }}"><code>{
+  "url": "https://example.com/en",
+  "routing_rules": [
+    { "country": ["DE", "AT", "CH"], "url": "https://example.com/de" },
+    { "device": "mobile", "os": "ios", "url": "https://apps.apple.com/app/id123" }
+  ],
+  "ab_variants": [
+    { "url": "https://example.com/landing-a", "weight": 70 },
+    { "url": "https://example.com/landing-b", "weight": 30 }
+  ]
+}</code></pre>
                 </div>
                 <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                     <div class="min-w-0">
