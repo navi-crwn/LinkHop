@@ -25,6 +25,7 @@ class LinkClick extends Model
         'proxy_type',
         'proxy_confidence',
         'user_agent',
+        'variant',
         'clicked_at',
     ];
 

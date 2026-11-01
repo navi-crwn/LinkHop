@@ -144,6 +144,7 @@
                                     <span class="text-red-500">*</span>
                                 </label>
                                 <input 
+                                    id="modal-target-url"
                                     type="url" 
                                     x-model="formData.target_url"
                                     @input="error = ''; debouncedFetchOg(); if(!formData.slug) { debouncedGenerateSlug(); }"
@@ -153,6 +154,7 @@
                                 >
                                 <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Enter the long URL you want to shorten</p>
                             </div>
+                            <x-utm-builder target="modal-target-url" />
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                                     Short Link
@@ -293,6 +295,7 @@
                                     <input type="url" x-model="formData.fallback_url" placeholder="https://" class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:ring-blue-500">
                                     <p class="mt-1 text-xs text-slate-500">{{ __('Used after the expiry date or when the clicks run out. Empty shows a notice.') }}</p>
                                 </div>
+                                <x-link-routing-fields :model="true" />
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                                         Password Protection
@@ -927,6 +930,8 @@ function linkCreationModal() {
             starts_at: '',
             max_clicks: '',
             fallback_url: '',
+            routing_rules: [],
+            ab_variants: [],
             password: '',
             redirect_type: '302'
         },
@@ -974,6 +979,8 @@ function linkCreationModal() {
                 starts_at: '',
                 max_clicks: '',
                 fallback_url: '',
+                routing_rules: [],
+                ab_variants: [],
                 password: '',
                 redirect_type: '302'
             };
@@ -1010,6 +1017,8 @@ function linkCreationModal() {
                 starts_at: this.formData.starts_at || null,
                 max_clicks: this.formData.max_clicks ? Number(this.formData.max_clicks) : null,
                 fallback_url: this.formData.fallback_url || null,
+                routing_rules: this.formData.routing_rules,
+                ab_variants: this.formData.ab_variants,
                 password: this.formData.password || null,
                 redirect_type: this.formData.redirect_type || '302',
                 comment: this.formData.comment || null,
