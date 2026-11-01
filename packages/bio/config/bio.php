@@ -10,4 +10,6 @@ return [
 
     // Pages per account.
     'max_pages' => (int) env('BIO_MAX_PAGES', 3),
+    'upload_min_free_mb' => (int) env('BIO_UPLOAD_MIN_FREE_MB', 1024),
+    'upload_min_free_percent' => (int) env('BIO_UPLOAD_MIN_FREE_PERCENT', 5),
 ];

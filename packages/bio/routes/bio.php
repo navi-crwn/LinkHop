@@ -4,6 +4,8 @@ use Hop\Bio\Http\Controllers\BioLinkController;
 use Hop\Bio\Http\Controllers\BioPageController;
 use Hop\Bio\Http\Controllers\BioShortlinkController;
 use Hop\Bio\Http\Controllers\PublicBioController;
+use Hop\Bio\Http\Middleware\UploadStorageGate;
+use Hop\Bio\Support\UploadStorage;
 use Illuminate\Support\Facades\Route;
 
 // Public pages: hel.ink/b/{slug}. The host app's ip.ban middleware keeps banned visitors out.
@@ -14,10 +16,11 @@ Route::middleware(['web', 'ip.ban'])->prefix('b')->name('bio.public.')->group(fu
 });
 
 // The editor, for signed-in members (hop.auth: a guest is sent through the hub's SSO; the hub only signs in verified accounts).
-Route::middleware(['web', 'ip.ban', 'hop.auth'])->prefix('bio')->name('bio.')->group(function () {
+Route::middleware(['web', 'ip.ban', 'hop.auth', UploadStorageGate::class])->prefix('bio')->name('bio.')->group(function () {
     Route::get('/', [BioPageController::class, 'index'])->name('index');
     Route::get('/create', [BioPageController::class, 'create'])->name('create');
     Route::get('/check-slug', [BioPageController::class, 'checkSlug'])->name('check-slug');
+    Route::get('/upload-status', fn () => response()->json(app(UploadStorage::class)->status())->header('Cache-Control', 'no-store'))->name('upload-status');
     Route::post('/', [BioPageController::class, 'store'])->name('store');
     Route::get('/{bioPage}/edit', [BioPageController::class, 'edit'])->name('edit');
     Route::put('/{bioPage}', [BioPageController::class, 'update'])->name('update');
