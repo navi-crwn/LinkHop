@@ -61,7 +61,7 @@
             <p>© {{ date('Y') }} navi-crwn · MIT License · <a href="https://db-ip.com" target="_blank" rel="noopener" class="hover:text-slate-900 dark:hover:text-white">IP Geolocation by DB-IP</a></p>
             <nav aria-label="{{ __('Language') }}" class="flex flex-wrap gap-x-3 gap-y-1">
                 @foreach (\App\Http\Middleware\SetLocale::LOCALES as $code => $name)
-                    <a href="?lang={{ $code }}" lang="{{ $code }}" @class(['hover:text-slate-900 dark:hover:text-white', 'font-semibold text-slate-800 dark:text-white' => app()->getLocale() === $code])>{{ $name }}</a>
+                    <a href="?lang={{ $code }}" lang="{{ $code }}" @class(['inline-flex min-h-8 items-center hover:text-slate-900 dark:hover:text-white', 'font-semibold text-slate-800 dark:text-white' => app()->getLocale() === $code])>{{ $name }}</a>
                 @endforeach
             </nav>
         </div>
