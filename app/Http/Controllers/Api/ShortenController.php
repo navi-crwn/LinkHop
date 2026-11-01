@@ -9,6 +9,7 @@ use App\Models\Folder;
 use App\Models\Link;
 use App\Services\LinkService;
 use App\Services\QuotaService;
+use App\Support\DeepLinks;
 use App\Support\LinkLimits;
 use App\Support\LinkRouting;
 use Hop\Safety\LinkSafety;
@@ -83,6 +84,7 @@ class ShortenController extends Controller
             'fallback_url' => $link->fallback_url,
             'routing_rules' => $link->routing_rules ?? [],
             'ab_variants' => $link->ab_variants ?? [],
+            'app_links' => $link->app_links,
             'redirect_type' => (string) ($link->redirect_type ?? '302'),
         ];
     }
@@ -96,6 +98,7 @@ class ShortenController extends Controller
     {
         // Validate the request
         $request->merge(LinkRouting::tidy($request->all()));
+        $request->merge(DeepLinks::tidy($request->all()));
         $minSlugLength = config('shortener.min_custom_slug_length', 3);
         $validator = Validator::make($request->all(), [
             'url' => 'required|url|max:2048',
@@ -108,6 +111,7 @@ class ShortenController extends Controller
             'redirect_type' => 'nullable|in:301,302,307,308',
             ...LinkLimits::rules(),
             ...LinkRouting::rules(),
+            ...DeepLinks::rules(),
         ]);
         $validator->after(function ($v) use ($request) {
             if (! $v->errors()->has('fallback_url') && $problem = LinkLimits::fallbackProblem($request->input('fallback_url'))) {
@@ -117,6 +121,7 @@ class ShortenController extends Controller
                 $v->errors()->add('expires_at', $problem);
             }
             LinkRouting::check($v, $request->all());
+            DeepLinks::check($v, $request->all());
         });
         if ($validator->fails()) {
             return response()->json([
@@ -194,6 +199,7 @@ class ShortenController extends Controller
                 'starts_at' => $request->input('starts_at') ?: null,
                 'fallback_url' => $request->input('fallback_url') ?: null,
                 ...LinkRouting::columns($request->all()),
+                ...DeepLinks::columns($request->all()),
                 'password_hash' => $request->filled('password')
                     ? Hash::make($request->input('password'))
                     : null,
