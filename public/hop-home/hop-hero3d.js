@@ -1,7 +1,10 @@
-// Home hero: the pixel logo as 3D blocks, in plain WebGL (no library to
+// Home hero: the app logo as 3D blocks, in plain WebGL (no library to
 // load). The blocks fly in and settle, float a little, turn slowly and follow
 // a drag. Without WebGL the picture behind the canvas stays; with "reduce
 // motion" the logo is drawn once, still.
+// A canvas with data-morph="phone" (BioHop) goes one step further: once the
+// logo has settled, its blocks glide into the outline of a phone and the
+// canvas hands over to the HTML phone behind it (data-morph="done").
 (function () {
   'use strict';
   var scenes = [], scheduled = 0, instances = new WeakMap();
@@ -26,6 +29,49 @@
     if (!preference.matches) init();
     schedule();
   });
+
+  // ---------- the logos: one character per cell; '.' empty, '#' gradient, 'w' white, 'p' pink ----------
+  var MAPS = {
+    notehop: ['..#..#..', '..#..#..', '.#####..', '.######.', '.#...##.', '.######.', '.#..###.', '.######.'],
+    hub: ['.#..#...', '.##.#...', '..####..', '..#####.', '######..', '.#####..', '##..###.', '#....###'],
+    // the BioHop mark: a rounded square with three lines
+    biohop: ['.#######.', '#########', '##wwwww##', '#########', '##wwwww##', '#########', '##www####', '#########', '.#######.'],
+    // the PixelHop mark: the pixel rabbit
+    pixelhop: ['.#....#.', '.#....#.', '.##..##.', '.######.', '##.##.##', '########', '########', '.######.']
+  };
+  MAPS.linkhop = MAPS.hub;
+  var STOPS = {
+    notehop: [[.639, .902, .208], [.133, .827, .933], [.545, .361, .965]],
+    hub: [[.13, .83, .93], [.55, .36, .97], [.96, .28, .65]],
+    linkhop: [[.22, .74, 1], [.3, .4, .95], [.55, .36, .97]],
+    biohop: [[.85, .27, .94], [.7, .33, .96], [.55, .36, .97]],
+    pixelhop: [[.64, .9, .21], [.13, .83, .93], [.55, .36, .97]]
+  };
+  var WHITE = [.97, .97, 1], PINK = [.957, .447, .714], DARK = [.11, .12, .2];
+
+  // The phone the BioHop blocks become: a 9×16 outline with an avatar, three lines and a button inside.
+  function phoneCells(n) {
+    var W = 9, H = 16, out = [], inner = [];
+    for (var r = 0; r < H; r++) for (var c = 0; c < W; c++) {
+      var edge = r === 0 || r === H - 1 || c === 0 || c === W - 1;
+      if (edge && ((r === 0 || r === H - 1) && (c === 0 || c === W - 1))) continue; // rounded corners
+      if (edge) out.push([c, r, 'edge']);
+      else inner.push([c, r]);
+    }
+    var screen = [];
+    inner.forEach(function (p) {
+      var c = p[0], r = p[1];
+      if (r >= 2 && r <= 4 && c >= 3 && c <= 5) screen.push([c, r, 'avatar']);
+      else if ((r === 7 || r === 9 || r === 11) && c >= 2 && c <= 6) screen.push([c, r, 'line']);
+      else if (r === 13 && c >= 2 && c <= 6) screen.push([c, r, 'button']);
+    });
+    var all = out.concat(screen);
+    // Any block left over sits behind the screen, dark like the frame.
+    var i = 0;
+    while (all.length < n && i < inner.length) { var p = inner[i++]; if (!screen.some(function (s) { return s[0] === p[0] && s[1] === p[1]; })) all.push([p[0], p[1], 'back']); }
+    return all.slice(0, n).map(function (p) { return { at: [p[0] - (W - 1) / 2, (H - 1) / 2 - p[1], p[2] === 'back' ? -.6 : 0], kind: p[2] }; });
+  }
+
   function mount(cv, options) {
   options = options || {};
   if (!cv) return;
@@ -63,7 +109,7 @@
   ['M', 'VP', 'col', 'eye'].forEach(function (k) { U[k] = gl.getUniformLocation(prog, k); });
   var aP = gl.getAttribLocation(prog, 'p'), aN = gl.getAttribLocation(prog, 'n');
   var aM = instanced && gl.getAttribLocation(prog, 'M'), aC = instanced && gl.getAttribLocation(prog, 'color');
-  var instanceBuffer = instanced && gl.createBuffer(), batch = new Float32Array(64 * 19), batchCount = 0;
+  var instanceBuffer = instanced && gl.createBuffer(), batch = new Float32Array(160 * 19), batchCount = 0;
   if (instanced) {
     [aM, aM + 1, aM + 2, aM + 3, aC].forEach(function (a) { gl.enableVertexAttribArray(a); instanced.vertexAttribDivisorANGLE(a, 1); });
   }
@@ -114,40 +160,45 @@
     return new Float32Array([t / asp, 0, 0, 0, 0, t, 0, 0, 0, 0, (f + n) * nf, -1, 0, 0, 2 * f * n * nf, 0]);
   }
 
-  // ---------- the logo: 8×8 grid, filled columns per row; (row 2, col 5) is pink ----------
-  var ROWS = [[2, 5], [2, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5, 6], [1, 5, 6], [1, 2, 3, 4, 5, 6], [1, 4, 5, 6], [1, 2, 3, 4, 5, 6]];
-  var STOPS = [[.639, .902, .208], [.133, .827, .933], [.545, .361, .965]];
+  // ---------- the logo as blocks ----------
   var preset = options.preset || 'notehop';
-  if (preset === 'hub' || preset === 'linkhop') {
-    ROWS = [[1, 4], [1, 2, 4], [2, 3, 4, 5], [2, 3, 4, 5, 6], [0, 1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [0, 1, 4, 5, 6], [0, 5, 6, 7]];
-    STOPS = preset === 'hub' ? [[.13,.83,.93],[.55,.36,.97],[.96,.28,.65]] : [[.22,.74,1],[.3,.4,.95],[.55,.36,.97]];
-  } else if (preset === 'biohop') {
-    ROWS = [[1,2,3,4,5,6],[1,6],[1,3,4,6],[1,3,4,6],[1,6],[1,2,3,4,5,6],[1,2,3,4,5,6],[1,2,3,4,5,6]];
-    STOPS = [[.65,.33,.97],[.82,.27,.85],[.96,.45,.71]];
-  } else if (preset === 'pixelhop') {
-    ROWS = [[0,1,2,3,4,5],[0,5],[0,2,3,4,5,6,7],[0,2,7],[0,2,5,7],[0,2,4,5,6,7],[0,1,2,3,4,5,6,7],[2,3,4,5,6,7]];
-    STOPS = [[.13,.83,.93],[.39,.4,.95],[.96,.45,.71]];
-  }
-  if (options.colors && options.colors.length === 3) STOPS = options.colors;
-  function grad(t) { var a = t < .5 ? STOPS[0] : STOPS[1], b = t < .5 ? STOPS[1] : STOPS[2], k = t < .5 ? t * 2 : (t - .5) * 2; return [0, 1, 2].map(function (i) { return a[i] + (b[i] - a[i]) * k; }); }
+  var MAP = MAPS[preset] || MAPS.notehop, stops = options.colors && options.colors.length === 3 ? options.colors : STOPS[preset] || STOPS.notehop;
+  var W = MAP[0].length, H = MAP.length, extent = Math.max(W, H);
+  function grad(t) { var a = t < .5 ? stops[0] : stops[1], b = t < .5 ? stops[1] : stops[2], k = t < .5 ? t * 2 : (t - .5) * 2; return [0, 1, 2].map(function (i) { return a[i] + (b[i] - a[i]) * k; }); }
   function rnd(a) { return (Math.random() - .5) * a; }
   var blocks = [];
-  ROWS.forEach(function (cols, r) {
-    cols.forEach(function (c) {
-      blocks.push({ home: [c - 3.5, 3.5 - r, 0], from: [rnd(26), rnd(18), rnd(14)], spin: [Math.random() * 6, Math.random() * 6],
-        delay: Math.random() * .5, col: preset === 'notehop' && r === 2 && c === 5 ? [.957, .447, .714] : grad((c + r) / 14) });
+  MAP.forEach(function (row, r) {
+    row.split('').forEach(function (ch, c) {
+      if (ch === '.') return;
+      var col = ch === 'w' ? WHITE : ch === 'p' ? PINK : grad((c + r) / (W + H - 2));
+      if (preset === 'notehop' && r === 2 && c === 5) col = PINK;
+      blocks.push({ home: [c - (W - 1) / 2, (H - 1) / 2 - r, 0], from: [rnd(26), rnd(18), rnd(14)], spin: [Math.random() * 6, Math.random() * 6],
+        delay: Math.random() * .5, col: col });
     });
   });
   var gems = [[[.133, .827, .933], -6, 4, -2, .5], [[.655, .545, .98], 6.2, -3.5, -1, .62], [[.957, .447, .714], 5.4, 4.6, -3, .4], [[.639, .902, .208], -5.6, -4.4, 0, .45], [[.506, .549, .973], 3.4, -6.2, -4, .36]];
+  var gemScale = extent / 8;
+
+  // The phone morph (BioHop): each block gets a place in the phone and a colour for it.
+  var morph = options.morph || cv.dataset.morph;
+  var morphK = 0, morphAt = null, morphDone = false, phone = null;
+  if (morph === 'phone') {
+    phone = phoneCells(blocks.length);
+    blocks.forEach(function (b, i) {
+      var p = phone[i % phone.length];
+      b.to = p.at;
+      b.toCol = p.kind === 'edge' || p.kind === 'back' ? DARK : p.kind === 'avatar' ? stops[0] : p.kind === 'button' ? stops[2] : WHITE;
+    });
+  }
 
   // ---------- drawing ----------
-  var eye = [0, 0, 22], VP, dpr = Math.min(window.devicePixelRatio || 1, mobile ? 1.25 : 2);
+  var eye = [0, 0, 22 * extent / 8], eyeHome = eye[2], VP, dpr = Math.min(window.devicePixelRatio || 1, mobile ? 1.25 : 2);
   function size() {
-    var w = cv.clientWidth, h = cv.clientHeight, W = Math.round(w * dpr), H = Math.round(h * dpr);
+    var w = cv.clientWidth, h = cv.clientHeight, Wp = Math.round(w * dpr), Hp = Math.round(h * dpr);
     // Setting the size clears the canvas; only do it when the size really changed.
-    if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+    if (cv.width !== Wp || cv.height !== Hp) { cv.width = Wp; cv.height = Hp; }
     gl.viewport(0, 0, cv.width, cv.height);
-    VP = mul(persp(32 * Math.PI / 180, w / Math.max(1, h), .1, 100), T(-eye[0], -eye[1], -eye[2]));
+    VP = mul(persp(32 * Math.PI / 180, w / Math.max(1, h), .1, 200), T(-eye[0], -eye[1], -eye[2]));
   }
   function draw(m, model, col) {
     if (instanced) { batch.set(model, batchCount * 19); batch.set(col, batchCount * 19 + 16); batchCount++; return; }
@@ -176,29 +227,42 @@
   gl.enable(gl.CULL_FACE);
 
   var rotY = 0, rotX = 0, vel = .004, drag = null, tiltX = 0, tiltY = 0, t0 = null, settled = false, lastFrame = -Infinity;
+  function mix(a, b, k) { return [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k]; }
   function frame(now) {
     if (scene.dead || preference.matches || document.hidden) return;
     if (mobile && now - lastFrame < 32) return;
     lastFrame = now;
     if (t0 === null) t0 = now;
     var t = (now - t0) / 1000, all = true;
+    // The morph: 1.4 s after the logo has settled, 1.6 s to the phone, then the HTML phone takes over.
+    if (phone && settled && !morphDone && !drag) {
+      if (morphAt === null) morphAt = now + 1400;
+      morphK = Math.min(1, Math.max(0, (now - morphAt) / 1600));
+      morphK = morphK * morphK * (3 - 2 * morphK);
+      eye[2] = eyeHome + (22 * 16 / 8 - eyeHome) * morphK; size();
+      cv.style.opacity = morphK < .8 ? '' : String(1 - (morphK - .8) / .2);
+      if (morphK >= 1) { morphDone = true; cv.dataset.morph = 'done'; cv.dispatchEvent(new CustomEvent('hop-hero-morph')); }
+    }
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.uniformMatrix4fv(U.VP, false, VP);
     gl.uniform3fv(U.eye, eye);
     if (!drag && !reduce) { vel += (.004 - vel) * .02; rotY += vel * (mobile ? 2 : 1); rotX *= .96; }
-    var group = mul(RX(rotX * .4 + tiltX + (reduce ? 0 : Math.sin(t * .6) * .05)), RY(Math.sin(rotY) * .6 + tiltY));
+    var swing = Math.sin(rotY) * .6 * (1 - morphK), bob = (reduce ? 0 : Math.sin(t * .6) * .05) * (1 - morphK);
+    var group = mul(RX(rotX * .4 + tiltX + bob), RY(swing + tiltY));
     blocks.forEach(function (b) {
       var k = reduce ? 1 : Math.min(1, Math.max(0, (t - b.delay) / 1.4)), e = 1 - Math.pow(1 - k, 3);
       if (k < 1) all = false;
       var p = [0, 1, 2].map(function (i) { return b.from[i] + (b.home[i] - b.from[i]) * e; });
-      if (k >= 1 && !reduce) p[2] = Math.sin(t * 1.6 + b.home[0] * .7 + b.home[1] * .5) * .18;
-      draw(CUBE, mul(group, mul(T(p[0], p[1], p[2]), mul(RX(b.spin[0] * (1 - e)), RY(b.spin[1] * (1 - e))))), b.col);
+      if (k >= 1 && !reduce) p[2] = Math.sin(t * 1.6 + b.home[0] * .7 + b.home[1] * .5) * .18 * (1 - morphK);
+      var col = b.col;
+      if (morphK > 0) { p = mix(p, b.to, morphK); col = mix(b.col, b.toCol, Math.min(1, morphK * 1.5)); }
+      draw(CUBE, mul(group, mul(T(p[0], p[1], p[2]), mul(RX(b.spin[0] * (1 - e)), RY(b.spin[1] * (1 - e))))), col);
     });
     flush(CUBE);
-    gems.forEach(function (g, i) {
+    if (morphK < 1) gems.forEach(function (g, i) {
       var y = g[2] + (reduce ? 0 : Math.sin(t + i) * .35);
-      draw(GEM, mul(T(g[1], y, g[3]), mul(mul(RX(reduce ? .4 : t * (.4 + i * .1)), RY(reduce ? .6 : t * .7)), S(g[4]))), g[0]);
+      draw(GEM, mul(T(g[1] * gemScale, y * gemScale, g[3]), mul(mul(RX(reduce ? .4 : t * (.4 + i * .1)), RY(reduce ? .6 : t * .7)), S(g[4] * gemScale * (1 - morphK)))), g[0]);
     });
     flush(GEM);
     settled = all;
@@ -207,12 +271,11 @@
   }
   function kick() { schedule(); }
 
-  listen('pointerdown', function (e) { if (options.interactive === false || preference.matches) return; drag = { x: e.clientX, y: e.clientY }; cv.setPointerCapture(e.pointerId); });
+  listen('pointerdown', function (e) { if (options.interactive === false || preference.matches || morphDone) return; drag = { x: e.clientX, y: e.clientY }; cv.setPointerCapture(e.pointerId); });
   listen('pointermove', function (e) {
     if (options.interactive === false || preference.matches) return;
     var r = cv.getBoundingClientRect();
-    tiltY = ((e.clientX - r.left) / r.width - .5) * .5;
-    tiltX = ((e.clientY - r.top) / r.height - .5) * .35;
+    tiltY = ((e.clientX - r.left) / r.width - .5) * .5; tiltX = ((e.clientY - r.top) / r.height - .5) * .35;
     if (drag) { vel = (e.clientX - drag.x) * .004; rotY += vel; rotX += (e.clientY - drag.y) * .003; drag = { x: e.clientX, y: e.clientY }; }
     kick();
   });
@@ -254,7 +317,7 @@
   instances.set(cv, api); cv.dataset.mounted = 'true';
   return api;
   }
-  window.HopHero3D = { mount: mount };
+  window.HopHero3D = { mount: mount, maps: MAPS };
   var lazy = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (!entry.isIntersecting) return;
