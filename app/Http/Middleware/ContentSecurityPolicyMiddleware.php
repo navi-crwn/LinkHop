@@ -64,6 +64,14 @@ class ContentSecurityPolicyMiddleware
             }
         }
 
+        // The chain also passes apps this list does not know (NoteHop): every https subdomain of the family's
+        // domain (hub.hel.ink -> *.hel.ink) may be a step, like the chained logout itself allows.
+        $hubParts = parse_url(hub_url());
+        $hubHost = strtolower((string) ($hubParts['host'] ?? ''));
+        if (($hubParts['scheme'] ?? '') === 'https' && substr_count($hubHost, '.') >= 2) {
+            $origins[] = 'https://*.'.preg_replace('/^[^.]+\./', '', $hubHost);
+        }
+
         return implode(' ', array_values(array_unique($origins)));
     }
 }
