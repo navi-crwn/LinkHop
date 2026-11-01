@@ -7,6 +7,8 @@ use App\Models\LinkClick;
 use App\Services\GeoIpService;
 use App\Services\ProxyDetectionService;
 use App\Services\UserAgentService;
+use App\Support\ClickSource;
+use App\Support\VisitorHash;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -25,7 +27,9 @@ class LogLinkClick implements ShouldQueue
         protected ?string $referer,
         protected ?string $userAgent,
         // true when the redirect already added this visit to the link's count (links with a click limit)
-        protected bool $counted = false
+        protected bool $counted = false,
+        // direct, qr or nfc (ClickSource), taken from ?src= on the short address
+        protected string $source = ClickSource::DIRECT
     ) {}
 
     public function handle(GeoIpService $geoIp): void
@@ -33,7 +37,8 @@ class LogLinkClick implements ShouldQueue
         $link = Link::find($this->linkId);
         // Crawlers and link-preview bots don't count as clicks (and must not keep
         // idle guest links alive).
-        if (! $link || app(UserAgentService::class)->parse($this->userAgent)['bot']) {
+        $agent = app(UserAgentService::class)->parse($this->userAgent);
+        if (! $link || $agent['bot']) {
             return;
         }
         // Enrichment is best effort: a failing GeoIP or proxy lookup must never cost
@@ -55,6 +60,9 @@ class LogLinkClick implements ShouldQueue
                 'link_id' => $link->id,
                 'referer' => $this->referer,
                 'ip_address' => $this->ip,
+                'visitor_hash' => VisitorHash::daily($this->ip, $this->userAgent),
+                'source' => in_array($this->source, ClickSource::ALLOWED, true) ? $this->source : ClickSource::DIRECT,
+                'in_app' => $agent['in_app'],
                 'country' => $geoData['country'],
                 'country_name' => $geoData['country_name'],
                 'city' => $geoData['city'],

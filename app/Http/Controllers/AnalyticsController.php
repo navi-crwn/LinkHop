@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Link;
 use App\Models\LinkClick;
 use App\Services\UserAgentService;
+use App\Support\ClickInsights;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -191,6 +192,8 @@ class AnalyticsController extends Controller
             ->pluck('total', 'country')
             ->mapWithKeys(fn ($count, $code) => [strtoupper($code) => $count])
             ->toArray();
+        // Unique visitors, QR scans against direct clicks, in-app browsers (see ClickInsights).
+        $insights = ClickInsights::summarize($clicksQuery->clone());
         $countryCount = $clicksQuery
             ->clone()
             ->selectRaw('COUNT(DISTINCT COALESCE(country, "Unknown")) as total')
@@ -237,7 +240,8 @@ class AnalyticsController extends Controller
             'linkFilter',
             'recentIps',
             'previousClicks',
-            'heatmap'
+            'heatmap',
+            'insights'
         ));
     }
 }

@@ -119,4 +119,26 @@ return [
     |
     */
     'analytics_days' => 30,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Destination monitor
+    |--------------------------------------------------------------------------
+    |
+    | links:check-destinations (hourly) asks the destination of live links, least
+    | recently checked first, at most `batch` links per run. A link is checked
+    | again after `interval_hours`, or after `retry_hours` while its last check
+    | failed. After `failures` failed checks in a row it counts as broken and the
+    | owner gets one email until the destination answers again.
+    |
+    */
+    'monitor' => [
+        'enabled' => (bool) env('LINK_MONITOR_ENABLED', true),
+        'batch' => max(1, (int) env('LINK_MONITOR_BATCH', 100)),
+        'interval_hours' => 24,
+        'retry_hours' => 6,
+        'failures' => 3,
+        'timeout' => 8,
+        'max_redirects' => 3,
+    ],
 ];
