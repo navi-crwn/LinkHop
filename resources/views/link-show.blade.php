@@ -47,8 +47,8 @@
 
     <x-ab-results :link="$link" :card="true" />
 
-    <div class="grid gap-3 lg:grid-cols-3">
-        <section class="glass-card lg:col-span-2">
+    <div class="grid items-start gap-3 lg:grid-cols-3">
+        <section class="glass-card min-w-0 lg:col-span-2">
             <h2 class="section-title">Daily clicks</h2>
             <div class="relative mt-3 h-52"><canvas id="clickChart"></canvas></div>
         </section>

@@ -1077,6 +1077,8 @@ function linkCreationModal() {
         debouncedGenerateSlug() {
             clearTimeout(this.slugGenerateTimeout);
             this.slugGenerateTimeout = setTimeout(() => {
+                // the visitor may have typed their own slug while the timer ran
+                if (this.formData.slug) return;
                 this.generateRandomSlug();
             }, 1000);
         },
