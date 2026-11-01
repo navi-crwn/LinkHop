@@ -9,11 +9,11 @@ Source: the owner's blueprint built from the `awesome-url-shortener` directory (
 |---|---|---|
 | 1, 3 | Custom slug, edit the destination | Have |
 | 2 | Collision-free generator | Have (random slug, unique index); Sqids not needed |
-| 4 | Choose 301/302/307/308 | Have (`redirect_type`) |
+| 4 | Choose 301/302/307/308 | **Done now** (Batch A adds 308) |
 | 6 | Expiry by date | Have |
-| 7 | Expire after N clicks | **Next 1** (migration `max_clicks`, check in the redirect) |
-| 8 | Fallback URL when expired | **Next 2** |
-| 9 | Scheduled start | **Next 3** |
+| 7 | Expire after N clicks | **Done now** (Batch A: counted at the redirect, crawlers excluded) |
+| 8 | Fallback URL when expired | **Done now** (Batch A: also when the clicks run out; loops refused) |
+| 9 | Scheduled start | **Done now** (Batch A: "Not live yet" page before the start) |
 | 10 | Password | Have |
 | 11-13 | Redirect by country, device, OS, browser, language | **Next 4** (BioHop's routing rules are the model) |
 | 15 | A/B split by weight | **Next 5** (consistent hash of the visitor) |
@@ -23,7 +23,7 @@ Source: the owner's blueprint built from the `awesome-url-shortener` directory (
 | 19 | Link cloaking in an iframe | No (hides the destination, bad for abuse handling) |
 | 21 | Folders and tags | Have |
 | 22 | Soft delete and slug cooldown | Have (`retired_slugs`); a trash view is Later |
-| 23 | Duplicate URL warning | **Next 7** |
+| 23 | Duplicate URL warning | **Done now** (Batch A: warns once, the same form sent again goes through) |
 | 24 | Notes and comments | Have |
 | 25 | Preview with a `+` suffix | Partly (`enable_preview`); the suffix is Later |
 | 5 | Bulk create, tag, delete | Partly (bulk delete); CSV import is **Next 8** |
@@ -45,7 +45,7 @@ Source: the owner's blueprint built from the `awesome-url-shortener` directory (
 |---|---|---|
 | 51 | Live click stream | Later |
 | 52 | Unique visitors | **Next 10** (keyed hash of IP and agent per day; no raw IP) |
-| 53, 56 | Bot and chat-previewer filtering, in-app browser parsing | **Next 11** |
+| 53, 56 | Bot and chat-previewer filtering, in-app browser parsing | Partly: crawlers are already not counted (`LogLinkClick`); in-app browser parsing is **Next 11** |
 | 54, 55, 57, 58 | Geo, referrers, devices, browsers, OS, ISP | Have |
 | 59 | Time series and hourly heat map | Have, heat map **Done now** |
 | 60 | Conversion and revenue attribution | No (needs the visitor's other site to report back; a tracking pixel) |

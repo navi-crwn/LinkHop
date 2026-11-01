@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Link limits
+- A link can **stop after a number of clicks**. The click is taken before the visitor is sent on, so exactly that many people get through even when many arrive at once; crawlers and link-preview bots are not counted and do not use clicks up.
+- A link can have a **start time**: before it, visitors see "Not live yet" (HTTP 404, never cached).
+- A link can have a **fallback address**, used when the expiry date has passed or the clicks have run out; without one, visitors see a notice (HTTP 410). The fallback cannot be another short link, so it cannot loop.
+- The redirect type can be **308** (permanent, keeps the method).
+- Making a second link to an address you already have asks you to confirm: the same form sent again makes it. The check ignores the case of the host, a trailing slash and a fragment.
+- The API takes and returns `starts_at`, `max_clicks`, `fallback_url` and `redirect_type`. The admin lists show a scheduled link as "scheduled".
+- My links and the dashboard show "Starts in …", "Limit reached" and how many of the allowed clicks are used.
+
 ### Home
 - The home page has a scene for each thing LinkHop does, with motion that follows the scroll: a long address loses its characters until the short link is left (pinned, with a custom slug you can type), a link preview card you edit live (title, description, picture), a QR code that tries colour pairs, an analytics view that draws itself, protect, organise, check, API and self-host terminals that type their command, FAQ cards, and the other four HOP apps as 3D marks you can turn. GSAP and Lenis ship in our own bundle; with reduced motion every scene is complete and still.
 - The shared home engine is synced from HEL.ink assets v2: the LinkHop rabbit head, and every app mark in a row now assembles (one used to freeze or show the flat logo). Its files are requested with a content hash.
