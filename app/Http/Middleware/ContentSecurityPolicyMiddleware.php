@@ -17,16 +17,16 @@ class ContentSecurityPolicyMiddleware
         $response = $next($request);
         // Allow framing for the bio preview route
         $isPreviewRoute = $request->routeIs('bio.preview');
-        // Public pages (hel.ink/l/...) are served at PUBLIC_URL while the built assets and uploads
-        // live at ASSET_URL (link.hel.ink), so that origin must be allowed next to 'self'.
-        $assets = rtrim((string) config('app.asset_url'), '/');
+        // Public pages (hel.ink/l/, hel.ink/b/) are rendered on PUBLIC_URL while the built assets and uploads are
+        // served from ASSET_URL (default APP_URL, link.hel.ink), so that origin must be allowed next to 'self'.
+        $assets = self::assetOrigin();
         $assets = $assets !== '' ? ' '.$assets : '';
         $csp = [
             "default-src 'self'",
             "script-src 'self'{$assets} https://hel.ink 'nonce-{$nonce}' 'strict-dynamic' 'unsafe-eval' https: 'unsafe-inline' https://challenges.cloudflare.com https://fonts.bunny.net https://fonts.googleapis.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://cdn.tailwindcss.com https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net",
             "script-src-attr 'none'",
             "style-src 'self'{$assets} 'unsafe-inline' https://hel.ink https://fonts.bunny.net https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com",
-            "img-src 'self' data: https: blob: https://flagcdn.com https://*.tile.openstreetmap.org https://www.google-analytics.com https://www.facebook.com",
+            "img-src 'self'{$assets} data: https: blob: https://flagcdn.com https://*.tile.openstreetmap.org https://www.google-analytics.com https://www.facebook.com",
             "font-src 'self'{$assets} https://hel.ink https://fonts.bunny.net https://fonts.gstatic.com data:",
             "connect-src 'self'{$assets} data: blob: https://challenges.cloudflare.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://cdn.jsdelivr.net https://unpkg.com https://www.google-analytics.com https://analytics.google.com https://www.facebook.com",
             "frame-src 'self' https://challenges.cloudflare.com https://maps.google.com https://www.google.com https://youtube.com ".implode(' ', BioEmbed::FRAME_HOSTS),
@@ -47,6 +47,17 @@ class ContentSecurityPolicyMiddleware
         $response->headers->set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
 
         return $response;
+    }
+
+    /** The origin (scheme://host[:port]) the app's own files are served from: ASSET_URL, else APP_URL. */
+    private static function assetOrigin(): string
+    {
+        $parts = parse_url((string) (config('app.asset_url') ?: config('app.url')));
+        if (empty($parts['scheme']) || empty($parts['host'])) {
+            return '';
+        }
+
+        return $parts['scheme'].'://'.$parts['host'].(isset($parts['port']) ? ':'.$parts['port'] : '');
     }
 
     /** Origins of the hub, every HOP app and the public host, space-separated, without duplicates. */

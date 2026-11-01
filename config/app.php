@@ -21,6 +21,9 @@ return [
     'env' => env('APP_ENV', 'production'),
     'debug' => (bool) env('APP_DEBUG', false),
     'url' => env('APP_URL', 'http://localhost'),
+    // Where build/, storage/, images/ and brand/ are served from when that is not APP_URL (a CDN or the app host while
+    // pages are rendered on the public host). Empty: APP_URL. Read by asset(), @vite, the CSP and asset_host_url().
+    'asset_url' => env('ASSET_URL'),
     'timezone' => 'UTC',
     'locale' => env('APP_LOCALE', 'en'),
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
