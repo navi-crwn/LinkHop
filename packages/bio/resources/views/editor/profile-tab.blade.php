@@ -343,7 +343,7 @@ window.qrGenerator = function() {
             // Load QR styling library first
             if (typeof QRCodeStyling === 'undefined') {
                 const script = document.createElement('script');
-                script.src = 'https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js';
+                script.src = @js(asset('vendor/qr-code-styling/qr-code-styling.js'));
                 script.onload = () => {
                     this.qrLoaded = true;
                     this.loadSettings();
