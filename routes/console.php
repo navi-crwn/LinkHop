@@ -13,6 +13,10 @@ Schedule::command('privacy:prune')->dailyAt('03:15')->withoutOverlapping();
 Schedule::command('geolite:update')->weeklyOn(1, '02:00');
 Schedule::command('queue:health')->everyFifteenMinutes();
 Schedule::job(new QueueHeartbeat)->everyTwoMinutes();
+// Webhooks: tries that are due, and links that expired; idempotency keys are kept 24 hours.
+Schedule::command('webhooks:retry')->everyMinute()->withoutOverlapping();
+Schedule::command('webhooks:expired')->everyFiveMinutes()->withoutOverlapping();
+Schedule::command('idempotency:prune')->hourly();
 // Abuse/spam sweep: new & edited items hourly (with external reputation lookups),
 // full sweep + purge of long-disabled items nightly.
 Schedule::command('abuse:scan --since=75m')->hourly()->withoutOverlapping();

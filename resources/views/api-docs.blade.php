@@ -88,6 +88,91 @@ Content-Type: application/json</code></pre>
     "alias": "mylink"
   }'</code></pre>
             </section>
+
+            {{-- Batch D: idempotency keys and webhooks --}}
+            <section id="idempotency" class="glass-card min-w-0 space-y-3">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="chip-blue font-mono">Header</span>
+                    <h2 class="font-mono text-sm font-semibold text-ink">Idempotency-Key</h2>
+                    <span class="text-xs text-muted">{{ __('Retry a create request without making the link twice') }}</span>
+                </div>
+                <p class="text-sm text-muted">{{ __('Send a unique key (a UUID is fine) with POST /api/shorten. If the connection drops and you send the same request again with the same key, you get the first answer back and no second link is made.') }}</p>
+                <ul class="list-disc space-y-1 pl-5 text-xs text-muted">
+                    <li>{{ __('Same key, same account and same body: the stored answer is returned with the header Idempotent-Replayed: true.') }}</li>
+                    <li>{{ __('Same key with a different body or address: 422 "Idempotency Key Reuse". Use a new key for a new request.') }}</li>
+                    <li>{{ __('Same key while the first request is still running: 409, try again in a moment.') }}</li>
+                    <li>{{ __('Only successful answers (2xx) are kept, so a request that failed can be sent again with the same key. Keys are kept for 24 hours. A key is 1 to 255 printable characters.') }}</li>
+                </ul>
+                <pre class="{{ $code }}"><code>curl -X POST {{ url('/api/shorten') }} \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Idempotency-Key: 6f1c0b7e-3f58-4c0e-9d0e-2a2f4c9b1a10" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com/page"}'</code></pre>
+            </section>
+
+            <section id="webhooks" class="glass-card min-w-0 space-y-3">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="chip-blue font-mono">Webhooks</span>
+                    <h2 class="section-title">{{ __('Signed messages when your links change') }}</h2>
+                </div>
+                <p class="text-sm text-muted">{{ __('Add an https:// address in Settings, Webhooks. LinkHop sends it a JSON message for the events you choose. The secret is shown once when you add the webhook.') }} <a href="{{ route('settings') }}#webhooks" class="text-ink underline">{{ __('Open Webhooks') }}</a></p>
+                <div class="overflow-x-auto">
+                    <table class="table-glass">
+                        <thead><tr><th>{{ __('Event') }}</th><th>{{ __('When') }}</th></tr></thead>
+                        <tbody class="text-xs">
+                            <tr><td class="font-mono text-ink">link.created</td><td class="text-muted">{{ __('A link was made (dashboard, API or import).') }}</td></tr>
+                            <tr><td class="font-mono text-ink">link.updated</td><td class="text-muted">{{ __('The address, slug, status, dates, limit, redirect, folder, password or social card changed. "changed" lists the fields.') }}</td></tr>
+                            <tr><td class="font-mono text-ink">link.deleted</td><td class="text-muted">{{ __('A link was deleted.') }}</td></tr>
+                            <tr><td class="font-mono text-ink">link.limit_reached</td><td class="text-muted">{{ __('The last allowed click was used (max_clicks).') }}</td></tr>
+                            <tr><td class="font-mono text-ink">link.expired</td><td class="text-muted">{{ __('The expiry time passed. Sent within a few minutes.') }}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <p class="eyebrow mb-1.5">{{ __('What you receive') }}</p>
+                    <pre class="{{ $code }}"><code>POST /your/endpoint
+Content-Type: application/json
+User-Agent: LinkHop-Webhook/1
+X-LinkHop-Event: link.created
+X-LinkHop-Delivery: 5c1d7c52-8d2e-4a43-9a37-6b2f2d2a1b10
+X-LinkHop-Timestamp: 1793894400
+X-LinkHop-Signature: sha256=3f7a...c91
+
+{
+  "id": "5c1d7c52-8d2e-4a43-9a37-6b2f2d2a1b10",
+  "event": "link.created",
+  "created_at": "2026-11-05T10:00:00+00:00",
+  "data": {
+    "link": {
+      "id": 42, "slug": "abc123", "short_url": "https://hel.ink/l/abc123",
+      "target_url": "https://example.com/page", "status": "active",
+      "clicks": 0, "max_clicks": null, "expires_at": null, "password_protected": false
+    }
+  }
+}</code></pre>
+                </div>
+                <div>
+                    <p class="eyebrow mb-1.5">{{ __('Check the signature') }}</p>
+                    <p class="mb-1.5 text-xs text-muted">{{ __('The signature is HMAC-SHA256 of the timestamp, a dot and the raw body, with your secret as the key. Compare it in constant time and refuse timestamps older than five minutes.') }}</p>
+                    <pre class="{{ $code }}"><code>$body = file_get_contents('php://input');
+$ts   = $_SERVER['HTTP_X_LINKHOP_TIMESTAMP'];
+$sig  = 'sha256=' . hash_hmac('sha256', $ts . '.' . $body, $secret);
+$ok   = abs(time() - (int) $ts) < 300
+     && hash_equals($sig, $_SERVER['HTTP_X_LINKHOP_SIGNATURE']);</code></pre>
+                    <pre class="{{ $code }} mt-2"><code>// Node.js (Express, with the raw body)
+const sig = 'sha256=' + crypto.createHmac('sha256', secret)
+  .update(req.get('X-LinkHop-Timestamp') + '.' + rawBody).digest('hex');
+const ok = Math.abs(Date.now() / 1000 - Number(req.get('X-LinkHop-Timestamp'))) < 300
+  && crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(req.get('X-LinkHop-Signature')));</code></pre>
+                </div>
+                <ul class="list-disc space-y-1 pl-5 text-xs text-muted">
+                    <li>{{ __('Answer with any 2xx within 5 seconds. Anything else counts as a failure.') }}</li>
+                    <li>{{ __('A failed delivery is tried again after 1 minute, 5 minutes, 30 minutes and 2 hours (five tries). The id in X-LinkHop-Delivery stays the same, so you can ignore repeats.') }}</li>
+                    <li>{{ __('Redirects are not followed. Addresses on private or internal networks are refused.') }}</li>
+                    <li>{{ __('After 10 deliveries in a row fail, the webhook is switched off. You can switch it on again in Settings.') }}</li>
+                    <li>{{ __('Up to 5 webhooks per account. The last 50 deliveries of each are kept in the log.') }}</li>
+                </ul>
+            </section>
         </div>
 
         <aside class="space-y-3 lg:sticky lg:top-24">

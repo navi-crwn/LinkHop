@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Bio\ShortlinkCreatorAdapter;
 use App\Bio\UrlSafetyAdapter;
 use App\Http\Controllers\BrandAssetController;
+use App\Models\Link;
+use App\Observers\LinkWebhookObserver;
 use App\Services\GeoIpService;
 use App\Services\UserAgentService;
 use Hop\Bio\Contracts\GeoLookup;
@@ -44,6 +46,7 @@ class AppServiceProvider extends ServiceProvider
                 default => array_map('trim', explode(',', $proxies)),
             });
         }
+        Link::observe(LinkWebhookObserver::class);
         // Defined here (not in routes/web.php) so they exist when routes are cached.
         RateLimiter::for('shorten', function (Request $request) {
             return $request->user()
