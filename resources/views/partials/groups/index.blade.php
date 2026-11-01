@@ -18,10 +18,10 @@
         <button type="button" class="btn-soft btn-sm mt-3" x-data @click="$dispatch('open-modal', 'create-{{ $kind }}')">Create your first {{ $kind }}</button>
     </div>
 @else
-    <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
         @foreach ($groups as $group)
             @php $isDefault = $kind === 'folder' && $group->is_default; @endphp
-            <section id="{{ $kind }}-{{ $group->id }}" class="glass-card flex flex-col gap-3" x-data="{ renaming: false }">
+            <section id="{{ $kind }}-{{ $group->id }}" class="glass-card flex min-w-0 flex-col gap-3" x-data="{ renaming: false }">
                 <div class="flex items-start gap-3">
                     <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-500/15 text-indigo-600 dark:text-indigo-300">
                         @if ($kind === 'folder')

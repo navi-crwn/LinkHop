@@ -10,8 +10,8 @@
     @endphp
 
     <div class="grid items-start gap-3 lg:grid-cols-3">
-        <div class="space-y-3 lg:col-span-2">
-            <section class="glass-card space-y-4">
+        <div class="min-w-0 space-y-3 lg:col-span-2">
+            <section class="glass-card min-w-0 space-y-4">
                 <div class="flex flex-wrap items-center gap-2">
                     <span class="chip-green font-mono">POST</span>
                     <h2 class="font-mono text-sm font-semibold text-ink">/api/shorten</h2>
@@ -44,8 +44,8 @@ Content-Type: application/json</code></pre>
                         </table>
                     </div>
                 </div>
-                <div class="grid gap-3 md:grid-cols-2">
-                    <div>
+                <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+                    <div class="min-w-0">
                         <p class="eyebrow mb-1.5">Success <span class="chip-green ml-1">201</span></p>
                         <pre class="{{ $code }}"><code>{
   "success": true,
@@ -59,7 +59,7 @@ Content-Type: application/json</code></pre>
   "message": "Link created successfully"
 }</code></pre>
                     </div>
-                    <div>
+                    <div class="min-w-0">
                         <p class="eyebrow mb-1.5">Error <span class="chip-red ml-1">401 · 422 · 429</span></p>
                         <pre class="{{ $code }}"><code>{
   "success": false,
