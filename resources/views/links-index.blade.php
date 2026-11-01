@@ -93,6 +93,12 @@
                                 @elseif ($link->max_clicks)
                                     <span class="chip-gray whitespace-nowrap">{{ number_format($link->clicks) }}/{{ number_format($link->max_clicks) }}</span>
                                 @endif
+                                @if ($link->routing_rules)
+                                    <span class="chip-blue whitespace-nowrap" title="{{ __('Routing rules') }}">{{ count($link->routing_rules) === 1 ? __('1 rule') : __(':count rules', ['count' => count($link->routing_rules)]) }}</span>
+                                @endif
+                                @if ($link->ab_variants)
+                                    <span class="chip-blue whitespace-nowrap" title="{{ __('A/B split') }}">A/B</span>
+                                @endif
                                 @if ($link->requiresPassword())
                                     <span class="chip-blue" title="Password protected">🔒</span>
                                 @endif
