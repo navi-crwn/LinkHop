@@ -14,6 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A **campaign tags (UTM) builder** with presets (newsletter, social networks, Google Ads, QR on print, ...) writes `utm_source`, `utm_medium`, `utm_campaign`, `utm_term` and `utm_content` into the destination field of the create form and the edit page. Presets live in the code; nothing else is stored.
 - The API takes and returns `routing_rules` and `ab_variants`. My links marks a link with "N rules" or "A/B".
 
+### Link insights
+- **Unique visitors** next to total clicks, per link and for all links, and on the dashboard for the week. A visitor is a keyed hash of the address and browser that changes every day, so someone who comes back tomorrow counts again and nobody can be followed from day to day. The address itself is never stored.
+- **QR scans against direct clicks.** Every QR code LinkHop makes for a short link (the stored image, the downloads and the preview in the create dialog) points at the `?src=qr` form, and the click records where it came from (`direct`, `qr` or `nfc`). The parameter is never passed on to the destination and survives the password step. QR codes made earlier keep working and count as direct clicks until they are downloaded again.
+- **In-app browsers.** Visits opened inside Instagram, Facebook, Messenger, TikTok, LINE, WeChat, Snapchat, X, LinkedIn and others are named in a new tab of the Technology card.
+- Link previewers (WhatsApp, Telegram, Slack, Discord, Facebook, X, LinkedIn, Skype and more) and HTTP tools such as curl are recognised as bots: they are not counted and do not use up a click limit.
+- **Destination monitor.** Once a day LinkHop asks the destination of every live link whether it still answers (a polite HEAD, a GET if the server dislikes HEAD, short timeouts, redirects checked one by one, addresses on internal networks refused). After three failed checks in a row the link shows "Destination not responding" in My links, the dashboard and the link page, and the owner gets one email until it works again. It can be switched off in Settings, under Notifications.
+
 ### Link limits
 - A link can **stop after a number of clicks**. The click is taken before the visitor is sent on, so exactly that many people get through even when many arrive at once; crawlers and link-preview bots are not counted and do not use clicks up.
 - A link can have a **start time**: before it, visitors see "Not live yet" (HTTP 404, never cached).

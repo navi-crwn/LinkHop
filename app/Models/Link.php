@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\LinkService;
+use App\Support\ClickSource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -49,6 +50,9 @@ class Link extends Model
         'max_clicks' => 'integer',
         'routing_rules' => 'array',
         'ab_variants' => 'array',
+        'last_checked_at' => 'datetime',
+        'broken_since' => 'datetime',
+        'check_failures' => 'integer',
     ];
 
     public const STATUS_ACTIVE = 'active';
@@ -154,6 +158,12 @@ class Link extends Model
         return str_replace('www.', '', public_url('l/'.$this->slug));
     }
 
+    /** The short address as printed in QR codes: ?src=qr tells the redirect that the visit was a scan. */
+    public function getQrUrlAttribute(): string
+    {
+        return ClickSource::tag($this->short_url);
+    }
+
     /** The form used before the move to /l/, answered with a 301 until shortener.legacy_slug_until. */
     public function getLegacyUrlAttribute(): string
     {
@@ -172,12 +182,27 @@ class Link extends Model
         };
         static::saved($forget);
         static::deleted($forget);
+        // A new destination starts the destination monitor over: nothing is known about it yet.
+        static::updating(function (Link $link) {
+            if ($link->isDirty('target_url')) {
+                $link->last_checked_at = null;
+                $link->last_status = null;
+                $link->check_failures = 0;
+                $link->broken_since = null;
+            }
+        });
     }
 
     public function isExpired(): bool
     {
         return ($this->expires_at !== null && now()->greaterThan($this->expires_at))
             || $this->isGuestExpired();
+    }
+
+    /** The destination monitor found the destination not answering (see links:check-destinations). */
+    public function isBroken(): bool
+    {
+        return $this->broken_since !== null;
     }
 
     /** Not live yet: a start time is set and has not come. */

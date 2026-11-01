@@ -32,7 +32,7 @@ class LinkService
         Storage::disk('public')->makeDirectory('qrcodes');
         $fgColor = $this->hexToRgb($link->qr_fg_color ?? '#000000');
         $bgColor = $this->hexToRgb($link->qr_bg_color ?? '#ffffff');
-        $qr = QrPng::render($link->short_url, 512, array_values($fgColor), array_values($bgColor), 2);
+        $qr = QrPng::render($link->qr_url, 512, array_values($fgColor), array_values($bgColor), 2);
         if (filled($link->qr_logo_url)) {
             $qr = $this->overlayLogo($qr, $link->qr_logo_url);
         }

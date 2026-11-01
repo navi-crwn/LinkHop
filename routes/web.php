@@ -73,6 +73,7 @@ Route::middleware('ip.ban')->group(function () {
         // Profile, password, 2FA and API tokens are the hub's pages now.
         Route::get('/profile', fn () => redirect()->away(hub_url('profile')))->name('profile.edit');
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+        Route::post('/settings/monitoring', [SettingsController::class, 'updateMonitoring'])->name('settings.monitoring');
         Route::post('/settings/export', [SettingsController::class, 'exportData'])->name('settings.export');
         Route::post('/settings/export-analytics', [SettingsController::class, 'exportAnalytics'])->name('settings.export.analytics');
         Route::get('/api-docs', [ApiTokenController::class, 'docs'])->name('api-docs');

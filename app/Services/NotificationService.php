@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Mail\AdminNotification;
+use App\Mail\LinkDestinationBroken;
+use App\Models\Link;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -216,6 +218,28 @@ class NotificationService
             Log::error('Failed to send feature request notification', [
                 'error' => $e->getMessage(),
                 'data' => $data,
+            ]);
+        }
+    }
+
+    /**
+     * Tell the owner of a link that its destination has stopped answering (sent once per episode by
+     * links:check-destinations). Queued, in the owner's language.
+     */
+    public function notifyLinkBroken(Link $link, ?int $status = null): void
+    {
+        $owner = $link->user;
+        if (! $owner || blank($owner->email)) {
+            return;
+        }
+        try {
+            Mail::to($owner->email, $owner->name)
+                ->locale($owner->locale ?: config('app.locale'))
+                ->queue(new LinkDestinationBroken($link, $status));
+        } catch (\Exception $e) {
+            Log::error('Failed to send broken destination notification', [
+                'error' => $e->getMessage(),
+                'link_id' => $link->id,
             ]);
         }
     }
