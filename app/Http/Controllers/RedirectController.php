@@ -7,6 +7,7 @@ use App\Models\Link;
 use App\Models\RetiredSlug;
 use App\Services\LinkService;
 use App\Services\UserAgentService;
+use App\Support\Webhooks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
@@ -94,6 +95,7 @@ class RedirectController extends Controller
                 return $this->ended($link, 'limit');
             }
             $counted = true;
+            Webhooks::clickCounted($link);
         }
         $this->logClick($request, $link, $counted);
         if ($link->enable_preview && $request->query('skip_preview') !== '1') {

@@ -26,7 +26,7 @@ Source: the owner's blueprint built from the `awesome-url-shortener` directory (
 | 23 | Duplicate URL warning | **Done now** (Batch A: warns once, the same form sent again goes through) |
 | 24 | Notes and comments | Have |
 | 25 | Preview with a `+` suffix | Partly (`enable_preview`); the suffix is Later |
-| 5 | Bulk create, tag, delete | Partly (bulk delete); CSV import is **Next 8** |
+| 5 | Bulk create, tag, delete | Partly (bulk delete); CSV import **Done now** (Batch D: 500 rows, preview with a verdict per row, confirm) |
 | 5, 92 | Import from Bitly, Short.io, Rebrandly | Later (after CSV import) |
 
 ## Module 2: domains, TLS, high availability
@@ -69,8 +69,8 @@ Source: the owner's blueprint built from the `awesome-url-shortener` directory (
 | 78 | Destination allowlist or blocklist | Have (domain blacklist); allowlist Later |
 | 79 | Abuse reporting | Have |
 | 80-81 | REST API, scoped tokens | Have |
-| 82 | Idempotency keys | **Next 13** |
-| 83-84 | Webhooks with HMAC signature | **Next 14** (BioHop's `Webhooks` is the model) |
+| 82 | Idempotency keys | **Done now** (Batch D: `Idempotency-Key` on `POST /api/shorten`, 24 hours, 422 on a different body) |
+| 83-84 | Webhooks with HMAC signature | **Done now** (Batch D: five events, signed, retried, delivery log, test button, SSRF-safe) |
 | 85 | MCP server for AI agents | No (no AI features) |
 | 86 | SDKs and a CLI | Later |
 | 87 | Async click queue | Have (queue); Redis Streams not needed |
@@ -83,7 +83,7 @@ Source: the owner's blueprint built from the `awesome-url-shortener` directory (
 | 102 | Public status page | Have (`/status`) |
 
 ## UX rules (39-50)
-Command palette (39), live preview on paste (40), optimistic copy (41), slug check as you type (49): **Next 15**, as one editor round. A sandbox on the front page (42) is Have. Cursor pagination and virtual tables (44): Later, not needed until a user has thousands of links.
+Command palette (39), live preview on paste (40), optimistic copy (41), slug check as you type (49): **Done now** (Batch D, one editor round). A sandbox on the front page (42) is Have. Cursor pagination and virtual tables (44): Later, not needed until a user has thousands of links.
 
 ## Engineering rules (1-38) that matter here
 Zero-blocking redirect and negative caching are already how the redirect route works for the traffic LinkHop has; a separate Go engine, ClickHouse and PgBouncer are the wrong size for one VPS and would make self-hosting harder (MIT, "yours to host"). Anti-SSRF and loop rejection are in `hop/safety`. Revisit the data-plane split only when the redirect route shows up in a measurement.
