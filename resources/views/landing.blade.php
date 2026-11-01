@@ -1,21 +1,24 @@
-<x-marketing-layout title="LinkHop - Modern URL Shortener" :themed="true">
+@push('head')
+<link rel="stylesheet" href="{{ asset('hop-home/hop-home.css') }}">
+<script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-motion.js') }}" defer></script>
+@endpush
+<x-marketing-layout :title="'LinkHop · '.__('Short links')" :themed="true">
     @php
         $idleDays = config('shortener.guest_idle_days', 14);
         $maxDays = config('shortener.guest_max_days', 30);
         $card = 'rounded-3xl border border-slate-200/80 bg-white/80 shadow-xs shadow-slate-900/5 backdrop-blur-xl dark:border-white/10 dark:bg-white/5 dark:shadow-none';
-        $btnPrimary = 'rounded-xl bg-linear-to-r from-indigo-500 via-sky-500 to-fuchsia-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition hover:brightness-110 active:scale-[0.98]';
-        $btnSecondary = 'rounded-xl border border-slate-300 px-4 py-2.5 text-sm text-slate-700 transition hover:bg-slate-900/5 dark:border-white/15 dark:text-white/80 dark:hover:bg-white/10';
+        $sceneCopy = collect(['A bunny has a long link to share', 'Hop to hel.ink…', 'hel.ink makes it short', 'On to the destination', 'Arrived ✓', 'Two bunnies, far apart', 'One sends a link; hel.ink makes it short', 'The other gets :link', 'This link has a password', 'Password :dots', 'Unlocked ✓', 'Back home for the next link', 'Wrong password ✕', 'No hop this time'])->mapWithKeys(fn ($text) => [$text => __($text)])->all();
     @endphp
 
-    <div class="product-showcase link-showcase">
-    <section class="mx-auto grid max-w-6xl items-center gap-6 px-4 pb-4 pt-10 sm:pt-14 lg:grid-cols-[1.05fr_1fr]">
+    <div class="product-showcase link-showcase hop-home">
+    <section class="h-hero" aria-labelledby="link-title">
         <div class="min-w-0 text-center lg:text-left">
-        <p class="font-mono text-[11px] font-medium uppercase tracking-[0.3em] text-slate-500 dark:text-white/50">LinkHop · by hel.ink</p>
-        <h1 class="mt-4 text-[clamp(2rem,10vw,3rem)] font-extrabold leading-[1.02] tracking-[-0.045em] [overflow-wrap:anywhere] sm:text-7xl lg:text-[76px]">
-            hel.ink/<span class="hop-serif block bg-linear-to-r from-sky-500 via-indigo-500 to-fuchsia-500 bg-clip-text pr-2 text-transparent dark:from-sky-300 dark:via-indigo-300 dark:to-fuchsia-300">anything</span>
+        <p class="h-chip">LinkHop · hel.ink</p>
+        <h1 id="link-title">
+            {{ __('Small URL.') }} <em>{{ __('Serious possibilities.') }}</em>
         </h1>
-        <p class="mx-auto mt-5 max-w-xl text-base text-slate-600 sm:text-lg lg:mx-0 dark:text-white/65">
-            Turn a long, ugly link into one that's short, trackable and safe to share. Free, open source, no tracking ads.
+        <p class="h-lead">
+            {{ __('Turn a long link into one that is short, trackable and safe to share.') }}
         </p>
 
         <div class="{{ $card }} mx-auto mt-8 max-w-2xl p-2 text-left lg:mx-0 shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500/10 dark:shadow-2xl dark:shadow-black/30 dark:ring-0">
@@ -29,20 +32,20 @@
                 {{-- Row 1: link + Shorten. Row 2: advanced options and sign-up hint; the security check
                      (normal size) right under Shorten, shown only when Cloudflare asks for a click. --}}
                 <div class="flex flex-col gap-2 sm:flex-row">
-                    <label for="target_url" class="sr-only">Long URL</label>
+                    <label for="target_url" class="sr-only">{{ __('Long URL') }}</label>
                     <input id="target_url" type="url" name="target_url" value="{{ old('target_url') }}" required
-                        placeholder="Paste a long link…"
+                        placeholder="{{ __('Paste a long link…') }}"
                         class="min-w-0 flex-1 rounded-2xl border-0 bg-slate-100 px-4 py-3.5 text-[15px] text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-indigo-400/50 dark:bg-white/6 dark:text-white dark:placeholder-white/35 dark:focus:bg-white/9">
                     <button type="submit"
                         class="rounded-2xl bg-linear-to-r from-indigo-500 via-sky-500 to-fuchsia-500 px-6 py-3.5 font-semibold text-white shadow-md shadow-indigo-500/25 transition hover:brightness-110 active:scale-[0.98] disabled:opacity-50">
-                        <span x-show="!waiting">Shorten</span><span x-cloak x-show="waiting">Verifying…</span>
+                        <span x-show="!waiting">{{ __('Shorten') }}</span><span x-cloak x-show="waiting">{{ __('Verifying…') }}</span>
                     </button>
                 </div>
                 <div class="flex flex-col-reverse px-2 pb-1 pt-2 sm:flex-row sm:items-start sm:gap-4">
                     <div class="min-w-0 flex-1">
                         <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs"
                             x-bind:class="challenge && 'sm:flex-col sm:items-start sm:pt-2 sm:gap-y-3'">
-                            <a href="{{ route('register') }}" class="font-medium text-indigo-600 hover:underline dark:text-indigo-300">Join LinkHop for more features →</a>
+                            <a href="{{ route('register') }}" class="font-medium text-indigo-600 hover:underline dark:text-indigo-300">{{ __('Create free account') }} →</a>
                         </div>
                         <details id="guest-advanced" class="mt-2" @if(old('slug') || old('content_warning', 'none') !== 'none' || old('warning_reason') || $errors->hasAny(['slug', 'content_warning', 'warning_reason'])) open @endif>
                             <summary class="cursor-pointer py-2 text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-white/70 dark:hover:text-white">{{ __('Advanced') }}</summary>
@@ -78,22 +81,22 @@
                         </div>
                         <button type="button" class="rounded-xl bg-slate-900 px-3.5 py-2 text-sm font-semibold text-white dark:bg-white dark:text-slate-900"
                             x-on:click="navigator.clipboard.writeText(@js($shortened->short_url)); copied = true; setTimeout(() => copied = false, 2000)">
-                            <span x-text="copied ? 'Copied' : 'Copy'">Copy</span>
+                            <span x-text="copied ? @js(__('Copied')) : @js(__('Copy'))">{{ __('Copy') }}</span>
                         </button>
                     </div>
                     <p class="mt-2 text-xs text-slate-600 dark:text-white/60">
-                        Guest links are deleted after {{ $idleDays }} days in a row without a click, and after {{ $maxDays }} days at most.
-                        <a href="{{ route('register') }}" class="font-semibold text-indigo-600 underline-offset-2 hover:underline dark:text-white">Create a free account</a> to keep links permanently.
+                        {{ __('Guest links expire after :idle days without a click or :max days in total.', ['idle' => $idleDays, 'max' => $maxDays]) }}
+                        <a href="{{ route('register') }}" class="font-semibold text-indigo-600 underline-offset-2 hover:underline dark:text-white">{{ __('Create free account') }}</a>
                     </p>
                 </div>
             @else
                 <p class="px-3 pb-2 text-[11px] text-slate-500 dark:text-white/60">
-                    No account needed. Guest links are deleted after {{ $idleDays }} days without a click, and after {{ $maxDays }} days at most.
+                    {{ __('Guest links expire after :idle days without a click or :max days in total.', ['idle' => $idleDays, 'max' => $maxDays]) }}
                 </p>
             @endif
         </div>
         </div>
-        <div class="link-world" data-hop-scene data-mini>
+        <div class="link-world" data-hop-scene data-mini data-copy="{{ json_encode($sceneCopy) }}" data-rotate-label="{{ __('Rotate scene') }}">
             <p class="showcase-kicker">{{ __('A small link. A whole world.') }}</p>
             <div class="link-world-canvas" data-hop-canvas><img data-hop-fallback src="{{ route('brand.asset', 'linkhop-mark-gradient.svg') }}" alt="" width="160" height="160"></div>
             <p class="link-world-caption" data-hop-story>{{ __('A bunny takes your link from here to anywhere.') }}</p>
@@ -108,13 +111,13 @@
     </section>
 
     {{-- The hop: a holographic sea; islands rise, bunnies hop through hel.ink to where a link goes (resources/js/hop-hero.js) --}}
-    <details class="mx-auto mt-4 max-w-6xl select-none px-2 pb-8 sm:px-4 link-expanded-world" data-hop-demo>
-        <summary class="cursor-pointer rounded-2xl border border-slate-200 px-5 py-4 text-sm font-semibold dark:border-white/10">{{ __('How a short link works') }}</summary>
-    <section class="pt-5" aria-label="{{ __('How a short link works') }}" data-hop-scene>
+    <section class="h-sec link-expanded-world" data-hop-demo aria-labelledby="short-link-demo-heading">
+        <span class="h-tag">01 / LinkHop</span><h2 id="short-link-demo-heading" data-split><em>{{ __('How a short link works') }}</em></h2><p class="h-sub">{{ __('A bunny takes your link from here to anywhere.') }}</p>
+    <div class="pt-5" data-hop-scene data-copy="{{ json_encode($sceneCopy) }}" data-rotate-label="{{ __('Rotate scene') }}">
         <div class="flex flex-col items-center gap-2 px-2">
-            <div class="flex flex-wrap justify-center gap-2" role="group" aria-label="Play a scenario">
+            <div class="flex flex-wrap justify-center gap-2" role="group" aria-label="{{ __('Play a scenario') }}">
                 @foreach (['hop' => 'Hop to a link', 'share' => 'Share a link', 'pass-ok' => 'Password: right', 'pass-fail' => 'Password: wrong'] as $key => $label)
-                    <button type="button" data-hop-play="{{ $key }}" aria-pressed="false" class="hop-pill rounded-full border border-slate-200 bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-slate-600 backdrop-blur transition hover:border-indigo-300 hover:text-indigo-700 sm:text-[13px] dark:border-white/10 dark:bg-slate-900/60 dark:text-white/70 dark:hover:text-white">{{ $label }}</button>
+                    <button type="button" data-hop-play="{{ $key }}" aria-pressed="false" class="hop-pill rounded-full border border-slate-200 bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-slate-600 backdrop-blur transition hover:border-indigo-300 hover:text-indigo-700 sm:text-[13px] dark:border-white/10 dark:bg-slate-900/60 dark:text-white/70 dark:hover:text-white">{{ __($label) }}</button>
                 @endforeach
             </div>
             <p class="min-h-5 text-center text-[13px] font-semibold text-slate-500 dark:text-white/60" data-hop-story aria-live="polite"></p>
@@ -122,82 +125,23 @@
         <div class="relative h-[360px] sm:h-[420px]" data-hop-canvas>
             <img data-hop-fallback src="{{ route('brand.asset', 'linkhop-mark-gradient.svg') }}" alt="" class="absolute inset-0 m-auto h-32 w-auto opacity-80">
         </div>
+    </div>
     </section>
-    </details>
     @vite('resources/js/hop-hero.js')
 
     @include('partials.home-experience')
 
-    <section class="showcase-wrap showcase-section" aria-labelledby="tour-heading">
-        <p class="font-mono text-xs tracking-widest text-indigo-600 dark:text-indigo-300">01 / {{ __('Features') }}</p>
-        <h2 id="tour-heading">{{ __('Your links,') }} <span class="hop-serif">{{ __('in focus.') }}</span></h2>
-        <div class="mt-8 grid items-start gap-8 md:grid-cols-2 link-product-previews">
-            <article class="min-w-0"><x-feature-demo name="links" label="Short links" /><h3 class="text-xl font-semibold">{{ __('Short links') }}</h3><p class="mt-2 text-sm text-slate-600 dark:text-white/60">{{ __('Folders and tags, search, bulk actions, and comments on a link.') }}</p></article>
-            <article class="min-w-0 md:pt-16"><x-feature-demo name="analytics" label="Analytics" /><h3 class="text-xl font-semibold">{{ __('Analytics') }}</h3><p class="mt-2 text-sm text-slate-600 dark:text-white/60">{{ __('Clicks, unique visitors, countries and cities, devices, browsers and referrers, in real time, with CSV export. Visitors are counted with a keyed hash of their IP address, never the address itself.') }}</p></article>
-        </div>
-    </section>
-
-    {{-- Features --}}
-    <section id="features" class="showcase-wrap showcase-section">
-        <p class="mb-6 font-mono text-xs tracking-widest text-indigo-600 dark:text-indigo-300">02 / {{ __('Features') }}</p>
-        @php
-            $features = [
-                ['icon' => 'M4 20V10m6 10V4m6 16v-7', 'title' => 'Analytics', 'body' => 'Clicks over time, countries, cities, devices, referrers and networks.'],
-                ['icon' => 'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 18h2v2h-2z', 'title' => 'QR codes', 'body' => 'Styled QR codes with your logo, as PNG, SVG or JPG.'],
-                ['icon' => 'M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6l-8-3Z', 'title' => 'Protected links', 'body' => 'Passwords, expiry dates, redirect types and automatic abuse scanning.'],
-                ['icon' => 'M4 7h16M4 12h10M4 17h7', 'title' => 'Organised', 'body' => 'Folders, tags, bulk actions and a REST API for ShareX and tools.'],
-            ];
-        @endphp
-        <h2>{{ __('Small URL.') }} <span class="hop-serif">{{ __('Serious possibilities.') }}</span></h2>
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            @foreach ($features as $f)
-                <article class="showcase-card link-feature-card">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br from-indigo-500/15 to-fuchsia-500/15 dark:from-indigo-400/20 dark:to-fuchsia-400/15">
-                        <svg class="h-[18px] w-[18px] text-indigo-600 dark:text-indigo-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ $f['icon'] }}"/></svg>
-                    </div>
-                    <h3 class="mt-4 font-semibold">{{ __($f['title']) }}</h3>
-                    <p class="mt-1 text-[13px] leading-relaxed text-slate-600 sm:text-sm dark:text-white/60">{{ __($f['body']) }}</p>
-                </article>
-            @endforeach
-        </div>
-    </section>
+    <section class="h-sec" aria-labelledby="open-title"><span class="h-tag">04 / MIT</span><h2 id="open-title" data-split><em>{{ __('Free & open source') }}</em></h2><p class="h-sub">{{ __('Built with Laravel, Tailwind and Alpine.js. Use hel.ink or host it yourself.') }}</p><div class="h-cta"><a class="h-pill dark" href="https://github.com/navi-crwn/LinkHop">GitHub ↗</a></div></section>
 
     <section class="showcase-wrap showcase-section showcase-faq" aria-labelledby="home-faq">
         <p class="font-mono text-xs tracking-widest text-indigo-600 dark:text-indigo-300">03 / {{ __('FAQ') }}</p>
-        <h2 id="home-faq" class="my-6 text-3xl font-bold">{{ __('FAQ') }}</h2>
+        <h2 id="home-faq" data-split><em>{{ __('FAQ') }}</em></h2><p class="h-sub">{{ __('Small URL.') }} {{ __('Serious possibilities.') }}</p>
         @foreach (['Is it really free?' => 'Yes. There is no paid plan and no locked feature, and the code is MIT licensed.', 'Do I need an account?' => 'Not to shorten a link. A free HOP ID keeps your links, shows their stats, and also signs you in to BioHop, PixelHop and NoteHop.', 'What does a click record?' => 'The time, country and city, device, browser and referrer, plus a keyed hash of the IP address for counting unique visitors. Never the IP address itself.'] as $question => $answer)
             <details class="border-b border-slate-200 py-5 dark:border-white/15"><summary class="cursor-pointer text-lg font-semibold">{{ __($question) }}</summary><p class="mt-4 max-w-3xl text-slate-600 dark:text-white/65">{{ __($answer) }}</p></details>
         @endforeach
     </section>
 
-    {{-- Call to action + family --}}
-    <section class="mx-auto grid max-w-6xl gap-3 px-4 pb-6 md:grid-cols-3">
-        <div class="{{ $card }} p-6 md:col-span-3">
-            <h2 class="text-xl font-semibold">Open source, free forever</h2>
-            <p class="mt-2 text-sm text-slate-600 dark:text-white/60">Built with Laravel, Tailwind and Alpine.js. Use hel.ink or host it yourself.</p>
-            <div class="mt-5 flex flex-wrap gap-2">
-                <a href="{{ route('register') }}" class="{{ $btnPrimary }}">Create free account</a>
-                <a href="https://github.com/navi-crwn/LinkHop" target="_blank" rel="noopener" class="{{ $btnSecondary }}">GitHub</a>
-            </div>
-        </div>
-        <a href="{{ config('hop.apps.biohop.url', 'https://bio.hel.ink') }}" class="{{ $card }} group block p-6 transition hover:bg-white dark:hover:bg-white/8">
-            <p class="text-xs font-semibold uppercase tracking-wider text-cyan-700 dark:text-cyan-200/80">HOP family</p>
-            <h2 class="mt-2 text-xl font-semibold">BioHop</h2>
-            <p class="mt-2 text-sm text-slate-600 dark:text-white/60">All your links on one page: themes, social icons, embeds and click stats.</p>
-            <p class="mt-4 text-sm font-medium text-cyan-700 group-hover:underline dark:text-cyan-200">bio.hel.ink →</p>
-        </a>
-        <a href="https://pixel.hel.ink" target="_blank" rel="noopener" class="{{ $card }} group block p-6 transition hover:bg-white dark:hover:bg-white/8">
-            <p class="text-xs font-semibold uppercase tracking-wider text-cyan-700 dark:text-cyan-200/80">HOP family</p>
-            <h2 class="mt-2 text-xl font-semibold">PixelHop</h2>
-            <p class="mt-2 text-sm text-slate-600 dark:text-white/60">Free image hosting with compress, resize, convert, OCR and background removal.</p>
-            <p class="mt-4 text-sm font-medium text-cyan-700 group-hover:underline dark:text-cyan-200">pixel.hel.ink →</p>
-        </a>
-        <a href="https://note.hel.ink" target="_blank" rel="noopener" class="{{ $card }} group block p-6 transition hover:bg-white dark:hover:bg-white/8">
-            <p class="text-xs font-semibold uppercase tracking-wider text-cyan-700 dark:text-cyan-200/80">HOP family</p>
-            <h2 class="mt-2 text-xl font-semibold">NoteHop</h2>
-            <p class="mt-2 text-sm text-slate-600 dark:text-white/60">Encrypted notes you share with a link: delete after reading, write together, polls and checklists.</p>
-            <p class="mt-4 text-sm font-medium text-cyan-700 group-hover:underline dark:text-cyan-200">note.hel.ink →</p>
-        </a>
-    </section>
+    <section class="h-sec" aria-labelledby="family-title"><span class="h-tag">06 / HOP</span><h2 id="family-title" data-split><em>{{ __('HOP family') }}</em></h2><p class="h-sub">{{ __('One free HOP ID signs you in to every app.') }}</p><div class="h-grid">@foreach (collect(\Hop\Ui\Assets::family('linkhop'))->reject(fn ($app) => $app['current']) as $app)<a class="h-pill" href="{{ $app['url'] }}"><img src="{{ $app['icons']['mark']['url'] }}" alt="" width="32" height="32" loading="lazy">{{ $app['name'] }}</a>@endforeach</div></section>
+    <section class="h-sec h-final" aria-labelledby="final-title"><span class="h-tag">07 / LinkHop</span><h2 id="final-title" data-split>{{ __('Less link.') }} <em>{{ __('More possibility.') }}</em></h2><p class="h-sub">{{ __('Shorten. Share. Understand.') }}</p><div class="h-cta"><a class="h-pill dark" href="#target_url">{{ __('Shorten') }}</a><a class="h-pill" href="{{ route('register') }}">{{ __('Create free account') }}</a></div></section>
     </div>
 </x-marketing-layout>

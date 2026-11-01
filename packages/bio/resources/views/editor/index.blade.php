@@ -550,6 +550,7 @@
 </style>
 @endpush
 @section('content')
+<p id="bio-storage-warning" role="status" class="p-4 text-amber-700 dark:text-amber-300" hidden></p>
 <div x-data="window.bioEditorV2()">
     <!-- Screen reader announcements (reorder, save results) -->
     <div class="sr-only" role="status" aria-live="polite" aria-atomic="true" x-text="announcement"></div>
@@ -1547,6 +1548,24 @@
 @endsection
 @push('scripts-head')
 <script nonce="{{ Vite::cspNonce() }}">
+(function () {
+    function refreshStorage() {
+        fetch(@json(route('bio.upload-status')), { cache: 'no-store', headers: { Accept: 'application/json' } })
+            .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+            .then(status => {
+                const warning = document.getElementById('bio-storage-warning');
+                if (!warning) return;
+                warning.hidden = status.available;
+                warning.textContent = status.message;
+                document.querySelectorAll('input[type="file"]').forEach(input => {
+                    if (!status.available && !input.disabled) { input.dataset.storagePaused = '1'; input.disabled = true; }
+                    else if (status.available && input.dataset.storagePaused) { delete input.dataset.storagePaused; input.disabled = false; }
+                });
+            }).catch(() => {});
+    }
+    refreshStorage();
+    setInterval(() => { if (!document.hidden) refreshStorage(); }, 30000);
+})();
 // Editor API URLs follow the *saved* slug, so renaming the page doesn't break later requests.
 window.bioEditorSlug = @json($bioPage->slug);
 window.bioEditorUrl = (path = '') => '/bio/' + encodeURIComponent(window.bioEditorSlug) + path;
@@ -2250,7 +2269,7 @@ window.bioEditorV2 = function() {
                 )
             );
         },
-        uploadAvatar(event) {
+        async uploadAvatar(event) {
             const file = event.target.files[0];
             if (!file) return;
             // Validate file size (max 2MB)
@@ -2265,10 +2284,17 @@ window.bioEditorV2 = function() {
                 event.target.value = '';
                 return;
             }
+            // Avatar updates share the page-save lane and its revision token.
+            if (this._saveInFlight) {
+                this.showNotification('Please wait for the current save, then upload the avatar.', 'info');
+                event.target.value = '';
+                return;
+            }
+            this._saveInFlight = true;
             const formData = new FormData();
             formData.append('avatar', file);
             this.showNotification('Uploading avatar...', 'info');
-            fetch(bioEditorUrl('/upload-avatar'), {
+            await fetch(bioEditorUrl('/upload-avatar'), {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -2289,6 +2315,7 @@ window.bioEditorV2 = function() {
                     // Store just the path without /storage/ prefix for consistency
                     const avatarPath = data.avatar_url.replace('/storage/', '');
                     this.bioPage.avatar_url = avatarPath;
+                    this.noteRevision(data.page_updated_at);
                     this.showNotification('Avatar uploaded!', 'success');
                 } else if (data.success === false) {
                     throw new Error(data.message || 'Upload failed');
@@ -2300,6 +2327,11 @@ window.bioEditorV2 = function() {
             })
             .finally(() => {
                 event.target.value = '';
+                this._saveInFlight = false;
+                if (this._saveQueued) {
+                    this._saveQueued = false;
+                    this.saveBioPage();
+                }
             });
         },
         uploadBackgroundImage(event) {
@@ -2319,9 +2351,11 @@ window.bioEditorV2 = function() {
                     this.bioPage.background_value = data.url;
                     this.bioPage.background_type = 'image';
                     this.showNotification('Background uploaded!', 'success');
+                } else {
+                    throw new Error(data.message || 'Upload failed');
                 }
             })
-            .catch(() => this.showNotification('Failed to upload', 'error'));
+            .catch(error => this.showNotification(error.message || 'Failed to upload', 'error'));
         },
         applyTheme(themeId) {
             this.bioPage.theme = themeId;
@@ -3943,4 +3977,3 @@ window.bioEditorV2 = function() {
 }
 </script>
 @endpush
-
