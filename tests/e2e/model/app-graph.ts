@@ -141,17 +141,13 @@ export const ACTIONS: Action[] = [
     // Log out ends here and goes on to the hub (another host): the suite only follows the first hop.
     id: 'logout', from: 'any-user', to: 'guest_check',
     run: async ({ page }) => {
-      // The cookie banner sits on top of the sidebar's log out button; a person dismisses it first.
-      const decline = page.locator('button:has-text("Decline")').first();
-      if (await decline.isVisible().catch(() => false)) await decline.click();
-      let btn = page.locator('button[aria-label="Log out"]').first();
-      if (!(await btn.isVisible().catch(() => false))) {
-        // Public pages and the mobile layout have no visible log out button: use the dashboard's.
+      // The log out form lives in the account menu (a hidden field is enough: only its token is needed).
+      let form = page.locator('form[action$="/logout"]').first();
+      if (!(await form.count())) {
+        // Public pages have no account menu: use the dashboard's.
         await page.goto('/dashboard');
-        if (await decline.isVisible().catch(() => false)) await decline.click();
-        btn = page.locator('button[aria-label="Log out"]').first();
+        form = page.locator('form[action$="/logout"]').first();
       }
-      const form = btn.locator('xpath=ancestor::form[1]');
       const token = await form.locator('input[name=_token]').inputValue();
       // Submit the form through the request API: the browser would follow the redirect to the hub.
       const res = await page.request.post('/logout', { form: { _token: token }, maxRedirects: 0 });
