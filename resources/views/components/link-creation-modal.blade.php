@@ -10,7 +10,7 @@
     x-transition:leave="transition ease-in duration-150"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
-    class="fixed inset-0 z-40 flex items-center justify-center p-4"
+    class="fixed inset-0 z-[60] flex items-center justify-center p-4"
     @keydown.escape.window="if (!showOgEditor && !showFolderModal && !showTagModal && !showQrEditor) { panel = false; }"
 >
     <div @click="if (!showOgEditor && !showFolderModal && !showTagModal && !showQrEditor) { closePanel(); }" class="absolute inset-0 bg-slate-950/60 backdrop-blur-xs"></div>
@@ -279,6 +279,21 @@
                                     >
                                 </div>
                                 <div>
+                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{{ __('Starts at') }} <span class="font-normal text-slate-400">(UTC)</span></label>
+                                    <input type="datetime-local" x-model="formData.starts_at" class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:ring-blue-500">
+                                    <p class="mt-1 text-xs text-slate-500">{{ __('Until then the link says it is not live yet.') }}</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{{ __('Stop after this many clicks') }}</label>
+                                    <input type="number" min="1" max="10000000" inputmode="numeric" x-model="formData.max_clicks" placeholder="{{ __('Leave empty for no limit') }}" class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:ring-blue-500">
+                                    <p class="mt-1 text-xs text-slate-500">{{ __('Visits by crawlers and link-preview bots are not counted.') }}</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{{ __('When the link has ended, send visitors to') }}</label>
+                                    <input type="url" x-model="formData.fallback_url" placeholder="https://" class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:ring-blue-500">
+                                    <p class="mt-1 text-xs text-slate-500">{{ __('Used after the expiry date or when the clicks run out. Empty shows a notice.') }}</p>
+                                </div>
+                                <div>
                                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                                         Password Protection
                                     </label>
@@ -300,6 +315,7 @@
                                         <option value="302">302 (Temporary)</option>
                                         <option value="301">301 (Permanent)</option>
                                         <option value="307">307 (Temporary, Keep Method)</option>
+                                        <option value="308">308 (Permanent, Keep Method)</option>
                                     </select>
                                 </div>
                             </div>
@@ -908,6 +924,9 @@ function linkCreationModal() {
             comment: '',
             status: 'active',
             expires_at: '',
+            starts_at: '',
+            max_clicks: '',
+            fallback_url: '',
             password: '',
             redirect_type: '302'
         },
@@ -952,6 +971,9 @@ function linkCreationModal() {
                 comment: '',
                 status: 'active',
                 expires_at: '',
+                starts_at: '',
+                max_clicks: '',
+                fallback_url: '',
                 password: '',
                 redirect_type: '302'
             };
@@ -985,6 +1007,9 @@ function linkCreationModal() {
                 folder_id: this.formData.folder_id || null,
                 tags: this.formData.tags || [],
                 expires_at: this.formData.expires_at || null,
+                starts_at: this.formData.starts_at || null,
+                max_clicks: this.formData.max_clicks ? Number(this.formData.max_clicks) : null,
+                fallback_url: this.formData.fallback_url || null,
                 password: this.formData.password || null,
                 redirect_type: this.formData.redirect_type || '302',
                 comment: this.formData.comment || null,

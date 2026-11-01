@@ -26,6 +26,9 @@ class Link extends Model
         'folder_id',
         'password_hash',
         'expires_at',
+        'max_clicks',
+        'starts_at',
+        'fallback_url',
         'redirect_type',
         'custom_title',
         'custom_description',
@@ -40,6 +43,8 @@ class Link extends Model
         'clicks' => 'integer',
         'last_clicked_at' => 'datetime',
         'expires_at' => 'datetime',
+        'starts_at' => 'datetime',
+        'max_clicks' => 'integer',
     ];
 
     public const STATUS_ACTIVE = 'active';
@@ -104,6 +109,8 @@ class Link extends Model
     {
         return $query->where('links.status', self::STATUS_ACTIVE)
             ->where(fn ($q) => $q->whereNull('links.expires_at')->orWhere('links.expires_at', '>', now()))
+            ->where(fn ($q) => $q->whereNull('links.starts_at')->orWhere('links.starts_at', '<=', now()))
+            ->where(fn ($q) => $q->whereNull('links.max_clicks')->orWhereColumn('links.clicks', '<', 'links.max_clicks'))
             ->whereNot(fn ($q) => $q->guestExpired());
     }
 
@@ -114,7 +121,27 @@ class Link extends Model
     {
         return $query->where(fn ($q) => $q->where('links.status', '!=', self::STATUS_ACTIVE)
             ->orWhere('links.expires_at', '<=', now())
+            ->orWhere(fn ($m) => $m->whereNotNull('links.max_clicks')->whereColumn('links.clicks', '>=', 'links.max_clicks'))
             ->orWhere(fn ($g) => $g->guestExpired()));
+    }
+
+    /**
+     * One address, compared the way people mean it: scheme and host in lower case,
+     * no fragment, no trailing slash on a bare path.
+     */
+    public static function normalizeUrl(string $url): string
+    {
+        $parts = parse_url(trim($url));
+        if (! $parts || empty($parts['host'])) {
+            return trim($url);
+        }
+        $path = $parts['path'] ?? '';
+        $path = $path === '/' ? '' : rtrim($path, '/');
+
+        return strtolower($parts['scheme'] ?? 'https').'://'.strtolower($parts['host'])
+            .(isset($parts['port']) ? ':'.$parts['port'] : '')
+            .$path
+            .(isset($parts['query']) ? '?'.$parts['query'] : '');
     }
 
     /** The public form of the link: PUBLIC_URL/l/{slug} (see config/shortener.php). */
@@ -147,6 +174,24 @@ class Link extends Model
     {
         return ($this->expires_at !== null && now()->greaterThan($this->expires_at))
             || $this->isGuestExpired();
+    }
+
+    /** Not live yet: a start time is set and has not come. */
+    public function isNotStarted(): bool
+    {
+        return $this->starts_at !== null && now()->lessThan($this->starts_at);
+    }
+
+    /** Out of clicks: a limit is set and that many people have already come. */
+    public function isLimitReached(?int $counted = null): bool
+    {
+        return $this->max_clicks !== null && ($counted ?? (int) $this->clicks) >= $this->max_clicks;
+    }
+
+    /** Over for good or for now: expired or out of clicks (a link that has not started is not "ended"). */
+    public function hasEnded(): bool
+    {
+        return $this->isExpired() || $this->isLimitReached();
     }
 
     /**
