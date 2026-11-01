@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Dashboard chrome
+- The top bar holds settings-type controls (primary action, language, theme and an account menu with your HOP ID, settings and sign out). The other HOP apps are listed once, in the sidebar, with their marks; the app pill and grid are gone from the top bar, and the sidebar's user card became the account menu.
+
 ### LinkHop becomes a HOP ID consumer (Fase C, 28 October 2026)
 The accounts moved to the hub (`navi-crwn/HEL.ink`, hel.ink + hub.hel.ink); LinkHop keeps the links. Nothing changes for production until the family cutover (`APP_URL` decides the host).
 - **Sign-in through the hub.** `/login` starts the hub's SSO (`hop/auth`: `/auth/sso`, `/auth/sso/callback`, `/auth/sso/logout`); a verified ticket signs the same user in from the shared `users` table (`Auth::loginUsingId`). `/logout` ends the session here and goes on to the hub, which ends it in the other apps. Protected pages use the `hop.auth` middleware. A suspended account (`users.status`) is signed out and sent to the hub's notice

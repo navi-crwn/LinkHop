@@ -89,13 +89,13 @@ test('/logout ends the session here and goes on to the hub; the hub chain uses /
     $this->actingAs($user)->get('/auth/sso/logout?next=https://evil.example/')->assertRedirect('/');
 });
 
-test('the dashboard shows the HOP app switcher and links the account pages to the hub', function () {
+test('the dashboard lists the HOP family in the sidebar and links the account pages to the hub', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user)->get('/dashboard')->assertOk()
-        ->assertSee('aria-label="HOP apps"', false)
+        ->assertSee('HOP family')->assertDontSee('aria-label="HOP Family"', false)->assertSee('hop-account', false)
         ->assertSee('https://hub.example.test/profile')
-        ->assertSee('BioHop')->assertSee('PixelHop');
+        ->assertSee('BioHop')->assertSee('PixelHop')->assertSee('NoteHop');
     $this->actingAs($user)->get('/profile')->assertRedirect('https://hub.example.test/profile');
     $this->actingAs($user)->get('/settings')->assertOk()->assertSee('https://hub.example.test/settings')->assertDontSee('Two-Factor Authentication');
 });
