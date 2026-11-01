@@ -148,11 +148,18 @@
                                     type="url" 
                                     x-model="formData.target_url"
                                     @input="error = ''; debouncedFetchOg(); if(!formData.slug) { debouncedGenerateSlug(); }"
+                                    @paste="$nextTick(() => { clearTimeout(ogFetchTimeout); fetchOgData(); })"
                                     placeholder="https://example.com"
                                     required
                                     class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:ring-blue-500"
                                 >
                                 <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Enter the long URL you want to shorten</p>
+                                {{-- Preview of the page you pasted (the same lookup as the social card) --}}
+                                <div x-show="ogLoading || ogData.title" x-cloak class="mt-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 dark:border-slate-700 dark:bg-slate-800/60" aria-live="polite">
+                                    <p x-show="ogLoading && !ogData.title" class="text-xs text-slate-500 dark:text-slate-400">{{ __('Looking up the page…') }}</p>
+                                    <p x-show="ogData.title" class="truncate text-sm font-medium text-slate-800 dark:text-slate-100" x-text="ogData.title"></p>
+                                    <p x-show="ogData.description" class="line-clamp-2 text-xs text-slate-500 dark:text-slate-400" x-text="ogData.description"></p>
+                                </div>
                             </div>
                             <x-utm-builder target="modal-target-url" />
                             <div>
@@ -164,6 +171,7 @@
                                         type="text" 
                                         x-model="formData.slug"
                                         @input="generateQrPreview()"
+                                        @input.debounce.350ms="slugCheck.run(formData.slug)"
                                         placeholder="custom-slug"
                                         pattern="[a-zA-Z0-9_\-]+"
                                         class="flex-1 rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:ring-blue-500"
@@ -177,6 +185,8 @@
                                     </button>
                                 </div>
                                 <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Leave empty for auto-generated slug</p>
+                                <p x-show="slugCheck.state === 'ok' || slugCheck.state === 'bad'" x-cloak x-text="slugCheck.message" role="status" aria-live="polite"
+                                   class="mt-1 text-xs" :class="slugCheck.state === 'ok' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'"></p>
                             </div>
                             <div>
                                 <div class="flex items-center justify-between mb-2">
@@ -901,6 +911,7 @@ function linkCreationModal() {
         newTagName: '',
         ogFetchTimeout: null,
         slugGenerateTimeout: null,
+        slugCheck: window.hopSlugChecker('{{ route('links.slug-check') }}'),
         showColorPicker: false,
         qrColorPresets: ['#000000', '#1e40af', '#dc2626', '#059669', '#7c3aed', '#db2777'],
         folderSuccess: false,
@@ -991,6 +1002,7 @@ function linkCreationModal() {
             };
             this.qrPreviewUrl = null;
             this.showAdvanced = false;
+            this.slugCheck.run('');
         },
         normalizedUrl() {
             const url = (this.formData.target_url || '').trim();
@@ -1121,6 +1133,7 @@ function linkCreationModal() {
             }
             this.formData.slug = slug;
             this.generateQrPreview();
+            this.slugCheck.run(slug);
         },
         generateQrPreview() {
             if (this.formData.slug) {

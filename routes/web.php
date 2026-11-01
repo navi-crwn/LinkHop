@@ -5,12 +5,14 @@ use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ApiTokenController;
 use App\Http\Controllers\BrandAssetController;
 use App\Http\Controllers\ChangelogController;
+use App\Http\Controllers\EditorToolsController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\Internal\AccountDataController;
 use App\Http\Controllers\LegacySlugController;
 use App\Http\Controllers\LinkCheckController;
 use App\Http\Controllers\LinkCommentController;
 use App\Http\Controllers\LinkController;
+use App\Http\Controllers\LinkImportController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PublicLinkController;
 use App\Http\Controllers\QrController;
@@ -19,6 +21,7 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\WebhookController;
 use App\Support\CspReport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -64,6 +67,13 @@ Route::middleware('ip.ban')->group(function () {
         Route::get('/analytics', AnalyticsController::class)->name('analytics');
         Route::get('links/create', [LinkController::class, 'create'])->name('links.create');
         Route::post('links/fetch-og', [LinkController::class, 'fetchOgData'])->name('links.fetch-og');
+        // CSV import and the editor helpers (slug check, command palette): above the links resource, whose {link} would catch them.
+        Route::get('links/import', [LinkImportController::class, 'show'])->name('links.import');
+        Route::get('links/import/sample', [LinkImportController::class, 'sample'])->name('links.import.sample');
+        Route::post('links/import', [LinkImportController::class, 'preview'])->middleware('throttle:10,1,link-import')->name('links.import.preview');
+        Route::post('links/import/confirm', [LinkImportController::class, 'commit'])->middleware('throttle:10,1,link-import')->name('links.import.commit');
+        Route::get('links/slug-check', [EditorToolsController::class, 'slugCheck'])->middleware('throttle:90,1,slug-check')->name('links.slug-check');
+        Route::get('palette/links', [EditorToolsController::class, 'links'])->middleware('throttle:90,1,palette')->name('palette.links');
         Route::get('links/{link}/qr/{format}', [LinkController::class, 'downloadQr'])
             ->where('format', 'png|svg|jpg')
             ->name('links.qr.download');
@@ -76,6 +86,13 @@ Route::middleware('ip.ban')->group(function () {
         Route::post('/settings/monitoring', [SettingsController::class, 'updateMonitoring'])->name('settings.monitoring');
         Route::post('/settings/export', [SettingsController::class, 'exportData'])->name('settings.export');
         Route::post('/settings/export-analytics', [SettingsController::class, 'exportAnalytics'])->name('settings.export.analytics');
+        Route::middleware('throttle:30,1,webhooks')->prefix('/settings/webhooks')->name('webhooks.')->group(function () {
+            Route::post('/', [WebhookController::class, 'store'])->name('store');
+            Route::patch('/{endpoint}', [WebhookController::class, 'update'])->whereNumber('endpoint')->name('update');
+            Route::delete('/{endpoint}', [WebhookController::class, 'destroy'])->whereNumber('endpoint')->name('destroy');
+            Route::post('/{endpoint}/test', [WebhookController::class, 'test'])->whereNumber('endpoint')->name('test');
+            Route::post('/{endpoint}/rotate', [WebhookController::class, 'rotate'])->whereNumber('endpoint')->name('rotate');
+        });
         Route::get('/api-docs', [ApiTokenController::class, 'docs'])->name('api-docs');
         Route::post('/api/sharex-config', [ApiTokenController::class, 'sharexConfig'])->name('api.sharex-config');
         Route::get('/folders', [FolderController::class, 'index'])->name('folders.index');
