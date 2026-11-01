@@ -18,6 +18,7 @@ Source: the owner's blueprint built from the `awesome-url-shortener` directory (
 | 11-13 | Redirect by country, device, OS, browser, language | **Done now** (Batch B: up to 20 rules per link, first match wins, conditions combine, crawlers get the default) |
 | 15 | A/B split by weight | **Done now** (Batch B: 2 to 5 variants, keyed visitor hash, clicks per variant) |
 | 16 | UTM builder with presets | **Done now** (Batch B: `x-utm-builder`, presets in code, nothing stored) |
+| — | Deep links: open the app on iOS and Android, with the store as fallback | **Done now** (`app_links`: recognised places or typed app addresses, a small page that tries the app first; owner request 2026-11-02) |
 | 17 | Forward query parameters | Later |
 | 18 | Custom social card (title, description, picture) | Have (served to chat bots) |
 | 19 | Link cloaking in an iframe | No (hides the destination, bad for abuse handling) |
