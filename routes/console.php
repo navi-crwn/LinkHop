@@ -11,6 +11,8 @@ Artisan::command('inspire', function () {
 Schedule::command('clicks:purge')->daily();
 Schedule::command('privacy:prune')->dailyAt('03:15')->withoutOverlapping();
 Schedule::command('geolite:update')->weeklyOn(1, '02:00');
+// Destinations of live links: a bounded batch per run, the longest-unchecked first (config/shortener.php, monitor).
+Schedule::command('links:check-destinations')->hourly()->withoutOverlapping();
 Schedule::command('queue:health')->everyFifteenMinutes();
 Schedule::job(new QueueHeartbeat)->everyTwoMinutes();
 // Abuse/spam sweep: new & edited items hourly (with external reputation lookups),

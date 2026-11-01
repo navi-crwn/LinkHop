@@ -1124,8 +1124,7 @@ function linkCreationModal() {
         },
         generateQrPreview() {
             if (this.formData.slug) {
-                const baseUrl = '{{ url('') }}';
-                const shortUrl = `${baseUrl}/${this.formData.slug}`;
+                const shortUrl = `{{ public_url('l') }}/${this.formData.slug}?src=qr`;
                 const fgColor = this.qrSettings.fgColor.replace('#', '');
                 const bgColor = this.qrSettings.bgColor.replace('#', '');
                 this.qrPreviewUrl = `{{ route('api.qr.generate') }}?size=200&data=${encodeURIComponent(shortUrl)}&color=${fgColor}&bgcolor=${bgColor}`;
@@ -1234,8 +1233,7 @@ function linkCreationModal() {
         },
         generateQrUrl() {
             if (!this.formData.slug) return '';
-            const baseUrl = '{{ url('') }}';
-            const shortUrl = `${baseUrl}/${this.formData.slug}`;
+            const shortUrl = `{{ public_url('l') }}/${this.formData.slug}?src=qr`;
             const fgColor = this.qrSettings.fgColor.replace('#', '');
             const bgColor = this.qrSettings.bgColor.replace('#', '');
             return `{{ route('api.qr.generate') }}?size=400&data=${encodeURIComponent(shortUrl)}&color=${fgColor}&bgcolor=${bgColor}`;

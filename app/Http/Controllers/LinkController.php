@@ -10,6 +10,7 @@ use App\Models\LinkClick;
 use App\Services\LinkService;
 use App\Services\QuotaService;
 use App\Services\UserAgentService;
+use App\Support\ClickInsights;
 use App\Support\DashboardStats;
 use App\Support\LinkRouting;
 use GuzzleHttp\Client;
@@ -395,6 +396,7 @@ class LinkController extends Controller
             'osStats' => $osStats,
             'referers' => $referers,
             'totalClicks' => $totalClicks,
+            'insights' => ClickInsights::summarize($clicksQuery->clone()),
         ]);
     }
 
@@ -418,7 +420,7 @@ class LinkController extends Controller
             ->errorCorrection('H')
             ->backgroundColor($bgColor['r'], $bgColor['g'], $bgColor['b'])
             ->color($fgColor['r'], $fgColor['g'], $fgColor['b'])
-            ->generate($link->short_url);
+            ->generate($link->qr_url);
         if (filled($link->qr_logo_url) && in_array($format, ['png', 'jpg'])) {
             $qrCode = $this->links->overlayLogo($qrCode, $link->qr_logo_url);
         }

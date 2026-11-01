@@ -138,6 +138,17 @@
                         <h3 class="text-base font-semibold text-ink">Notification Preferences</h3>
                         <p class="text-sm text-muted">Manage how you receive notifications</p>
                     </div>
+                    <form method="POST" action="{{ route('settings.monitoring') }}" class="glass-inset rounded-xl p-4">
+                        @csrf
+                        <label class="flex items-start gap-3">
+                            <input type="checkbox" name="monitor_destinations" value="1" class="mt-1 h-4 w-4 shrink-0 rounded border-slate-300" @checked(auth()->user()->monitor_destinations)>
+                            <span class="min-w-0">
+                                <span class="block font-medium text-ink">{{ __('Check where my links point') }}</span>
+                                <span class="mt-1 block text-sm text-muted">{{ __('Once a day LinkHop asks the address behind each of your live links whether it still answers. If one stops, you see a note on the link and get one email until it works again.') }}</span>
+                            </span>
+                        </label>
+                        <button type="submit" class="btn-primary btn-sm mt-3">{{ __('Save') }}</button>
+                    </form>
                     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-900/30 dark:bg-yellow-900/20">
                         <p class="text-sm text-yellow-800 dark:text-yellow-200">
                             📧 Email notifications will be available once the emailing feature is configured. You'll be able to receive alerts for:

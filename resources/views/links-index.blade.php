@@ -99,6 +99,9 @@
                                 @if ($link->ab_variants)
                                     <span class="chip-blue whitespace-nowrap" title="{{ __('A/B split') }}">A/B</span>
                                 @endif
+                                @if ($link->isBroken())
+                                    <span class="chip-amber whitespace-nowrap" title="{{ __('Since :date', ['date' => $link->broken_since->toDateString()]) }}{{ $link->last_status ? ' · HTTP '.$link->last_status : '' }}">{{ __('Destination not responding') }}</span>
+                                @endif
                                 @if ($link->requiresPassword())
                                     <span class="chip-blue" title="Password protected">🔒</span>
                                 @endif
