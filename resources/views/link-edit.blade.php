@@ -29,6 +29,7 @@
                     <label class="label" for="target_url">Destination URL</label>
                     <input id="target_url" type="url" name="target_url" value="{{ old('target_url', $link->target_url) }}" required class="input">
                 </div>
+                <x-utm-builder target="target_url" />
                 <div class="grid gap-3 sm:grid-cols-3">
                     <div class="sm:col-span-2">
                         <label class="label" for="slug">Slug</label>
@@ -144,6 +145,8 @@
                 </div>
             </div>
         </div>
+
+        <x-link-routing-fields :link="$link" :section="true" />
 
         <div class="grid gap-4 p-5 md:grid-cols-3">
             <div>
