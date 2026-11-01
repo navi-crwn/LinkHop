@@ -154,7 +154,7 @@
                     </form>
                     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-900/30 dark:bg-yellow-900/20">
                         <p class="text-sm text-yellow-800 dark:text-yellow-200">
-                            📧 Email notifications will be available once the emailing feature is configured. You'll be able to receive alerts for:
+                            📧 More email notifications will be available once the emailing feature is configured. You'll be able to receive alerts for:
                         </p>
                         <ul class="mt-2 text-sm text-yellow-800 dark:text-yellow-200 space-y-1">
                             <li>• New link clicks</li>
