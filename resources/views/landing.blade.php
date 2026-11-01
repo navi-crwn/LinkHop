@@ -1,6 +1,7 @@
 @push('head')
 <link rel="stylesheet" href="{{ asset('hop-home/hop-home.css') }}">
 <script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-motion.js') }}" defer></script>
+<script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-home.js') }}" defer></script>
 @endpush
 <x-marketing-layout :title="'LinkHop · '.__('Short links')" :themed="true">
     @php
@@ -11,17 +12,9 @@
     @endphp
 
     <div class="product-showcase link-showcase hop-home">
-    <section class="h-hero" aria-labelledby="link-title">
-        <div class="min-w-0 text-center lg:text-left">
-        <p class="h-chip">LinkHop · hel.ink</p>
-        <h1 id="link-title">
-            {{ __('Small URL.') }} <em>{{ __('Serious possibilities.') }}</em>
-        </h1>
-        <p class="h-lead">
-            {{ __('Turn a long link into one that is short, trackable and safe to share.') }}
-        </p>
-
-        <div class="{{ $card }} mx-auto mt-8 max-w-2xl p-2 text-left lg:mx-0 shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500/10 dark:shadow-2xl dark:shadow-black/30 dark:ring-0">
+    <section class="h-hero h-tool" aria-labelledby="link-title">
+        <div class="min-w-0">
+        <div class="h-tool-box {{ $card }} p-2 text-left shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500/10 dark:shadow-2xl dark:shadow-black/30 dark:ring-0">
             <form
                 x-data="turnstileForm(@js(config('services.turnstile.site_key')))"
                 x-on:submit="handleSubmit($event)"
@@ -95,6 +88,10 @@
                 </p>
             @endif
         </div>
+        <p class="h-chip">LinkHop · hel.ink</p>
+        <h1 id="link-title">{{ __('Small URL.') }} <em>{{ __('Serious possibilities.') }}</em></h1>
+        <p class="h-lead">{{ __('Turn a long link into one that is short, trackable and safe to share.') }}</p>
+        <div class="h-cta"><a class="h-pill" href="#link-tour">{{ __('Take the interactive tour') }} ↓</a><a class="h-pill" href="{{ route('link.check') }}">{{ __('Check a link') }}</a></div>
         </div>
         <div class="link-world" data-hop-scene data-mini data-copy="{{ json_encode($sceneCopy) }}" data-rotate-label="{{ __('Rotate scene') }}">
             <p class="showcase-kicker">{{ __('A small link. A whole world.') }}</p>
@@ -110,38 +107,7 @@
         </div>
     </section>
 
-    {{-- The hop: a holographic sea; islands rise, bunnies hop through hel.ink to where a link goes (resources/js/hop-hero.js) --}}
-    <section class="h-sec link-expanded-world" data-hop-demo aria-labelledby="short-link-demo-heading">
-        <span class="h-tag">01 / LinkHop</span><h2 id="short-link-demo-heading" data-split><em>{{ __('How a short link works') }}</em></h2><p class="h-sub">{{ __('A bunny takes your link from here to anywhere.') }}</p>
-    <div class="pt-5" data-hop-scene data-copy="{{ json_encode($sceneCopy) }}" data-rotate-label="{{ __('Rotate scene') }}">
-        <div class="flex flex-col items-center gap-2 px-2">
-            <div class="flex flex-wrap justify-center gap-2" role="group" aria-label="{{ __('Play a scenario') }}">
-                @foreach (['hop' => 'Hop to a link', 'share' => 'Share a link', 'pass-ok' => 'Password: right', 'pass-fail' => 'Password: wrong'] as $key => $label)
-                    <button type="button" data-hop-play="{{ $key }}" aria-pressed="false" class="hop-pill rounded-full border border-slate-200 bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-slate-600 backdrop-blur transition hover:border-indigo-300 hover:text-indigo-700 sm:text-[13px] dark:border-white/10 dark:bg-slate-900/60 dark:text-white/70 dark:hover:text-white">{{ __($label) }}</button>
-                @endforeach
-            </div>
-            <p class="min-h-5 text-center text-[13px] font-semibold text-slate-500 dark:text-white/60" data-hop-story aria-live="polite"></p>
-        </div>
-        <div class="relative h-[360px] sm:h-[420px]" data-hop-canvas>
-            <img data-hop-fallback src="{{ route('brand.asset', 'linkhop-mark-gradient.svg') }}" alt="" class="absolute inset-0 m-auto h-32 w-auto opacity-80">
-        </div>
-    </div>
-    </section>
     @vite('resources/js/hop-hero.js')
-
     @include('partials.home-experience')
-
-    <section class="h-sec" aria-labelledby="open-title"><span class="h-tag">04 / MIT</span><h2 id="open-title" data-split><em>{{ __('Free & open source') }}</em></h2><p class="h-sub">{{ __('Built with Laravel, Tailwind and Alpine.js. Use hel.ink or host it yourself.') }}</p><div class="h-cta"><a class="h-pill dark" href="https://github.com/navi-crwn/LinkHop">GitHub ↗</a></div></section>
-
-    <section class="showcase-wrap showcase-section showcase-faq" aria-labelledby="home-faq">
-        <p class="font-mono text-xs tracking-widest text-indigo-600 dark:text-indigo-300">03 / {{ __('FAQ') }}</p>
-        <h2 id="home-faq" data-split><em>{{ __('FAQ') }}</em></h2><p class="h-sub">{{ __('Small URL.') }} {{ __('Serious possibilities.') }}</p>
-        @foreach (['Is it really free?' => 'Yes. There is no paid plan and no locked feature, and the code is MIT licensed.', 'Do I need an account?' => 'Not to shorten a link. A free HOP ID keeps your links, shows their stats, and also signs you in to BioHop, PixelHop and NoteHop.', 'What does a click record?' => 'The time, country and city, device, browser and referrer, plus a keyed hash of the IP address for counting unique visitors. Never the IP address itself.'] as $question => $answer)
-            <details class="border-b border-slate-200 py-5 dark:border-white/15"><summary class="cursor-pointer text-lg font-semibold">{{ __($question) }}</summary><p class="mt-4 max-w-3xl text-slate-600 dark:text-white/65">{{ __($answer) }}</p></details>
-        @endforeach
-    </section>
-
-    <section class="h-sec" aria-labelledby="family-title"><span class="h-tag">06 / HOP</span><h2 id="family-title" data-split><em>{{ __('HOP family') }}</em></h2><p class="h-sub">{{ __('One free HOP ID signs you in to every app.') }}</p><div class="h-grid">@foreach (collect(\Hop\Ui\Assets::family('linkhop'))->reject(fn ($app) => $app['current']) as $app)<a class="h-pill" href="{{ $app['url'] }}"><img src="{{ $app['icons']['mark']['url'] }}" alt="" width="32" height="32" loading="lazy">{{ $app['name'] }}</a>@endforeach</div></section>
-    <section class="h-sec h-final" aria-labelledby="final-title"><span class="h-tag">07 / LinkHop</span><h2 id="final-title" data-split>{{ __('Less link.') }} <em>{{ __('More possibility.') }}</em></h2><p class="h-sub">{{ __('Shorten. Share. Understand.') }}</p><div class="h-cta"><a class="h-pill dark" href="#target_url">{{ __('Shorten') }}</a><a class="h-pill" href="{{ route('register') }}">{{ __('Create free account') }}</a></div></section>
     </div>
 </x-marketing-layout>
