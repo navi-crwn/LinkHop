@@ -29,7 +29,6 @@
         bio_enabled() ? ['label' => 'Link in Bio', 'icon' => 'bio', 'route' => 'bio.index', 'active' => 'bio*'] : null,
         ...$control,
         ['label' => 'Settings', 'icon' => 'settings', 'route' => 'settings', 'active' => 'settings'],
-        ['label' => 'HOP ID', 'icon' => 'user', 'href' => hub_url('settings'), 'active' => 'hub.settings', 'external' => true],
     ]);
     $is = fn ($patterns) => request()->routeIs(...(array) $patterns);
 @endphp
@@ -64,7 +63,6 @@
             </li>
         @endif
     @endforeach
-    {{-- The other HOP apps (hop/ui, from config/hop.php), each opened through its own SSO. --}}
-    <li class="pt-2"><p class="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted">HOP apps</p></li>
-    <x-hop::nav-items />
 </ul>
+{{-- The other HOP apps live here, from the shared manifest (hop/ui); the top bar keeps settings-type controls only. --}}
+<x-hop::family-nav app="linkhop" />
