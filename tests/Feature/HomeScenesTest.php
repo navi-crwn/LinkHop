@@ -2,13 +2,27 @@
 
 test('the home page has every scene, complete as plain HTML', function () {
     $html = $this->get('/')->assertOk()->getContent();
-    foreach (['link-tour', 'share', 'qr', 'protect', 'analytics', 'organise', 'check', 'api', 'tutorial', 'open', 'faq', 'family'] as $id) {
+    foreach (['link-tour', 'journey', 'share', 'qr', 'analytics', 'control', 'routing', 'protect', 'api', 'open', 'faq', 'family'] as $id) {
         expect($html)->toContain('id="'.$id.'"');
     }
     // the long address and the finished short link are both in the markup: without script nothing is hidden
-    expect($html)->toContain('data-lk-long')->toContain('data-lk-result')->toContain('hel.ink/l/');
+    expect($html)->toContain('data-lx-long')->toContain('data-lx-result')->toContain('hel.ink/l/');
     // the scenes only use features the app really has
     expect($html)->toContain('/api/qr-generate')->toContain('color=')->toContain('Illustrative analytics');
+});
+
+test('the QR scene draws the real code of the demo link as cubes, on the server, so it shows without script', function () {
+    $html = $this->get('/')->assertOk()->getContent();
+    // a version 3 code has 29 x 29 modules; roughly half of them are dark
+    expect(substr_count($html, '<b class="top"></b><b class="front"></b><b class="side"></b></i>'))->toBeGreaterThan(300)
+        ->and($html)->toContain('data-lx-vox')->toContain('lx-qr-flat');
+});
+
+test('the timing, routing and protect scenes describe features the app really has', function () {
+    $html = $this->get('/')->assertOk()->getContent();
+    foreach (['data-lx-control', 'data-lx-routing', 'data-lx-gate', 'Idempotency-Key', 'X-LinkHop-Signature'] as $needle) {
+        expect($html)->toContain($needle);
+    }
 });
 
 test('the four other apps appear as 3D marks with the flat mark behind them', function () {
