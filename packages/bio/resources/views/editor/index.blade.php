@@ -3863,11 +3863,8 @@ window.bioEditorV2 = function() {
             };
             const iconName = mapping[platform];
             if (!iconName) return null;
-            let url = `https://cdn.simpleicons.org/${iconName}`;
-            if (color) {
-                url += `/${color.replace('#', '')}`;
-            }
-            return url;
+            // No third-party icon host: the local icon in /images/brands is used (see getIconUrl).
+            return null;
         },
         /**
          * Get icon URL - tries Simple Icons first, falls back to local
