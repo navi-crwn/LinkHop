@@ -23,7 +23,9 @@ class LogLinkClick implements ShouldQueue
         protected int $linkId,
         protected string $ip,
         protected ?string $referer,
-        protected ?string $userAgent
+        protected ?string $userAgent,
+        // true when the redirect already added this visit to the link's count (links with a click limit)
+        protected bool $counted = false
     ) {}
 
     public function handle(GeoIpService $geoIp): void
@@ -64,7 +66,9 @@ class LogLinkClick implements ShouldQueue
                 'user_agent' => substr($this->userAgent ?? 'unknown', 0, 255),
                 'clicked_at' => now(),
             ]);
-            $link->increment('clicks');
+            if (! $this->counted) {
+                $link->increment('clicks');
+            }
             $link->last_clicked_at = now();
             $link->saveQuietly();
             Cache::put('queue:heartbeat', now()->toDateTimeString(), now()->addMinutes(5));

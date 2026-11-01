@@ -78,7 +78,7 @@ class HopContentController extends Controller
         return response()->json(['ok' => true, 'data' => [
             'kpi' => [
                 'links' => Link::count(),
-                'links_live' => Link::where('status', Link::STATUS_ACTIVE)->where(fn ($q) => $q->whereNull('expires_at')->orWhere('expires_at', '>', $now))->count(),
+                'links_live' => Link::live()->count(),
                 'clicks_today' => LinkClick::where('clicked_at', '>=', $now->copy()->startOfDay())->count(),
                 'clicks_30d' => LinkClick::where('clicked_at', '>=', $now->copy()->subDays(30))->count(),
                 'open_reports' => AbuseReport::where('status', 'open')->count(),
@@ -578,12 +578,13 @@ class HopContentController extends Controller
 
     private function linkRow(Link $l): array
     {
-        $live = $l->status === Link::STATUS_ACTIVE && (! $l->expires_at || $l->expires_at->isFuture());
+        $scheduled = $l->status === Link::STATUS_ACTIVE && $l->isNotStarted();
+        $live = $l->status === Link::STATUS_ACTIVE && ! $scheduled && (! $l->expires_at || $l->expires_at->isFuture()) && ! $l->isLimitReached();
 
         return [
             'id' => (string) $l->id, 'type' => 'link', 'title' => $l->custom_title ?: $l->slug, 'slug' => $l->slug, 'target_url' => $l->target_url,
             'owner' => $l->user ? ['sub' => (string) $l->user->id, 'username' => $l->user->username, 'name' => $l->user->name] : null,
-            'status' => $live ? 'live' : ($l->status === Link::STATUS_ACTIVE ? 'expired' : 'disabled'),
+            'status' => $live ? 'live' : ($scheduled ? 'scheduled' : ($l->status === Link::STATUS_ACTIVE ? 'expired' : 'disabled')),
             'clicks' => (int) $l->clicks, 'expires_at' => $l->expires_at?->toIso8601String(), 'created_at' => $l->created_at?->toIso8601String(),
             'content_warning' => $l->content_warning ?? 'none',
             'warning_reason' => $l->warning_reason,

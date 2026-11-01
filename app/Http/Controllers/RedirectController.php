@@ -6,6 +6,7 @@ use App\Jobs\LogLinkClick;
 use App\Models\Link;
 use App\Models\RetiredSlug;
 use App\Services\LinkService;
+use App\Services\UserAgentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
@@ -33,8 +34,19 @@ class RedirectController extends Controller
             return redirect()->away('https://hel.ink/'.rawurlencode($slug).'?r=l', 302)
                 ->header('Cache-Control', 'no-store');
         }
-        if (! $link || $link->status !== Link::STATUS_ACTIVE || $link->isExpired() || $link->user?->isSuspended()) {
+        if (! $link || $link->status !== Link::STATUS_ACTIVE || $link->user?->isSuspended()) {
             return $this->notFound($slug);
+        }
+        // The order is fixed: not yet, expired, out of clicks. Only the last two send visitors on to a fallback address.
+        if ($link->isNotStarted()) {
+            return $this->ended($link, 'scheduled');
+        }
+        if ($link->isExpired()) {
+            return $this->ended($link, 'expired');
+        }
+        // The cached copy may be minutes old: the click count of a limited link is always read fresh.
+        if ($link->max_clicks !== null && $link->isLimitReached((int) Link::whereKey($link->id)->value('clicks'))) {
+            return $this->ended($link, 'limit');
         }
         $passwordKey = 'link_password_'.$link->id;
         if ($link->requiresPassword() && session($passwordKey) !== hash('sha256', $link->password_hash)) {
@@ -74,7 +86,16 @@ class RedirectController extends Controller
                 return response()->view('link-gate', compact('link'));
             }
         }
-        $this->logClick($request, $link);
+        $counted = false;
+        if ($link->max_clicks !== null && ! app(UserAgentService::class)->parse($request->userAgent())['bot']) {
+            // Take the click before sending the visitor on: when the last one is gone, the next visitor is turned away,
+            // however many arrive at once. The log job then records the visit without counting it a second time.
+            if (! Link::whereKey($link->id)->whereColumn('clicks', '<', 'max_clicks')->increment('clicks')) {
+                return $this->ended($link, 'limit');
+            }
+            $counted = true;
+        }
+        $this->logClick($request, $link, $counted);
         if ($link->enable_preview && $request->query('skip_preview') !== '1') {
             return response()->view('preview', ['targetUrl' => $link->target_url]);
         }
@@ -87,14 +108,31 @@ class RedirectController extends Controller
         return redirect()->away($link->target_url, (int) ($link->redirect_type ?? 302));
     }
 
-    protected function logClick(Request $request, Link $link): void
+    protected function logClick(Request $request, Link $link, bool $counted = false): void
     {
         LogLinkClick::dispatch(
             $link->id,
             $request->ip(),
             $request->headers->get('referer'),
-            $request->userAgent()
+            $request->userAgent(),
+            $counted
         );
+    }
+
+    /**
+     * A link of an account that is not live: send the visitor to the owner's fallback address when there is one
+     * (expired or out of clicks), otherwise say plainly why. Never cached.
+     */
+    protected function ended(Link $link, string $reason)
+    {
+        $fallback = $reason === 'scheduled' ? null : $link->fallback_url;
+        if ($fallback && preg_match('#^https?://#i', $fallback)) {
+            return redirect()->away($fallback, 302)->header('Cache-Control', 'no-store');
+        }
+
+        return response()
+            ->view('errors.link-ended', ['link' => $link, 'reason' => $reason], $reason === 'scheduled' ? 404 : 410)
+            ->header('Cache-Control', 'no-store');
     }
 
     protected function shouldServePreview(Request $request, Link $link): bool
