@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
  */
 class DashboardStats
 {
-    /** @return array{week: int[], previous: int, total: int, delta: ?int, max: int} */
+    /** @return array{week: int[], previous: int, total: int, delta: ?int, max: int, unique: int} */
     public static function week(User $user): array
     {
         $daily = DB::table('link_clicks')
@@ -28,6 +28,14 @@ class DashboardStats
         $week = array_map(fn ($ago) => $at($ago), range(6, 0));
         $previous = array_sum(array_map(fn ($ago) => $at($ago), range(13, 7)));
         $total = array_sum($week);
+        // Distinct visitors over the seven days, each counted once a day (the hash rotates daily, see VisitorHash::daily).
+        $unique = (int) DB::table('link_clicks')
+            ->join('links', 'links.id', '=', 'link_clicks.link_id')
+            ->where('links.user_id', $user->id)
+            ->where('link_clicks.clicked_at', '>=', now()->subDays(6)->startOfDay())
+            ->whereNotNull('link_clicks.visitor_hash')
+            ->distinct()
+            ->count('link_clicks.visitor_hash');
 
         return [
             'week' => $week,
@@ -35,6 +43,7 @@ class DashboardStats
             'total' => $total,
             'delta' => $previous > 0 ? (int) round(($total - $previous) / $previous * 100) : null,
             'max' => max(1, ...$week),
+            'unique' => $unique,
         ];
     }
 

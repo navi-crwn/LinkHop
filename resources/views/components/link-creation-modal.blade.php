@@ -144,15 +144,24 @@
                                     <span class="text-red-500">*</span>
                                 </label>
                                 <input 
+                                    id="modal-target-url"
                                     type="url" 
                                     x-model="formData.target_url"
                                     @input="error = ''; debouncedFetchOg(); if(!formData.slug) { debouncedGenerateSlug(); }"
+                                    @paste="$nextTick(() => { clearTimeout(ogFetchTimeout); fetchOgData(); })"
                                     placeholder="https://example.com"
                                     required
                                     class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:ring-blue-500"
                                 >
                                 <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Enter the long URL you want to shorten</p>
+                                {{-- Preview of the page you pasted (the same lookup as the social card) --}}
+                                <div x-show="ogLoading || ogData.title" x-cloak class="mt-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 dark:border-slate-700 dark:bg-slate-800/60" aria-live="polite">
+                                    <p x-show="ogLoading && !ogData.title" class="text-xs text-slate-500 dark:text-slate-400">{{ __('Looking up the page…') }}</p>
+                                    <p x-show="ogData.title" class="truncate text-sm font-medium text-slate-800 dark:text-slate-100" x-text="ogData.title"></p>
+                                    <p x-show="ogData.description" class="line-clamp-2 text-xs text-slate-500 dark:text-slate-400" x-text="ogData.description"></p>
+                                </div>
                             </div>
+                            <x-utm-builder target="modal-target-url" />
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                                     Short Link
@@ -162,6 +171,7 @@
                                         type="text" 
                                         x-model="formData.slug"
                                         @input="generateQrPreview()"
+                                        @input.debounce.350ms="slugCheck.run(formData.slug)"
                                         placeholder="custom-slug"
                                         pattern="[a-zA-Z0-9_\-]+"
                                         class="flex-1 rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:ring-blue-500"
@@ -175,6 +185,8 @@
                                     </button>
                                 </div>
                                 <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Leave empty for auto-generated slug</p>
+                                <p x-show="slugCheck.state === 'ok' || slugCheck.state === 'bad'" x-cloak x-text="slugCheck.message" role="status" aria-live="polite"
+                                   class="mt-1 text-xs" :class="slugCheck.state === 'ok' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'"></p>
                             </div>
                             <div>
                                 <div class="flex items-center justify-between mb-2">
@@ -293,6 +305,7 @@
                                     <input type="url" x-model="formData.fallback_url" placeholder="https://" class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:ring-blue-500">
                                     <p class="mt-1 text-xs text-slate-500">{{ __('Used after the expiry date or when the clicks run out. Empty shows a notice.') }}</p>
                                 </div>
+                                <x-link-routing-fields :model="true" />
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                                         Password Protection
@@ -898,6 +911,7 @@ function linkCreationModal() {
         newTagName: '',
         ogFetchTimeout: null,
         slugGenerateTimeout: null,
+        slugCheck: window.hopSlugChecker('{{ route('links.slug-check') }}'),
         showColorPicker: false,
         qrColorPresets: ['#000000', '#1e40af', '#dc2626', '#059669', '#7c3aed', '#db2777'],
         folderSuccess: false,
@@ -927,6 +941,8 @@ function linkCreationModal() {
             starts_at: '',
             max_clicks: '',
             fallback_url: '',
+            routing_rules: [],
+            ab_variants: [],
             password: '',
             redirect_type: '302'
         },
@@ -974,6 +990,8 @@ function linkCreationModal() {
                 starts_at: '',
                 max_clicks: '',
                 fallback_url: '',
+                routing_rules: [],
+                ab_variants: [],
                 password: '',
                 redirect_type: '302'
             };
@@ -984,6 +1002,7 @@ function linkCreationModal() {
             };
             this.qrPreviewUrl = null;
             this.showAdvanced = false;
+            this.slugCheck.run('');
         },
         normalizedUrl() {
             const url = (this.formData.target_url || '').trim();
@@ -1010,6 +1029,8 @@ function linkCreationModal() {
                 starts_at: this.formData.starts_at || null,
                 max_clicks: this.formData.max_clicks ? Number(this.formData.max_clicks) : null,
                 fallback_url: this.formData.fallback_url || null,
+                routing_rules: this.formData.routing_rules,
+                ab_variants: this.formData.ab_variants,
                 password: this.formData.password || null,
                 redirect_type: this.formData.redirect_type || '302',
                 comment: this.formData.comment || null,
@@ -1056,6 +1077,8 @@ function linkCreationModal() {
         debouncedGenerateSlug() {
             clearTimeout(this.slugGenerateTimeout);
             this.slugGenerateTimeout = setTimeout(() => {
+                // the visitor may have typed their own slug while the timer ran
+                if (this.formData.slug) return;
                 this.generateRandomSlug();
             }, 1000);
         },
@@ -1112,11 +1135,11 @@ function linkCreationModal() {
             }
             this.formData.slug = slug;
             this.generateQrPreview();
+            this.slugCheck.run(slug);
         },
         generateQrPreview() {
             if (this.formData.slug) {
-                const baseUrl = '{{ url('') }}';
-                const shortUrl = `${baseUrl}/${this.formData.slug}`;
+                const shortUrl = `{{ public_url('l') }}/${this.formData.slug}?src=qr`;
                 const fgColor = this.qrSettings.fgColor.replace('#', '');
                 const bgColor = this.qrSettings.bgColor.replace('#', '');
                 this.qrPreviewUrl = `{{ route('api.qr.generate') }}?size=200&data=${encodeURIComponent(shortUrl)}&color=${fgColor}&bgcolor=${bgColor}`;
@@ -1225,8 +1248,7 @@ function linkCreationModal() {
         },
         generateQrUrl() {
             if (!this.formData.slug) return '';
-            const baseUrl = '{{ url('') }}';
-            const shortUrl = `${baseUrl}/${this.formData.slug}`;
+            const shortUrl = `{{ public_url('l') }}/${this.formData.slug}?src=qr`;
             const fgColor = this.qrSettings.fgColor.replace('#', '');
             const bgColor = this.qrSettings.bgColor.replace('#', '');
             return `{{ route('api.qr.generate') }}?size=400&data=${encodeURIComponent(shortUrl)}&color=${fgColor}&bgcolor=${bgColor}`;

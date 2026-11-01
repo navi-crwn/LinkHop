@@ -10,7 +10,9 @@ use App\Models\LinkClick;
 use App\Services\LinkService;
 use App\Services\QuotaService;
 use App\Services\UserAgentService;
+use App\Support\ClickInsights;
 use App\Support\DashboardStats;
+use App\Support\LinkRouting;
 use GuzzleHttp\Client;
 use Hop\Safety\UrlGuard;
 use Illuminate\Http\Request;
@@ -394,6 +396,7 @@ class LinkController extends Controller
             'osStats' => $osStats,
             'referers' => $referers,
             'totalClicks' => $totalClicks,
+            'insights' => ClickInsights::summarize($clicksQuery->clone()),
         ]);
     }
 
@@ -417,7 +420,7 @@ class LinkController extends Controller
             ->errorCorrection('H')
             ->backgroundColor($bgColor['r'], $bgColor['g'], $bgColor['b'])
             ->color($fgColor['r'], $fgColor['g'], $fgColor['b'])
-            ->generate($link->short_url);
+            ->generate($link->qr_url);
         if (filled($link->qr_logo_url) && in_array($format, ['png', 'jpg'])) {
             $qrCode = $this->links->overlayLogo($qrCode, $link->qr_logo_url);
         }
@@ -536,6 +539,7 @@ class LinkController extends Controller
             'max_clicks' => blank($data['max_clicks'] ?? null) ? null : (int) $data['max_clicks'],
             'starts_at' => blank($data['starts_at'] ?? null) ? null : $data['starts_at'],
             'fallback_url' => blank($data['fallback_url'] ?? null) ? null : $data['fallback_url'],
+            ...LinkRouting::columns($data),
             'qr_fg_color' => $data['qr_fg_color'] ?? '#000000',
             'qr_bg_color' => $data['qr_bg_color'] ?? '#ffffff',
             'qr_logo_url' => blank($data['qr_logo_url'] ?? null) ? null : $data['qr_logo_url'],

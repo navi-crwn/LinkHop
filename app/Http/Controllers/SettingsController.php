@@ -31,7 +31,16 @@ class SettingsController extends Controller
             'activityLogs' => $activityLogs,
             'folders' => $folders,
             'tags' => $tags,
+            'webhooks' => $user->webhookEndpoints()->with(['deliveries' => fn ($q) => $q->latest('id')->limit(10)])->orderBy('id')->get(),
         ]);
+    }
+
+    /** The opt-out of the destination monitor (and its email) for all of this person's links. */
+    public function updateMonitoring(Request $request)
+    {
+        $request->user()->forceFill(['monitor_destinations' => $request->boolean('monitor_destinations')])->save();
+
+        return redirect()->route('settings')->with('active_tab', 'notifications')->with('status', __('Saved.'));
     }
 
     public function exportData(Request $request)

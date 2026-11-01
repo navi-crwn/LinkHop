@@ -5,6 +5,7 @@
             'hopid' => ['HOP ID', 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'],
             'backup' => ['Backup & export', 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4'],
             'notifications' => ['Notifications', 'M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9'],
+            'webhooks' => [__('Webhooks'), 'M13 10V3L4 14h7v7l9-11h-7z'],
             'activity' => ['Activity log', 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01'],
         ];
     @endphp
@@ -133,14 +134,27 @@
                             </p>
                         </div>
                     </div>
+                </div>
+                @include('partials.settings-webhooks')
                 <div x-show="tab === 'notifications'" x-cloak class="space-y-4 p-5">
                     <div>
                         <h3 class="text-base font-semibold text-ink">Notification Preferences</h3>
                         <p class="text-sm text-muted">Manage how you receive notifications</p>
                     </div>
+                    <form method="POST" action="{{ route('settings.monitoring') }}" class="glass-inset rounded-xl p-4">
+                        @csrf
+                        <label class="flex items-start gap-3">
+                            <input type="checkbox" name="monitor_destinations" value="1" class="mt-1 h-4 w-4 shrink-0 rounded border-slate-300" @checked(auth()->user()->monitor_destinations)>
+                            <span class="min-w-0">
+                                <span class="block font-medium text-ink">{{ __('Check where my links point') }}</span>
+                                <span class="mt-1 block text-sm text-muted">{{ __('Once a day LinkHop asks the address behind each of your live links whether it still answers. If one stops, you see a note on the link and get one email until it works again.') }}</span>
+                            </span>
+                        </label>
+                        <button type="submit" class="btn-primary btn-sm mt-3">{{ __('Save') }}</button>
+                    </form>
                     <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-900/30 dark:bg-yellow-900/20">
                         <p class="text-sm text-yellow-800 dark:text-yellow-200">
-                            📧 Email notifications will be available once the emailing feature is configured. You'll be able to receive alerts for:
+                            📧 More email notifications will be available once the emailing feature is configured. You'll be able to receive alerts for:
                         </p>
                         <ul class="mt-2 text-sm text-yellow-800 dark:text-yellow-200 space-y-1">
                             <li>• New link clicks</li>

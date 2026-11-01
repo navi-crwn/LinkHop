@@ -15,9 +15,9 @@ Source: the owner's blueprint built from the `awesome-url-shortener` directory (
 | 8 | Fallback URL when expired | **Done now** (Batch A: also when the clicks run out; loops refused) |
 | 9 | Scheduled start | **Done now** (Batch A: "Not live yet" page before the start) |
 | 10 | Password | Have |
-| 11-13 | Redirect by country, device, OS, browser, language | **Next 4** (BioHop's routing rules are the model) |
-| 15 | A/B split by weight | **Next 5** (consistent hash of the visitor) |
-| 16 | UTM builder with presets | **Next 6** (form helper, no storage) |
+| 11-13 | Redirect by country, device, OS, browser, language | **Done now** (Batch B: up to 20 rules per link, first match wins, conditions combine, crawlers get the default) |
+| 15 | A/B split by weight | **Done now** (Batch B: 2 to 5 variants, keyed visitor hash, clicks per variant) |
+| 16 | UTM builder with presets | **Done now** (Batch B: `x-utm-builder`, presets in code, nothing stored) |
 | 17 | Forward query parameters | Later |
 | 18 | Custom social card (title, description, picture) | Have (served to chat bots) |
 | 19 | Link cloaking in an iframe | No (hides the destination, bad for abuse handling) |
@@ -26,7 +26,7 @@ Source: the owner's blueprint built from the `awesome-url-shortener` directory (
 | 23 | Duplicate URL warning | **Done now** (Batch A: warns once, the same form sent again goes through) |
 | 24 | Notes and comments | Have |
 | 25 | Preview with a `+` suffix | Partly (`enable_preview`); the suffix is Later |
-| 5 | Bulk create, tag, delete | Partly (bulk delete); CSV import is **Next 8** |
+| 5 | Bulk create, tag, delete | Partly (bulk delete); CSV import **Done now** (Batch D: 500 rows, preview with a verdict per row, confirm) |
 | 5, 92 | Import from Bitly, Short.io, Rebrandly | Later (after CSV import) |
 
 ## Module 2: domains, TLS, high availability
@@ -37,21 +37,21 @@ Source: the owner's blueprint built from the `awesome-url-shortener` directory (
 | 29 | Custom 404 target | Later |
 | 31, 38 | Redis/edge cache, read-only fallback | Later (MySQL is fast enough at this size; measure first) |
 | 36 | `noindex` control per link | Later |
-| 37 | Destination broken-link monitor | **Next 9** (scheduled check, notify the owner) |
+| 37 | Destination broken-link monitor | **Done now** (Batch C: `links:check-destinations` hourly, flags after 3 failed checks, one email per episode, opt-out in Settings) |
 | 42, 47 | Slash normalisation, flood limits | Have (rate limits and throttles) |
 
 ## Module 3: analytics and QR
 | # | Feature | Status |
 |---|---|---|
 | 51 | Live click stream | Later |
-| 52 | Unique visitors | **Next 10** (keyed hash of IP and agent per day; no raw IP) |
-| 53, 56 | Bot and chat-previewer filtering, in-app browser parsing | Partly: crawlers are already not counted (`LogLinkClick`); in-app browser parsing is **Next 11** |
+| 52 | Unique visitors | **Done now** (Batch C: daily-rotating keyed hash of IP and agent on the click; counted once per day) |
+| 53, 56 | Bot and chat-previewer filtering, in-app browser parsing | **Done now** (Batch C: previewers and HTTP tools never counted; Instagram, Facebook, TikTok, WeChat and more named in analytics) |
 | 54, 55, 57, 58 | Geo, referrers, devices, browsers, OS, ISP | Have |
 | 59 | Time series and hourly heat map | Have, heat map **Done now** |
 | 60 | Conversion and revenue attribution | No (needs the visitor's other site to report back; a tracking pixel) |
 | 61 | Retargeting pixels | No (HOP has no trackers) |
 | 62-64 | QR studio, logo, PNG and SVG | Have |
-| 65 | QR scan against direct click | **Next 12** (`?src=qr` as in BioHop) |
+| 65 | QR scan against direct click | **Done now** (Batch C: every QR code of a short link carries `?src=qr`; `nfc` is also recorded) |
 | 66-67 | UTM and folder roll-ups | Later |
 | 68 | Shareable read-only analytics link | Later |
 | 69 | CSV and JSON export | Have |
@@ -69,8 +69,8 @@ Source: the owner's blueprint built from the `awesome-url-shortener` directory (
 | 78 | Destination allowlist or blocklist | Have (domain blacklist); allowlist Later |
 | 79 | Abuse reporting | Have |
 | 80-81 | REST API, scoped tokens | Have |
-| 82 | Idempotency keys | **Next 13** |
-| 83-84 | Webhooks with HMAC signature | **Next 14** (BioHop's `Webhooks` is the model) |
+| 82 | Idempotency keys | **Done now** (Batch D: `Idempotency-Key` on `POST /api/shorten`, 24 hours, 422 on a different body) |
+| 83-84 | Webhooks with HMAC signature | **Done now** (Batch D: five events, signed, retried, delivery log, test button, SSRF-safe) |
 | 85 | MCP server for AI agents | No (no AI features) |
 | 86 | SDKs and a CLI | Later |
 | 87 | Async click queue | Have (queue); Redis Streams not needed |
@@ -83,7 +83,7 @@ Source: the owner's blueprint built from the `awesome-url-shortener` directory (
 | 102 | Public status page | Have (`/status`) |
 
 ## UX rules (39-50)
-Command palette (39), live preview on paste (40), optimistic copy (41), slug check as you type (49): **Next 15**, as one editor round. A sandbox on the front page (42) is Have. Cursor pagination and virtual tables (44): Later, not needed until a user has thousands of links.
+Command palette (39), live preview on paste (40), optimistic copy (41), slug check as you type (49): **Done now** (Batch D, one editor round). A sandbox on the front page (42) is Have. Cursor pagination and virtual tables (44): Later, not needed until a user has thousands of links.
 
 ## Engineering rules (1-38) that matter here
 Zero-blocking redirect and negative caching are already how the redirect route works for the traffic LinkHop has; a separate Go engine, ClickHouse and PgBouncer are the wrong size for one VPS and would make self-hosting harder (MIT, "yours to host"). Anti-SSRF and loop rejection are in `hop/safety`. Revisit the data-plane split only when the redirect route shows up in a measurement.
