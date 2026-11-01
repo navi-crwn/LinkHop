@@ -28,7 +28,11 @@ Content-Type: application/json</code></pre>
   "url": "https://example.com/very/long/url",
   "alias": "my-custom-slug",
   "folder": "Marketing",
-  "expires_at": "2025-12-31",
+  "expires_at": "2026-12-31T23:59:00Z",
+  "starts_at": "2026-12-01T00:00:00Z",
+  "max_clicks": 500,
+  "fallback_url": "https://example.com/offer-ended",
+  "redirect_type": "302",
   "password": "secret123"
 }</code></pre>
                     <div class="mt-2 overflow-x-auto">
@@ -40,6 +44,10 @@ Content-Type: application/json</code></pre>
                                 <tr><td class="font-mono text-ink">folder</td><td class="text-muted">No</td><td class="text-muted">Folder name</td></tr>
                                 <tr><td class="font-mono text-ink">expires_at</td><td class="text-muted">No</td><td class="text-muted">Date the link stops working</td></tr>
                                 <tr><td class="font-mono text-ink">password</td><td class="text-muted">No</td><td class="text-muted">Visitors must enter it first</td></tr>
+                                <tr><td class="font-mono text-ink">starts_at</td><td class="text-muted">No</td><td class="text-muted">The link says "not live yet" until this moment</td></tr>
+                                <tr><td class="font-mono text-ink">max_clicks</td><td class="text-muted">No</td><td class="text-muted">Stops after this many counted clicks (crawlers and preview bots are not counted)</td></tr>
+                                <tr><td class="font-mono text-ink">fallback_url</td><td class="text-muted">No</td><td class="text-muted">Where visitors go after the expiry date or when the clicks run out; cannot be another short link</td></tr>
+                                <tr><td class="font-mono text-ink">redirect_type</td><td class="text-muted">No</td><td class="text-muted">301, 302 (default), 307 or 308</td></tr>
                             </tbody>
                         </table>
                     </div>

@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\AbuseFlag;
 use App\Models\Link;
 use App\Models\RetiredSlug;
+use App\Support\LinkLimits;
 use App\Support\ReservedSlugs;
 use Hop\Safety\LinkSafety;
 use Illuminate\Foundation\Http\FormRequest;
@@ -44,7 +45,8 @@ class ManageLinkRequest extends FormRequest
             'password' => ['nullable', 'string', 'min:6'],
             // Editing must not fail just because a link already expired.
             'expires_at' => $linkId ? ['nullable', 'date'] : ['nullable', 'date', 'after:now'],
-            'redirect_type' => ['nullable', Rule::in(['301', '302', '307'])],
+            'redirect_type' => ['nullable', Rule::in(['301', '302', '307', '308'])],
+            ...LinkLimits::rules(),
             'content_warning' => ['nullable', Rule::in(['none', 'sensitive', 'adult'])],
             'warning_reason' => ['nullable', 'string', 'max:255'],
             'custom_title' => ['nullable', 'string', 'max:255'],
@@ -90,6 +92,12 @@ class ManageLinkRequest extends FormRequest
             $url = $this->input('target_url');
             if ($url && ! filter_var($url, FILTER_VALIDATE_URL)) {
                 $validator->errors()->add('target_url', 'Invalid URL format. Please check the URL format.');
+            }
+            if (! $validator->errors()->has('fallback_url') && $problem = LinkLimits::fallbackProblem($this->input('fallback_url'))) {
+                $validator->errors()->add('fallback_url', $problem);
+            }
+            if ($problem = LinkLimits::orderProblem($this->input('starts_at'), $this->input('expires_at'))) {
+                $validator->errors()->add('expires_at', $problem);
             }
             if ($url && ! $validator->errors()->has('target_url')) {
                 $reason = app(LinkSafety::class)->rejectionReason($url, implode(' ', [$this->input('slug'), $this->input('custom_title'), $this->input('custom_description')]));

@@ -9,6 +9,7 @@ use App\Models\Folder;
 use App\Models\Link;
 use App\Services\LinkService;
 use App\Services\QuotaService;
+use App\Support\LinkLimits;
 use Hop\Safety\LinkSafety;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -76,6 +77,10 @@ class ShortenController extends Controller
             'warning_reason' => $link->warning_reason,
             'created_at' => $link->created_at->toIso8601String(),
             'expires_at' => $link->expires_at?->toIso8601String(),
+            'starts_at' => $link->starts_at?->toIso8601String(),
+            'max_clicks' => $link->max_clicks,
+            'fallback_url' => $link->fallback_url,
+            'redirect_type' => (string) ($link->redirect_type ?? '302'),
         ];
     }
 
@@ -96,7 +101,17 @@ class ShortenController extends Controller
             'warning_reason' => 'nullable|string|max:255',
             'expires_at' => 'nullable|date|after:now',
             'password' => 'nullable|string|min:4|max:50',
+            'redirect_type' => 'nullable|in:301,302,307,308',
+            ...LinkLimits::rules(),
         ]);
+        $validator->after(function ($v) use ($request) {
+            if (! $v->errors()->has('fallback_url') && $problem = LinkLimits::fallbackProblem($request->input('fallback_url'))) {
+                $v->errors()->add('fallback_url', $problem);
+            }
+            if ($problem = LinkLimits::orderProblem($request->input('starts_at'), $request->input('expires_at'))) {
+                $v->errors()->add('expires_at', $problem);
+            }
+        });
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -167,8 +182,11 @@ class ShortenController extends Controller
                 'content_warning' => $request->input('content_warning', 'none') ?: 'none',
                 'warning_reason' => $request->input('warning_reason'),
                 'folder_id' => $folderId,
-                'redirect_type' => '302',
+                'redirect_type' => $request->input('redirect_type', '302') ?: '302',
                 'expires_at' => $request->input('expires_at'),
+                'max_clicks' => $request->filled('max_clicks') ? (int) $request->input('max_clicks') : null,
+                'starts_at' => $request->input('starts_at') ?: null,
+                'fallback_url' => $request->input('fallback_url') ?: null,
                 'password_hash' => $request->filled('password')
                     ? Hash::make($request->input('password'))
                     : null,

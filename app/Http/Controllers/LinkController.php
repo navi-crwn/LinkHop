@@ -203,6 +203,11 @@ class LinkController extends Controller
             return back()->withErrors(['target_url' => 'Daily link quota reached. Try again tomorrow.']);
         }
         $data = $request->validated();
+        if ($duplicate = $this->duplicateWarning($request, $data['target_url'])) {
+            return $request->wantsJson()
+                ? response()->json(['error' => $duplicate['message'], 'duplicate' => ['slug' => $duplicate['slug'], 'short_url' => $duplicate['short_url']]], 409)
+                : back()->withInput()->withErrors(['target_url' => $duplicate['message']]);
+        }
         if (empty($data['folder_id'])) {
             $defaultFolder = Folder::where('user_id', $request->user()->id)
                 ->where('is_default', true)
@@ -479,6 +484,37 @@ class LinkController extends Controller
         ];
     }
 
+    /**
+     * The same address twice is usually a slip: the first time it is met, say so and remember that it was said;
+     * sending the very same form again is the answer "yes, another one".
+     *
+     * @return array{message: string, slug: string, short_url: string}|null
+     */
+    protected function duplicateWarning(Request $request, string $targetUrl): ?array
+    {
+        $normalized = Link::normalizeUrl($targetUrl);
+        $host = (string) parse_url($normalized, PHP_URL_HOST);
+        if ($host === '') {
+            return null;
+        }
+        // Narrow by host in the database (the case of the host does not matter), then compare the whole address.
+        $mine = $request->user()->links()
+            ->where('target_url', 'like', '%'.addcslashes($host, '%_\\').'%')
+            ->latest()->limit(300)->get()
+            ->first(fn (Link $l) => Link::normalizeUrl($l->target_url) === $normalized);
+        $mark = sha1($request->user()->id.'|'.$normalized);
+        if (! $mine || $request->session()->pull('duplicate_ok') === $mark) {
+            return null;
+        }
+        $request->session()->put('duplicate_ok', $mark);
+
+        return [
+            'message' => __('You already have a link to this address: :slug. Submit the form again to make another one.', ['slug' => '/l/'.$mine->slug]),
+            'slug' => $mine->slug,
+            'short_url' => $mine->short_url,
+        ];
+    }
+
     protected function mapPayload(array $data, ?Link $link = null): array
     {
         $targetUrl = $data['target_url'];
@@ -497,6 +533,9 @@ class LinkController extends Controller
             'custom_description' => blank($data['custom_description'] ?? null) ? null : $data['custom_description'],
             'custom_image_url' => blank($data['custom_image_url'] ?? null) ? null : $data['custom_image_url'],
             'expires_at' => blank($data['expires_at'] ?? null) ? null : $data['expires_at'],
+            'max_clicks' => blank($data['max_clicks'] ?? null) ? null : (int) $data['max_clicks'],
+            'starts_at' => blank($data['starts_at'] ?? null) ? null : $data['starts_at'],
+            'fallback_url' => blank($data['fallback_url'] ?? null) ? null : $data['fallback_url'],
             'qr_fg_color' => $data['qr_fg_color'] ?? '#000000',
             'qr_bg_color' => $data['qr_bg_color'] ?? '#ffffff',
             'qr_logo_url' => blank($data['qr_logo_url'] ?? null) ? null : $data['qr_logo_url'],
