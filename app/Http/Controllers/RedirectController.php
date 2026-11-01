@@ -7,6 +7,7 @@ use App\Models\Link;
 use App\Models\RetiredSlug;
 use App\Services\LinkService;
 use App\Services\UserAgentService;
+use App\Support\ClickSource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
@@ -115,7 +116,8 @@ class RedirectController extends Controller
             $request->ip(),
             $request->headers->get('referer'),
             $request->userAgent(),
-            $counted
+            $counted,
+            ClickSource::fromRequest($request)
         );
     }
 

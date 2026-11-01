@@ -16,6 +16,9 @@ class LinkClick extends Model
         'link_id',
         'referer',
         'ip_address',
+        'visitor_hash',
+        'source',
+        'in_app',
         'country',
         'country_name',
         'city',
@@ -33,7 +36,7 @@ class LinkClick extends Model
         'is_proxy' => 'boolean',
     ];
 
-    protected $hidden = ['ip_address'];
+    protected $hidden = ['ip_address', 'visitor_hash'];
 
     /** Stored as a keyed hash only; see VisitorHash. */
     protected function ipAddress(): Attribute

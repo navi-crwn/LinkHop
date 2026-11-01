@@ -28,6 +28,9 @@
                     @if ($link->expires_at && ! $link->isExpired())
                         <span class="chip-amber">Expires {{ $link->expires_at->diffForHumans() }}</span>
                     @endif
+                    @if ($link->isBroken())
+                        <span class="chip-amber" title="{{ __('Since :date', ['date' => $link->broken_since->toDateString()]) }}{{ $link->last_status ? ' · HTTP '.$link->last_status : '' }}">{{ __('Destination not responding') }}</span>
+                    @endif
                 </div>
             </div>
             @if ($link->qr_code_path)
@@ -38,6 +41,7 @@
             <p class="stat-label">Total clicks</p>
             <p class="stat-value">{{ number_format($link->clicks) }}</p>
             <p class="text-xs text-muted">{{ number_format($totalClicks) }} in {{ $rangeInDays }} days</p>
+            <p class="mt-1 text-xs text-muted">{{ __(':count unique visitors', ['count' => number_format($insights['unique'])]) }}</p>
         </div>
     </div>
 
@@ -55,6 +59,20 @@
                 <h2 class="section-title">Devices</h2>
                 <x-analytics.rank-list class="mt-3" :limit="4" color="bg-sky-500/70" :items="collect($devices)->map(fn ($count, $device) => ['label' => $device, 'value' => (int) $count])->values()" />
             </section>
+            @php
+                $src = $insights['sources'];
+                $sourceRows = array_sum($src) === 0 ? [] : [__('Direct clicks') => $src['direct'], __('QR scans') => $src['qr']] + ($src['other'] > 0 ? [__('NFC taps') => $src['other']] : []);
+            @endphp
+            <section class="glass-card">
+                <h2 class="section-title">{{ __('QR scans vs direct clicks') }}</h2>
+                <x-analytics.rank-list class="mt-3" color="bg-teal-500/70" :items="collect($sourceRows)->map(fn ($count, $label) => ['label' => $label, 'value' => (int) $count])->values()" :empty="__('No clicks in this range.')" />
+            </section>
+            @if ($insights['in_app_total'] > 0)
+                <section class="glass-card">
+                    <h2 class="section-title">{{ __('In-app browsers') }}</h2>
+                    <x-analytics.rank-list class="mt-3" :limit="4" color="bg-fuchsia-500/70" :items="collect($insights['in_app'])->map(fn ($count, $label) => ['label' => $label, 'value' => (int) $count])->values()" />
+                </section>
+            @endif
         </div>
     </div>
 

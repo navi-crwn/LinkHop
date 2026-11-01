@@ -93,6 +93,9 @@
                                 @elseif ($link->max_clicks)
                                     <span class="chip-gray whitespace-nowrap">{{ number_format($link->clicks) }}/{{ number_format($link->max_clicks) }}</span>
                                 @endif
+                                @if ($link->isBroken())
+                                    <span class="chip-amber whitespace-nowrap" title="{{ __('Since :date', ['date' => $link->broken_since->toDateString()]) }}{{ $link->last_status ? ' · HTTP '.$link->last_status : '' }}">{{ __('Destination not responding') }}</span>
+                                @endif
                                 @if ($link->requiresPassword())
                                     <span class="chip-blue" title="Password protected">🔒</span>
                                 @endif
