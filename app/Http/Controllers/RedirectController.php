@@ -9,6 +9,7 @@ use App\Services\LinkService;
 use App\Services\UserAgentService;
 use App\Support\ClickSource;
 use App\Support\LinkRouting;
+use App\Support\Webhooks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
@@ -96,6 +97,7 @@ class RedirectController extends Controller
                 return $this->ended($link, 'limit');
             }
             $counted = true;
+            Webhooks::clickCounted($link);
         }
         // Routing rules and the A/B split may pick another address; crawlers and plain links keep the link's own.
         $route = LinkRouting::resolve($link, $request);

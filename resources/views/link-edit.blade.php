@@ -25,18 +25,27 @@
                 <p class="mt-1 text-xs text-muted">Where the short link sends visitors.</p>
             </div>
             <div class="space-y-3 md:col-span-2">
-                <div>
+                <div x-data="urlPreview('{{ route('links.fetch-og') }}', @js($link->target_url))">
                     <label class="label" for="target_url">Destination URL</label>
-                    <input id="target_url" type="url" name="target_url" value="{{ old('target_url', $link->target_url) }}" required class="input">
+                    <input id="target_url" type="url" name="target_url" value="{{ old('target_url', $link->target_url) }}" required class="input"
+                           @input="schedule($event.target.value)" @paste="$nextTick(() => schedule($el.value, true))">
+                    <div x-show="loading || info" x-cloak class="mt-2 rounded-xl border border-slate-500/15 px-3 py-2" aria-live="polite">
+                        <p x-show="loading && !info" class="text-xs text-muted">{{ __('Looking up the page…') }}</p>
+                        <p x-show="info" class="truncate text-sm font-medium text-ink" x-text="info?.title"></p>
+                        <p x-show="info?.description" class="line-clamp-2 text-xs text-muted" x-text="info?.description"></p>
+                    </div>
                 </div>
                 <x-utm-builder target="target_url" />
                 <div class="grid gap-3 sm:grid-cols-3">
-                    <div class="sm:col-span-2">
+                    <div class="sm:col-span-2" x-data="slugField('{{ route('links.slug-check') }}', {{ $link->id }}, @js($link->slug))">
                         <label class="label" for="slug">Slug</label>
                         <div class="flex items-center gap-2">
                             <span class="shrink-0 text-sm text-muted">{{ public_host() }}/l/</span>
-                            <input id="slug" type="text" name="slug" value="{{ old('slug', $link->slug) }}" class="input">
+                            <input id="slug" type="text" name="slug" value="{{ old('slug', $link->slug) }}" class="input" autocomplete="off" aria-describedby="slug-check"
+                                   @input.debounce.350ms="check.run($event.target.value)">
                         </div>
+                        <p id="slug-check" x-show="check.state === 'ok' || check.state === 'bad'" x-cloak x-text="check.message" role="status" aria-live="polite"
+                           class="mt-1 text-xs" :class="check.state === 'ok' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-300'"></p>
                     </div>
                     <div>
                         <label class="label" for="status">Status</label>

@@ -22,7 +22,8 @@
         ['label' => 'Dashboard', 'icon' => 'home', 'route' => 'dashboard', 'active' => 'dashboard'],
         ['label' => 'Analytics', 'icon' => 'chart', 'route' => 'analytics', 'active' => 'analytics'],
         ['label' => 'Links', 'icon' => 'link', 'active' => ['links*', 'folders*', 'tags*'], 'children' => [
-            ['label' => 'My links', 'route' => 'links.index', 'active' => 'links*'],
+            ['label' => 'My links', 'route' => 'links.index', 'active' => ['links.index', 'links.create', 'links.show', 'links.edit']],
+            ['label' => __('Import CSV'), 'route' => 'links.import', 'active' => 'links.import*'],
             ['label' => 'Folders', 'route' => 'folders.index', 'active' => 'folders*'],
             ['label' => 'Tags', 'route' => 'tags.index', 'active' => 'tags*'],
         ]],

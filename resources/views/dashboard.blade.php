@@ -158,7 +158,7 @@
                             <p class="text-[11px] text-muted">{{ __('clicks') }}</p>
                         </div>
                         <div class="flex items-center">
-                            <button type="button" class="icon-btn" title="{{ __('Copy link') }}" x-data @click="navigator.clipboard.writeText(@js($link->short_url)); $el.classList.add('text-emerald-500!'); setTimeout(() => $el.classList.remove('text-emerald-500!'), 1200)">
+                            <button type="button" class="icon-btn" title="{{ __('Copy link') }}" aria-label="{{ __('Copy link') }}" data-copied="{{ __('Copied') }}" data-failed="{{ __('Copy failed') }}" x-data @click="hopCopy(@js($link->short_url), $el)">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
                             </button>
                             <a href="{{ route('links.edit', $link) }}" class="icon-btn" title="{{ __('Edit') }}">
