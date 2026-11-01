@@ -32,6 +32,41 @@ if (! function_exists('hub_url')) {
         return $path === '' ? $base : $base.'/'.$path;
     }
 }
+if (! function_exists('asset_host_url')) {
+    /**
+     * An address for a file the app host serves (ASSET_URL, default APP_URL: /storage, /images, /brand, /build) that
+     * works on any page, whichever host rendered it. A page at hel.ink/b/ or hel.ink/l/ would otherwise ask hel.ink for
+     * "/storage/x.png" and get a 404. Absolute addresses (http, https, //host, data:, blob:) are returned unchanged.
+     * asset_host_url('/storage/a.png') → https://link.hel.ink/storage/a.png.
+     */
+    function asset_host_url(?string $path): string
+    {
+        $path = trim((string) $path);
+        if ($path === '' || preg_match('#^([a-z][a-z0-9+.-]*:|//)#i', $path)) {
+            return $path;
+        }
+        $base = rtrim((string) (config('app.asset_url') ?: config('app.url')), '/');
+
+        return $base.'/'.ltrim($path, '/');
+    }
+}
+if (! function_exists('hub_asset_url')) {
+    /**
+     * A file the hub holds (profile photos live in the hub's public disk) as an address that works from this app.
+     * Absolute addresses (the hub's own, Google's) are returned unchanged; a bare path ("avatars/a.png",
+     * "/storage/avatars/a.png") is put on the hub host. hub_asset_url('avatars/a.png') → https://hub.hel.ink/storage/avatars/a.png.
+     */
+    function hub_asset_url(?string $path): string
+    {
+        $path = trim((string) $path);
+        if ($path === '' || preg_match('#^([a-z][a-z0-9+.-]*:|//)#i', $path)) {
+            return $path;
+        }
+        $path = preg_replace('#^/?(storage/)?#', '', $path);
+
+        return hub_url('storage/'.$path);
+    }
+}
 if (! function_exists('bio_enabled')) {
     /** Whether the hop/bio package is switched on (BIO_ENABLED). */
     function bio_enabled(): bool
