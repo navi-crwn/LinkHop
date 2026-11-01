@@ -8,6 +8,7 @@ use App\Models\RetiredSlug;
 use App\Services\LinkService;
 use App\Services\UserAgentService;
 use App\Support\ClickSource;
+use App\Support\DeepLinks;
 use App\Support\LinkRouting;
 use App\Support\Webhooks;
 use Illuminate\Http\Request;
@@ -109,6 +110,14 @@ class RedirectController extends Controller
             return response()
                 ->view('link-preview', compact('link'))
                 ->header('Refresh', '0;url='.$link->target_url);
+        }
+
+        // "Open in the app": on iOS and Android the app of the destination is tried first (a page that does it and falls back).
+        if ($link->app_links && ($deep = DeepLinks::resolve($link, $route['url'], app(UserAgentService::class)->parse($request->userAgent()), $route['url'] !== $link->target_url))) {
+            return response()
+                ->view('link-app-open', ['link' => $link, 'deep' => $deep, 'web' => $route['url']])
+                ->header('Cache-Control', 'no-store')
+                ->header('X-Robots-Tag', 'noindex');
         }
 
         return redirect()->away($route['url'], (int) ($link->redirect_type ?? 302));
