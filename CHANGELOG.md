@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Home
+- The home page has a scene for each thing LinkHop does, with motion that follows the scroll: a long address loses its characters until the short link is left (pinned, with a custom slug you can type), a link preview card you edit live (title, description, picture), a QR code that tries colour pairs, an analytics view that draws itself, protect, organise, check, API and self-host terminals that type their command, FAQ cards, and the other four HOP apps as 3D marks you can turn. GSAP and Lenis ship in our own bundle; with reduced motion every scene is complete and still.
+- The shared home engine is synced from HEL.ink assets v2: the LinkHop rabbit head, and every app mark in a row now assembles (one used to freeze or show the flat logo). Its files are requested with a content hash.
+
+### Dashboard
+- The dashboard home greets you by time of day, shows clicks this week against last week with a bar for each day, the totals, and a six-step list for getting more out of LinkHop. Every recent link and the top performer have a seven-day line.
+- Analytics compares the period with the one before it and shows the busiest weekday and hour of the last 30 days. My links shows when a link ends and has a seven-day line per link.
+- The account menu and the dashboard texts are translated in all eight languages.
+
+### Fixed
+- Searching My links used a column that does not exist on the links table (`title` instead of `custom_title`), which fails on MySQL.
+- Top bars keep their buttons on one line on phones: the "Sign up" button no longer breaks onto two lines, the logo is no longer squeezed, and the link-check page bar fits a 320 px screen.
+- The folder, tag, API and analytics pages no longer make the page wider than a phone.
+
 ### Dashboard chrome
 - The top bar holds settings-type controls (primary action, language, theme and an account menu with your HOP ID, settings and sign out). The other HOP apps are listed once, in the sidebar, with their marks; the app pill and grid are gone from the top bar, and the sidebar's user card became the account menu.
 

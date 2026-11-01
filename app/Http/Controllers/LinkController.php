@@ -10,6 +10,7 @@ use App\Models\LinkClick;
 use App\Services\LinkService;
 use App\Services\QuotaService;
 use App\Services\UserAgentService;
+use App\Support\DashboardStats;
 use GuzzleHttp\Client;
 use Hop\Safety\UrlGuard;
 use Illuminate\Http\Request;
@@ -38,7 +39,7 @@ class LinkController extends Controller
             $linksQuery->where(function ($q) use ($search) {
                 $q->where('slug', 'like', "%{$search}%")
                     ->orWhere('target_url', 'like', "%{$search}%")
-                    ->orWhere('title', 'like', "%{$search}%");
+                    ->orWhere('custom_title', 'like', "%{$search}%");
             });
         }
         if ($folderId = $request->integer('folder')) {
@@ -84,6 +85,7 @@ class LinkController extends Controller
                 'tag' => $request->integer('tag'),
                 'sort' => $sort,
             ],
+            'sparks' => DashboardStats::sparklines($links->pluck('id')->all()),
         ]);
     }
 
@@ -175,6 +177,9 @@ class LinkController extends Controller
             'topCountry' => $topCountry,
             'highlightLatest' => $latestLinks->first(),
             'highlightTop' => $topLinks->first(),
+            'week' => DashboardStats::week($user),
+            'sparks' => DashboardStats::sparklines($topLinks->pluck('id')->merge($latestLinks->pluck('id'))->unique()->values()->all()),
+            'checklist' => DashboardStats::checklist($user),
         ];
 
         return view('dashboard', $data);

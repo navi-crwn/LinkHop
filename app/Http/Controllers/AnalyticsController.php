@@ -18,31 +18,42 @@ class AnalyticsController extends Controller
         $countryFilter = $request->input('country', 'all');
         $deviceFilter = $request->input('device', 'all');
         $linkFilter = $request->input('link_id', 'all');
-        $clicksQuery = LinkClick::query()
-            ->whereHas('link', fn ($q) => $q->where('user_id', $user->id))
-            ->where('clicked_at', '>=', $start);
-        if ($linkFilter !== 'all') {
-            $clicksQuery->where('link_id', $linkFilter);
-        }
-        if ($countryFilter !== 'all') {
-            if ($countryFilter === 'unknown') {
-                $clicksQuery->whereNull('country');
-            } else {
-                $clicksQuery->where('country', $countryFilter);
+        // The same filters over any period: this one, the one before it, and the last 30 days for the heat map.
+        $filtered = function () use ($user, $countryFilter, $deviceFilter, $linkFilter) {
+            $query = LinkClick::query()->whereHas('link', fn ($q) => $q->where('user_id', $user->id));
+            if ($linkFilter !== 'all') {
+                $query->where('link_id', $linkFilter);
             }
-        }
-        if ($deviceFilter !== 'all') {
-            $clicksQuery->where(function ($query) use ($deviceFilter) {
-                if ($deviceFilter === 'mobile') {
-                    $query->where('user_agent', 'like', '%Mobile%');
+            if ($countryFilter !== 'all') {
+                if ($countryFilter === 'unknown') {
+                    $query->whereNull('country');
                 } else {
-                    $query->where(function ($inner) {
-                        $inner->whereNull('user_agent')
-                            ->orWhere('user_agent', 'not like', '%Mobile%');
-                    });
+                    $query->where('country', $countryFilter);
                 }
+            }
+            if ($deviceFilter !== 'all') {
+                $query->where(function ($inner) use ($deviceFilter) {
+                    if ($deviceFilter === 'mobile') {
+                        $inner->where('user_agent', 'like', '%Mobile%');
+                    } else {
+                        $inner->where(function ($q) {
+                            $q->whereNull('user_agent')->orWhere('user_agent', 'not like', '%Mobile%');
+                        });
+                    }
+                });
+            }
+
+            return $query;
+        };
+        $clicksQuery = $filtered()->where('clicked_at', '>=', $start);
+        $previousClicks = $filtered()->where('clicked_at', '>=', $start->copy()->subHours($range))->where('clicked_at', '<', $start)->count();
+        $heatmap = array_fill(0, 7, array_fill(0, 24, 0));
+        $filtered()->where('clicked_at', '>=', now()->subDays(30))
+            ->selectRaw(sql_date_format('clicked_at', '%w').' as wd, '.sql_date_format('clicked_at', '%H').' as hr, COUNT(*) as total')
+            ->groupBy('wd', 'hr')->get()
+            ->each(function ($row) use (&$heatmap) {
+                $heatmap[((int) $row->wd + 6) % 7][(int) $row->hr] = (int) $row->total; // Monday first
             });
-        }
         $timeline = $clicksQuery
             ->clone()
             ->selectRaw(sql_date_format('clicked_at', '%Y-%m-%d %H:00:00').' as bucket, COUNT(*) as total')
@@ -224,7 +235,9 @@ class AnalyticsController extends Controller
             'countryCount',
             'userLinks',
             'linkFilter',
-            'recentIps'
+            'recentIps',
+            'previousClicks',
+            'heatmap'
         ));
     }
 }

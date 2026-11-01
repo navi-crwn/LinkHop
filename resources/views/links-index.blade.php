@@ -82,6 +82,9 @@
                                 @elseif ($link->status !== 'active')
                                     <span class="chip-gray">{{ ucfirst($link->status) }}</span>
                                 @endif
+                                @if ($link->expires_at && ! $link->isExpired())
+                                    <span class="chip-gray whitespace-nowrap" title="{{ $link->expires_at }}">{{ __('Ends in :when', ['when' => $link->expires_at->diffForHumans(null, \Carbon\CarbonInterface::DIFF_ABSOLUTE, true)]) }}</span>
+                                @endif
                                 @if ($link->requiresPassword())
                                     <span class="chip-blue" title="Password protected">🔒</span>
                                 @endif
@@ -94,6 +97,7 @@
                                 <p class="mt-0.5 text-[11px] text-muted">📁 {{ $link->folder->name }}</p>
                             @endif
                         </div>
+                        <x-spark :values="$sparks[$link->id] ?? []" class="hidden lg:block" />
                         <div class="w-20 text-right">
                             <p class="text-sm font-semibold tabular-nums text-ink">{{ number_format($link->clicks) }}</p>
                             <p class="text-[11px] text-muted md:hidden">clicks</p>
