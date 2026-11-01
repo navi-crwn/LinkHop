@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * The shared `users` table, owned by the hub (HOP ID). This app only reads it:
@@ -176,11 +175,11 @@ class User extends Authenticatable
     /** The picture to show: uploaded here first, else the Google/external one. */
     public function avatarUrl(): ?string
     {
-        if ($this->avatar_path) {
-            return Storage::disk('public')->url($this->avatar_path);
-        }
+        // The photo is held by the hub: its address is absolute on the hub host (hub.hel.ink/storage/avatars/...), and
+        // is used as it is. Only a bare path is put on the hub; this app's own /storage does not have the file.
+        $avatar = $this->avatar_path ?: $this->avatar;
 
-        return $this->avatar ?: null;
+        return $avatar ? hub_asset_url($avatar) : null;
     }
 
     /** Verified at the hub (by email, or by Google which verifies the address itself). */

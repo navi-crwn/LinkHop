@@ -51,7 +51,7 @@ class PublicBioController extends Controller
                     session([$sessionKey => true]);
 
                     // Use 303 redirect (See Other) to convert POST to GET - prevents browser resubmit warning
-                    return redirect()->to(url()->current(), 303);
+                    return redirect()->to($request->url(), 303);
                 } else {
                     return view('bio::password', compact('bioPage'))->withErrors(['password' => 'Incorrect password']);
                 }
@@ -66,7 +66,7 @@ class PublicBioController extends Controller
                 session([$sessionKey => true]);
 
                 // Use 303 redirect (See Other) to convert POST to GET - prevents browser resubmit warning
-                return redirect()->to(url()->current(), 303);
+                return redirect()->to($request->url(), 303);
             } else {
                 return view('bio::age-verify', compact('bioPage'));
             }

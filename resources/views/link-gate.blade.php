@@ -273,7 +273,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ url()->current() }}" novalidate>
+            <form method="POST" action="{{ request()->fullUrl() }}" novalidate>
                 @csrf
                 <input type="hidden" name="gate_confirm" value="yes">
                 

@@ -240,7 +240,7 @@
             <div class="disclaimer">
                 By clicking "I'm 18+ Enter", you confirm that you are at least 18 years old and agree to view adult content.
             </div>
-            <form method="POST" action="{{ url()->current() }}">
+            <form method="POST" action="{{ request()->url() }}">
                 @csrf
                 <input type="hidden" name="age_confirm" value="yes">
                 <button type="submit" class="enter-btn">
