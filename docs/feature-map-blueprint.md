@@ -37,21 +37,21 @@ Source: the owner's blueprint built from the `awesome-url-shortener` directory (
 | 29 | Custom 404 target | Later |
 | 31, 38 | Redis/edge cache, read-only fallback | Later (MySQL is fast enough at this size; measure first) |
 | 36 | `noindex` control per link | Later |
-| 37 | Destination broken-link monitor | **Next 9** (scheduled check, notify the owner) |
+| 37 | Destination broken-link monitor | **Done now** (Batch C: `links:check-destinations` hourly, flags after 3 failed checks, one email per episode, opt-out in Settings) |
 | 42, 47 | Slash normalisation, flood limits | Have (rate limits and throttles) |
 
 ## Module 3: analytics and QR
 | # | Feature | Status |
 |---|---|---|
 | 51 | Live click stream | Later |
-| 52 | Unique visitors | **Next 10** (keyed hash of IP and agent per day; no raw IP) |
-| 53, 56 | Bot and chat-previewer filtering, in-app browser parsing | Partly: crawlers are already not counted (`LogLinkClick`); in-app browser parsing is **Next 11** |
+| 52 | Unique visitors | **Done now** (Batch C: daily-rotating keyed hash of IP and agent on the click; counted once per day) |
+| 53, 56 | Bot and chat-previewer filtering, in-app browser parsing | **Done now** (Batch C: previewers and HTTP tools never counted; Instagram, Facebook, TikTok, WeChat and more named in analytics) |
 | 54, 55, 57, 58 | Geo, referrers, devices, browsers, OS, ISP | Have |
 | 59 | Time series and hourly heat map | Have, heat map **Done now** |
 | 60 | Conversion and revenue attribution | No (needs the visitor's other site to report back; a tracking pixel) |
 | 61 | Retargeting pixels | No (HOP has no trackers) |
 | 62-64 | QR studio, logo, PNG and SVG | Have |
-| 65 | QR scan against direct click | **Next 12** (`?src=qr` as in BioHop) |
+| 65 | QR scan against direct click | **Done now** (Batch C: every QR code of a short link carries `?src=qr`; `nfc` is also recorded) |
 | 66-67 | UTM and folder roll-ups | Later |
 | 68 | Shareable read-only analytics link | Later |
 | 69 | CSV and JSON export | Have |

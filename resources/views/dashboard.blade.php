@@ -71,6 +71,7 @@
                     @else
                         <p class="mt-0.5 text-xs text-muted">{{ __('No clicks last week to compare with') }}</p>
                     @endif
+                    <p class="mt-0.5 text-xs text-muted">{{ __(':count unique visitors', ['count' => number_format($week['unique'])]) }}</p>
                 </div>
                 <div class="flex min-h-24 min-w-0 flex-1 items-stretch gap-1.5 sm:max-w-md" role="img" aria-label="{{ __('Clicks per day, last seven days') }}">
                     @foreach ($week['week'] as $i => $n)
@@ -143,6 +144,9 @@
                                     <span class="chip-red whitespace-nowrap">{{ __('Limit reached') }}</span>
                                 @elseif ($link->max_clicks)
                                     <span class="chip-gray whitespace-nowrap">{{ number_format($link->clicks) }}/{{ number_format($link->max_clicks) }}</span>
+                                @endif
+                                @if ($link->isBroken())
+                                    <span class="chip-amber whitespace-nowrap" title="{{ __('Since :date', ['date' => $link->broken_since->toDateString()]) }}{{ $link->last_status ? ' · HTTP '.$link->last_status : '' }}">{{ __('Destination not responding') }}</span>
                                 @endif
                                 @if ($link->password_hash)<span class="chip-gray" title="{{ __('Password') }}">{{ __('Password') }}</span>@endif
                             </div>
