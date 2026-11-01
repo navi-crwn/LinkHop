@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Routing, A/B split and campaign tags
+- A link can have up to **20 routing rules**: send visitors to another address by country, language (their first Accept-Language entry), device, operating system or browser. A rule can combine conditions (all must fit), the first rule that fits decides, and everyone else goes to the link's own address. The country is looked up only when a rule that gets that far asks for it.
+- A link can have an **A/B split** of 2 to 5 addresses with weights. The visitor's keyed hash (no raw IP) picks the address, so a returning visitor keeps seeing the same one. Each click records which variant it went to, and the link's analytics and edit page show clicks per variant. A rule that fits comes before the split.
+- Crawlers and link-preview bots always get the link's own address, never a rule or a variant. Every rule and variant address goes through the same safety checks as the main address and cannot be another short link.
+- A **campaign tags (UTM) builder** with presets (newsletter, social networks, Google Ads, QR on print, ...) writes `utm_source`, `utm_medium`, `utm_campaign`, `utm_term` and `utm_content` into the destination field of the create form and the edit page. Presets live in the code; nothing else is stored.
+- The API takes and returns `routing_rules` and `ab_variants`. My links marks a link with "N rules" or "A/B".
+
+### Link insights
+- **Unique visitors** next to total clicks, per link and for all links, and on the dashboard for the week. A visitor is a keyed hash of the address and browser that changes every day, so someone who comes back tomorrow counts again and nobody can be followed from day to day. The address itself is never stored.
+- **QR scans against direct clicks.** Every QR code LinkHop makes for a short link (the stored image, the downloads and the preview in the create dialog) points at the `?src=qr` form, and the click records where it came from (`direct`, `qr` or `nfc`). The parameter is never passed on to the destination and survives the password step. QR codes made earlier keep working and count as direct clicks until they are downloaded again.
+- **In-app browsers.** Visits opened inside Instagram, Facebook, Messenger, TikTok, LINE, WeChat, Snapchat, X, LinkedIn and others are named in a new tab of the Technology card.
+- Link previewers (WhatsApp, Telegram, Slack, Discord, Facebook, X, LinkedIn, Skype and more) and HTTP tools such as curl are recognised as bots: they are not counted and do not use up a click limit.
+- **Destination monitor.** Once a day LinkHop asks the destination of every live link whether it still answers (a polite HEAD, a GET if the server dislikes HEAD, short timeouts, redirects checked one by one, addresses on internal networks refused). After three failed checks in a row the link shows "Destination not responding" in My links, the dashboard and the link page, and the owner gets one email until it works again. It can be switched off in Settings, under Notifications.
+
 ### Link limits
 - A link can **stop after a number of clicks**. The click is taken before the visitor is sent on, so exactly that many people get through even when many arrive at once; crawlers and link-preview bots are not counted and do not use clicks up.
 - A link can have a **start time**: before it, visitors see "Not live yet" (HTTP 404, never cached).
@@ -15,6 +29,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Making a second link to an address you already have asks you to confirm: the same form sent again makes it. The check ignores the case of the host, a trailing slash and a fragment.
 - The API takes and returns `starts_at`, `max_clicks`, `fallback_url` and `redirect_type`. The admin lists show a scheduled link as "scheduled".
 - My links and the dashboard show "Starts in …", "Limit reached" and how many of the allowed clicks are used.
+
+### API and editor
+- **Webhooks**: add up to five https addresses in Settings, Webhooks, and get a signed JSON message for `link.created`, `link.updated`, `link.deleted`, `link.limit_reached` (the last allowed click) and `link.expired`. Each message carries `X-LinkHop-Signature` (HMAC-SHA256 of the timestamp and the body with a secret that is shown once and stored encrypted), is tried again after 1 minute, 5 minutes, 30 minutes and 2 hours, and appears in a delivery log (the last 50 per webhook) with a test button. Only public https addresses are called: private, loopback, link-local and shared-address ranges are refused when the webhook is added and again at every delivery, the connection is pinned to the address that was checked, and redirects are not followed. A webhook that fails ten deliveries in a row is switched off.
+- **Idempotency keys**: send `Idempotency-Key` with `POST /api/shorten`; a retry with the same key and body returns the first answer (`Idempotent-Replayed: true`) and creates nothing twice, the same key with another body is a 422, and keys are kept for 24 hours.
+- **CSV import** (Links, Import CSV): upload up to 500 rows (destination, slug, tags, folder, expires_at, max_clicks), see a verdict for every row with the form's own rules, safety checks and your link allowance, duplicates reported, then confirm. A sample file can be downloaded; the file is read on the server only.
+- **Command palette**: Ctrl or Cmd + K opens a search for pages, actions and your own links (Enter opens, Shift Enter edits). The slug is checked as you type in the new-link window and the edit page, pasting a destination shows the page title at once, and the copy buttons in the lists react immediately and say so when copying fails.
 
 ### Home
 - The home page has a scene for each thing LinkHop does, with motion that follows the scroll: a long address loses its characters until the short link is left (pinned, with a custom slug you can type), a link preview card you edit live (title, description, picture), a QR code that tries colour pairs, an analytics view that draws itself, protect, organise, check, API and self-host terminals that type their command, FAQ cards, and the other four HOP apps as 3D marks you can turn. GSAP and Lenis ship in our own bundle; with reduced motion every scene is complete and still.

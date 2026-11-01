@@ -6,6 +6,7 @@ use App\Models\AbuseFlag;
 use App\Models\Link;
 use App\Models\RetiredSlug;
 use App\Support\LinkLimits;
+use App\Support\LinkRouting;
 use App\Support\ReservedSlugs;
 use Hop\Safety\LinkSafety;
 use Illuminate\Foundation\Http\FormRequest;
@@ -47,6 +48,7 @@ class ManageLinkRequest extends FormRequest
             'expires_at' => $linkId ? ['nullable', 'date'] : ['nullable', 'date', 'after:now'],
             'redirect_type' => ['nullable', Rule::in(['301', '302', '307', '308'])],
             ...LinkLimits::rules(),
+            ...LinkRouting::rules(),
             'content_warning' => ['nullable', Rule::in(['none', 'sensitive', 'adult'])],
             'warning_reason' => ['nullable', 'string', 'max:255'],
             'custom_title' => ['nullable', 'string', 'max:255'],
@@ -76,6 +78,7 @@ class ManageLinkRequest extends FormRequest
                 'target_url' => 'https://'.$url,
             ]);
         }
+        $this->merge(LinkRouting::tidy($this->all()));
     }
 
     public function messages(): array
@@ -96,6 +99,7 @@ class ManageLinkRequest extends FormRequest
             if (! $validator->errors()->has('fallback_url') && $problem = LinkLimits::fallbackProblem($this->input('fallback_url'))) {
                 $validator->errors()->add('fallback_url', $problem);
             }
+            LinkRouting::check($validator, $this->all());
             if ($problem = LinkLimits::orderProblem($this->input('starts_at'), $this->input('expires_at'))) {
                 $validator->errors()->add('expires_at', $problem);
             }
