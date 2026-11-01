@@ -73,7 +73,7 @@
         </form>
 
         {{-- Key metrics --}}
-        <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div class="grid grid-cols-2 gap-3 lg:grid-cols-5">
             <div class="stat">
                 <p class="stat-label">{{ __('Clicks') }}</p>
                 <p class="stat-value">{{ number_format($totalClicks) }}</p>
@@ -83,6 +83,11 @@
                 @else
                     <p class="mt-0.5 text-xs text-muted">{{ __('Nothing before this period to compare with') }}</p>
                 @endif
+            </div>
+            <div class="stat">
+                <p class="stat-label">{{ __('Unique visitors') }}</p>
+                <p class="stat-value">{{ number_format($insights['unique']) }}</p>
+                <p class="mt-0.5 text-xs text-muted">{{ __('Counted once per day') }}</p>
             </div>
             <div class="stat">
                 <p class="stat-label">Top country</p>
@@ -207,10 +212,10 @@
             </section>
 
             <section class="glass-card min-w-0" x-data="{ tab: 'devices' }">
-                <div class="mb-3 flex items-center justify-between gap-2">
+                <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
                     <h2 class="section-title">Technology</h2>
-                    <div class="flex gap-0.5">
-                        @foreach (['devices' => 'Devices', 'browsers' => 'Browsers', 'os' => 'OS'] as $key => $label)
+                    <div class="flex flex-wrap gap-0.5">
+                        @foreach (['devices' => 'Devices', 'browsers' => 'Browsers', 'os' => 'OS', 'inapp' => __('In-app browsers')] as $key => $label)
                             <button type="button" @click="tab = '{{ $key }}'" class="{{ $tabBtn }}" :class="tab === '{{ $key }}' ? '{{ $tabOn }}' : '{{ $tabOff }}'">{{ $label }}</button>
                         @endforeach
                     </div>
@@ -218,6 +223,20 @@
                 <div x-show="tab === 'devices'"><x-analytics.rank-list :items="$rows($devices)" color="bg-emerald-500/70" empty="No device data." /></div>
                 <div x-show="tab === 'browsers'" x-cloak><x-analytics.rank-list :items="$rows($browserStats)" color="bg-violet-500/70" empty="No browser data." /></div>
                 <div x-show="tab === 'os'" x-cloak><x-analytics.rank-list :items="$rows($osStats)" color="bg-amber-500/70" empty="No OS data." /></div>
+                <div x-show="tab === 'inapp'" x-cloak>
+                    <p class="mb-2 text-xs text-muted">{{ __('Visits opened inside another app, such as Instagram or WeChat: :count of :total.', ['count' => number_format($insights['in_app_total']), 'total' => number_format($totalClicks)]) }}</p>
+                    <x-analytics.rank-list :items="$rows($insights['in_app'])" color="bg-fuchsia-500/70" :empty="__('No in-app browser visits.')" />
+                </div>
+            </section>
+
+            <section class="glass-card min-w-0">
+                <h2 class="section-title">{{ __('QR scans vs direct clicks') }}</h2>
+                <p class="mb-2 mt-0.5 text-xs text-muted">{{ __('A scan is a visit through the QR code made by LinkHop. Codes printed before this feature count as direct clicks until downloaded again.') }}</p>
+                @php
+                    $src = $insights['sources'];
+                    $sourceRows = array_sum($src) === 0 ? [] : [__('Direct clicks') => $src['direct'], __('QR scans') => $src['qr']] + ($src['other'] > 0 ? [__('NFC taps') => $src['other']] : []);
+                @endphp
+                <x-analytics.rank-list :items="$rows($sourceRows)" color="bg-teal-500/70" :empty="__('No clicks in this range.')" />
             </section>
 
             <section class="glass-card min-w-0">
