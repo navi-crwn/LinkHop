@@ -241,7 +241,7 @@ async function start(root) {
       const max = mini ? 64 : 92; if (text.length > max) text = text.slice(0, max - 1) + '…';
       bctx.clearRect(0, 0, 4096, 160); bctx.font = `${isShort ? 700 : 500} 64px ui-monospace, SFMono-Regular, Menlo, monospace`;
       const w = bctx.measureText(text).width + 96, x = (4096 - w) / 2;
-      const fit = Math.min(1, W * (mini ? .52 : .6) / (BH * w / 160)); banner.scale.set(BH * 4096 / 160 * fit, BH * fit, 1); // long links shrink to stay inside the view
+      const fit = Math.min(1, W * (mini ? .36 : .6) / (BH * w / 160)); banner.scale.set(BH * 4096 / 160 * fit, BH * fit, 1); // long links shrink to stay inside the view
       bctx.fillStyle = dark ? 'rgba(15,18,38,.88)' : 'rgba(255,255,255,.94)'; bctx.strokeStyle = isShort ? '#818cf8' : dark ? 'rgba(255,255,255,.18)' : 'rgba(99,102,241,.25)'; bctx.lineWidth = 4;
       bctx.beginPath(); bctx.roundRect(x, 16, w, 128, 64); bctx.fill(); bctx.stroke();
       bctx.fillStyle = isShort ? (dark ? '#a5b4fc' : '#4f46e5') : dark ? '#e2e8f0' : '#334155'; bctx.textAlign = 'center'; bctx.textBaseline = 'middle'; bctx.fillText(text, 2048, 84);
@@ -336,7 +336,7 @@ async function start(root) {
     }
 
     // keep the canvas sized to its box
-    new ResizeObserver(() => { const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return; renderer.setSize(w, h, false); cam.aspect = w / h; cam.position.z = mini ? 17 : w < 640 ? 22 : 18.5; cam.position.y = mini ? 18 : w < 640 ? 21 : 16.5; cam.lookAt(0, 0, mini ? .6 : .9); cam.updateProjectionMatrix(); renderer.render(scene, cam); }).observe(el);
+    new ResizeObserver(() => { const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return; renderer.setSize(w, h, false); cam.aspect = w / h; cam.position.z = mini ? 14.5 : w < 640 ? 22 : 18.5; cam.position.y = mini ? 14.2 : w < 640 ? 21 : 16.5; cam.lookAt(0, 0, mini ? .6 : .9); cam.updateProjectionMatrix(); renderer.render(scene, cam); }).observe(el);
 
     let run = makeRun(0), n = 0, t0 = performance.now(), raf = 0, visible = false, paused = 0;
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
