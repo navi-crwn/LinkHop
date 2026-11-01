@@ -85,6 +85,14 @@
                                 @if ($link->expires_at && ! $link->isExpired())
                                     <span class="chip-gray whitespace-nowrap" title="{{ $link->expires_at }}">{{ __('Ends in :when', ['when' => $link->expires_at->diffForHumans(null, \Carbon\CarbonInterface::DIFF_ABSOLUTE, true)]) }}</span>
                                 @endif
+                                @if ($link->isNotStarted())
+                                    <span class="chip-gray whitespace-nowrap" title="{{ $link->starts_at }}">{{ __('Starts in :when', ['when' => $link->starts_at->diffForHumans(null, \Carbon\CarbonInterface::DIFF_ABSOLUTE, true)]) }}</span>
+                                @endif
+                                @if ($link->isLimitReached())
+                                    <span class="chip-red whitespace-nowrap">{{ __('Limit reached') }}</span>
+                                @elseif ($link->max_clicks)
+                                    <span class="chip-gray whitespace-nowrap">{{ number_format($link->clicks) }}/{{ number_format($link->max_clicks) }}</span>
+                                @endif
                                 @if ($link->requiresPassword())
                                     <span class="chip-blue" title="Password protected">🔒</span>
                                 @endif
