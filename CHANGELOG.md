@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Addresses that could dial, write, read files, run script or hand over data (`tel:`, `sms:`, `mailto:`, `javascript:`, `file:`, `data:`, plain `http:`...) are refused, an https address goes through the same safety checks as the destination, an Android intent address has to name a package and may not name a component. Store pages have to be on the App Store or Google Play.
 - Available in the create window, the edit page and the API (`app_links`); the link list shows an "App" chip.
 
+### No scripts, styles or images from other hosts
+- Chart.js, its zoom plugin, Leaflet, qr-code-styling and Alpine (for the editor preview) are served from `public/vendor` (pinned versions, licences and a README next to them) instead of jsdelivr and unpkg. The analytics map reads its country outlines from `public/vendor/geo` instead of raw.githubusercontent.com. The only other host a signed-in page contacts is OpenStreetMap, for the map's background tiles.
+- Countries without a local flag file show their code instead of a picture from flagcdn.com; the unused Simple Icons URL helper and the editor's Simple Icons requests are gone (local brand icons are used).
+- The error page no longer loads the Tailwind CDN. Bio pages no longer ask Google Fonts for a custom font (system fonts until fonts are self-hosted there, as in BioHop).
+- The content security policy no longer names any CDN, font host or tracker host; the hosts for a bio page's own optional Google Analytics and Meta Pixel are added only when bio pages are switched on.
+
 ### Routing, A/B split and campaign tags
 - A link can have up to **20 routing rules**: send visitors to another address by country, language (their first Accept-Language entry), device, operating system or browser. A rule can combine conditions (all must fit), the first rule that fits decides, and everyone else goes to the link's own address. The country is looked up only when a rule that gets that far asks for it.
 - A link can have an **A/B split** of 2 to 5 addresses with weights. The visitor's keyed hash (no raw IP) picks the address, so a returning visitor keeps seeing the same one. Each click records which variant it went to, and the link's analytics and edit page show clicks per variant. A rule that fits comes before the split.
