@@ -1,0 +1,102 @@
+{
+ "dm-sans": {
+  "family": "DM Sans",
+  "css": "dm-sans.css",
+  "preload": "dm-sans-002a94d0.woff2"
+ },
+ "inter": {
+  "family": "Inter",
+  "css": "inter.css",
+  "preload": "inter-6ab57b19.woff2"
+ },
+ "lato": {
+  "family": "Lato",
+  "css": "lato.css",
+  "preload": "lato-702e3b8c.woff2"
+ },
+ "lexend": {
+  "family": "Lexend",
+  "css": "lexend.css",
+  "preload": "lexend-2be22f5e.woff2"
+ },
+ "manrope": {
+  "family": "Manrope",
+  "css": "manrope.css",
+  "preload": "manrope-58ee1998.woff2"
+ },
+ "merriweather": {
+  "family": "Merriweather",
+  "css": "merriweather.css",
+  "preload": "merriweather-8d568b75.woff2"
+ },
+ "montserrat": {
+  "family": "Montserrat",
+  "css": "montserrat.css",
+  "preload": "montserrat-49e242af.woff2"
+ },
+ "nunito": {
+  "family": "Nunito",
+  "css": "nunito.css",
+  "preload": "nunito-ff573f56.woff2"
+ },
+ "open-sans": {
+  "family": "Open Sans",
+  "css": "open-sans.css",
+  "preload": "open-sans-c79c2f57.woff2"
+ },
+ "oswald": {
+  "family": "Oswald",
+  "css": "oswald.css",
+  "preload": "oswald-78c7a4dd.woff2"
+ },
+ "playfair-display": {
+  "family": "Playfair Display",
+  "css": "playfair-display.css",
+  "preload": "playfair-display-61a96359.woff2"
+ },
+ "plus-jakarta-sans": {
+  "family": "Plus Jakarta Sans",
+  "css": "plus-jakarta-sans.css",
+  "preload": "plus-jakarta-sans-d4d84dd1.woff2"
+ },
+ "poppins": {
+  "family": "Poppins",
+  "css": "poppins.css",
+  "preload": "poppins-e6a077c3.woff2"
+ },
+ "quicksand": {
+  "family": "Quicksand",
+  "css": "quicksand.css",
+  "preload": "quicksand-21dc8b9f.woff2"
+ },
+ "raleway": {
+  "family": "Raleway",
+  "css": "raleway.css",
+  "preload": "raleway-1a1333b5.woff2"
+ },
+ "roboto": {
+  "family": "Roboto",
+  "css": "roboto.css",
+  "preload": "roboto-0f7fcdc8.woff2"
+ },
+ "source-sans-pro": {
+  "family": "Source Sans Pro",
+  "css": "source-sans-pro.css",
+  "preload": "source-sans-pro-48884e38.woff2"
+ },
+ "space-grotesk": {
+  "family": "Space Grotesk",
+  "css": "space-grotesk.css",
+  "preload": "space-grotesk-4ecc7e89.woff2"
+ },
+ "ubuntu": {
+  "family": "Ubuntu",
+  "css": "ubuntu.css",
+  "preload": "ubuntu-0c5ca88f.woff2"
+ },
+ "work-sans": {
+  "family": "Work Sans",
+  "css": "work-sans.css",
+  "preload": "work-sans-cea7c2e8.woff2"
+ }
+}
