@@ -35,6 +35,9 @@ curl -fsSL https://raw.githubusercontent.com/navi-crwn/LinkHop/main/install.sh |
 
 From a clone: `./install.sh` · update: `./update.sh` · remove: `./uninstall.sh`. Add `--yes` to take every default; `--help` lists the options.
 
+> [!NOTE]
+> LinkHop keeps its accounts in a HOP ID hub ([HEL.ink](https://github.com/navi-crwn/HEL.ink)); there is no hub-free mode. The installer sets up a hub next to LinkHop for you (the default, about a minute), or connects to one you already run. To get the hub and several apps in one go, use `install-family.sh` from the HEL.ink repository.
+
 ## What is LinkHop?
 
 **LinkHop** is the link shortener of the HOP family ("Hop Easy Link"). The family shares one account, **HOP ID**, kept by the [hub](https://github.com/navi-crwn/HEL.ink) at `hel.ink` / `hub.hel.ink`; LinkHop's dashboard lives at `link.hel.ink`, short links stay at `hel.ink/l/slug`, and the hub's app switcher takes you to [BioHop](https://github.com/navi-crwn/BioHop) (link in bio), [PixelHop](https://github.com/navi-crwn/PixelHop) (image hosting), and [NoteHop](https://github.com/navi-crwn/NoteHop) (encrypted notes). LinkHop has no sign-in, sign-up or profile pages of its own: the hub signs you in with a short-lived SSO ticket, and the apps share one database.
