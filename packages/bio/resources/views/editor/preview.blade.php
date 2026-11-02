@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bio Page Preview</title>
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700|poppins:400,500,600,700|roboto:400,500,700|montserrat:400,500,600,700|nunito:400,500,600,700|open-sans:400,500,600,700|lato:400,700|raleway:400,500,600,700|oswald:400,500,600,700|playfair-display:400,500,600,700|merriweather:400,700|source-sans-pro:400,600,700|ubuntu:400,500,700|quicksand:400,500,600,700|work-sans:400,500,600,700|dm-sans:400,500,700|space-grotesk:400,500,600,700|manrope:400,500,600,700|plus-jakarta-sans:400,500,600,700|lexend:400,500,600,700" rel="stylesheet">
+    <link rel="stylesheet" href="/fonts/bio/all.css">
     <style>
         * {
             margin: 0;
@@ -1169,7 +1168,7 @@
             </div>
         </template>
     </div>
-    <script nonce="{{ Vite::cspNonce() }}" src="https://unpkg.com/alpinejs@3.15.2/dist/cdn.min.js" defer></script>
+    <script nonce="{{ Vite::cspNonce() }}" src="{{ asset('vendor/alpine/alpine.min.js') }}" defer></script>
     <script nonce="{{ Vite::cspNonce() }}">
         // Brand colors from config
         const brandColors = @json(collect(config('brands.platforms', []))->mapWithKeys(fn($b, $k) => [$k => $b['color'] ?? '#000000']));
