@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class IpBan extends Model
 {
@@ -18,6 +19,17 @@ class IpBan extends Model
     protected $casts = [
         'expires_at' => 'datetime',
     ];
+
+    /** The cache key CheckIpBan reads; everything that changes a ban forgets this same key. */
+    public static function cacheKey(string $ip): string
+    {
+        return 'ip-ban:'.$ip;
+    }
+
+    public static function forgetCache(string $ip): void
+    {
+        Cache::forget(self::cacheKey($ip));
+    }
 
     public function isExpired(): bool
     {

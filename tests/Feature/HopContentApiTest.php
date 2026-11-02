@@ -160,6 +160,24 @@ class HopContentApiTest extends TestCase
         $this->signed('GET', '/api/hop/reports?status=closed')->assertOk()->assertJsonPath('page.total', 2);
     }
 
+    public function test_unban_and_a_changed_ban_take_effect_on_the_next_request(): void
+    {
+        $visit = fn () => $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.50'])->get('/l/nobody-here');
+
+        $this->signed('POST', '/api/hop/x/ip/actions', ['action' => 'ban', 'params' => ['ip' => '203.0.113.50', 'reason' => 'spam']])->assertOk();
+        $visit()->assertForbidden(); // the ban is now cached for the middleware
+        $this->signed('POST', '/api/hop/x/ip/actions', ['action' => 'unban', 'params' => ['ip' => '203.0.113.50']])->assertOk();
+        $this->assertNotSame(403, $visit()->getStatusCode(), 'an unbanned address is let in at once, not when the cache expires');
+
+        $this->signed('POST', '/api/hop/x/ip/actions', ['action' => 'ban', 'params' => ['ip' => '203.0.113.50']])->assertOk();
+        $visit()->assertForbidden();
+        // lifting it by id forgets the cached ban as well
+        $id = IpBan::where('ip_address', '203.0.113.50')->value('id');
+        $this->signed('POST', '/api/hop/x/ip/actions', ['action' => 'unban', 'params' => ['id' => $id]])->assertOk();
+        $this->assertNotSame(403, $visit()->getStatusCode());
+        $this->assertSame('ip-ban:203.0.113.50', IpBan::cacheKey('203.0.113.50'));
+    }
+
     public function test_ip_and_domain_extensions(): void
     {
         $this->signed('POST', '/api/hop/x/ip/actions', ['action' => 'ban', 'params' => ['ip' => '203.0.113.9', 'reason' => 'spam']])->assertOk();

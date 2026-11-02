@@ -1,11 +1,17 @@
 <?php
 
 use App\Http\Middleware\VerifyHubRequest;
+use App\Models\Comment;
 use App\Models\Folder;
 use App\Models\Link;
+use App\Models\Tag;
 use App\Models\User;
+use App\Models\WebhookEndpoint;
 use App\Support\HopSignature;
+use Hop\Bio\Models\BioPage;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 /*
@@ -164,4 +170,110 @@ test('the summary gives counts only, for this account', function () {
         ->assertJsonPath('data.clicks_7d', 1)
         ->assertJsonMissingPath('data.links.0');
     $this->getJson("/internal/accounts/{$user->id}/summary")->assertUnauthorized();
+});
+
+/** An account with one of everything this app keeps for it. */
+function accountWithData(string $slug): User
+{
+    $user = User::factory()->create();
+    $folder = Folder::create(['user_id' => $user->id, 'name' => 'Work']);
+    $tag = Tag::create(['user_id' => $user->id, 'name' => 'promo']);
+    $link = Link::create(['user_id' => $user->id, 'folder_id' => $folder->id, 'slug' => $slug, 'target_url' => 'https://example.com/'.$slug, 'status' => 'active']);
+    $link->tags()->attach($tag->id);
+    $link->clicks()->create(['clicked_at' => now()]);
+    Comment::create(['link_id' => $link->id, 'user_id' => $user->id, 'body' => 'note']);
+    WebhookEndpoint::create(['user_id' => $user->id, 'url' => 'https://hooks.example.net/in', 'secret' => 'whsec_test']);
+    DB::table('api_idempotency_keys')->insert(['user_id' => $user->id, 'key' => 'k1', 'fingerprint' => str_repeat('a', 64), 'expires_at' => now()->addDay()]);
+    // the redirect caches links by slug
+    Cache::put('slug:'.$slug, 'cached', 600);
+
+    return $user;
+}
+
+function rowsLeftFor(int $userId, bool $withBio = true): array
+{
+    return array_filter([
+        'links' => Link::where('user_id', $userId)->count(),
+        'folders' => Folder::where('user_id', $userId)->count(),
+        'tags' => Tag::where('user_id', $userId)->count(),
+        'webhooks' => WebhookEndpoint::where('user_id', $userId)->count(),
+        'keys' => DB::table('api_idempotency_keys')->where('user_id', $userId)->count(),
+        'bio' => $withBio && bio_enabled() ? BioPage::where('user_id', $userId)->count() : null,
+    ], fn ($n) => $n !== null);
+}
+
+test('the purge removes everything the account holds here, reports real counts and can be repeated', function () {
+    Storage::fake('public');
+    $user = accountWithData('all001');
+    $other = accountWithData('all002');
+    $link = Link::where('slug', 'all001')->first();
+    Storage::disk('public')->put('qrcodes/all001.png', 'x');
+    $link->forceFill(['qr_code_path' => 'qrcodes/all001.png'])->saveQuietly();
+    BioPage::create(['user_id' => $user->id, 'slug' => 'all-bio', 'title' => 'Bio']);
+
+    hubSigned('DELETE', "/internal/accounts/{$user->id}")->assertOk()
+        ->assertJsonPath('data', ['links' => 1, 'folders' => 1, 'tags' => 1, 'bio_pages' => 1]);
+
+    expect(rowsLeftFor($user->id))->each->toBe(0)
+        ->and(Comment::where('link_id', $link->id)->count())->toBe(0)
+        ->and(DB::table('link_clicks')->where('link_id', $link->id)->count())->toBe(0)
+        ->and(DB::table('link_tag')->where('link_id', $link->id)->count())->toBe(0)
+        ->and(Cache::has('slug:all001'))->toBeFalse()
+        ->and(User::find($user->id))->not->toBeNull()
+        // somebody else's data stays
+        ->and(rowsLeftFor($other->id, withBio: false))->each->toBe(1);
+    Storage::disk('public')->assertMissing('qrcodes/all001.png');
+
+    hubSigned('DELETE', "/internal/accounts/{$user->id}")->assertOk()
+        ->assertJsonPath('data', ['links' => 0, 'folders' => 0, 'tags' => 0, 'bio_pages' => 0]);
+    expect(rowsLeftFor($other->id, withBio: false))->each->toBe(1);
+})->group('bio');
+
+test('the purge needs no user row: links that still point at a vanished account are removed', function () {
+    // A database without enforced foreign keys keeps the children of a deleted user: point every row at an
+    // id that has no user (the test runs in a transaction, where the check is only put off until commit).
+    $user = accountWithData('gone01');
+    $ghost = $user->id + 1000;
+    DB::statement('PRAGMA defer_foreign_keys = ON');
+    foreach (['links', 'folders', 'tags', 'webhook_endpoints', 'api_idempotency_keys'] as $table) {
+        DB::table($table)->where('user_id', $user->id)->update(['user_id' => $ghost]);
+    }
+    expect(User::find($ghost))->toBeNull()->and(rowsLeftFor($ghost)['links'])->toBe(1);
+
+    hubSigned('DELETE', "/internal/accounts/{$ghost}")->assertOk()
+        ->assertJsonPath('data.links', 1)->assertJsonPath('data.folders', 1)->assertJsonPath('data.tags', 1);
+
+    expect(rowsLeftFor($ghost))->each->toBe(0)
+        ->and(Cache::has('slug:gone01'))->toBeFalse();
+
+    hubSigned('DELETE', "/internal/accounts/{$ghost}")->assertOk()->assertJsonPath('data.links', 0);
+});
+
+test('the account.deleted event purges by id too', function () {
+    $this->withMiddleware(ValidateCsrfToken::class);
+    $user = accountWithData('evt001');
+    $other = accountWithData('evt002');
+
+    hubSigned('POST', '/hop/events', ['id' => 'evt-9', 'type' => 'account.deleted', 'data' => ['sub' => (string) $user->id]])->assertOk();
+
+    expect(rowsLeftFor($user->id))->each->toBe(0)
+        ->and(rowsLeftFor($other->id, withBio: false))->each->toBe(1);
+    // a replay of the same event is harmless
+    hubSigned('POST', '/hop/events', ['id' => 'evt-9', 'type' => 'account.deleted', 'data' => ['sub' => (string) $user->id]])->assertOk();
+});
+
+test('purging first and deleting the user row after leaves no ownerless link behind', function () {
+    // links.user_id is set to null when the row goes: the owner can no longer be found, so the order matters.
+    $user = accountWithData('ord001');
+    $survivor = Link::create(['user_id' => $user->id, 'slug' => 'ord002', 'target_url' => 'https://example.com/ord2', 'status' => 'active']);
+
+    DB::table('users')->where('id', $user->id)->delete();
+    expect($survivor->fresh()->user_id)->toBeNull();
+    hubSigned('DELETE', "/internal/accounts/{$user->id}")->assertOk()->assertJsonPath('data.links', 0);
+    expect(Link::where('slug', 'ord002')->exists())->toBeTrue(); // unreachable by owner id: why the hub purges first
+
+    $second = accountWithData('ord003');
+    hubSigned('DELETE', "/internal/accounts/{$second->id}")->assertOk()->assertJsonPath('data.links', 1);
+    DB::table('users')->where('id', $second->id)->delete();
+    expect(Link::where('slug', 'ord003')->exists())->toBeFalse();
 });
