@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eee7c1f849d430bc9ce3009f36f8593f",
+    "content-hash": "a4d265b80e55ce4c59ff50deb311aea5",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1297,16 +1297,16 @@
         },
         {
             "name": "hop/auth",
-            "version": "v0.1.1",
+            "version": "v0.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/navi-crwn/hop-auth.git",
-                "reference": "90642cd8fe255792056c0412c76d480c64657321"
+                "reference": "be371ed91ac6b51227bce366a2f1323722d918e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-auth/zipball/90642cd8fe255792056c0412c76d480c64657321",
-                "reference": "90642cd8fe255792056c0412c76d480c64657321",
+                "url": "https://api.github.com/repos/navi-crwn/hop-auth/zipball/be371ed91ac6b51227bce366a2f1323722d918e2",
+                "reference": "be371ed91ac6b51227bce366a2f1323722d918e2",
                 "shasum": ""
             },
             "require": {
@@ -1331,10 +1331,10 @@
             ],
             "description": "HOP shared package: auth.",
             "support": {
-                "source": "https://github.com/navi-crwn/hop-auth/tree/v0.1.1",
+                "source": "https://github.com/navi-crwn/hop-auth/tree/v0.1.2",
                 "issues": "https://github.com/navi-crwn/hop-auth/issues"
             },
-            "time": "2026-10-29T07:28:36+00:00"
+            "time": "2026-11-02T12:59:57+00:00"
         },
         {
             "name": "hop/bio",
