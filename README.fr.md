@@ -1,4 +1,4 @@
-<p align="center">🌐 <a href="README.md">English</a> · <a href="README.zh.md">简体中文</a> · <a href="README.es.md">Español</a> · <a href="README.ar.md">العربية</a> · <a href="README.pt.md">Português</a> · <b>Français</b> · <a href="README.ja.md">日本語</a> · <a href="README.id.md">Bahasa Indonesia</a></p>
+<p align="center">🌐 <a href="README.md">English</a> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.de.md">Deutsch</a> · <a href="README.id.md">Bahasa Indonesia</a> · <a href="README.ja.md">日本語</a> · <a href="README.pt-BR.md">Português (Brasil)</a> · <a href="README.es.md">Español</a> · <b>Français</b> · <a href="README.ru.md">Русский</a></p>
 
 # LinkHop — LinkHop · Liens courts, codes QR et statistiques de clics
 
@@ -20,6 +20,14 @@
 </p>
 
 ---
+
+Installez en une commande (il vérifie d’abord votre ordinateur, pose quelques questions et peut aussi installer le hub HOP ID pour vous) :
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/navi-crwn/LinkHop/main/install.sh | bash
+```
+
+Depuis un clone : `./install.sh` · mise à jour : `./update.sh` · suppression : `./uninstall.sh`. `--yes` prend toutes les valeurs par défaut ; `--help` liste les options.
 
 ## Le réducteur de liens HOP
 

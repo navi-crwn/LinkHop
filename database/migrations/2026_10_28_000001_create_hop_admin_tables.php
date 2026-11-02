@@ -13,27 +13,31 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('hop_audit', function (Blueprint $table) {
-            $table->id();
-            // The X-HOP-Actor header: a HOP user id, or "system".
-            $table->string('actor', 64)->default('system');
-            // The app that made the call (X-HOP-App).
-            $table->string('app_slug', 32);
-            $table->string('action', 40);
-            $table->string('target_type', 20)->default('user');
-            $table->string('target_id', 64)->index();
-            $table->string('reason', 500)->nullable();
-            $table->json('params')->nullable();
-            $table->timestamp('created_at')->useCurrent();
-        });
+        if (! Schema::hasTable('hop_audit')) {
+            Schema::create('hop_audit', function (Blueprint $table) {
+                $table->id();
+                // The X-HOP-Actor header: a HOP user id, or "system".
+                $table->string('actor', 64)->default('system');
+                // The app that made the call (X-HOP-App).
+                $table->string('app_slug', 32);
+                $table->string('action', 40);
+                $table->string('target_type', 20)->default('user');
+                $table->string('target_id', 64)->index();
+                $table->string('reason', 500)->nullable();
+                $table->json('params')->nullable();
+                $table->timestamp('created_at')->useCurrent();
+            });
+        }
 
-        Schema::create('hop_user_notes', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('author', 64)->default('system');
-            $table->text('text');
-            $table->timestamp('created_at')->useCurrent();
-        });
+        if (! Schema::hasTable('hop_user_notes')) {
+            Schema::create('hop_user_notes', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+                $table->string('author', 64)->default('system');
+                $table->text('text');
+                $table->timestamp('created_at')->useCurrent();
+            });
+        }
 
         if (Schema::hasColumn('apps', 'hidden')) {
             return;

@@ -1,4 +1,4 @@
-<p align="center">🌐 <a href="README.md">English</a> · <a href="README.zh.md">简体中文</a> · <a href="README.es.md">Español</a> · <a href="README.ar.md">العربية</a> · <a href="README.pt.md">Português</a> · <a href="README.fr.md">Français</a> · <b>日本語</b> · <a href="README.id.md">Bahasa Indonesia</a></p>
+<p align="center">🌐 <a href="README.md">English</a> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.de.md">Deutsch</a> · <a href="README.id.md">Bahasa Indonesia</a> · <b>日本語</b> · <a href="README.pt-BR.md">Português (Brasil)</a> · <a href="README.es.md">Español</a> · <a href="README.fr.md">Français</a> · <a href="README.ru.md">Русский</a></p>
 
 # LinkHop — LinkHop · 短縮 URL、QR コード & クリック解析
 
@@ -20,6 +20,14 @@
 </p>
 
 ---
+
+1 つのコマンドでインストール（まずお使いのコンピューターを確認し、いくつか質問し、HOP ID ハブの設定もできます）：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/navi-crwn/LinkHop/main/install.sh | bash
+```
+
+クローンから: `./install.sh` · 更新: `./update.sh` · 削除: `./uninstall.sh`。`--yes` を付けるとすべて既定値になります。`--help` でオプション一覧を表示します。
 
 ## HOP 短縮 URL サービス
 
