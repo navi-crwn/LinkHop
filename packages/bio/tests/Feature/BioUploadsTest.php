@@ -92,13 +92,11 @@ test('block animations and the tiktok pixel are saved', function () {
     $this->actingAs($page->user)->putJson('/bio/animpage', ['tiktok_pixel_id' => "x');alert(1);//"])->assertUnprocessable();
 });
 
-test('the public page loads only the chosen font', function () {
+test('the public page contacts no font host: the chosen font falls back to the system fonts', function () {
     uploadsPage('fontpage', ['font_family' => 'merriweather']);
 
     $html = $this->get('/b/fontpage')->assertOk()->getContent();
-    expect($html)->toContain('css2?family=Merriweather:')
-        ->not->toContain('family=Inter:')
-        ->not->toContain('@import url(\'https://fonts.googleapis.com');
+    expect($html)->not->toContain('fonts.googleapis.com')->not->toContain('fonts.gstatic.com')->not->toContain('family=Inter:');
 });
 
 test('the editor preview only accepts messages from its own editor frame', function () {

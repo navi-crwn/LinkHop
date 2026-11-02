@@ -6,8 +6,7 @@
     <title>LinkHop - Password Protected</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" href="{{ route('brand.favicon') }}">
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700" rel="stylesheet" />
+    <link rel="stylesheet" href="/fonts/bio/all.css">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body {
