@@ -356,7 +356,7 @@
                     maxZoom: 19,
                     noWrap: false
                 }).addTo(map);
-                fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json')
+                fetch(@js(asset('vendor/geo/countries.geo.json')))
                     .then(response => response.json())
                     .then(geoData => {
                         function getColor(countryCode) {

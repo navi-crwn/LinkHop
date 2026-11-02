@@ -189,11 +189,7 @@
             return $isInternalUrl($url) ? 'noopener' : 'nofollow noopener noreferrer';
         };
     @endphp
-    @if($fontQuery)
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?{{ $fontQuery }}&display=swap">
-    @endif
+    {{-- Custom fonts used to come from Google Fonts; no third-party font host is contacted now (system fonts instead). --}}
     <style>
         .bio-container {
             {!! \Hop\Safety\SafeContent::css($bgStyle) !!}
@@ -1056,7 +1052,7 @@ END:VCARD`;
             if (window.QRCodeStyling) return Promise.resolve();
             qrLibrary ??= new Promise((resolve, reject) => {
                 const script = document.createElement('script');
-                script.src = 'https://unpkg.com/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js';
+                script.src = @js(asset('vendor/qr-code-styling/qr-code-styling.js'));
                 script.nonce = @js(Vite::cspNonce());
                 script.addEventListener('load', resolve);
                 script.addEventListener('error', () => { qrLibrary = null; reject(); });

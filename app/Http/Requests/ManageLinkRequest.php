@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\AbuseFlag;
 use App\Models\Link;
 use App\Models\RetiredSlug;
+use App\Support\DeepLinks;
 use App\Support\LinkLimits;
 use App\Support\LinkRouting;
 use App\Support\ReservedSlugs;
@@ -49,6 +50,7 @@ class ManageLinkRequest extends FormRequest
             'redirect_type' => ['nullable', Rule::in(['301', '302', '307', '308'])],
             ...LinkLimits::rules(),
             ...LinkRouting::rules(),
+            ...DeepLinks::rules(),
             'content_warning' => ['nullable', Rule::in(['none', 'sensitive', 'adult'])],
             'warning_reason' => ['nullable', 'string', 'max:255'],
             'custom_title' => ['nullable', 'string', 'max:255'],
@@ -79,6 +81,7 @@ class ManageLinkRequest extends FormRequest
             ]);
         }
         $this->merge(LinkRouting::tidy($this->all()));
+        $this->merge(DeepLinks::tidy($this->all()));
     }
 
     public function messages(): array
@@ -100,6 +103,7 @@ class ManageLinkRequest extends FormRequest
                 $validator->errors()->add('fallback_url', $problem);
             }
             LinkRouting::check($validator, $this->all());
+            DeepLinks::check($validator, $this->all());
             if ($problem = LinkLimits::orderProblem($this->input('starts_at'), $this->input('expires_at'))) {
                 $validator->errors()->add('expires_at', $problem);
             }

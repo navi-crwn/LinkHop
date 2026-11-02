@@ -2,13 +2,15 @@
 
 namespace Tests\Feature;
 
+use Hop\Ui\Locales;
 use Tests\TestCase;
 
 class DedicatedPagesLanguageTest extends TestCase
 {
     public function test_all_eight_language_catalogs_exist_and_have_identical_keys(): void
     {
-        $languages = ['en', 'id', 'zh', 'es', 'pt', 'fr', 'ja', 'ar'];
+        $languages = Locales::codes();
+        $this->assertCount(9, $languages);
         $baseFile = base_path('lang/en.json');
         $this->assertFileExists($baseFile);
 
@@ -33,6 +35,25 @@ class DedicatedPagesLanguageTest extends TestCase
         }
     }
 
+    public function test_long_texts_are_translated_in_every_language(): void
+    {
+        $en = array_keys(json_decode(file_get_contents(base_path('lang/en.json')), true));
+        foreach (Locales::codes() as $lang) {
+            if ($lang === 'en') {
+                continue;
+            }
+            $data = json_decode(file_get_contents(base_path("lang/{$lang}.json")), true);
+            $left = [];
+            foreach ($en as $key) {
+                // Prose of five words or more must not be left in English; short labels and names may be the same word.
+                if (str_word_count(strip_tags($key)) >= 5 && ($data[$key] ?? $key) === $key) {
+                    $left[] = $key;
+                }
+            }
+            $this->assertEmpty($left, "Catalog {$lang}.json still has English prose: ".implode(' | ', array_slice($left, 0, 5)));
+        }
+    }
+
     public function test_default_locale_is_english_and_ignores_accept_language_header(): void
     {
         $response = $this->withHeader('Accept-Language', 'fr,fr-FR;q=0.9,id;q=0.8')
@@ -53,14 +74,30 @@ class DedicatedPagesLanguageTest extends TestCase
         $response->assertSee('Kembali ke LinkHop');
     }
 
-    public function test_arabic_locale_sets_rtl_direction(): void
+    public function test_a_retired_or_unknown_language_falls_back_to_english_and_sets_no_cookie(): void
     {
-        $response = $this->get('/about?lang=ar');
+        foreach (['ar', 'xx', 'zh-TW'] as $code) {
+            $response = $this->get('/about?lang='.$code);
 
-        $response->assertOk();
-        $response->assertCookie('hop_lang', 'ar', false);
-        $response->assertSee('dir="rtl"', false);
-        $response->assertSee('lang="ar"', false);
+            $response->assertOk();
+            $response->assertCookieMissing('hop_lang');
+            $response->assertSee('lang="en"', false);
+            $response->assertSee('dir="ltr"', false);
+        }
+    }
+
+    public function test_old_short_codes_mean_the_new_ones(): void
+    {
+        $this->get('/about?lang=zh')->assertOk()->assertCookie('hop_lang', 'zh-CN', false)->assertSee('lang="zh-CN"', false);
+        $this->get('/about?lang=pt')->assertOk()->assertCookie('hop_lang', 'pt-BR', false)->assertSee('lang="pt-BR"', false);
+        $this->withUnencryptedCookie('hop_lang', 'zh')->get('/about')->assertOk()->assertSee('lang="zh-CN"', false);
+    }
+
+    public function test_german_and_russian_pages_render_with_their_language_codes(): void
+    {
+        foreach (['de', 'ru'] as $code) {
+            $this->get('/about?lang='.$code)->assertOk()->assertCookie('hop_lang', $code, false)->assertSee('lang="'.$code.'"', false);
+        }
     }
 
     public function test_cookie_persists_locale_selection(): void
