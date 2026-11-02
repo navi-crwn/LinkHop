@@ -7,27 +7,29 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const docs = join(root, "docs");
 
 const BASE = "https://navi-crwn.github.io/LinkHop/";
-const ORDER = ["en", "id", "zh", "es", "ar", "pt", "fr", "ja"];
+const ORDER = ["en", "zh-CN", "de", "id", "ja", "pt-BR", "es", "fr", "ru"];
 
 const LANG_NAMES = {
-  en: "English",
-  id: "Bahasa Indonesia",
-  zh: "简体中文",
-  es: "Español",
-  ar: "العربية",
-  pt: "Português",
-  fr: "Français",
-  ja: "日本語",
+  "en": "English",
+  "zh-CN": "简体中文",
+  "de": "Deutsch",
+  "id": "Bahasa Indonesia",
+  "ja": "日本語",
+  "pt-BR": "Português (Brasil)",
+  "es": "Español",
+  "fr": "Français",
+  "ru": "Русский",
 };
 const LANG_SHORT = {
-  en: "EN",
-  id: "ID",
-  zh: "ZH",
-  es: "ES",
-  ar: "AR",
-  pt: "PT",
-  fr: "FR",
-  ja: "JA",
+  "en": "EN",
+  "zh-CN": "ZH",
+  "de": "DE",
+  "id": "ID",
+  "ja": "JA",
+  "pt-BR": "PT",
+  "es": "ES",
+  "fr": "FR",
+  "ru": "RU",
 };
 
 function parseIni(text) {
