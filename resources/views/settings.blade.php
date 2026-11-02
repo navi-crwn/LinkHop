@@ -54,13 +54,13 @@
                 </div>
                 <div x-show="tab === 'backup'" class="space-y-4 p-5" x-data="{ showFilters: false }">
                     <div>
-                        <h3 class="text-base font-semibold text-ink">Backup & Export</h3>
+                        <h3 class="text-base font-semibold text-ink">Backup & export</h3>
                         <p class="text-sm text-muted">Download your complete link data with analytics in CSV format</p>
                     </div>
                     <div class="glass-inset rounded-xl p-4">
                         <div class="flex items-center justify-between">
                             <div>
-                                <h4 class="font-medium text-ink">Export All Data</h4>
+                                <h4 class="font-medium text-ink">Export all data</h4>
                                 <p class="mt-1 text-sm text-muted">
                                     Export links with complete analytics and statistics
                                 </p>
@@ -74,20 +74,20 @@
                             <div x-show="showFilters" x-cloak class="glass rounded-xl space-y-4 p-4">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label for="fsettin-9" class="label">From Date</label>
+                                        <label for="fsettin-9" class="label">From date</label>
                                         <input id="fsettin-9" type="date" name="date_from" class="input mt-1">
                                     </div>
                                     <div>
-                                        <label for="fsettin-10" class="label">To Date</label>
+                                        <label for="fsettin-10" class="label">To date</label>
                                         <input id="fsettin-10" type="date" name="date_to" class="input mt-1">
                                     </div>
                                     <div>
-                                        <label for="fsettin-11" class="label">Minimum Clicks</label>
+                                        <label for="fsettin-11" class="label">Minimum clicks</label>
                                         <input id="fsettin-11" type="number" name="min_clicks" min="0" placeholder="e.g., 10" class="input mt-1">
                                         <p class="mt-1 text-xs text-muted">Only links with this many clicks or more</p>
                                     </div>
                                     <div>
-                                        <label for="fsettin-12" class="label">Sort By</label>
+                                        <label for="fsettin-12" class="label">Sort by</label>
                                         <select id="fsettin-12" name="sort_by" class="input mt-1">
                                             <option value="newest">Newest First</option>
                                             <option value="oldest">Oldest First</option>
@@ -121,7 +121,7 @@
                                     <svg class="inline-block w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                     </svg>
-                                    Download Complete Export
+                                    Download complete export
                                 </button>
                                 <button type="button" @click="showFilters = false; $el.closest('form').reset();" class="btn-ghost btn-sm">
                                     Reset Filters
@@ -138,7 +138,7 @@
                 @include('partials.settings-webhooks')
                 <div x-show="tab === 'notifications'" x-cloak class="space-y-4 p-5">
                     <div>
-                        <h3 class="text-base font-semibold text-ink">Notification Preferences</h3>
+                        <h3 class="text-base font-semibold text-ink">Notification preferences</h3>
                         <p class="text-sm text-muted">Manage how you receive notifications</p>
                     </div>
                     <form method="POST" action="{{ route('settings.monitoring') }}" class="glass-inset rounded-xl p-4">
@@ -167,7 +167,7 @@
                 <div x-show="tab === 'activity'" x-cloak class="space-y-4 p-5">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h3 class="text-base font-semibold text-ink">Activity Logs</h3>
+                            <h3 class="text-base font-semibold text-ink">Activity log</h3>
                             <p class="text-sm text-muted">Recent actions performed on your account (max 1 month)</p>
                         </div>
                     </div>
@@ -175,11 +175,11 @@
                         <input type="hidden" name="tab" value="activity">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label for="fsettin-15" class="label">From Date</label>
+                                <label for="fsettin-15" class="label">From date</label>
                                 <input id="fsettin-15" type="date" name="activity_from" value="{{ request('activity_from') }}" class="input mt-1">
                             </div>
                             <div>
-                                <label for="fsettin-16" class="label">To Date</label>
+                                <label for="fsettin-16" class="label">To date</label>
                                 <input id="fsettin-16" type="date" name="activity_to" value="{{ request('activity_to') }}" class="input mt-1">
                             </div>
                         </div>
