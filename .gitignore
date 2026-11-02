@@ -39,3 +39,6 @@ docs/AI_BRIEFING.md
 /start.sh
 /backups/
 /.env.backup-*
+# Any other copy of the environment file (.env.bak-*, .env.old, temp files from set_env): only the example is tracked
+.env.*
+!.env.example
