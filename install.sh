@@ -217,7 +217,7 @@ if [ -z "${NO_HUB_QUESTION:-}" ]; then
   say "    standalone  = LinkHop with its own accounts, no hub (not available yet for LinkHop)"
   choose HUB "Which one?" new existing new standalone
   case "$HUB" in
-    standalone) die "LinkHop does not have its own accounts yet; it uses a HOP hub for sign-in. Choose 'new' to run a private hub on this computer (one extra minute), or 'existing' to use one you already have." ;;
+    standalone) die "LinkHop keeps accounts in a HOP ID hub (HEL.ink): that is how one login works for every app, and it keeps the code simple and safe. There is no hub-free mode. Easiest fix: run this again and choose 'new' (it installs a hub next to LinkHop, about a minute), or use 'existing' if you already run a hub. To install the hub with several apps at once, use install-family.sh from the HEL.ink repository." ;;
     existing)
       ask HUB_URL "Address of the hub (e.g. https://hub.example.com)?" ""
       [ -n "$HUB_URL" ] || die "The hub address is required with an existing hub"
