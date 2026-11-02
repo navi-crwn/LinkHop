@@ -9,6 +9,7 @@ use App\Support\LinkRouting;
 use App\Support\VisitorHash;
 use Hop\Auth\Models\ApiToken;
 use Hop\Safety\LinkSafety;
+use Hop\Ui\Locales;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schema;
@@ -360,10 +361,10 @@ test('the campaign tag builder is a component with its presets in code and nothi
     expect(Schema::hasColumn('links', 'utm_source'))->toBeFalse();
 });
 
-test('every new string is translated in all eight languages', function () {
+test('every new string is translated in all nine languages', function () {
     $en = json_decode(file_get_contents(base_path('lang/en.json')), true);
     foreach (['Routing rules', 'A/B split', 'Campaign tags (UTM)', 'Add a rule', 'Add a variant', 'Split test results', 'Rule :n is not valid.'] as $key) {
-        foreach (['en', 'id', 'zh', 'es', 'ar', 'pt', 'fr', 'ja'] as $lang) {
+        foreach (Locales::codes() as $lang) {
             $file = json_decode(file_get_contents(base_path("lang/$lang.json")), true);
             expect($file)->toHaveKey($key);
             if ($lang !== 'en') {

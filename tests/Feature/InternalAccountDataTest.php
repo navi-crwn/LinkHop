@@ -149,3 +149,19 @@ test('requests signed with previous secret during rotation transition are accept
     // Request signed with an unknown secret is refused
     hubSigned('GET', "/internal/accounts/{$user->id}/export", secret: 'unknown-secret-that-is-long-enough-9999')->assertUnauthorized();
 });
+
+test('the summary gives counts only, for this account', function () {
+    $user = User::factory()->create();
+    $other = User::factory()->create();
+    $mine = Link::create(['user_id' => $user->id, 'slug' => 'sum001', 'target_url' => 'https://example.com/s', 'status' => 'active']);
+    Link::create(['user_id' => $other->id, 'slug' => 'sum002', 'target_url' => 'https://example.com/o', 'status' => 'active']);
+    $mine->clicks()->create(['clicked_at' => now()->subDay()]);
+    $mine->clicks()->create(['clicked_at' => now()->subDays(20)]);
+
+    hubSigned('GET', "/internal/accounts/{$user->id}/summary")->assertOk()
+        ->assertJsonPath('app', 'linkhop')
+        ->assertJsonPath('data.links', 1)
+        ->assertJsonPath('data.clicks_7d', 1)
+        ->assertJsonMissingPath('data.links.0');
+    $this->getJson("/internal/accounts/{$user->id}/summary")->assertUnauthorized();
+});

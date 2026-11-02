@@ -60,7 +60,7 @@
         <div class="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-5 text-xs text-slate-500 dark:border-white/10 dark:text-white/60">
             <p>© {{ date('Y') }} navi-crwn · MIT License · <a href="https://db-ip.com" target="_blank" rel="noopener" class="hover:text-slate-900 dark:hover:text-white">IP Geolocation by DB-IP</a></p>
             <nav aria-label="{{ __('Language') }}" class="flex flex-wrap gap-x-3 gap-y-1">
-                @foreach (\App\Http\Middleware\SetLocale::LOCALES as $code => $name)
+                @foreach (\Hop\Ui\Locales::names() as $code => $name)
                     <a href="?lang={{ $code }}" lang="{{ $code }}" @class(['inline-flex min-h-8 items-center hover:text-slate-900 dark:hover:text-white', 'font-semibold text-slate-800 dark:text-white' => app()->getLocale() === $code])>{{ $name }}</a>
                 @endforeach
             </nav>

@@ -306,6 +306,7 @@
                                     <p class="mt-1 text-xs text-slate-500">{{ __('Used after the expiry date or when the clicks run out. Empty shows a notice.') }}</p>
                                 </div>
                                 <x-link-routing-fields :model="true" />
+                                <x-link-app-fields :model="true" />
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                                         Password Protection
@@ -942,6 +943,7 @@ function linkCreationModal() {
             max_clicks: '',
             fallback_url: '',
             routing_rules: [],
+            app_links: { mode: 'off', ios: '', android: '', ios_store: '', android_store: '' },
             ab_variants: [],
             password: '',
             redirect_type: '302'
@@ -991,6 +993,7 @@ function linkCreationModal() {
                 max_clicks: '',
                 fallback_url: '',
                 routing_rules: [],
+                app_links: { mode: 'off', ios: '', android: '', ios_store: '', android_store: '' },
                 ab_variants: [],
                 password: '',
                 redirect_type: '302'
@@ -1030,6 +1033,7 @@ function linkCreationModal() {
                 max_clicks: this.formData.max_clicks ? Number(this.formData.max_clicks) : null,
                 fallback_url: this.formData.fallback_url || null,
                 routing_rules: this.formData.routing_rules,
+                app_links: this.formData.app_links,
                 ab_variants: this.formData.ab_variants,
                 password: this.formData.password || null,
                 redirect_type: this.formData.redirect_type || '302',

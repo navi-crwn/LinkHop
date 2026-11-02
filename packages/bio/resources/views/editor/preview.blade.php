@@ -1169,7 +1169,7 @@
             </div>
         </template>
     </div>
-    <script nonce="{{ Vite::cspNonce() }}" src="https://unpkg.com/alpinejs@3.15.2/dist/cdn.min.js" defer></script>
+    <script nonce="{{ Vite::cspNonce() }}" src="{{ asset('vendor/alpine/alpine.min.js') }}" defer></script>
     <script nonce="{{ Vite::cspNonce() }}">
         // Brand colors from config
         const brandColors = @json(collect(config('brands.platforms', []))->mapWithKeys(fn($b, $k) => [$k => $b['color'] ?? '#000000']));
