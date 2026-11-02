@@ -7,6 +7,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Everything since 2.0.0 (12 December 2025). The big steps are the split of the HOP family (accounts moved to the hub, short links moved to `hel.ink/l/`, the control panel moved to Imperium), the link features below, and the move to nine languages and one-command installers.
+
+### Installers, backups and updates
+- `install.sh`, `update.sh` and `uninstall.sh` at the repository root. The installer checks the computer, asks a few questions with defaults, shows a summary and waits for a yes. It can connect to an existing HOP ID hub or install the hub (HEL.ink) next to LinkHop. `--yes`, `--dry-run` and `--help` are supported, and it is safe to run again. After a good install it asks once whether to open the GitHub page; nothing is sent anywhere.
+- `.env` is written atomically and is private (mode 0600) from the first byte. A plain `http` install runs as `local`, an `https` install as `production` with `LOG_LEVEL=warning`, and `TRUSTED_PROXIES=127.0.0.1` is set. PHP, Composer and artisan run through `PHP_BIN` (`php8.3` when installed).
+- `update.sh` copies the database first (SQLite through `sqlite3 .backup` or `VACUUM INTO`, MySQL/MariaDB through `mysqldump --single-transaction` with the password in a private temporary file) into `backups/`. If no copy can be made it stops; `--no-backup` is the explicit opt-out. A failure before the migrations puts the previous code, packages and front end back; from the migrations on, the site stays in maintenance mode and the way back is printed.
+- `uninstall.sh` removes only generated parts unless `--purge` is given, and then asks for the site name.
+- The cache, jobs and admin-table migrations skip tables the hub already created, so LinkHop installs on a fresh shared database.
+- `spatie/laravel-backup` runs daily (`backup:run` at 02:45, `backup:clean`, `backup:monitor`): database, `storage/app/public` and `.env`, to the disks in `BACKUP_DISKS`.
+
+### Nine languages
+- The app, the documentation site and the READMEs ship English, 简体中文 (zh-CN), Deutsch, Bahasa Indonesia, 日本語, Português (Brasil), Español, Français and Русский. German and Russian are new. Arabic and all right-to-left handling are gone, and pages are always left to right.
+- Old codes keep working: `zh` becomes `zh-CN`, `pt` becomes `pt-BR`, and a stored `ar` falls back to English. The language comes from `?lang=` (kept in the `hop_lang` cookie), then the cookie; the browser's `Accept-Language` is ignored, so English stays the default. Language menus list the nine languages by their own names.
+- Before this, the dedicated pages were translated into eight languages (the same set with Arabic and without German).
+
+### Content warning
+- A link can be marked `sensitive` or `adult`, with an optional note of up to 255 characters. `/l/{slug}` then shows a notice with a continue button (an 18+ confirmation for adult links), a back button, and an option to remember the choice for 24 hours on that device. The link check page shows a badge and the note.
+- `POST /api/shorten` takes `content_warning` and `warning_reason` and returns them. The HOP control center can mark a link as sensitive or adult, and clear the mark, through the admin API. Guests find the setting under Advanced on the home page.
+
+### Pages on link.hel.ink
+- `/features`, `/about`, `/help`, `/faq`, `/contact`, `/terms`, `/privacy` and `/docs` (a public API reference) are LinkHop's own pages, with a header menu, a back link and a footer that lists the HOP family. `/status` checks the app, the database and the queue heartbeat. `/check` shows where a short link goes without clicking it.
+- The terms and privacy pages say they work alongside the master HOP terms and privacy policy at `hel.ink`.
+- `hel.ink/l` and `hel.ink/l/` redirect to the dashboard home. A `/l/{name}` that matches a hub page name and is not a real link redirects to that hub page (`302`, never cached, and the query string is not passed on); real links always win, and inactive or password-protected links are not exposed.
+
+### Security and hardening
+- The content security policy is one enforced header with a per-request nonce and `strict-dynamic`, `script-src-attr 'none'` and a report address (`/csp-report`, logged to `storage/logs/csp-*.log`). The earlier second, report-only header is gone.
+- The hub's signed requests (`DELETE /internal/accounts/{id}`, the export, `POST /hop/events`) accept a previous secret during a rotation (`HOP_SSO_SECRET_PREV`).
+- Purging an account works by id, also when the hub already deleted the `users` row: links, folders, tags, webhooks and their deliveries, idempotency keys, comments, clicks and, with bio on, bio pages and uploads are found through `user_id`. QR files and bio uploads listed in the hub's call are removed.
+- The link quota is counted in the same transaction as the insert, in the dashboard, `POST /api/shorten`, `POST /api/shorten-web` and the CSV import. A cached allow or deny decision can no longer let a last slot be taken twice.
+- The destination monitor resolves the host once per hop and pins the request to the checked addresses, so a host cannot change its answer between the safety check and the request. Webhook deliveries already worked this way.
+- Lifting an IP ban takes effect on the next request (one cache key for the check and the admin API).
+- `POST /api/shorten-web` returns the link's `custom_title` and `target_url` (it read columns that do not exist).
+- The sign-out chain may reach every HOP subdomain (`form-action`), so signing out no longer stalls half way.
+- Pages served from `hel.ink` link to files on the app host with absolute addresses and the policy allows that origin (`ASSET_URL`, default `APP_URL`). The content-warning gate and password form post to the page's own address, which avoids a 419. Open Graph data of other sites is resolved against the fetched page.
+- Click logs keep only a keyed hash of the visitor address, and the owner never sees an address, city or provider of a single visit.
+- `composer.lock` pins the rewritten history of `hop/ui`, `hop/auth` and `hop/safety`, and `hop/auth` is `^0.1.2`. `symfony/mime`, `follow-redirects` and other dependencies were updated.
+
+### Hub integration
+- `GET /internal/accounts/{id}/summary` (signed, counts only: links and clicks in the last 7 days) feeds the card on the hub dashboard.
+- `GET /api/hop/x/analytics` gives the control center a global breakdown: countries, referrers, 30 days of clicks and top links, and it is listed in the manifest.
+
+### Copy and documentation
+- English copy edits: sentence case, plain wording, no emoji or exclamation marks in status text, and corrected help text (the QR preview needs only a slug). The documentation site is rendered from `docs/locales.ini` in the nine languages.
+- READMEs in the nine languages, rewritten against the code, with screenshots of the current product in `docs/readme/` (retaken by `scripts/readme-images.mjs`). `SECURITY.md`, issue templates, and a CI check that the README keeps the canonical HOP family table.
+- HOP family typography (Inter, Instrument Serif and JetBrains Mono) and the family list from the hub.
+
+### Performance and tests
+- An index on `link_clicks.clicked_at`. The 3D home scene and Three.js load as separate chunks on demand.
+- A synthetic-user browser suite in `tests/e2e/` (model-based journeys, a check after every step, shrinking of failures) runs in CI next to the Pest suite, which also runs with bio switched off.
+
 ### Open in the app (deep links)
 - A link can **try the installed app first** on iOS and Android. Choose "Open the app when the page belongs to a known app" (YouTube, Spotify, WhatsApp, Telegram, Instagram profiles, X profiles and posts, TikTok profiles, Zoom meetings, App Store and Google Play are recognised and the app address is built for you) or "Open the app address I give" (a URL scheme such as `myapp://item/42`, an https app link, or an Android `intent://...#Intent;...;end` address, separately for iOS and Android).
 - A small page does the work: it opens the app, and sends the visitor on to the App Store or Google Play page when you gave one, otherwise to the destination, if the app does not take over. It has two buttons for the cases where a phone wants a tap, and nothing to download first.
@@ -56,7 +106,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Dashboard
 - The dashboard home greets you by time of day, shows clicks this week against last week with a bar for each day, the totals, and a six-step list for getting more out of LinkHop. Every recent link and the top performer have a seven-day line.
 - Analytics compares the period with the one before it and shows the busiest weekday and hour of the last 30 days. My links shows when a link ends and has a seven-day line per link.
-- The account menu and the dashboard texts are translated in all eight languages.
+- The account menu and the dashboard texts are translated in all nine languages.
 
 ### Fixed
 - Searching My links used a column that does not exist on the links table (`title` instead of `custom_title`), which fails on MySQL.
@@ -67,9 +117,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The top bar holds settings-type controls (primary action, language, theme and an account menu with your HOP ID, settings and sign out). The other HOP apps are listed once, in the sidebar, with their marks; the app pill and grid are gone from the top bar, and the sidebar's user card became the account menu.
 
 ### LinkHop becomes a HOP ID consumer (Fase C, 28 October 2026)
-The accounts moved to the hub (`navi-crwn/HEL.ink`, hel.ink + hub.hel.ink); LinkHop keeps the links. Nothing changes for production until the family cutover (`APP_URL` decides the host).
+The accounts moved to the hub (`navi-crwn/HEL.ink`, hel.ink + hub.hel.ink); LinkHop keeps the links. `APP_URL` decides the host.
 - **Sign-in through the hub.** `/login` starts the hub's SSO (`hop/auth`: `/auth/sso`, `/auth/sso/callback`, `/auth/sso/logout`); a verified ticket signs the same user in from the shared `users` table (`Auth::loginUsingId`). `/logout` ends the session here and goes on to the hub, which ends it in the other apps. Protected pages use the `hop.auth` middleware. A suspended account (`users.status`) is signed out and sent to the hub's notice
-- **Removed:** registration, password sign-in and reset, Google sign-in, email verification, two-factor, Turnstile on auth forms, onboarding, the profile and security pages, account export and deletion, API token creation, the SSO issuer for PixelHop/NoteHop (`/sso/{app}`, `/api/pixelhop/*`, `/api/apps/{app}/*`), the HOP ID profile and user-admin API (`/api/hop/profile*`, `/users*`, `/stats`, `/audit`, `/search`, `/health`), and the marketing pages, landing page, ToS and guest shortening form (all the hub's now). `/profile` and the Settings page point at the hub
+- **Removed:** registration, password sign-in and reset, Google sign-in, email verification, two-factor, Turnstile on auth forms, onboarding, the profile and security pages, account export and deletion, API token creation, the SSO issuer for PixelHop/NoteHop (`/sso/{app}`, `/api/pixelhop/*`, `/api/apps/{app}/*`), the HOP ID profile and user-admin API (`/api/hop/profile*`, `/users*`, `/stats`, `/audit`, `/search`, `/health`), and the hub-wide marketing pages and terms. The landing page and the guest shortener came back on `link.hel.ink` afterwards (`/` shows LinkHop's own home page to guests and the dashboard once signed in). `/profile` and the Settings page point at the hub
 - **Hosts:** `APP_URL=https://link.hel.ink` is the dashboard and API, `PUBLIC_URL=https://hel.ink` the short links, old `/{slug}` redirect, `/b/*`, sitemap and QR codes. `/` on the dashboard host goes to the dashboard or the hub's sign-in. The sitemap lists only this app's public pages
 - **Shared packages** from GitHub (`navi-crwn/hop-auth`, `hop-ui`, `hop-safety`, `dev-main`): `hop/ui` draws the app switcher (pill in the top bar, "HOP apps" in the sidebar, from `config/hop.php`, a copy of the hub's); `hop/safety` replaces the local `LinkSafety`, `UrlGuard`, `SafeContent`, `DomainBlacklist`, `abuse:feeds` and `config/abuse.php` (now `config('safety')`); `hop/auth` validates API tokens
 - **API** stays at `/api/…` on this app: `POST /api/shorten` needs scope `link:create` (BioHop uses it), new `GET /api/links/{slug}` (`link:read`) and `DELETE /api/links/{slug}` (`link:delete`); a token without scopes keeps full access. Request and response documented in README, "API"
@@ -90,27 +140,19 @@ hel.ink is becoming the home of several HOP apps (the hub, LinkHop, BioHop, Pixe
 - The link checker understands `hel.ink/l/slug`, the old form and the public host
 - The plan behind this: `docs-planning/PLAN-pemisahan-aplikasi.md`
 
-### HOP ID
-- Content side of the HOP admin API for Imperium: `/api/hop/manifest`, `/content` (links, bio pages: list, detail, disable/enable/unpublish/publish/delete/transfer/rescan, owner's content protected), `/reports` (people's reports and scanner findings in one queue with investigate/close/confirm/restore), `/x/ip` (bans incl. expiry, watchlist), `/x/domains` (blacklist), `/x/queue` (worker heartbeat, backlog, last abuse scan), `/settings` (Site & SEO editable, .env facts read-only). Every change lands in `hop_audit`
-- **LinkHop** is the new name of this app; the domain stays hel.ink ("Hop Easy Link"). It is the account server ("HOP ID") of the HOP family: the sign-in and sign-up buttons say "Login with HOP" and "Join HOP", and the sign-in page says which app you are on your way to
-- **App registry.** The other HOP apps are rows in the new `apps` table instead of `PIXELHOP_*` / `NOTEHOP_*` keys: `/sso/{app}`, `/sso/{app}/google` and `/apps/{app}` work for any registered app, the sidebar lists them, and an app can be put in maintenance or switched off. `php artisan hop:bootstrap` moves the old keys over once (`/pixelhop` and `/notehop` redirect to `/apps/…`)
-- **Roles.** `owner`, `admin`, `moderator`, `support` and app-scoped `admin` (new `roles` table) replace the single `SUPERADMIN_EMAIL` check, which stays as a fallback so the owner is never locked out. Admin pages now also require the two-factor check when the admin has 2FA on
-- **One profile for every app.** Username (one rule everywhere: 3–30 lowercase letters, digits, dots, dashes, underscores; reserved names; a released name stays on hold 90 days), bio, website, location, a profile photo stored here, and "show my name and photo on what I share". New accounts get a username automatically; `hop:usernames` assigns one to existing accounts and can import the ones PixelHop and NoteHop already use (earliest claim wins)
-- **SSO ticket v2** carries the profile, roles, `profile_version`, `verified` and `mfa`; every v1 field is unchanged
-- **HOP App Protocol.** Signed server-to-server API for the apps and the Imperium control center: `GET /api/hop/profile/{id}`, `/api/hop/profiles`, `/api/hop/apps`, and `/api/apps/{app}/login|register` for an app's own forms (the old `/api/pixelhop/*` endpoints keep working for PixelHop 3.x). Secrets can be rotated with a grace period
-- **Admin API for Imperium.** Signed `/api/hop/*` endpoints for an app registered with the `admin_client` capability (anyone else gets `403 forbidden`): `GET /stats` (KPIs and 14-day signup/click series, cached a minute), `GET /users` (search, status and role filters, id cursor), `GET /users/{id}` ("User 360": profile, counts, sessions, logins, activity, roles, notes, recent links), `POST /users/{id}/actions` (`suspend`, `activate`, `revoke_sessions`, `revoke_tokens`, `set_roles`, `note`, `delete`; the owner can never be suspended or deleted and the last owner cannot be demoted), `GET /audit` (every action, with the `X-HOP-Actor` and the calling app, in the new `hop_audit` table), `GET /search` (users, links, bio pages) and `GET /health` (signed only). `GET /apps` also returns each app's secret to an admin client. Admin notes live in the new `hop_user_notes` table
-- **Imperium is a hidden app.** `hop:bootstrap` registers it from `IMPERIUM_URL` / `IMPERIUM_SSO_SECRET` with `apps.hidden` set, so it signs in through HOP ID and is allowed as a CSP form-action origin but never shows in the sidebar
-- **The built-in admin panel is retired.** Imperium takes over through the signed admin API: the `/admin/*` pages, their controllers and views are gone, `GET /admin` (and anything under it) sends an admin to `HOP_CONTROL_URL` or, when that is not set, shows a page saying where the panel went. Admins get the normal dashboard with a banner and one sidebar item (`HOP_CONTROL_NAME`, default "Control center") instead of the Admin menus. The scanner (`abuse:scan`), IP bans, the watchlist, the domain blacklist, SEO settings and `queue:heartbeat` keep working underneath; `/api/hop/search` now returns public URLs for links and bio pages and no URL for users
-- **Events.** Apps that declare the `events` capability are told about profile changes, status changes (suspend) and account deletion (`POST /hop/events`, signed, retried with backoff)
-- Sign-ins with Google and into the apps are now recorded in the login history like password sign-ins
-- Sign-in, sign-up, forgot- and reset-password forms: one full-width HOP button, the Cloudflare check as wide as the form, and the secondary links (forgot password, join, log in) as small text underneath; the header shows a HOP ID chip. Mails get a HOP ID header (dark band with the logo) and a footer naming every HOP app
-- Password reset speaks HOP ID: the mail (with the logo) says the new password works on every HOP app, the form shows the address the link is for without letting it be edited (the token was always bound to that address), and opening the link while signed in as another account signs that session out instead of bouncing to the dashboard
+### Admin API for the HOP control center
+- Content side of the signed `/api/hop/*` API for Imperium, for an app registered with the `admin_client` capability (anyone else gets `403`): `/manifest`, `/content` (links and bio pages: list, detail, disable, enable, unpublish, publish, delete, transfer, rescan, mark and unmark as sensitive or adult; the owner's content is protected), `/reports` (people's reports and scanner findings in one queue with investigate, close, confirm and restore), `/x/ip` (bans with expiry, watchlist), `/x/domains` (blacklist), `/x/queue` (worker heartbeat, backlog, last abuse scan), `/settings` (site and SEO editable, `.env` facts read-only), and `/stats`, `/health`. Every change is written to `hop_audit`.
+- The built-in admin panel is retired. The `/admin/*` pages, their controllers and views are gone; `GET /admin` sends an admin to `HOP_CONTROL_URL` or, when that is not set, shows a page saying where the panel went. Admins get the normal dashboard with a banner and one sidebar item (`HOP_CONTROL_NAME`, default "Control center"). The scanner (`abuse:scan`), IP bans, the watchlist, the domain blacklist, SEO settings and `queue:heartbeat` keep working underneath.
+- `hop:bootstrap` registers Imperium as a hidden app from `IMPERIUM_URL` and `IMPERIUM_SSO_SECRET`, so it signs in through HOP ID and is allowed as a CSP `form-action` origin but never shows in the sidebar.
+- Apps that declare the `events` capability are told about profile changes, status changes and account deletion (`POST /hop/events`, signed, retried with backoff).
 
+### Moved to the hub
+For a few days (27 and 28 October 2026) LinkHop was the HOP ID account server: it gained an app registry, roles, one profile for every app, SSO ticket v2, the signed HOP App Protocol, user administration ("User 360") and HOP-styled sign-in, sign-up and password-reset pages and mails. That work now lives in the hub (`navi-crwn/HEL.ink`); see the Fase C section above for what LinkHop kept and dropped.
 
 ### Fixed
 - A short link or bio slug can no longer be the first part of an app route (`analytics`, `api-docs`, `goodbye`, `up`, ...): the route always won, so such a link never opened. The list is read from the router, so new routes are covered automatically; matching ignores case. Links that already have such a slug can still be edited
 - The example short link for the API reference is now `hel.ink/documentation`; `hel.ink/api-docs` is the app's API page for members. `ExampleBioSeeder` removes its old `api-docs` link only when the example owner still has it pointing at the docs
-- Logout no longer shows "419 Page Expired" when the page was left open past the session lifetime: the user is signed out anyway. Other forms with an expired token go back with their input (never passwords) and the message "Sesi habis, silakan coba lagi."; JSON requests still get a 419 JSON reply. Open tabs fetch a fresh token from `/csrf-token` when shown again
+- Logout no longer shows "419 Page Expired" when the page was left open past the session lifetime: the user is signed out anyway. Other forms with an expired token go back with their input (never passwords) and a short message; JSON requests still get a 419 JSON reply. Open tabs fetch a fresh token from `/csrf-token` when shown again
 - The inactivity logout now uses `SESSION_LIFETIME` (default 120 minutes) instead of a separate 60-minute setting, and actually fires (it compared times the wrong way round). `SESSION_INACTIVITY_LOGOUT` is gone
 - Admin bio page: text, divider, embed, FAQ and contact-card blocks no longer show as blank rows
 - Public bio pages: header, FAQ and contact-card text follows the theme color, so it stays readable on dark themes
@@ -118,12 +160,12 @@ hel.ink is becoming the home of several HOP apps (the hub, LinkHop, BioHop, Pixe
 ### Changed
 - Tailwind CSS 3 → 4 (`@tailwindcss/vite`, CSS-first config in `resources/css/app.css`; `tailwind.config.js`, `postcss.config.js`, `autoprefixer` and `postcss` removed). The v3 look is kept: v3 border color, button cursor and `space-x/y` rule are put back, and the component classes keep their v3 order. `npm audit` is clean and CI now runs it in full. `scripts/ui-screenshots.mjs` compares the main pages before and after a styling change
 - `storage/framework/disposable_domains.json` (written by `disposable:update`) is git-ignored
-- README: why Cloudflare Email Obfuscation and Rocket Loader fill the CSP report log, and what to do about it
+- README: Cloudflare Email Obfuscation and Rocket Loader inject scripts without the nonce and are blocked by the policy; the README says to turn them off
 - Guest links are deleted at 00:00 (in `GUEST_LINK_TIMEZONE`) after 14 full days in a row without a click, and after day 30 at most; the server `.env` can no longer stretch the idle limit past 14 days. `links:prune-guest` now runs at midnight
 - Home page: the Cloudflare security check sits to the right of the Shorten button on wide screens and only takes room when Cloudflare asks for a click
 
 ### Added
-- `ExampleBioSeeder` builds the example bio page (`/b/hel`) and short links shown in the README and on the website
+- `ExampleBioSeeder` builds the example bio page (`/b/hel`) and short links used on the website
 - Slugs of deleted guest links stay blocked for 90 days (`RETIRED_SLUG_DAYS`) and show a "Link Expired" page (HTTP 410), so nobody can take over a link that is still shared somewhere
 
 ### Security
@@ -135,10 +177,9 @@ hel.ink is becoming the home of several HOP apps (the hub, LinkHop, BioHop, Pixe
 - Dependencies updated within their constraints (Laravel 12.70); `composer audit` is clean
 
 ### Added
-- Project website on GitHub Pages (`docs/`, English and Indonesian, light and dark) and an Indonesian README (`README.id.md`); README images are rendered from the website by `scripts/readme-images.mjs`
+- Project website on GitHub Pages (`docs/`, light and dark, now in nine languages) and an Indonesian README (`README.id.md`, now one of nine)
 - `abuse:scan` command, scheduled hourly (new/edited items) and nightly (full sweep + purge): blacklist, keyword categories (CSAM, gambling, phishing, scam, adult), risky URL traits and optional Google Safe Browsing / URLhaus lookups (`SAFE_BROWSING_KEY`, `URLHAUS_AUTH_KEY`)
-- Automated findings on the admin Abuse page with Confirm / Restore
-- `config/abuse.php` for patterns, weights and thresholds
+- Automated findings in an abuse queue with Confirm and Restore (now in the HOP control center). Patterns, weights and thresholds moved from `config/abuse.php` to `hop/safety`
 
 ### Fixed
 - Bio editor: the URL field disappeared after once choosing "Select existing link"
@@ -218,6 +259,13 @@ hel.ink is becoming the home of several HOP apps (the hub, LinkHop, BioHop, Pixe
 ---
 
 ## Migration Notes
+
+### Upgrading from 2.0.0 to the next release
+1. LinkHop needs a HOP ID hub ([HEL.ink](https://github.com/navi-crwn/HEL.ink)) on the same database. Set `HOP_APP=linkhop`, `HOP_HUB_URL` and `HOP_SSO_SECRET` (the hub's secret, at least 32 characters), `APP_URL` for the dashboard and `PUBLIC_URL` for short links. Remove `GOOGLE_*`; Turnstile keys stay for the guest form.
+2. Run `composer install --no-dev -o` and `npm ci && npm run build`; Composer now fetches `hop/auth`, `hop/ui` and `hop/safety` from GitHub.
+3. Run `php artisan migrate --force`. Only LinkHop's own tables are migrated; the account tables belong to the hub.
+4. Run a queue worker and the scheduler (`* * * * * php artisan schedule:run`). On a self-hosted install, `update.sh` does steps 2 and 3 and copies the database first.
+5. Short links open at `hel.ink/l/{slug}`; the old `hel.ink/{slug}` form redirects until `LEGACY_SLUG_UNTIL` (27 November 2026). `php artisan links:announce-migration` emails link owners.
 
 ### Upgrading to 2.0.0
 1. Run database migrations: `php artisan migrate`

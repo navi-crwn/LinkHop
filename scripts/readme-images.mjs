@@ -1,102 +1,70 @@
-import { createServer } from 'node:http';
-import { readFile, writeFile, mkdir } from 'node:fs/promises';
-import { extname, join, normalize } from 'node:path';
+// README screenshots: docs/readme/*.webp, one light and one dark image per screen.
+//
+// Public pages come from the live site; signed-in pages come from a local copy with invented
+// demo data, so no account, address or visitor of the real service ends up in an image.
+//
+//   BIO_ENABLED=false in .env (as on link.hel.ink), then
+//   bash tests/e2e/serve.sh &                      # throwaway SQLite app (E2E_PORT=8131 to change the port)
+//   APP_ENV=e2e php scripts/readme-demo-seed.php   # the demo account and its links and clicks
+//   node scripts/readme-images.mjs
+//
+// Needs Google Chrome (or set CHROME_CHANNEL) and cwebp. LIVE_URL and LOCAL_URL override the hosts.
+import { execFileSync } from 'node:child_process';
+import { mkdirSync, rmSync, statSync } from 'node:fs';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const docs = join(root, 'docs');
-const imgDir = process.env.SCREENSHOT_DIR || join(root, 'test-results/readme');
-const assetRoot = process.env.HOP_ASSET_ROOT;
-const types = {
-  '.html': 'text/html',
-  '.css': 'text/css',
-  '.js': 'text/javascript',
-  '.svg': 'image/svg+xml',
-  '.webp': 'image/webp',
-  '.jpg': 'image/jpeg',
-  '.png': 'image/png'
-};
+const out = join(root, 'docs/readme');
+const tmp = join(root, 'test-results/readme');
+const live = (process.env.LIVE_URL || 'https://link.hel.ink').replace(/\/$/, '');
+const local = (process.env.LOCAL_URL || 'http://127.0.0.1:8131').replace(/\/$/, '');
+mkdirSync(out, { recursive: true });
+mkdirSync(tmp, { recursive: true });
 
-const server = createServer(async (req, res) => {
-  const p = normalize(decodeURIComponent(new URL(req.url, 'http://x').pathname)).replace(/^([/\\])+/, '');
-  try {
-    const filePath = join(docs, p === '' || p.endsWith('/') ? p + 'index.html' : p);
-    const body = await readFile(filePath);
-    res.writeHead(200, { 'Content-Type': types[extname(filePath) || '.html'] || 'application/octet-stream' }).end(body);
-  } catch {
-    res.writeHead(404).end();
-  }
-}).listen(0);
+const viewport = { width: 1280, height: 800 };
 
-const base = `http://127.0.0.1:${server.address().port}/`;
+// name, host, path, what to do before the picture is taken
+const shots = [
+  { name: 'home', base: live, path: '/' },
+  { name: 'dashboard', base: local, path: '/dashboard', auth: true },
+  { name: 'links', base: local, path: '/links', auth: true },
+  { name: 'analytics', base: local, path: '/analytics?hours=72', auth: true, settle: 2500 },
+];
 
-const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1200, height: 900 }, deviceScaleFactor: 2, reducedMotion: 'reduce' });
-if (assetRoot) {
-  await page.route('https://hel.ink/hop-assets/**', async route => {
-    const relative = new URL(route.request().url()).pathname.slice('/hop-assets/'.length);
-    await route.fulfill({ path: join(assetRoot, relative), headers: { 'access-control-allow-origin': '*' } });
-  });
-}
+const browser = await chromium.launch({ channel: process.env.CHROME_CHANNEL || 'chrome' });
 
-async function encode(png, type, quality) {
-  const data = await page.evaluate(async ([b64, type, quality]) => {
-    const img = new Image();
-    img.src = 'data:image/png;base64,' + b64;
-    await img.decode();
-    const c = document.createElement('canvas');
-    c.width = img.width;
-    c.height = img.height;
-    c.getContext('2d').drawImage(img, 0, 0);
-    return c.toDataURL(type, quality).split(',')[1];
-  }, [png.toString('base64'), type, quality]);
-  return Buffer.from(data, 'base64');
-}
+for (const theme of ['light', 'dark']) {
+  const context = await browser.newContext({ viewport, deviceScaleFactor: 2, reducedMotion: 'reduce', colorScheme: theme, locale: 'en-US' });
+  await context.addInitScript(t => {
+    try {
+      localStorage.setItem('helink-theme', t);
+      localStorage.setItem('hop-theme', t);
+      localStorage.setItem('cookie_consent', 'declined');
+    } catch (e) {}
+  }, theme);
+  const page = await context.newPage();
+  const signedIn = new Set();
 
-await mkdir(join(docs, 'readme'), { recursive: true });
-await mkdir(imgDir, { recursive: true });
-
-for (const lang of ['en', 'id']) {
-  for (const theme of ['dark', 'light']) {
-    const targetUrl = `${base}${lang}/?theme=${theme}`;
-    await page.goto(targetUrl, { waitUntil: 'networkidle' });
-    if (theme === 'dark') {
-      await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
-    } else {
-      await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
+  for (const shot of shots) {
+    if (shot.auth && !signedIn.has(shot.base)) {
+      const res = await context.request.post(`${shot.base}/_e2e/login`, { data: { email: 'demo@example.test' } });
+      if (!res.ok()) throw new Error(`Local sign-in failed (${res.status()}). Is the demo app running and seeded?`);
+      signedIn.add(shot.base);
     }
+    await page.goto(shot.base + shot.path, { waitUntil: 'load' });
+    await page.evaluate(t => document.documentElement.classList.toggle('dark', t === 'dark'), theme);
     await page.evaluate(() => document.fonts.ready);
-    
-    const heroEl = page.locator('.hero');
-    const heroPng = await heroEl.screenshot({ animations: 'disabled' });
-    const heroWebp = await encode(heroPng, 'image/webp', 0.86);
-    await writeFile(join(docs, 'readme', `hero-${lang}-${theme}.webp`), heroWebp);
-    await writeFile(join(imgDir, `linkhop-hero-${lang}-${theme}.png`), heroPng);
-    console.log(`wrote hero-${lang}-${theme}.webp`);
+    await page.waitForTimeout(shot.settle ?? 2500);
+    const png = join(tmp, `${shot.name}-${theme}.png`);
+    await page.screenshot({ path: png });
+    const webp = join(out, `${shot.name}-${theme}.webp`);
+    execFileSync('cwebp', ['-quiet', '-q', '82', '-m', '6', png, '-o', webp]);
+    console.log(`${shot.name}-${theme}.webp ${Math.round(statSync(webp).size / 1024)} KB`);
   }
+  await context.close();
 }
-
-// Mobile screenshot
-await page.setViewportSize({ width: 375, height: 812 });
-await page.goto(base, { waitUntil: 'networkidle' });
-await page.evaluate(() => document.fonts.ready);
-const mobPng = await page.screenshot({ fullPage: false });
-await writeFile(join(imgDir, 'linkhop-mobile-375.png'), mobPng);
-console.log('wrote linkhop-mobile-375.png');
-
-// 1200x630 OpenGraph card
-await page.setViewportSize({ width: 1200, height: 630 });
-await page.goto(`${base}?theme=dark`, { waitUntil: 'networkidle' });
-await page.evaluate(() => {
-  document.documentElement.setAttribute('data-theme', 'dark');
-  document.querySelector('.site-header').style.display = 'none';
-  document.querySelector('.skip').style.display = 'none';
-});
-await page.evaluate(() => document.fonts.ready);
-const ogPng = await page.screenshot({ clip: { x: 0, y: 0, width: 1200, height: 630 } });
-await writeFile(join(docs, 'og.png'), ogPng);
-console.log('wrote docs/og.png');
 
 await browser.close();
-server.close();
+rmSync(tmp, { recursive: true, force: true });

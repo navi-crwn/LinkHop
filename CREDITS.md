@@ -1,228 +1,71 @@
-# Credits & Acknowledgments
+# Credits
 
-This document lists all open-source libraries, services, and tools that power **hel.ink**.
+The open-source libraries, data and services behind LinkHop (link.hel.ink). Versions are the ones in `composer.lock`, `package-lock.json` and `public/vendor/README.md`; licences come from each package. LinkHop itself is MIT licensed (see `LICENSE`).
 
----
+## Language and framework
 
-## Core Framework & Language
+- PHP 8.2 or newer (8.3 is what CI and the installer prefer)
+- Laravel 12 (MIT)
 
-- **Laravel 12** - PHP Framework (MIT)
-- **PHP 8.2+** - Programming Language
+## PHP packages (Composer)
 
----
+Runtime:
 
-## Backend Dependencies (Composer)
+- laravel/framework 12.70 (MIT) and laravel/tinker (MIT)
+- hop/auth, hop/ui and hop/safety: the shared HOP packages, from `navi-crwn/hop-auth`, `hop-ui` and `hop-safety` (MIT)
+- hop/bio: the bundled bio package in `packages/bio` (MIT)
+- simplesoftwareio/simple-qrcode 4.2 (MIT) with bacon/bacon-qr-code (BSD-2-Clause): QR codes
+- matomo/device-detector 6.5 (LGPL-3.0-or-later): device, browser and bot detection
+- geoip2/geoip2 3.4 (Apache-2.0): reads the local country and city databases
+- symfony/html-sanitizer 7.4 (MIT)
+- spatie/laravel-backup 10.3 (MIT)
+- sentry/sentry-laravel 4.29 (MIT): error tracking
 
-### Framework & Core
-- **laravel/framework** v12.0 - Full-stack PHP framework (MIT)
-- **laravel/breeze** v2.3 - Authentication scaffolding (MIT)
-- **laravel/socialite** v5.23 - OAuth authentication provider (MIT)
-- **laravel/tinker** v2.10 - Interactive REPL console (MIT)
+Development and tests:
 
-### Security & Authentication
-- **pragmarx/google2fa-laravel** v2.3 - Two-factor authentication (MIT)
-- **laravel/sanctum** - API token authentication (MIT)
+- pestphp/pest 4 and pest-plugin-laravel (MIT), mockery/mockery (BSD-3-Clause), fakerphp/faker (MIT), nunomaduro/collision (MIT)
+- laravel/pint (MIT), laravel/pail (MIT), laravel/sail (MIT)
 
-### Utilities
-- **simplesoftwareio/simple-qrcode** v4.2 - QR code generator (MIT)
-- **geoip2/geoip2** v3.2 - IP geolocation library (Apache-2.0)
-- **sentry/sentry-laravel** v4.19 - Error tracking & monitoring (BSD-3-Clause)
+## JavaScript packages (npm)
 
-### Development Tools
-- **laravel/pail** v1.2 - Real-time log viewer (MIT)
-- **laravel/pint** v1.24 - Code style fixer (MIT)
-- **laravel/sail** v1.41 - Docker development environment (MIT)
+Built into the front end:
 
-### Testing
-- **pestphp/pest** v4.1 - Elegant testing framework (MIT)
-- **pestphp/pest-plugin-laravel** v4.0 - Laravel integration for Pest (MIT)
-- **mockery/mockery** v1.6 - Mock object framework (BSD-3-Clause)
-- **fakerphp/faker** v1.23 - Fake data generator (MIT)
-- **nunomaduro/collision** v8.6 - Beautiful error reporting (MIT)
+- Tailwind CSS 4 with @tailwindcss/forms (MIT), Vite 7 with laravel-vite-plugin (MIT)
+- Alpine.js 3 with @alpinejs/collapse (MIT), axios (MIT), SortableJS (MIT)
+- GSAP 3 (the standard no-charge GSAP licence), Lenis (MIT), Three.js (MIT): the home page scenes
 
----
+Development and tests: @playwright/test and @axe-core/playwright (Apache-2.0, MPL-2.0), concurrently (MIT).
 
-## Frontend Dependencies (NPM)
+## Libraries served from `public/vendor`
 
-### Build Tools
-- **vite** v7.0 - Next-generation build tool (MIT)
-- **laravel-vite-plugin** v2.0 - Laravel integration for Vite (MIT)
-- **concurrently** v9.0 - Run multiple commands concurrently (MIT)
+Self-hosted, so no page loads a script from a CDN. Each file keeps its licence next to it.
 
-### CSS Framework & Plugins
-- **tailwindcss** v4.3 - Utility-first CSS framework (MIT)
-- **@tailwindcss/forms** v0.5 - Form styling plugin (MIT)
-- **@tailwindcss/vite** v4.3 - Vite integration (MIT)
+- Chart.js 4.4.0 (MIT) and chartjs-plugin-zoom 2.0.1 (MIT)
+- Leaflet 1.9.4 (BSD-2-Clause)
+- qr-code-styling 1.6.0-rc.1 (MIT)
+- Alpine.js 3.15.2 (MIT), for the editor preview
+- Country outlines for the analytics map: johan/world.geo.json, derived from Natural Earth (public domain)
 
-### JavaScript
-- **alpinejs** v3.4 - Lightweight JavaScript framework (MIT)
-- **@alpinejs/collapse** v3.15 - Collapse/expand plugin (MIT)
-- **axios** v1.11 - Promise-based HTTP client (MIT)
+## Icons, flags and fonts
 
----
+- Simple Icons: the brand icons in `public/images/brands` (CC0 1.0)
+- flag-icons: the country flags in `public/images/flags` (MIT)
+- Inter, Instrument Serif and JetBrains Mono (SIL Open Font License 1.1): the HOP family typography, served by hop/ui from hel.ink
+- The bio package's font choices (Inter, Poppins, Roboto, Playfair Display, Space Grotesk and others, SIL Open Font License 1.1 or Apache-2.0) are self-hosted in `public/fonts/bio`
 
-## Frontend Libraries (CDN)
+## Data and services
 
-### Visualization & UI
-- **Chart.js** v4.4.0 - JavaScript charting library (MIT)
-  - Source: `https://cdn.jsdelivr.net/npm/chart.js`
-- **chartjs-plugin-zoom** v2.0.1 - Zoom and pan plugin for Chart.js (MIT)
-  - Source: `https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom`
-- **Leaflet.js** v1.9.4 - Interactive maps library (BSD-2-Clause)
-  - Source: `https://unpkg.com/leaflet`
-- **Heroicons** - Beautiful hand-crafted SVG icons (MIT)
-  - Source: Inline SVG in templates
-- **Simple Icons** - 150+ brand icons for Link in Bio (CC0 1.0)
-  - Source: `https://simpleicons.org`
-  - Usage: Social media and brand icons in bio pages
-  - Location: `public/images/brands/`
+- IP Geolocation by [DB-IP](https://db-ip.com): the DB-IP Lite city and ASN databases (CC BY 4.0), downloaded by `geolite:update`. With `GEOLITE_LICENSE_KEY` set, MaxMind GeoLite2 is used instead.
+- When the local database has no answer, visitor location can come from freeipapi.com, ip-api.com, ipapi.co, ipinfo.io or abstractapi.com, each under its own terms.
+- Proxy and VPN checks can use proxycheck.io, IPQualityScore, vpnapi.io and the ISP patterns in the code, depending on the keys you set.
+- Cloudflare Turnstile protects the guest shortener and the report form (Cloudflare terms of service).
+- OpenStreetMap tiles under the analytics map, © OpenStreetMap contributors (ODbL).
+- Optional abuse lookups: Google Safe Browsing and URLhaus.
 
----
+## Brand
 
-## Inspiration & Design References
+The LinkHop logo, mark and favicon in `resources/brand` are the project's own designs. See `resources/brand/README.md`.
 
-The Link in Bio feature was inspired by these amazing open-source projects:
+## Inspiration
 
-- **LinkStack** - Self-hosted link management platform (AGPL-3.0)
-  - Repository: `https://github.com/LinkStackOrg/LinkStack`
-  - Inspiration: Theme system, block-based layout, social icons placement
-  - Note: No code copied; design patterns used as reference
-
-- **LittleLink** - DIY self-hosted link page (MIT)
-  - Repository: `https://github.com/sethcottle/littlelink`
-  - Inspiration: Minimalist button styling, brand icon approach
-  - Note: No code copied; aesthetic principles referenced
-
-- **Linktree** - Commercial link-in-bio service
-  - Website: `https://linktr.ee`
-  - Inspiration: General UX patterns for bio pages
-  - Note: No assets or code used; concept reference only
-
-### Fonts
-- **Inter** - Variable font family (SIL Open Font License 1.1)
-  - Source: `https://fonts.bunny.net`
-- **Figtree** - Modern sans-serif font (SIL Open Font License 1.1)
-  - Source: `https://fonts.bunny.net`
-
----
-
-## External Services & APIs
-
-### Security & Bot Protection
-- **Cloudflare Turnstile** - CAPTCHA alternative for bot protection
-  - License: [Cloudflare Terms of Service](https://www.cloudflare.com/terms/)
-  - Usage: Registration, login, abuse reporting
-
-### Authentication
-- **Google OAuth 2.0** - Social login provider
-  - License: [Google API Terms of Service](https://developers.google.com/terms)
-  - Usage: Alternative login method
-
-### Geolocation & IP Intelligence
-- **IP-API.com** - IP geolocation API
-  - License: Free tier for non-commercial use
-  - Usage: Fallback IP location service
-
-- **IPInfo.io** - IP address data provider
-  - License: Free tier (50,000 requests/month)
-  - Usage: Enhanced IP information
-
-- **AbstractAPI** - IP geolocation & VPN detection
-  - License: Free tier (20,000 requests/month)
-  - Usage: Location and proxy detection
-
-- **ProxyCheck.io** - VPN/Proxy detection service
-  - License: Free tier (1,000 requests/day)
-  - Usage: Abuse prevention
-
-### Media & Assets
-- **FlagCDN.com** - Country flag images
-  - License: Public Domain (flag images only)
-  - Source: `https://flagcdn.com`
-  - Usage: Country flags in analytics
-  - Note: Website design/code owned by Flagpedia.net, flag images are public domain
-
----
-
-## Database & Infrastructure
-
-### Database Systems
-- **MySQL** 8.0+ - Relational database (GPLv2)
-- **PostgreSQL** 13+ - Advanced relational database (PostgreSQL License)
-- **SQLite** 3+ - Embedded database (Public Domain)
-
-### Caching & Queues
-- **Redis** 6.0+ - In-memory data structure store (BSD-3-Clause, optional)
-  - Usage: Cache, sessions, queue driver
-
-### Process Management
-- **Supervisor** - Process control system (BSD-like license, optional)
-  - Usage: Queue worker management in production
-
----
-
-## Development Tools
-
-### Code Quality
-- **PHP_CodeSniffer** - Detect coding standard violations (BSD-3-Clause)
-- **PHPStan** - Static analysis tool (MIT)
-
-### Version Control
-- **Git** - Distributed version control system (GPLv2)
-- **GitHub** - Code hosting platform
-
----
-
-## Custom Assets & Branding
-
-- **hel.ink Logo** - Custom design (© 2025 hel.ink)
-  - Location: `resources/img/Logo.png`
-  - Served via: `/brand/logo.png`, `/brand/logo-dark.png`
-
-- **hel.ink Favicon** - Custom design (© 2025 hel.ink)
-  - Location: `resources/img/Favicon.png`
-  - Served via: `/brand/favicon.png`
-
----
-
-## License Summary
-
-| License | Count | Libraries |
-|---------|-------|-----------|
-| **MIT** | 30+ | Laravel, Alpine.js, Chart.js, Tailwind CSS, Vite, Axios, Pest, etc. |
-| **CC0 1.0** | 1 | Simple Icons (brand icons) |
-| **BSD-2-Clause** | 1 | Leaflet.js |
-| **BSD-3-Clause** | 3 | Redis, Sentry, Mockery |
-| **Apache-2.0** | 1 | GeoIP2 (legacy, not actively used) |
-| **SIL OFL 1.1** | 2 | Inter font, Figtree font |
-| **GPLv2** | 1 | MySQL |
-| **PostgreSQL** | 1 | PostgreSQL |
-| **Public Domain** | 1 | Flag images (FlagCDN) |
-
----
-
-## Special Thanks
-
-- **Laravel Community** - For extensive documentation and support
-- **Taylor Otwell** - For creating Laravel
-- **Caleb Porzio** - For Alpine.js
-- **Adam Wathan** - For Tailwind CSS
-- **Simple Icons Contributors** - For 150+ brand icons
-- **LinkStack Team** - For open-source link management inspiration
-- **Seth Cottle** - For LittleLink and the self-hosted bio page movement
-- **Cloudflare** - For Turnstile CAPTCHA service
-- **All Open Source Contributors** - For making this project possible
-
----
-
-## Reporting Issues
-
-If you notice any missing attributions or license issues, please contact us:
-- **Email**: support@hel.ink
-- **GitHub Issues**: [hel.ink/issues](https://github.com/navi-crwn/hel.ink/issues)
-
----
-
-**Last Updated**: December 12, 2025
-
-**Total Dependencies**: 45+ core libraries and services powering HEL.ink
+The link-in-bio package took ideas from [LinkStack](https://github.com/LinkStackOrg/LinkStack) (AGPL-3.0), [LittleLink](https://github.com/sethcottle/littlelink) (MIT) and Linktree. No code or assets were copied from any of them.
