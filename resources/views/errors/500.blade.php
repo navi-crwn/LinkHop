@@ -6,12 +6,10 @@
     <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png" sizes="32x32">
     <link rel="apple-touch-icon" href="{{ route('brand.favicon') }}">
     <title>Something Went Wrong - {{ config('app.name') }}</title>
-    <script nonce="{{ Vite::cspNonce() }}" src="https://cdn.tailwindcss.com/3.4.17"></script>
-    <script nonce="{{ Vite::cspNonce() }}">
-        tailwind.config = {
-            darkMode: 'media'
-        }
-    </script>
+    {{-- Our own built CSS; the page still renders (with the small style block below) when the build is missing. --}}
+    @if (file_exists(public_path('build/manifest.json')))
+        @vite(['resources/css/app.css'])
+    @endif
     <style>
         body { font-family: system-ui, -apple-system, sans-serif; }
         .container-fallback { max-width: 42rem; margin: 0 auto; padding: 2rem; }

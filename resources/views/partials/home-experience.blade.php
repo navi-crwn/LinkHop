@@ -18,7 +18,7 @@
             }
         }
     }
-    $langCount = count(\App\Http\Middleware\SetLocale::LOCALES);
+    $langCount = count(\Hop\Ui\Locales::codes());
 @endphp
 
 <div class="lx-marq" data-lx-marq aria-label="{{ __('What you get') }}"><div>@foreach (['Short links', 'Custom slugs', 'QR codes', 'Click limits', 'Routing and A/B tests', 'Analytics without tracking', 'Password and 18+ gate', 'API and webhooks', 'Open source', 'Free forever'] as $t)<span>{{ __($t) }}</span>@endforeach</div></div>

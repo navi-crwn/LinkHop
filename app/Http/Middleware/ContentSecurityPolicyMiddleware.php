@@ -21,14 +21,20 @@ class ContentSecurityPolicyMiddleware
         // served from ASSET_URL (default APP_URL, link.hel.ink), so that origin must be allowed next to 'self'.
         $assets = self::assetOrigin();
         $assets = $assets !== '' ? ' '.$assets : '';
+        // Nothing is loaded from a CDN: the libraries are self-hosted (public/vendor). Only a bio page's own optional
+        // pixels (Google Analytics, Meta Pixel) need other hosts, and only when bio pages are switched on.
+        $bio = bio_enabled();
+        $pixelsScript = $bio ? ' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net' : '';
+        $pixelsImg = $bio ? ' https://www.google-analytics.com https://www.facebook.com' : '';
+        $pixelsConnect = $bio ? ' https://www.google-analytics.com https://analytics.google.com https://www.facebook.com' : '';
         $csp = [
             "default-src 'self'",
-            "script-src 'self'{$assets} https://hel.ink 'nonce-{$nonce}' 'strict-dynamic' 'unsafe-eval' https: 'unsafe-inline' https://challenges.cloudflare.com https://fonts.bunny.net https://fonts.googleapis.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://cdn.tailwindcss.com https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net",
+            "script-src 'self'{$assets} https://hel.ink 'nonce-{$nonce}' 'strict-dynamic' 'unsafe-eval' https: 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com{$pixelsScript}",
             "script-src-attr 'none'",
-            "style-src 'self'{$assets} 'unsafe-inline' https://hel.ink https://fonts.bunny.net https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com",
-            "img-src 'self'{$assets} data: https: blob: https://flagcdn.com https://*.tile.openstreetmap.org https://www.google-analytics.com https://www.facebook.com",
-            "font-src 'self'{$assets} https://hel.ink https://fonts.bunny.net https://fonts.gstatic.com data:",
-            "connect-src 'self'{$assets} data: blob: https://challenges.cloudflare.com https://raw.githubusercontent.com https://*.tile.openstreetmap.org https://cdn.jsdelivr.net https://unpkg.com https://www.google-analytics.com https://analytics.google.com https://www.facebook.com",
+            "style-src 'self'{$assets} 'unsafe-inline' https://hel.ink",
+            "img-src 'self'{$assets} data: https: blob: https://*.tile.openstreetmap.org{$pixelsImg}",
+            "font-src 'self'{$assets} https://hel.ink data:",
+            "connect-src 'self'{$assets} data: blob: https://challenges.cloudflare.com https://*.tile.openstreetmap.org{$pixelsConnect}",
             "frame-src 'self' https://challenges.cloudflare.com https://maps.google.com https://www.google.com https://youtube.com ".implode(' ', BioEmbed::FRAME_HOSTS),
             "object-src 'none'",
             "base-uri 'self'",

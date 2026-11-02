@@ -19,12 +19,16 @@
             })();
         </script>
         <x-hop::fonts />
-        <script nonce="{{ Vite::cspNonce() }}" src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-        <script nonce="{{ Vite::cspNonce() }}" src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-        <script nonce="{{ Vite::cspNonce() }}" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        {{-- Self-hosted copies (public/vendor, see its README): no script, style or image from a third-party host. --}}
+        @php
+            $vendor = fn (string $path) => asset('vendor/'.$path).'?v='.substr((string) @md5_file(public_path('vendor/'.$path)), 0, 8);
+        @endphp
+        <script nonce="{{ Vite::cspNonce() }}" src="{{ $vendor('chartjs/chart.umd.min.js') }}"></script>
+        <script nonce="{{ Vite::cspNonce() }}" src="{{ $vendor('chartjs/chartjs-plugin-zoom.min.js') }}"></script>
+        <link rel="stylesheet" href="{{ $vendor('leaflet/leaflet.css') }}" />
+        <script nonce="{{ Vite::cspNonce() }}" src="{{ $vendor('leaflet/leaflet.js') }}"></script>
         {{-- Only used from Alpine components, which start after deferred scripts (P2). --}}
-        <script nonce="{{ Vite::cspNonce() }}" defer src="https://unpkg.com/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+        <script nonce="{{ Vite::cspNonce() }}" defer src="{{ $vendor('qr-code-styling/qr-code-styling.js') }}"></script>
         @stack('scripts-head')
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @stack('styles')
