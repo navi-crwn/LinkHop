@@ -46,7 +46,7 @@ Long links are hard to share and you never know who clicks them. LinkHop makes t
 
 ### Explore before you sign up
 
-The homepage restores the interactive 3D island-and-rabbit scene. Move your pointer or touch the islands, play sharing and password scenarios, or pause the motion. A scroll-led tour also works with navigation buttons: try a custom slug, unlock a sample protected link, and switch sample analytics ranges. These demos stay in your browser; the real guest shortener remains at the top. Mobile and reduced-motion visitors can use the same controls.
+The homepage has an interactive 3D island-and-rabbit scene. Move your pointer or touch the islands, play sharing and password scenarios, or pause the motion. A scroll-led tour also works with navigation buttons: try a custom slug, unlock a sample protected link, and switch sample analytics ranges. These demos stay in your browser; the real guest shortener remains at the top. Mobile and reduced-motion visitors can use the same controls.
 
 ### HOP Family Ecosystem
 
@@ -250,7 +250,7 @@ A ShareX config is ready to download on the **API docs** page of the dashboard.
 Yes. There's no paid plan and no locked feature, and the code is MIT licensed, so you can run, change and share it.
 
 **Do I need an account?**
-Yes, a HOP ID (free, made at the hub); it also signs you in to the other HOP apps. Guest links made on the old home page still work and are deleted after 14 days without a click, and after 30 days at most.
+No. Anyone can shorten a link without an account; guest links are deleted after 14 days without a click, and after 30 days at most. A free HOP ID (made at the hub) also signs you in to the other HOP apps.
 
 **Where is my bio page?**
 In BioHop, at `hel.ink/b/` followed by the name you pick, for example [hel.ink/b/hel](https://hel.ink/b/hel). Edit it at [bio.hel.ink](https://bio.hel.ink).

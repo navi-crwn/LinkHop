@@ -23,7 +23,7 @@ class AbuseReportController extends Controller
     {
         if (! $this->turnstile->verify($request->input('cf-turnstile-response'), $request->ip())) {
             return back()
-                ->withErrors(['turnstile' => 'Security verification failed, please try again.'])
+                ->withErrors(['turnstile' => 'Security verification failed. Please try again.'])
                 ->withInput();
         }
         $data = $request->validate([
@@ -37,13 +37,13 @@ class AbuseReportController extends Controller
             ->where('created_at', '>=', now()->subMinutes(30))
             ->count();
         if ($alreadyToday >= 3) {
-            return back()->withErrors(['reason' => 'Too many reports from your IP, please try later.'])->withInput();
+            return back()->withErrors(['reason' => 'Too many reports have been submitted from this IP address. Please try again later.'])->withInput();
         }
         AbuseReport::create([
             ...$data,
             'ip_address' => $ip,
         ]);
 
-        return back()->with('status', 'Thank you, report has been submitted.');
+        return back()->with('status', 'Thank you. Your report has been submitted.');
     }
 }
