@@ -1301,12 +1301,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/navi-crwn/hop-auth.git",
-                "reference": "8dbd071e92e434c76c20c0934a80730fd455f7a2"
+                "reference": "90642cd8fe255792056c0412c76d480c64657321"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-auth/zipball/8dbd071e92e434c76c20c0934a80730fd455f7a2",
-                "reference": "8dbd071e92e434c76c20c0934a80730fd455f7a2",
+                "url": "https://api.github.com/repos/navi-crwn/hop-auth/zipball/90642cd8fe255792056c0412c76d480c64657321",
+                "reference": "90642cd8fe255792056c0412c76d480c64657321",
                 "shasum": ""
             },
             "require": {
@@ -1376,12 +1376,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/navi-crwn/hop-safety.git",
-                "reference": "2d4d561986d74afeec407ec44eca79db20f3ff7a"
+                "reference": "22439ab153a0fcef8dddaa6abf6b0fd45632b861"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-safety/zipball/2d4d561986d74afeec407ec44eca79db20f3ff7a",
-                "reference": "2d4d561986d74afeec407ec44eca79db20f3ff7a",
+                "url": "https://api.github.com/repos/navi-crwn/hop-safety/zipball/22439ab153a0fcef8dddaa6abf6b0fd45632b861",
+                "reference": "22439ab153a0fcef8dddaa6abf6b0fd45632b861",
                 "shasum": ""
             },
             "require": {
@@ -1419,12 +1419,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/navi-crwn/hop-ui.git",
-                "reference": "a5eb519b34a0b9ea572a1295bcd93d7d2506b187"
+                "reference": "6b4210ce1cd42a7f3db9836112df4ea28c7c45cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-ui/zipball/a5eb519b34a0b9ea572a1295bcd93d7d2506b187",
-                "reference": "a5eb519b34a0b9ea572a1295bcd93d7d2506b187",
+                "url": "https://api.github.com/repos/navi-crwn/hop-ui/zipball/6b4210ce1cd42a7f3db9836112df4ea28c7c45cf",
+                "reference": "6b4210ce1cd42a7f3db9836112df4ea28c7c45cf",
                 "shasum": ""
             },
             "require": {
