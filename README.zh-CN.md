@@ -1,4 +1,4 @@
-<p align="center">🌐 <a href="README.md">English</a> · <b>简体中文</b> · <a href="README.es.md">Español</a> · <a href="README.ar.md">العربية</a> · <a href="README.pt.md">Português</a> · <a href="README.fr.md">Français</a> · <a href="README.ja.md">日本語</a> · <a href="README.id.md">Bahasa Indonesia</a></p>
+<p align="center">🌐 <a href="README.md">English</a> · <b>简体中文</b> · <a href="README.de.md">Deutsch</a> · <a href="README.id.md">Bahasa Indonesia</a> · <a href="README.ja.md">日本語</a> · <a href="README.pt-BR.md">Português (Brasil)</a> · <a href="README.es.md">Español</a> · <a href="README.fr.md">Français</a> · <a href="README.ru.md">Русский</a></p>
 
 # LinkHop — LinkHop · 短链接、二维码与点击统计
 
@@ -20,6 +20,14 @@
 </p>
 
 ---
+
+一条命令安装（它会先检查你的电脑，只问几个问题，还能为你装好 HOP ID 中心）：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/navi-crwn/LinkHop/main/install.sh | bash
+```
+
+已克隆仓库时：`./install.sh` · 更新：`./update.sh` · 卸载：`./uninstall.sh`。加上 `--yes` 即接受所有默认值；`--help` 列出全部选项。
 
 ## HOP 短链接工具
 
