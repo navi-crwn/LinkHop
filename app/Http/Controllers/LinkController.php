@@ -220,7 +220,15 @@ class LinkController extends Controller
                 $data['folder_id'] = $defaultFolder->id;
             }
         }
-        $link = $request->user()->links()->create($this->mapPayload($data));
+        // checked again together with the insert, so two requests cannot both take the last slot
+        $link = $this->quotas->createWithinLimits($request->user()->id, fn () => $request->user()->links()->create($this->mapPayload($data)));
+        if (! $link) {
+            if ($request->wantsJson()) {
+                return response()->json(['error' => 'Daily link quota reached. Try again tomorrow.'], 429);
+            }
+
+            return back()->withInput()->withErrors(['target_url' => 'Daily link quota reached. Try again tomorrow.']);
+        }
         $this->syncRelations($link, $request);
         if ($request->input('generate_qr', true)) {
             $this->links->generateQr($link);

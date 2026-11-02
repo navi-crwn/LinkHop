@@ -408,13 +408,13 @@ class HopContentController extends Controller
                     return $this->fail('bad_params', 'params.ip must be an IP address', 422);
                 }
                 $ban = IpBan::updateOrCreate(['ip_address' => $ip], ['reason' => (string) ($p['reason'] ?? $request->input('reason') ?? ''), 'expires_at' => ! empty($p['expires_at']) ? $p['expires_at'] : null]);
-                Cache::forget('ip_ban:'.$ip);
+                IpBan::forgetCache($ip);
                 HopAudit::create($audit + ['params' => $p]);
 
                 return response()->json(['ok' => true, 'data' => ['id' => $ban->id, 'ip' => $ip]]);
             case 'unban':
                 $n = IpBan::where('ip_address', (string) ($p['ip'] ?? ''))->orWhere('id', (int) ($p['id'] ?? 0))->get()->each(function (IpBan $b) {
-                    Cache::forget('ip_ban:'.$b->ip_address);
+                    IpBan::forgetCache($b->ip_address);
                     $b->delete();
                 })->count();
                 HopAudit::create($audit + ['params' => $p]);

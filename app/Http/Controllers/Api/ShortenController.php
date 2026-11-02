@@ -186,7 +186,7 @@ class ShortenController extends Controller
             // Prepare slug (alias)
             $slug = $this->prepareSlug($request->input('alias'));
             // Create the link
-            $link = $user->links()->create([
+            $link = app(QuotaService::class)->createWithinLimits($user->id, fn () => $user->links()->create([
                 'target_url' => $targetUrl,
                 'slug' => $slug,
                 'status' => Link::STATUS_ACTIVE,
@@ -203,7 +203,14 @@ class ShortenController extends Controller
                 'password_hash' => $request->filled('password')
                     ? Hash::make($request->input('password'))
                     : null,
-            ]);
+            ]));
+            if (! $link) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Quota Exceeded',
+                    'message' => 'Daily link quota reached. Please try again tomorrow.',
+                ], 429);
+            }
             // Generate QR code
             $this->links->generateQr($link);
             $this->links->forgetCache($link);

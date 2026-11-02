@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Link;
 use App\Services\LinkService;
+use App\Services\QuotaService;
 use GuzzleHttp\Client;
 use Hop\Bio\Contracts\ShortlinkCreator;
 use Hop\Safety\LinkSafety;
@@ -45,7 +46,7 @@ class LinkController extends Controller
         return response()->json($result);
     }
 
-    public function shorten(Request $request, LinkService $linkService)
+    public function shorten(Request $request, LinkService $linkService, QuotaService $quotas)
     {
         $user = $request->user();
         if (! $user) {
@@ -60,18 +61,21 @@ class LinkController extends Controller
         if ($reason = app(LinkSafety::class)->rejectionReason($url, (string) ($data['title'] ?? ''))) {
             return response()->json(['message' => $reason, 'errors' => ['url' => [$reason]]], 422);
         }
-        // Use LinkService to create a shortlink for the user
-        $link = $linkService->createShortlink(
+        // Use LinkService to create a shortlink for the user (within the account's limits, checked with the insert)
+        $link = $quotas->createWithinLimits($user->id, fn () => $linkService->createShortlink(
             $user,
             $url,
             $data['title'] ?? 'Bio Link',
             (bool) ($data['is_public'] ?? false)
-        );
+        ));
+        if (! $link) {
+            return response()->json(['message' => 'Link quota exceeded.'], 429);
+        }
 
         return response()->json([
             'id' => $link->id,
-            'title' => $link->title,
-            'url' => $link->url,
+            'title' => $link->custom_title,
+            'url' => $link->target_url,
             'short_url' => $link->short_url,
         ], 201);
     }
