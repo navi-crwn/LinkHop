@@ -37,13 +37,15 @@ class DestinationChecker
             if ($host === '' || ! in_array(strtolower((string) ($parts['scheme'] ?? '')), ['http', 'https'], true)) {
                 return $this->result(self::SKIPPED);
             }
-            if (! $this->guard->isSafe($url)) {
+            // resolve once and connect to exactly the addresses that were checked, so a second DNS answer cannot swap in a private one
+            $target = $this->guard->resolve($url);
+            if ($target === null) {
                 // An address that is private, loopback or link-local is not ours to knock on. A name that resolves
                 // nowhere is a different matter: the site is gone.
                 return $this->hostResolves($host) ? $this->result(self::SKIPPED) : $this->result(self::BROKEN);
             }
             try {
-                $response = $this->ask($url);
+                $response = $this->ask($url, $this->guard->curlResolve($target));
             } catch (\Throwable) {
                 return $this->result(self::BROKEN);
             }
@@ -74,12 +76,13 @@ class DestinationChecker
     }
 
     /** HEAD first; anything that is not a success is asked once more with GET, since many servers mishandle HEAD. */
-    private function ask(string $url): Response
+    /** @param array<int, string> $pin CURLOPT_RESOLVE entries for the addresses that passed the check */
+    private function ask(string $url, array $pin): Response
     {
         $request = Http::withHeaders(['User-Agent' => 'HEL.ink-LinkCheck/1.0 (+'.public_url('').')', 'Accept' => '*/*'])
             ->timeout((int) config('shortener.monitor.timeout', 8))
             ->connectTimeout(5)
-            ->withOptions(['allow_redirects' => false, 'stream' => true]);
+            ->withOptions(['allow_redirects' => false, 'stream' => true, 'curl' => [CURLOPT_RESOLVE => $pin]]);
         $response = $request->head($url);
         if ($response->status() >= 400) {
             $response = $request->get($url);
