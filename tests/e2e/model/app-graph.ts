@@ -167,7 +167,7 @@ export const ACTIONS: Action[] = [
   {
     id: 'modal_toggle_dropdowns', from: ['user_link_modal'], to: 'user_link_modal',
     run: async ({ page }) => {
-      await page.locator('button:has-text("No Tags Selected")').first().click();
+      await page.locator('button:has-text("No tags selected")').first().click();
       await page.locator('button:has(span[x-text*="folders.find"])').first().click();
       await page.locator('[x-data="linkCreationModal()"] input[x-model="formData.target_url"]').first().click();
     },
@@ -179,7 +179,7 @@ export const ACTIONS: Action[] = [
       memo.createdUrl = url;
       await page.locator('[x-data="linkCreationModal()"] input[x-model="formData.target_url"]').first().fill(url);
       await page.locator('[x-data="linkCreationModal()"] button[type=submit]').first().click();
-      await page.getByText('Link Created Successfully').first().waitFor({ timeout: 10000 });
+      await page.getByText('Link created').first().waitFor({ timeout: 10000 });
     },
   },
   {
@@ -227,9 +227,9 @@ export const ACTIONS: Action[] = [
   },
 
   // ---- folders / tags ----
-  { id: 'open_folder_modal', from: ['user_folders'], to: 'user_folder_modal', run: async ({ page }) => { await page.locator('button[data-call="openFolderModal"]').first().click(); await page.getByRole('heading', { name: 'Create New Folder' }).waitFor(); } },
+  { id: 'open_folder_modal', from: ['user_folders'], to: 'user_folder_modal', run: async ({ page }) => { await page.locator('button[data-call="openFolderModal"]').first().click(); await page.getByRole('heading', { name: 'Create new folder' }).waitFor(); } },
   { id: 'close_folder_modal', from: ['user_folder_modal'], to: 'user_folders', run: async ({ page }) => { await page.keyboard.press('Escape'); await page.waitForTimeout(400); } },
-  { id: 'open_tag_modal', from: ['user_tags'], to: 'user_tag_modal', run: async ({ page }) => { await page.locator('button[data-call="openTagModal"]').first().click(); await page.getByRole('heading', { name: 'Create New Tag' }).waitFor(); } },
+  { id: 'open_tag_modal', from: ['user_tags'], to: 'user_tag_modal', run: async ({ page }) => { await page.locator('button[data-call="openTagModal"]').first().click(); await page.getByRole('heading', { name: 'Create new tag' }).waitFor(); } },
   { id: 'close_tag_modal', from: ['user_tag_modal'], to: 'user_tags', run: async ({ page }) => { await page.keyboard.press('Escape'); await page.waitForTimeout(400); } },
 
   // ---- link in bio ----
@@ -310,7 +310,7 @@ export const ACTIONS: Action[] = [
   {
     id: 'editor_save', from: ['user_bio_editor'], to: 'user_bio_editor',
     run: async ({ page, memo }) => {
-      await page.getByRole('button', { name: 'Save Changes' }).first().click();
+      await page.getByRole('button', { name: 'Save changes' }).first().click();
       await page.waitForTimeout(2000);
       memo.orderBeforeReload = await editorData(page);
     },
