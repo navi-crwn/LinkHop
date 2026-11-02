@@ -20,6 +20,11 @@ bad()  { printf ' %s✗%s %s\n' "$R" "$Z" "$*" >&2; }
 die()  { bad "$*"; exit 1; }
 have() { command -v "$1" >/dev/null 2>&1; }
 
+# PHP_BIN runs artisan and composer. Set PHP_BIN=/path/to/php to choose; by default php8.3 when it
+# is installed (the version the apps run on), otherwise php.
+if [ -z "${PHP_BIN:-}" ]; then if have php8.3; then PHP_BIN=php8.3; else PHP_BIN=php; fi; fi
+composer_run() { "$PHP_BIN" "$(command -v composer)" "$@"; }
+
 YES=0; DRY=0; STAR=ask; INTERACTIVE=0
 [ -t 0 ] && INTERACTIVE=1
 # Run through "curl ... | bash": stdin is the script, so ask on the terminal instead.
@@ -75,17 +80,24 @@ confirm() {
 proceed() { [ "$YES" = 1 ] && return 0; confirm "$1" n; }
 rand_hex() { if have openssl; then openssl rand -hex "$1"; else LC_ALL=C tr -dc 'a-f0-9' </dev/urandom | head -c $(( $1 * 2 )); fi; }
 
-# set_env FILE KEY VALUE: replace "KEY=" or "#KEY=" in place, or append.
+# set_env FILE KEY VALUE: replace "KEY=" or "#KEY=", or append. The new content is built in a
+# temporary file next to FILE (same owner, group and mode) and moved over it, so FILE is never
+# truncated half way: if anything fails, the old file is still there untouched.
+_ENV_TMP=''
+cleanup_env_tmp() { [ -n "$_ENV_TMP" ] && rm -f "$_ENV_TMP"; _ENV_TMP=''; return 0; }
 set_env() {
-  local f="$1" k="$2" v="$3" tmp
+  local f="$1" k="$2" v="$3"
   case "$v" in *[[:space:]\#\"\$\\]*|'') v="\"$(printf '%s' "$v" | sed 's/[\\"$]/\\&/g')\"" ;; esac
-  tmp="$(mktemp)"
+  _ENV_TMP="$(umask 077; mktemp "$f.XXXXXX")" || return 1
+  # cp -p carries over mode and group (and the owner when allowed); its content is replaced next
+  if [ -f "$f" ]; then cp -p "$f" "$_ENV_TMP" 2>/dev/null || chmod 600 "$_ENV_TMP"; fi
   if grep -qE "^#?[[:space:]]*${k}=" "$f" 2>/dev/null; then
-    awk -v k="$k" -v v="$v" 'BEGIN{d=0} { if (!d && $0 ~ "^#?[ \t]*" k "=") { print k "=" v; d=1 } else print }' "$f" >"$tmp"
+    awk -v k="$k" -v v="$v" 'BEGIN{d=0} { if (!d && $0 ~ "^#?[ \t]*" k "=") { print k "=" v; d=1 } else print }' "$f" >"$_ENV_TMP" || { cleanup_env_tmp; return 1; }
   else
-    cat "$f" >"$tmp" 2>/dev/null || true; printf '%s=%s\n' "$k" "$v" >>"$tmp"
+    { cat "$f" 2>/dev/null || true; printf '%s=%s\n' "$k" "$v"; } >"$_ENV_TMP" || { cleanup_env_tmp; return 1; }
   fi
-  cat "$tmp" >"$f"; rm -f "$tmp"
+  mv -f "$_ENV_TMP" "$f" || { cleanup_env_tmp; return 1; }
+  _ENV_TMP=''
 }
 get_env() { sed -n "s/^$2=//p" "$1" 2>/dev/null | head -1 | sed 's/^"//; s/"$//'; }
 
@@ -170,7 +182,7 @@ if [ "$PURGE" = 1 ] && [ "$YES" = 0 ]; then
 fi
 
 rm_() { for p in "$@"; do if [ -e "$p" ] || [ -L "$p" ]; then if [ "$DRY" = 1 ]; then say "   (dry run) rm -rf $p"; else rm -rf "$p" && ok "Removed $p"; fi; fi; done; }
-[ "$DRY" = 1 ] || php artisan queue:restart >/dev/null 2>&1 || true
+[ "$DRY" = 1 ] || "$PHP_BIN" artisan queue:restart >/dev/null 2>&1 || true
 rm_ vendor node_modules public/build public/hot public/storage start.sh bootstrap/cache/*.php
 if [ "$PURGE" = 1 ]; then
   [ "$DBC" = sqlite ] && [ "$IS_HUB" = 1 ] && [ -n "$DBF" ] && rm_ "$DBF"

@@ -22,6 +22,11 @@ bad()  { printf ' %s✗%s %s\n' "$R" "$Z" "$*" >&2; }
 die()  { bad "$*"; exit 1; }
 have() { command -v "$1" >/dev/null 2>&1; }
 
+# PHP_BIN runs artisan and composer. Set PHP_BIN=/path/to/php to choose; by default php8.3 when it
+# is installed (the version the apps run on), otherwise php.
+if [ -z "${PHP_BIN:-}" ]; then if have php8.3; then PHP_BIN=php8.3; else PHP_BIN=php; fi; fi
+composer_run() { "$PHP_BIN" "$(command -v composer)" "$@"; }
+
 YES=0; DRY=0; STAR=ask; INTERACTIVE=0
 [ -t 0 ] && INTERACTIVE=1
 # Run through "curl ... | bash": stdin is the script, so ask on the terminal instead.
@@ -77,17 +82,24 @@ confirm() {
 proceed() { [ "$YES" = 1 ] && return 0; confirm "$1" n; }
 rand_hex() { if have openssl; then openssl rand -hex "$1"; else LC_ALL=C tr -dc 'a-f0-9' </dev/urandom | head -c $(( $1 * 2 )); fi; }
 
-# set_env FILE KEY VALUE: replace "KEY=" or "#KEY=" in place, or append.
+# set_env FILE KEY VALUE: replace "KEY=" or "#KEY=", or append. The new content is built in a
+# temporary file next to FILE (same owner, group and mode) and moved over it, so FILE is never
+# truncated half way: if anything fails, the old file is still there untouched.
+_ENV_TMP=''
+cleanup_env_tmp() { [ -n "$_ENV_TMP" ] && rm -f "$_ENV_TMP"; _ENV_TMP=''; return 0; }
 set_env() {
-  local f="$1" k="$2" v="$3" tmp
+  local f="$1" k="$2" v="$3"
   case "$v" in *[[:space:]\#\"\$\\]*|'') v="\"$(printf '%s' "$v" | sed 's/[\\"$]/\\&/g')\"" ;; esac
-  tmp="$(mktemp)"
+  _ENV_TMP="$(umask 077; mktemp "$f.XXXXXX")" || return 1
+  # cp -p carries over mode and group (and the owner when allowed); its content is replaced next
+  if [ -f "$f" ]; then cp -p "$f" "$_ENV_TMP" 2>/dev/null || chmod 600 "$_ENV_TMP"; fi
   if grep -qE "^#?[[:space:]]*${k}=" "$f" 2>/dev/null; then
-    awk -v k="$k" -v v="$v" 'BEGIN{d=0} { if (!d && $0 ~ "^#?[ \t]*" k "=") { print k "=" v; d=1 } else print }' "$f" >"$tmp"
+    awk -v k="$k" -v v="$v" 'BEGIN{d=0} { if (!d && $0 ~ "^#?[ \t]*" k "=") { print k "=" v; d=1 } else print }' "$f" >"$_ENV_TMP" || { cleanup_env_tmp; return 1; }
   else
-    cat "$f" >"$tmp" 2>/dev/null || true; printf '%s=%s\n' "$k" "$v" >>"$tmp"
+    { cat "$f" 2>/dev/null || true; printf '%s=%s\n' "$k" "$v"; } >"$_ENV_TMP" || { cleanup_env_tmp; return 1; }
   fi
-  cat "$tmp" >"$f"; rm -f "$tmp"
+  mv -f "$_ENV_TMP" "$f" || { cleanup_env_tmp; return 1; }
+  _ENV_TMP=''
 }
 get_env() { sed -n "s/^$2=//p" "$1" 2>/dev/null | head -1 | sed 's/^"//; s/"$//'; }
 
@@ -140,6 +152,8 @@ main() {
 # Install LinkHop (Laravel). Safe to run again: it never overwrites an existing
 # .env without asking, and never deletes anything.
 # ---------------------------------------------------------------------------
+trap cleanup_env_tmp EXIT
+trap 'exit 130' INT; trap 'exit 143' TERM
 claim_tty "$@"
 SELF="${BASH_SOURCE[0]:-$0}"
 SELF_DIR="$(cd "$(dirname "$SELF")" 2>/dev/null && pwd || pwd)"
@@ -178,17 +192,17 @@ say "${D}Free and open source. Nothing is sent anywhere; this script only runs o
 hdr "Checking this computer"
 PROBLEMS=0
 need() { bad "$1"; say "     ${D}$2${Z}"; PROBLEMS=$((PROBLEMS + 1)); }
-if have php; then
-  PHPV="$(php -r 'echo PHP_VERSION;')"
-  if version_ge "$PHPV" "8.2"; then ok "PHP $PHPV"; else need "PHP $PHPV is too old (need 8.2 or newer)" "macOS: brew install php   ·   Debian/Ubuntu: https://deb.sury.org   ·   Windows: use WSL"; fi
+if have "$PHP_BIN"; then
+  PHPV="$("$PHP_BIN" -r 'echo PHP_VERSION;')"
+  if version_ge "$PHPV" "8.2"; then ok "PHP $PHPV ($PHP_BIN)"; else need "PHP $PHPV is too old (need 8.2 or newer)" "macOS: brew install php   ·   Debian/Ubuntu: https://deb.sury.org   ·   Windows: use WSL"; fi
   MISSING=''
-  MODS="$(php -m 2>/dev/null)"
+  MODS="$("$PHP_BIN" -m 2>/dev/null)"
   for e in mbstring openssl pdo tokenizer xml ctype fileinfo curl dom; do printf '%s\n' "$MODS" | grep -qi "^$e\$" || MISSING="$MISSING $e"; done
   [ -n "$MISSING" ] && need "PHP extensions missing:$MISSING" "Debian/Ubuntu: sudo apt install php-mbstring php-xml php-curl php-sqlite3 php-mysql   ·   macOS (brew) has them"
 else
   need "PHP is not installed" "macOS: brew install php   ·   Debian/Ubuntu: sudo apt install php-cli php-mbstring php-xml php-curl php-sqlite3"
 fi
-have composer && ok "Composer $(composer --version 2>/dev/null | awk '{print $3}')" || need "Composer is not installed" "https://getcomposer.org/download/"
+have composer && ok "Composer $(composer_run --version 2>/dev/null | awk '{print $3}')" || need "Composer is not installed" "https://getcomposer.org/download/"
 if have node && have npm; then
   NODEV="$(node -v | sed 's/^v//')"
   if version_ge "$NODEV" 20; then ok "Node $NODEV"; else need "Node $NODEV is too old (need 20+)" "https://nodejs.org or: nvm install 22"; fi
@@ -238,8 +252,8 @@ if [ "$DB" = mysql ]; then
   ask DB_NAME "Database name?" "helink"
   ask DB_USER "Database user?" "helink"
   [ -n "$DB_PASS" ] || ask_secret DB_PASS "Database password (hidden)?"
-  if have php && [ "$DRY" = 0 ]; then
-    if P="$DB_PASS" php -r 'new PDO("mysql:host=".$argv[1].";port=".$argv[2].";dbname=".$argv[3],$argv[4],getenv("P"));' "$DB_HOST" "$DB_PORT" "$DB_NAME" "$DB_USER" 2>/dev/null; then ok "Connected to the database"; else die "Cannot connect to MySQL with those details. Create the database and user first, then run this again."; fi
+  if have "$PHP_BIN" && [ "$DRY" = 0 ]; then
+    if P="$DB_PASS" "$PHP_BIN" -r 'new PDO("mysql:host=".$argv[1].";port=".$argv[2].";dbname=".$argv[3],$argv[4],getenv("P"));' "$DB_HOST" "$DB_PORT" "$DB_NAME" "$DB_USER" 2>/dev/null; then ok "Connected to the database"; else die "Cannot connect to MySQL with those details. Create the database and user first, then run this again."; fi
   fi
 else
   ask DB_PATH "SQLite file?" "$DIR/database/database.sqlite"
@@ -299,22 +313,25 @@ fi
 
 # --- 5. Install --------------------------------------------------------------
 hdr "Installing"
-step "PHP packages (composer)" composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+step "PHP packages (composer)" composer_run install --no-dev --optimize-autoloader --no-interaction --no-progress
 step "Front end (npm)" npm ci --no-audit --no-fund --loglevel=error
 step "Building the front end" npm run build --silent
 
 if [ -f .env ] && [ "$DRY" = 0 ]; then
-  if confirm ".env already exists. Keep it and only add what is missing?" y; then KEEP_ENV=1; else cp .env ".env.backup-$(date +%Y%m%d%H%M%S)"; KEEP_ENV=0; ok "Old .env saved next to it"; fi
+  if confirm ".env already exists. Keep it and only add what is missing?" y; then KEEP_ENV=1; else (umask 077; cp .env ".env.backup-$(date +%Y%m%d%H%M%S)"); KEEP_ENV=0; ok "Old .env saved next to it"; fi
 else KEEP_ENV=0; fi
 if [ "$KEEP_ENV" = 0 ] && [ "$DRY" = 0 ]; then
-  cp .env.example .env
+  # private from the first byte: the secrets below are written into a file only the owner can read
+  (umask 077; cp .env.example .env) && chmod 600 .env
   set_env .env APP_NAME "$NAME"
   set_env .env APP_URL "$URL"
   # The apps force https in the "production" environment, so a plain http address (a trial on this computer) runs as "local".
-  case "$URL" in https://*) set_env .env APP_ENV production ;; *) set_env .env APP_ENV local ;; esac
+  # Production logs warnings and up; only a trial on this computer (local) keeps the debug level.
+  case "$URL" in https://*) set_env .env APP_ENV production; set_env .env LOG_LEVEL warning ;; *) set_env .env APP_ENV local; set_env .env LOG_LEVEL debug ;; esac
   set_env .env APP_DEBUG false
   case "$URL" in https://*) set_env .env SESSION_SECURE_COOKIE true ;; *) set_env .env SESSION_SECURE_COOKIE false ;; esac
-  set_env .env TRUSTED_PROXIES ""
+  # The reverse proxy (nginx or Apache) runs on this machine; trust only it for X-Forwarded-For.
+  set_env .env TRUSTED_PROXIES 127.0.0.1
   set_env .env LOG_CHANNEL daily
   [ -n "$ADMIN" ] && set_env .env SUPERADMIN_EMAIL "$ADMIN"
   [ -n "$ADMIN" ] && set_env .env ADMIN_EMAIL "$ADMIN"
@@ -322,8 +339,9 @@ if [ "$KEEP_ENV" = 0 ] && [ "$DRY" = 0 ]; then
     set_env .env MAIL_MAILER smtp; set_env .env MAIL_HOST "$MAIL_HOST"; set_env .env MAIL_PORT "$MAIL_PORT"
     set_env .env MAIL_USERNAME "$MAIL_USER"; set_env .env MAIL_PASSWORD "$MAIL_PASS"; set_env .env MAIL_FROM_ADDRESS "$MAIL_FROM"
   else
-    # No mail server yet: messages go to the log, so the debug level is needed for them to show up.
-    set_env .env MAIL_MAILER log; set_env .env LOG_LEVEL debug
+    # No mail server yet: messages go to the log (shown at the debug level, so on a local trial only).
+    set_env .env MAIL_MAILER log
+    case "$URL" in https://*) warn "No mail server set: in production the e-mail log is off, so confirmation and reset messages are not delivered. Set MAIL_* in .env." ;; esac
   fi
   HOSTONLY="$(printf '%s' "$URL" | sed -E 's#^[a-z]+://##; s#[:/].*$##')"
 
@@ -352,14 +370,14 @@ if [ "$DRY" = 0 ]; then
   set_env .env HOP_HUB_URL "$HUB_URL"
   set_env .env HOP_SSO_SECRET "$HUB_SECRET"
 fi
-grep -qE '^APP_KEY=.+' .env 2>/dev/null || step "Creating the app key" php artisan key:generate --force
-step "Creating the database tables" php artisan migrate --force
-step "Linking the storage folder" php artisan storage:link --force
-step "Warming caches" php artisan optimize
+grep -qE '^APP_KEY=.+' .env 2>/dev/null || step "Creating the app key" "$PHP_BIN" artisan key:generate --force
+step "Creating the database tables" "$PHP_BIN" artisan migrate --force
+step "Linking the storage folder" "$PHP_BIN" artisan storage:link --force
+step "Warming caches" "$PHP_BIN" artisan optimize
 
 if [ "$HUB" = new ] && [ "$DRY" = 0 ] && [ -f "$HUB_DIR/.env" ]; then
   set_env "$HUB_DIR/.env" LINKHOP_URL "$URL"; set_env "$HUB_DIR/.env" LINKHOP_ENABLED true
-  (cd "$HUB_DIR" && php artisan config:clear >/dev/null 2>&1 && php artisan optimize >/dev/null 2>&1) && ok "Registered LinkHop in the hub's list of apps"
+  (cd "$HUB_DIR" && "$PHP_BIN" artisan config:clear >/dev/null 2>&1 && "$PHP_BIN" artisan optimize >/dev/null 2>&1) && ok "Registered LinkHop in the hub's list of apps"
 fi
 
 
@@ -368,9 +386,9 @@ fi
 #!/usr/bin/env bash
 # Start LinkHop: the web server, the queue worker and the scheduler. Stop with Ctrl+C.
 cd "\$(dirname "\$0")"
-php artisan serve --host=127.0.0.1 --port=$PORT &
-php artisan queue:work --tries=3 --sleep=3 &
-php artisan schedule:work &
+$PHP_BIN artisan serve --host=127.0.0.1 --port=$PORT &
+$PHP_BIN artisan queue:work --tries=3 --sleep=3 &
+$PHP_BIN artisan schedule:work &
 trap 'kill 0' INT TERM
 wait
 START
@@ -389,8 +407,8 @@ fi
 say ""
 say "  ${B}Behind nginx (your own domain):${Z} point the web root at $DIR/public, use PHP-FPM, and run these two"
 say "  in the background (a systemd service or supervisor):"
-say "    php artisan queue:work --tries=3        and        php artisan schedule:work"
-say "  or the single cron line:  * * * * * cd $DIR && php artisan schedule:run >> /dev/null 2>&1"
+say "    $PHP_BIN artisan queue:work --tries=3        and        $PHP_BIN artisan schedule:work"
+say "  or the single cron line:  * * * * * cd $DIR && $PHP_BIN artisan schedule:run >> /dev/null 2>&1"
 say "  Update later with ./update.sh · remove with ./uninstall.sh"
 say ""
 if [ "$DRY" = 0 ]; then star_prompt; fi
