@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Internal;
 
 use App\Http\Controllers\Controller;
+use App\Models\LinkClick;
 use App\Models\User;
 use App\Services\UserDeletion;
 use Illuminate\Http\JsonResponse;
@@ -36,6 +37,15 @@ class AccountDataController extends Controller
             'links' => $links,
             'folders' => $user->folders()->orderBy('name')->get(['name', 'is_default', 'created_at']),
             'tags' => $user->tags()->orderBy('name')->get(['name', 'created_at']),
+        ]]);
+    }
+
+    /** GET /internal/accounts/{user}/summary: a few counts for the hub dashboard card (numbers only, no content). */
+    public function summary(User $user): JsonResponse
+    {
+        return response()->json(['ok' => true, 'app' => 'linkhop', 'data' => [
+            'links' => $user->links()->count(),
+            'clicks_7d' => LinkClick::whereIn('link_id', $user->links()->select('id'))->where('clicked_at', '>=', now()->subDays(7))->count(),
         ]]);
     }
 
