@@ -30,8 +30,8 @@
         <div x-show="createdLink" class="flex flex-col h-full">
             <div class="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-slate-800">
                 <div>
-                    <h3 class="text-lg font-semibold text-emerald-600 dark:text-emerald-400">🎉 Link Created Successfully!</h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">Your shortlink is ready to use</p>
+                    <h3 class="text-lg font-semibold text-emerald-600 dark:text-emerald-400">Link created</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Your short link is ready to use</p>
                 </div>
                 <button type="button" aria-label="Close" @click="closePanel()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-white">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -42,7 +42,7 @@
             <div class="flex-1 overflow-y-auto p-6">
                 <div class="max-w-2xl mx-auto space-y-4">
                     <div class="rounded-xl border-2 border-emerald-300 bg-emerald-50 p-5 dark:border-emerald-800 dark:bg-emerald-900/20">
-                        <label for="flinkcr-1" class="block text-sm font-medium text-emerald-800 dark:text-emerald-300 mb-2">Your Short URL</label>
+                        <label for="flinkcr-1" class="block text-sm font-medium text-emerald-800 dark:text-emerald-300 mb-2">Your short URL</label>
                         <div class="flex items-center gap-3">
                             <input id="flinkcr-1" 
                                 type="text" 
@@ -65,7 +65,7 @@
                                 <img :src="createdLink?.qr_code_url" alt="QR Code" class="w-[150px] h-[150px] object-contain rounded-lg border border-slate-200 dark:border-slate-700 bg-white">
                             </div>
                             <div class="flex-1 space-y-4">
-                                <p class="text-xs text-slate-500 dark:text-slate-400">Download your custom QR code in multiple formats</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Download your custom QR code as PNG, JPG, or SVG</p>
                                 <div class="flex flex-wrap gap-2">
                                     <a 
                                         :href="`/links/${createdLink?.id}/qr/png`" 
@@ -98,7 +98,7 @@
                                         SVG
                                     </a>
                                 </div>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">💡 SVG format is scalable for print quality</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">SVG stays sharp when resized for printing</p>
                             </div>
                         </div>
                     </div>
@@ -107,13 +107,13 @@
                             @click="resetForm()"
                             class="flex-1 rounded-lg border border-slate-300 px-4 py-3 font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800"
                         >
-                            Create Another Link
+                            Create another link
                         </button>
                         <button 
                             @click="closePanel(); location.reload()"
                             class="flex-1 rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-500"
                         >
-                            View Dashboard
+                            View dashboard
                         </button>
                     </div>
                 </div>
@@ -122,7 +122,7 @@
         <div x-show="!createdLink" class="flex min-h-0 flex-col overflow-hidden">
             <div class="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-slate-800">
                 <div>
-                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Create New Link</h3>
+                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Create new link</h3>
                     <p class="text-sm text-slate-500 dark:text-slate-400">Shorten and customize your URL</p>
                 </div>
                 <button type="button" aria-label="Close" @click="closePanel()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-white">
@@ -184,7 +184,7 @@
                                         🎲 Random
                                     </button>
                                 </div>
-                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Leave empty for auto-generated slug</p>
+                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Leave empty to generate a slug automatically</p>
                                 <p x-show="slugCheck.state === 'ok' || slugCheck.state === 'bad'" x-cloak x-text="slugCheck.message" role="status" aria-live="polite"
                                    class="mt-1 text-xs" :class="slugCheck.state === 'ok' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'"></p>
                             </div>
@@ -194,14 +194,14 @@
                                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">
                                             Tags
                                         </label>
-                                        <span x-show="tagSuccess" x-transition class="text-xs text-emerald-600 dark:text-emerald-400">✓ Tag created!</span>
+                                        <span x-show="tagSuccess" x-transition class="text-xs text-emerald-600 dark:text-emerald-400">Tag created.</span>
                                     </div>
                                     <button 
                                         type="button"
                                         @click="showTagModal = true"
                                         class="text-xs text-blue-600 dark:text-blue-400 hover:underline"
                                     >
-                                        + New Tag
+                                        + New tag
                                     </button>
                                 </div>
                                 <div class="relative" @click.outside="if (activeDropdown === 'tags') { activeDropdown = null; tagSearch = ''; }">
@@ -210,7 +210,7 @@
                                         @click="activeDropdown = activeDropdown === 'tags' ? null : 'tags'; tagSearch = ''"
                                         class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:ring-blue-500 px-3 py-2 text-left flex items-center justify-between border"
                                     >
-                                        <span class="text-sm" x-text="formData.tags.length === 0 ? 'No Tags Selected' : formData.tags.length + ' tag(s) selected'"></span>
+                                        <span class="text-sm" x-text="formData.tags.length === 0 ? 'No tags selected' : formData.tags.length + ' tag(s) selected'"></span>
                                         <svg class="w-4 h-4 transition-transform" :class="activeDropdown === 'tags' ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                         </svg>
@@ -276,7 +276,7 @@
                                     <svg class="h-4 w-4 transition-transform" :class="{ 'rotate-90': showAdvanced }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                     </svg>
-                                    Advanced Options
+                                    Advanced options
                                 </button>
                             </div>
                             <div x-show="showAdvanced" x-collapse class="space-y-4 pt-2">
@@ -309,7 +309,7 @@
                                 <x-link-app-fields :model="true" />
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                                        Password Protection
+                                        Password protection
                                     </label>
                                     <input 
                                         type="password" 
@@ -320,7 +320,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                                        Redirect Type
+                                        Redirect type
                                     </label>
                                     <select 
                                         x-model="formData.redirect_type"
@@ -361,14 +361,14 @@
                                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">
                                             Folder
                                         </label>
-                                        <span x-show="folderSuccess" x-transition class="text-xs text-emerald-600 dark:text-emerald-400">✓ Folder created!</span>
+                                        <span x-show="folderSuccess" x-transition class="text-xs text-emerald-600 dark:text-emerald-400">Folder created.</span>
                                     </div>
                                     <button 
                                         type="button"
                                         @click="showFolderModal = true"
                                         class="text-xs text-blue-600 dark:text-blue-400 hover:underline"
                                     >
-                                        + New Folder
+                                        + New folder
                                     </button>
                                 </div>
                                 <div class="relative" @click.outside="if (activeDropdown === 'folders') { activeDropdown = null; folderSearch = ''; }">
@@ -377,7 +377,7 @@
                                         @click="activeDropdown = activeDropdown === 'folders' ? null : 'folders'; folderSearch = ''"
                                         class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:ring-blue-500 px-3 py-2 text-left flex items-center justify-between border"
                                     >
-                                        <span class="text-sm" x-text="folders.find(f => f.id == formData.folder_id)?.name || 'Select Folder'"></span>
+                                        <span class="text-sm" x-text="folders.find(f => f.id == formData.folder_id)?.name || 'Select folder'"></span>
                                         <svg class="w-4 h-4 transition-transform" :class="activeDropdown === 'folders' ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                         </svg>
@@ -418,7 +418,7 @@
                             <div>
                                 <div class="flex items-center justify-between mb-3">
                                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                                        QR Code Preview
+                                        QR code preview
                                     </label>
                                 </div>
                                 <div class="space-y-3">
@@ -466,7 +466,7 @@
                                         <svg class="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
                                         </svg>
-                                        <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">Enter URL and slug to preview QR</p>
+                                        <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">Enter a slug to preview the QR code</p>
                                     </div>
                                 </div>
                             </div>
@@ -526,7 +526,7 @@
                                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                         </svg>
-                                        <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Fetching preview...</p>
+                                        <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Fetching preview…</p>
                                     </div>
                                     <div x-show="!ogLoading || ogData.title">
                                         <div class="px-3 py-2 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
@@ -565,7 +565,7 @@
             class="relative z-210 w-full max-w-4xl rounded-xl bg-white dark:bg-slate-800 shadow-2xl max-h-[85vh] overflow-hidden"
         >
             <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-4 bg-white dark:bg-slate-800">
-                <h4 class="text-lg font-semibold text-slate-900 dark:text-white">Custom Link Preview</h4>
+                <h4 class="text-lg font-semibold text-slate-900 dark:text-white">Custom link preview</h4>
                 <button type="button" aria-label="Close" @click="showOgEditor = false" class="rounded-lg p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-white">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -622,7 +622,7 @@
                             @click="showOgEditor = false"
                             class="flex-1 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-500 transition-colors"
                         >
-                            Save Changes
+                            Save changes
                         </button>
                     </div>
                 </div>
@@ -666,7 +666,7 @@
             class="relative z-210 w-full rounded-xl bg-white dark:bg-slate-800 shadow-2xl p-5"
             style="max-width: 400px;"
         >
-            <h4 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Create New Folder</h4>
+            <h4 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Create new folder</h4>
             <form @submit.prevent="createFolder()">
                 <input 
                     type="text" 
@@ -706,7 +706,7 @@
             class="relative z-210 w-full rounded-xl bg-white dark:bg-slate-800 shadow-2xl p-5"
             style="max-width: 400px;"
         >
-            <h4 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Create New Tag</h4>
+            <h4 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Create new tag</h4>
             <form @submit.prevent="createTag()">
                 <input 
                     type="text" 
@@ -747,7 +747,7 @@
         >
             <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-4">
                 <div>
-                    <h4 class="text-lg font-semibold text-slate-900 dark:text-white">QR Code Design</h4>
+                    <h4 class="text-lg font-semibold text-slate-900 dark:text-white">QR code design</h4>
                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Customize your QR code appearance</p>
                 </div>
                 <button aria-label="Close" @click="showQrEditor = false" class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-white transition-colors">
@@ -869,7 +869,7 @@
                             class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white focus:border-blue-500 focus:ring-blue-500 text-sm"
                         >
                         <p class="mt-1.5 text-xs text-slate-500 dark:text-slate-400">
-                            💡 Logo will be overlaid in the center of QR code. Use a square image with transparent background for best results.
+                            The logo is placed in the center of the QR code. Use a square image with a transparent background for best results.
                         </p>
                     </div>
                 </div>
@@ -886,7 +886,7 @@
                         @click="showQrEditor = false; generateQrPreview();"
                         class="flex-1 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-500 transition-colors shadow-lg shadow-blue-500/30"
                     >
-                        Apply Design
+                        Apply design
                     </button>
                 </div>
             </div>

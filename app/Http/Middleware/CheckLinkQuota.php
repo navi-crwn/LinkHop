@@ -26,7 +26,7 @@ class CheckLinkQuota
                 return ! $this->quotas->checkGuestLimits($ip);
             });
             if ($quotaExceeded) {
-                return response('Guest quota exceeded.', Response::HTTP_TOO_MANY_REQUESTS);
+                return response('You have reached the guest link limit. Please try again later.', Response::HTTP_TOO_MANY_REQUESTS);
             }
         }
 

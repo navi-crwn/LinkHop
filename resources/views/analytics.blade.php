@@ -114,7 +114,7 @@
         <section class="glass-card min-w-0">
             <div class="mb-2 flex items-center justify-between">
                 <h2 class="section-title">Clicks over time</h2>
-                <span class="text-[11px] text-muted">scroll / pinch to zoom</span>
+                <span class="text-[11px] text-muted">Scroll or pinch to zoom</span>
             </div>
             <div class="relative h-56 sm:h-64"><canvas id="analyticsChart"></canvas></div>
         </section>
