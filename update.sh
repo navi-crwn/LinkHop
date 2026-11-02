@@ -151,11 +151,11 @@ main() {
 # If a step fails before the migrations ran, the previous version is put back by itself.
 # From the migrations on the site stays in maintenance mode and the way back is printed.
 # ---------------------------------------------------------------------------
-FORCE=0
+FORCE=0; NOBACKUP=0
 while [ $# -gt 0 ]; do
   case "$1" in
-    -y|--yes) YES=1 ;; --dry-run) DRY=1 ;; --force) FORCE=1 ;;
-    -h|--help) say "Usage: ./update.sh [--yes] [--force] [--dry-run]"; say "  --force  update even if you changed tracked files (your changes may conflict)"; exit 0 ;;
+    -y|--yes) YES=1 ;; --dry-run) DRY=1 ;; --force) FORCE=1 ;; --no-backup) NOBACKUP=1 ;;
+    -h|--help) say "Usage: ./update.sh [--yes] [--force] [--no-backup] [--dry-run]"; say "  --force      update even if you changed tracked files (your changes may conflict)"; say "  --no-backup  go on when the database cannot be copied first (with --yes the update stops instead)"; exit 0 ;;
     *) bad "Unknown option: $1"; exit 2 ;;
   esac; shift
 done
@@ -183,7 +183,8 @@ RESTORE_HINT=''; DUMP_CNF=''
 no_backup() {
   # $1 = what is missing. Without a copy only a person at the keyboard may say "go on".
   warn "$1"
-  if [ "$YES" = 1 ] || [ "$INTERACTIVE" = 0 ]; then die "No database copy could be made, so nothing was changed. Make one yourself and run this again, or run ./update.sh without --yes to continue without it."; fi
+  if [ "$NOBACKUP" = 1 ]; then RESTORE_HINT='(no copy was made: restore your own backup)'; warn "Going on without a database copy (--no-backup)."; return 0; fi
+  if [ "$YES" = 1 ] || [ "$INTERACTIVE" = 0 ]; then die "No database copy could be made, so nothing was changed. Make one yourself and run this again, or run ./update.sh --no-backup to continue without it."; fi
   confirm "Continue without a database copy?" n || { say "Nothing was changed."; exit 0; }
   RESTORE_HINT='(no copy was made: restore your own backup)'
 }
@@ -241,6 +242,8 @@ backup_mysql() {
 }
 if [ "$DRY" = 1 ]; then
   say "   (dry run) database copy skipped"
+elif [ "$NOBACKUP" = 1 ]; then
+  no_backup "Database copy skipped (--no-backup)."
 elif [ "$DBC" = sqlite ]; then
   DBF="$(get_env .env DB_DATABASE)"; [ -n "$DBF" ] || DBF="$SELF_DIR/database/database.sqlite"
   if [ -f "$DBF" ]; then backup_sqlite "$DBF"; fi
