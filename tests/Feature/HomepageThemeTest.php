@@ -20,4 +20,4 @@ test('home page translations cover every rendered string', function (string $loc
     });
     $this->get('/?lang='.$locale)->assertOk();
     expect(array_values(array_unique($missing)))->toBe([], implode(', ', array_unique($missing)));
-})->with(['en', 'id', 'zh', 'es', 'ar', 'pt', 'fr', 'ja']);
+})->with(['en', 'id', 'zh-CN', 'de', 'es', 'pt-BR', 'fr', 'ja', 'ru']);
