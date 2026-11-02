@@ -12,6 +12,7 @@ use App\Services\QuotaService;
 use App\Services\UserAgentService;
 use App\Support\ClickInsights;
 use App\Support\DashboardStats;
+use App\Support\DeepLinks;
 use App\Support\LinkRouting;
 use App\Support\RemoteUrl;
 use GuzzleHttp\Client;
@@ -541,6 +542,7 @@ class LinkController extends Controller
             'starts_at' => blank($data['starts_at'] ?? null) ? null : $data['starts_at'],
             'fallback_url' => blank($data['fallback_url'] ?? null) ? null : $data['fallback_url'],
             ...LinkRouting::columns($data),
+            ...DeepLinks::columns($data),
             'qr_fg_color' => $data['qr_fg_color'] ?? '#000000',
             'qr_bg_color' => $data['qr_bg_color'] ?? '#ffffff',
             'qr_logo_url' => blank($data['qr_logo_url'] ?? null) ? null : $data['qr_logo_url'],

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Open in the app (deep links)
+- A link can **try the installed app first** on iOS and Android. Choose "Open the app when the page belongs to a known app" (YouTube, Spotify, WhatsApp, Telegram, Instagram profiles, X profiles and posts, TikTok profiles, Zoom meetings, App Store and Google Play are recognised and the app address is built for you) or "Open the app address I give" (a URL scheme such as `myapp://item/42`, an https app link, or an Android `intent://...#Intent;...;end` address, separately for iOS and Android).
+- A small page does the work: it opens the app, and sends the visitor on to the App Store or Google Play page when you gave one, otherwise to the destination, if the app does not take over. It has two buttons for the cases where a phone wants a tap, and nothing to download first.
+- Desktops, crawlers and visitors on other systems keep the plain redirect. A visit still counts like any other; when a routing rule or the split chose another address, a typed app address is not used for it (a recognised one is).
+- Addresses that could dial, write, read files, run script or hand over data (`tel:`, `sms:`, `mailto:`, `javascript:`, `file:`, `data:`, plain `http:`...) are refused, an https address goes through the same safety checks as the destination, an Android intent address has to name a package and may not name a component. Store pages have to be on the App Store or Google Play.
+- Available in the create window, the edit page and the API (`app_links`); the link list shows an "App" chip.
+
 ### No scripts, styles or images from other hosts
 - Chart.js, its zoom plugin, Leaflet, qr-code-styling and Alpine (for the editor preview) are served from `public/vendor` (pinned versions, licences and a README next to them) instead of jsdelivr and unpkg. The analytics map reads its country outlines from `public/vendor/geo` instead of raw.githubusercontent.com. The only other host a signed-in page contacts is OpenStreetMap, for the map's background tiles.
 - Countries without a local flag file show their code instead of a picture from flagcdn.com; the unused Simple Icons URL helper and the editor's Simple Icons requests are gone (local brand icons are used).
