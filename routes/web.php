@@ -135,6 +135,7 @@ Route::middleware('ip.ban')->group(function () {
 // the account is deleted). Signed server-to-server with the shared SSO secret (VerifyHubRequest).
 Route::middleware(['hub.signed', 'throttle:60,1,internal'])->prefix('internal')->name('internal.')->group(function () {
     Route::get('/accounts/{user}/export', [AccountDataController::class, 'export'])->name('accounts.export');
+    Route::get('/accounts/{user}/summary', [AccountDataController::class, 'summary'])->whereNumber('user')->name('accounts.summary');
     Route::delete('/accounts/{user}', [AccountDataController::class, 'purge'])->whereNumber('user')->name('accounts.purge');
 });
 Route::post('/hop/events', [AccountDataController::class, 'events'])
