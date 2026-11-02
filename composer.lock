@@ -1376,12 +1376,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/navi-crwn/hop-safety.git",
-                "reference": "dd600c6aa5ce8ac724bcbc69bcac336f3c0ddba1"
+                "reference": "ce2e13f0ee5f7febb0f0ceb73ae1634bda3a5eaf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-safety/zipball/dd600c6aa5ce8ac724bcbc69bcac336f3c0ddba1",
-                "reference": "dd600c6aa5ce8ac724bcbc69bcac336f3c0ddba1",
+                "url": "https://api.github.com/repos/navi-crwn/hop-safety/zipball/ce2e13f0ee5f7febb0f0ceb73ae1634bda3a5eaf",
+                "reference": "ce2e13f0ee5f7febb0f0ceb73ae1634bda3a5eaf",
                 "shasum": ""
             },
             "require": {
@@ -1411,7 +1411,7 @@
                 "source": "https://github.com/navi-crwn/hop-safety/tree/main",
                 "issues": "https://github.com/navi-crwn/hop-safety/issues"
             },
-            "time": "2026-11-02T13:00:12+00:00"
+            "time": "2026-11-02T17:07:33+00:00"
         },
         {
             "name": "hop/ui",
