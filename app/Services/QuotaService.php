@@ -3,7 +3,10 @@
 namespace App\Services;
 
 use App\Models\Link;
+use App\Models\User;
+use Closure;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class QuotaService
 {
@@ -50,6 +53,26 @@ class QuotaService
             ->count();
 
         return $dayCount < $limits['max_links_per_day'] && $activeCount < $limits['max_active_links'];
+    }
+
+    /**
+     * Run $create (the insert of one link) only while the account is within its limits, and
+     * return what it returned, or null when the account is over. The check and the insert share
+     * one transaction that first locks the user's row, so two requests for the last free slot
+     * take turns: the second one counts the first one's link. Keep $create to the insert itself.
+     *
+     * @template T
+     *
+     * @param  Closure(): T  $create
+     * @return T|null
+     */
+    public function createWithinLimits(int $userId, Closure $create): mixed
+    {
+        return DB::transaction(function () use ($userId, $create) {
+            User::whereKey($userId)->lockForUpdate()->value('id');
+
+            return $this->checkUserLimits($userId) ? $create() : null;
+        });
     }
 
     /** How many more links the account may create right now (today's allowance and the active-link cap, whichever is smaller). */

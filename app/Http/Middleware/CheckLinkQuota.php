@@ -14,11 +14,10 @@ class CheckLinkQuota
     public function handle(Request $request, Closure $next): Response
     {
         if ($request->user()) {
-            $userId = $request->user()->id;
-            $quotaExceeded = cache()->remember("user-quota:{$userId}", now()->addMinutes(10), function () use ($userId) {
-                return ! $this->quotas->checkUserLimits($userId);
-            });
-            if ($quotaExceeded) {
+            // Counted on every request: a cached answer would let a full account through (or keep a
+            // freed one out) for minutes. The insert itself is checked again under a lock, see
+            // QuotaService::createWithinLimits.
+            if (! $this->quotas->checkUserLimits($request->user()->id)) {
                 return response('Link quota exceeded.', Response::HTTP_TOO_MANY_REQUESTS);
             }
         } else {

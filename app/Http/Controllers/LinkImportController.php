@@ -76,7 +76,8 @@ class LinkImportController extends Controller
         @set_time_limit(120);
         $user = $request->user();
         $withDuplicates = $request->boolean('allow_duplicates');
-        $remaining = app(QuotaService::class)->remainingFor($user->id);
+        $quotas = app(QuotaService::class);
+        $remaining = $quotas->remainingFor($user->id);
         $safety = app(LinkSafety::class);
         $folders = $user->folders()->get()->keyBy(fn ($f) => mb_strtolower($f->name));
         $tags = $user->tags()->get()->keyBy(fn ($t) => mb_strtolower($t->name));
@@ -110,7 +111,7 @@ class LinkImportController extends Controller
                 $tagIds[] = $tags[mb_strtolower($name)]->id;
             }
             try {
-                $link = $user->links()->create([
+                $link = $quotas->createWithinLimits($user->id, fn () => $user->links()->create([
                     'target_url' => $row['destination'],
                     'slug' => $row['slug'] !== '' ? $row['slug'] : $this->generateUniqueSlug(),
                     'status' => Link::STATUS_ACTIVE,
@@ -119,10 +120,17 @@ class LinkImportController extends Controller
                     'content_warning' => 'none',
                     'expires_at' => LinkImport::parseDate($row['expires_at']),
                     'max_clicks' => $row['max_clicks'],
-                ]);
+                ]));
             } catch (UniqueConstraintViolationException) {
                 // someone took the slug between the preview and now
                 $skipped[] = ['line' => $row['line'], 'destination' => $row['destination'], 'reason' => __('Skipped: the slug is already taken.')];
+
+                continue;
+            }
+            if (! $link) {
+                // the allowance ran out between the preview and this row (another request used it)
+                $remaining = 0;
+                $skipped[] = ['line' => $row['line'], 'destination' => $row['destination'], 'reason' => __('Skipped: your link allowance is used up.')];
 
                 continue;
             }
