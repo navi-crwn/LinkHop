@@ -19,7 +19,8 @@ class SessionController extends Controller
         if ($request->user()) {
             return redirect()->route('dashboard');
         }
-        $next = (string) $request->query('next', $request->session()->pull('url.intended', ''));
+        $next = $request->query('next', $request->session()->pull('url.intended', ''));
+        $next = is_string($next) ? $next : '';
         if ($next !== '' && str_starts_with($next, config('app.url'))) {
             $next = substr($next, strlen(config('app.url')));
         }

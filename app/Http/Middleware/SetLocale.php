@@ -20,7 +20,7 @@ class SetLocale
 
     public function handle(Request $request, Closure $next): Response
     {
-        $requested = Locales::resolve((string) $request->query('lang', ''));
+        $requested = Locales::resolve(is_string($request->query('lang')) ? $request->query('lang') : '');
         $locale = $requested ?? Locales::normalize((string) $request->cookie(self::COOKIE, Locales::DEFAULT));
         app()->setLocale($locale);
         $response = $next($request);
