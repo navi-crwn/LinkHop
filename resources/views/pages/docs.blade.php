@@ -2,7 +2,7 @@
     <h2 id="token">{{ __('Tokens') }}</h2>
     <p>{!! __('Create a token at the hub (<strong>HOP ID → Settings → API</strong>). A token carries scopes: <code>link:create</code>, <code>link:read</code>, <code>link:delete</code>. Send it as <code>Authorization: Bearer YOUR_TOKEN</code>.') !!}</p>
     <h2 id="create">{{ __('Create a short link') }}</h2>
-    <pre><code>curl -X POST {{ url('/api/shorten') }} \
+    <pre tabindex="0" role="region" aria-label="{{ __('Code example') }}"><code>curl -X POST {{ url('/api/shorten') }} \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"url": "https://example.com", "alias": "my-link"}'</code></pre>
