@@ -23,6 +23,7 @@ use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\WebhookController;
 use App\Support\CspReport;
+use Hop\Auth\Http\Controllers\EventController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -138,7 +139,8 @@ Route::middleware(['hub.signed', 'throttle:60,1,internal'])->prefix('internal')-
     Route::get('/accounts/{user}/summary', [AccountDataController::class, 'summary'])->whereNumber('user')->name('accounts.summary');
     Route::delete('/accounts/{user}', [AccountDataController::class, 'purge'])->whereNumber('user')->name('accounts.purge');
 });
-Route::post('/hop/events', [AccountDataController::class, 'events'])
+// Account events from the hub (session.revoked, account.status, account.deleted): hop/auth's controller behind this app's own signature check; handlers in AppServiceProvider.
+Route::post('/hop/events', EventController::class)
     ->middleware(['hub.signed', 'throttle:60,1,internal'])
     ->name('hop.events');
 // CSP violation reports (report-only policy). Logged to storage/logs/csp-*.log.
