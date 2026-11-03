@@ -85,7 +85,11 @@ class DestinationChecker
         $request = Http::withHeaders(['User-Agent' => 'HEL.ink-LinkCheck/1.0 (+'.public_url('').')', 'Accept' => '*/*'])
             ->timeout((int) config('shortener.monitor.timeout', 8))
             ->connectTimeout(5)
-            ->withOptions(['allow_redirects' => false, 'stream' => true, 'curl' => [CURLOPT_RESOLVE => $pin]]);
+            // No 'stream' option: Guzzle then hands the request to PHP's stream handler, which ignores the curl options, so the
+            // pin below would not be applied and the request would resolve the name again (DNS rebinding). The body is only
+            // status-checked, so it goes to /dev/null: nothing of it is kept in memory or on disk, and the timeout bounds the transfer.
+            // (CURLOPT_MAXFILESIZE would make any page that declares more than the limit look broken.)
+            ->withOptions(['allow_redirects' => false, 'sink' => '/dev/null', 'curl' => [CURLOPT_RESOLVE => $pin]]);
         $response = $request->head($url);
         if ($response->status() >= 400) {
             $response = $request->get($url);
