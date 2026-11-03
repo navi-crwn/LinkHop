@@ -10,6 +10,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-intl": "*",
         "geoip2/geoip2": "^3.2",
         "hop/auth": "^0.1.2",
         "hop/bio": "@dev",
