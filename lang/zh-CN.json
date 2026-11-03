@@ -705,6 +705,7 @@
     "New secret": "新密钥",
     "Delete this webhook and its log?": "删除此 webhook 及其日志？",
     "Delete": "删除",
+    "Could not delete :count link(s).": "无法删除 :count 个链接。",
     "Log of the last deliveries": "最近的发送记录",
     "Nothing sent yet.": "还没有发送过内容。",
     "Time": "时间",

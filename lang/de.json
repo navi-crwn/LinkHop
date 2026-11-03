@@ -705,6 +705,7 @@
     "New secret": "Neues Geheimnis",
     "Delete this webhook and its log?": "Diesen Webhook und sein Protokoll löschen?",
     "Delete": "Löschen",
+    "Could not delete :count link(s).": ":count Link(s) konnten nicht gelöscht werden.",
     "Log of the last deliveries": "Protokoll der letzten Zustellungen",
     "Nothing sent yet.": "Noch nichts gesendet.",
     "Time": "Zeit",

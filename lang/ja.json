@@ -705,6 +705,7 @@
     "New secret": "新しいシークレット",
     "Delete this webhook and its log?": "この Webhook とログを削除しますか？",
     "Delete": "削除",
+    "Could not delete :count link(s).": ":count 件のリンクを削除できませんでした。",
     "Log of the last deliveries": "直近の配信ログ",
     "Nothing sent yet.": "まだ何も送信されていません。",
     "Time": "時刻",
