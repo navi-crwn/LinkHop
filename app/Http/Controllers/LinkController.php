@@ -8,6 +8,7 @@ use App\Models\Folder;
 use App\Models\Link;
 use App\Models\LinkClick;
 use App\Services\LinkService;
+use App\Services\PinnedFetch;
 use App\Services\QuotaService;
 use App\Services\UserAgentService;
 use App\Support\ClickInsights;
@@ -595,6 +596,7 @@ class LinkController extends Controller
         try {
             $client = new Client([
                 'timeout' => 10,
+                'curl' => PinnedFetch::curl($request->url),
                 'verify' => true,
                 'allow_redirects' => false,
             ]);
