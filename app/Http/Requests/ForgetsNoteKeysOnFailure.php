@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Concerns;
+namespace App\Http\Requests;
 
 use App\Support\EncryptedNoteLink;
 use Illuminate\Contracts\Validation\Validator;
