@@ -824,5 +824,8 @@
     "This kind of address cannot be used to open an app.": "这类地址不能用来打开应用。",
     "Use the page of the app in the App Store or Google Play.": "请使用应用在 App Store 或 Google Play 的页面。",
     "Visitors without the app go to its store page when you give one, otherwise to the destination. Desktop visitors and crawlers always go to the destination.": "没有安装应用的访客会前往您提供的商店页面，否则前往目标地址。桌面访客和爬虫始终前往目标地址。",
-    "When someone opens this link on a phone": "有人在手机上打开这个链接时"
+    "When someone opens this link on a phone": "有人在手机上打开这个链接时",
+    "This link opens an encrypted NoteHop note, and the part after the # is its key. Shortening it would store that key on this server. Share the NoteHop link as it is (its share button already gives a short address), or use a Basic note, which the server can read anyway.": "此链接会打开一条加密的 NoteHop 笔记，# 之后的部分就是它的密钥。缩短它会把密钥保存在本服务器上。请直接分享 NoteHop 链接（分享按钮已经提供短地址），或改用“基础”笔记，服务器本来就能读取它。",
+    "Can I shorten the link of an encrypted NoteHop note?": "可以缩短加密 NoteHop 笔记的链接吗？",
+    "No. The key of an encrypted note is the part of its link after the #. If LinkHop shortened the link, it would keep that key, and the note would stop being private. Share the NoteHop link as it is; its share button already gives a short address.": "不可以。加密笔记的密钥就是链接中 # 之后的部分。如果 LinkHop 缩短这个链接，就会保存该密钥，笔记也就不再私密。请直接分享 NoteHop 链接，它的分享按钮已经提供短地址。"
 }

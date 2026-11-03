@@ -267,6 +267,9 @@ The time, country and city, device, browser and referrer.
 **How do I report a bad link?**
 Use the report form (`/report-abuse`). Reports land in the HOP control center's abuse queue, next to the findings of the automatic scan.
 
+**Can I shorten the link of an encrypted NoteHop note?**
+No. The key of an encrypted note is the part of its link after the `#`, and a short link would store it on the server, so LinkHop refuses these links: share the NoteHop link as it is (its share button already gives a short address).
+
 ## Under the hood
 
 | Layer | Technologies |

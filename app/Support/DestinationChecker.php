@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Http;
  * Asks a link's destination whether it still answers, the way a polite stranger would: a HEAD (a GET when the
  * server dislikes HEAD) with a short timeout, redirects followed by hand up to a cap, and every address, the
  * first and each redirect target, checked with UrlGuard so a destination can never lead us to an internal host.
+ * The fragment (#...) is cut off before anything is asked: it is never part of a request, and for an encrypted
+ * note it is the key.
  */
 class DestinationChecker
 {
@@ -32,6 +34,7 @@ class DestinationChecker
     {
         $max = (int) config('shortener.monitor.max_redirects', 5);
         for ($hop = 0; $hop <= $max; $hop++) {
+            $url = (string) EncryptedNoteLink::withoutFragment($url);
             $parts = parse_url($url);
             $host = strtolower(trim((string) ($parts['host'] ?? ''), '[]'));
             if ($host === '' || ! in_array(strtolower((string) ($parts['scheme'] ?? '')), ['http', 'https'], true)) {
@@ -82,7 +85,11 @@ class DestinationChecker
         $request = Http::withHeaders(['User-Agent' => 'HEL.ink-LinkCheck/1.0 (+'.public_url('').')', 'Accept' => '*/*'])
             ->timeout((int) config('shortener.monitor.timeout', 8))
             ->connectTimeout(5)
-            ->withOptions(['allow_redirects' => false, 'stream' => true, 'curl' => [CURLOPT_RESOLVE => $pin]]);
+            // No 'stream' option: Guzzle then hands the request to PHP's stream handler, which ignores the curl options, so the
+            // pin below would not be applied and the request would resolve the name again (DNS rebinding). The body is only
+            // status-checked, so it goes to /dev/null: nothing of it is kept in memory or on disk, and the timeout bounds the transfer.
+            // (CURLOPT_MAXFILESIZE would make any page that declares more than the limit look broken.)
+            ->withOptions(['allow_redirects' => false, 'sink' => '/dev/null', 'curl' => [CURLOPT_RESOLVE => $pin]]);
         $response = $request->head($url);
         if ($response->status() >= 400) {
             $response = $request->get($url);

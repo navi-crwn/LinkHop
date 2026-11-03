@@ -824,5 +824,8 @@
     "This kind of address cannot be used to open an app.": "この種類のアドレスはアプリを開くのには使えません。",
     "Use the page of the app in the App Store or Google Play.": "App Store または Google Play のアプリのページを使います。",
     "Visitors without the app go to its store page when you give one, otherwise to the destination. Desktop visitors and crawlers always go to the destination.": "アプリのない訪問者は、指定があればストアのページへ、なければ宛先へ移動します。デスクトップの訪問者とクローラーは常に宛先へ移動します。",
-    "When someone opens this link on a phone": "誰かがスマートフォンでこのリンクを開いたとき"
+    "When someone opens this link on a phone": "誰かがスマートフォンでこのリンクを開いたとき",
+    "This link opens an encrypted NoteHop note, and the part after the # is its key. Shortening it would store that key on this server. Share the NoteHop link as it is (its share button already gives a short address), or use a Basic note, which the server can read anyway.": "このリンクは暗号化された NoteHop のノートを開き、# 以降の部分がその鍵です。短縮すると、その鍵がこのサーバーに保存されます。NoteHop のリンクはそのまま共有してください（共有ボタンで短いアドレスも得られます）。サーバーが読めてもよいなら、ベーシックのノートを使えます。",
+    "Can I shorten the link of an encrypted NoteHop note?": "暗号化された NoteHop ノートのリンクは短縮できますか？",
+    "No. The key of an encrypted note is the part of its link after the #. If LinkHop shortened the link, it would keep that key, and the note would stop being private. Share the NoteHop link as it is; its share button already gives a short address.": "できません。暗号化ノートの鍵は、リンクの # 以降の部分です。LinkHop がそのリンクを短縮すると鍵を保存することになり、ノートは非公開ではなくなります。NoteHop のリンクはそのまま共有してください。共有ボタンで短いアドレスも得られます。"
 }
