@@ -15,7 +15,7 @@ class LinkCheckController extends Controller
 {
     public function __invoke(Request $request, LinkSafety $safety)
     {
-        $input = trim((string) $request->query('url', ''));
+        $input = is_string($request->query('url')) ? trim($request->query('url')) : '';
         if ($input === '') {
             return view('link-check', ['input' => '', 'result' => null]);
         }

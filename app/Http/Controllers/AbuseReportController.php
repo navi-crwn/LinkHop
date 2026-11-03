@@ -15,7 +15,7 @@ class AbuseReportController extends Controller
     public function create(Request $request): View
     {
         return view('report-abuse', [
-            'prefill' => $request->only(['slug', 'url']),
+            'prefill' => array_filter($request->only(['slug', 'url']), 'is_string'),
         ]);
     }
 

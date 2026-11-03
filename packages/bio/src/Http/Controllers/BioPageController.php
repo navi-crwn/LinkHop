@@ -38,8 +38,8 @@ class BioPageController extends Controller
     public function checkSlug(Request $request)
     {
         // Same rules as store() and update(), so "available" here means saving will accept it.
-        $current = $request->filled('current') ? $request->user()->bioPages()->where('slug', $request->input('current'))->first() : null;
-        $slug = strtolower((string) $request->input('slug'));
+        $current = $request->filled('current') && is_string($request->input('current')) ? $request->user()->bioPages()->where('slug', $request->input('current'))->first() : null;
+        $slug = strtolower(is_string($request->input('slug')) ? $request->input('slug') : '');
         $validator = validator(['slug' => $slug], ['slug' => $this->slugRules($current)]);
 
         return response()->json(['available' => $validator->passes(), 'message' => $validator->errors()->first('slug')]);

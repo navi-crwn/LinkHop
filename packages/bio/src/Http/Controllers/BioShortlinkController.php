@@ -22,7 +22,7 @@ class BioShortlinkController extends Controller
             return response()->json([], 200);
         }
 
-        return response()->json($this->shortlinks->search($user, trim((string) $request->get('query', ''))));
+        return response()->json($this->shortlinks->search($user, trim(is_string($request->get('query')) ? $request->get('query') : '')));
     }
 
     public function store(Request $request)
