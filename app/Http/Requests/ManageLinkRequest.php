@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\ForgetsNoteKeysOnFailure;
 use App\Models\AbuseFlag;
 use App\Models\Link;
 use App\Models\RetiredSlug;
@@ -15,6 +16,8 @@ use Illuminate\Validation\Rule;
 
 class ManageLinkRequest extends FormRequest
 {
+    use ForgetsNoteKeysOnFailure;
+
     public function authorize(): bool
     {
         return true;
