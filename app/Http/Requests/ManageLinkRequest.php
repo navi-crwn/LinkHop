@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\Concerns\ForgetsNoteKeysOnFailure;
 use App\Models\AbuseFlag;
 use App\Models\Link;
 use App\Models\RetiredSlug;
