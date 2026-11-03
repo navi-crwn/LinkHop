@@ -14,6 +14,7 @@ use App\Services\UserAgentService;
 use App\Support\ClickInsights;
 use App\Support\DashboardStats;
 use App\Support\DeepLinks;
+use App\Support\EncryptedNoteLink;
 use App\Support\LinkRouting;
 use App\Support\QrPng;
 use App\Support\RemoteUrl;
@@ -237,7 +238,7 @@ class LinkController extends Controller
         }
         $this->links->forgetCache($link);
         $link = $link->fresh();
-        ActivityLog::log('created', 'Link', $link->id, "Created link: {$link->slug} → {$link->target_url}");
+        ActivityLog::log('created', 'Link', $link->id, "Created link: {$link->slug} → ".EncryptedNoteLink::withoutFragment($link->target_url));
         if ($request->wantsJson()) {
             return response()->json([
                 'success' => true,
@@ -599,7 +600,9 @@ class LinkController extends Controller
         $request->validate([
             'url' => 'required|url',
         ]);
-        if (! app(UrlGuard::class)->isSafe($request->url)) {
+        // The fragment is not part of a request, and for an encrypted note it is the key: only the bare address is asked.
+        $fetchUrl = (string) EncryptedNoteLink::withoutFragment($request->url);
+        if (! app(UrlGuard::class)->isSafe($fetchUrl)) {
             return response()->json([
                 'success' => false,
                 'error' => 'URL is not allowed',
@@ -612,7 +615,7 @@ class LinkController extends Controller
                 'verify' => true,
                 'allow_redirects' => false,
             ]);
-            $response = $client->get($request->url, [
+            $response = $client->get($fetchUrl, [
                 'headers' => [
                     'User-Agent' => 'Mozilla/5.0 (compatible; HEL.ink/1.0; +https://hel.ink)',
                 ],

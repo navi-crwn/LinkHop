@@ -195,7 +195,8 @@ class LinkImport
                 }
             }
             $out[] = [
-                'line' => (int) $row['line'], 'destination' => $url, 'slug' => $slug, 'tags' => $tags, 'folder' => $row['folder'],
+                // the preview is kept in the cache (database) for a while: an encrypted note's key must not wait there
+                'line' => (int) $row['line'], 'destination' => EncryptedNoteLink::scrubInput(['d' => $url])['d'], 'slug' => $slug, 'tags' => $tags, 'folder' => $row['folder'],
                 'expires_at' => $row['expires_at'], 'max_clicks' => $max === null || $validator->errors()->has('max_clicks') ? null : (int) $max,
                 'status' => $status, 'problems' => $problems,
             ];

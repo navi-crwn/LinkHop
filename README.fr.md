@@ -78,6 +78,9 @@ Les données sont agrégées sans stocker d'informations personnelles brutes ni 
 **LinkHop est-il open source ?**
 Oui, LinkHop est distribué sous la licence permissive MIT.
 
+**Puis-je raccourcir le lien d'une note NoteHop chiffrée ?**
+Non. La clé d'une note chiffrée est la partie de son lien située après le `#`, et un lien court la conserverait sur le serveur ; LinkHop refuse donc ces liens : partagez le lien NoteHop tel quel (son bouton de partage donne déjà une adresse courte).
+
 <a id="family"></a>
 
 ## La famille HOP

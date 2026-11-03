@@ -15,6 +15,8 @@ use Illuminate\Validation\Rule;
 
 class ManageLinkRequest extends FormRequest
 {
+    use ForgetsNoteKeysOnFailure;
+
     public function authorize(): bool
     {
         return true;

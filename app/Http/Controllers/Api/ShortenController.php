@@ -10,6 +10,7 @@ use App\Models\Link;
 use App\Services\LinkService;
 use App\Services\QuotaService;
 use App\Support\DeepLinks;
+use App\Support\EncryptedNoteLink;
 use App\Support\LinkLimits;
 use App\Support\LinkRouting;
 use Hop\Safety\LinkSafety;
@@ -219,7 +220,7 @@ class ShortenController extends Controller
                 'created',
                 'Link',
                 $link->id,
-                "Created link via API: {$link->slug} → {$link->target_url}"
+                "Created link via API: {$link->slug} → ".EncryptedNoteLink::withoutFragment($link->target_url)
             );
 
             // Return success response
