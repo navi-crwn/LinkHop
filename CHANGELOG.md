@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Signing out at the hub now ends the session here too (even when LinkHop was down)
+- Signing in through HOP ID uses `remember: true`, so the remember cookie (400 days) brought a person straight back in after their session rows were deleted, and the hub's "end sessions" action and its chained logout could not reach an app that was down at that moment. The hub now queues a signed `session.revoked` to every app; `POST /hop/events` handles it: the session rows of that account are deleted (database and file drivers) and its `remember_token` is rotated, so the cookie stops working. The hub retries for about 16 hours while LinkHop is unreachable.
+- `account.deleted` also ends the account's sessions, after the data purge that was already there. An event the hub sends twice (a retry) is handled once; a type LinkHop does not know gets a 200 so the hub stops retrying it.
+- `account.status` drops the cached short links of that account, so a suspended owner's links stop redirecting at once instead of after the five-minute cache. The suspended person is still signed out on their next request and sent to the hub's notice, as before.
+- Needs `hop/auth` with the event receiver (the lock file points at the head of hop-auth PR #10 until it is tagged) and an `apps` row for `linkhop` with the `events` capability at the hub.
+
 ### Encrypted NoteHop links are refused
 - An encrypted NoteHop note keeps its key in the link after the `#` (`https://n.hel.ink/ID#k=KEY`). LinkHop stored the whole destination and sent the visitor on with it, so the key of a note ended up in the database. Every way of adding a destination (the home form, the dashboard, the API, CSV import, routing and split addresses, bio blocks) now refuses an address on a NoteHop host whose fragment carries `k=` or `a=`, with a message that says why and what to do instead. Other hosts and other fragments are unchanged.
 - The hosts are `note.hel.ink` and `n.hel.ink` plus `NOTEHOP_URL`, `NOTEHOP_SHARE_URL` and the registered NoteHop app; `HOP_NOTE_HOSTS` adds more.
