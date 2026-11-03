@@ -6,7 +6,9 @@ use App\Models\Link;
 use App\Models\RetiredSlug;
 use App\Support\QrPng;
 use App\Support\ReservedSlugs;
+use GuzzleHttp\Psr7\Utils;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 class LinkService
@@ -47,12 +49,20 @@ class LinkService
             if (! $qrImage) {
                 return $qrImageData; // Return original if failed
             }
-            if (! app(UrlGuard::class)->isSafe($logoUrl)) {
-                return $qrImageData; // Reject unsafe (SSRF) logo URLs
-            }
-            $logoData = @file_get_contents($logoUrl);
-            if (! $logoData) {
+            // Checked and pinned in one step: the fetch goes to the addresses that passed UrlGuard, with no redirects.
+            $logo = Http::timeout(5)->connectTimeout(3)
+                ->withOptions(['allow_redirects' => false, 'stream' => true, 'curl' => PinnedFetch::curl($logoUrl)])
+                ->get($logoUrl);
+            if (! $logo->successful()) {
                 return $qrImageData; // Return original if logo fetch failed
+            }
+            // Read at most one byte more than the limit, so a huge answer is never held in memory.
+            $body = $logo->toPsrResponse()->getBody();
+            $logoData = Utils::copyToString($body, QrPng::MAX_LOGO_BYTES + 1);
+            $body->close();
+            $info = $logoData === '' || strlen($logoData) > QrPng::MAX_LOGO_BYTES ? false : @getimagesizefromstring($logoData);
+            if (! $info || $info[0] > QrPng::MAX_LOGO_SIDE || $info[1] > QrPng::MAX_LOGO_SIDE) {
+                return $qrImageData; // Too large, empty or not an image
             }
             $logoImage = @imagecreatefromstring($logoData);
             if (! $logoImage) {
