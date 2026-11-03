@@ -21,7 +21,7 @@
             }
             this.$watch('tab', value => history.replaceState(null, '', '#' + value));
         }
-    }" @tab-changed.window="tab = $event.detail">
+    }" @tab-changed.window="tab = $event.detail" @hashchange.window="if (@js(array_keys($settingsTabs)).includes(window.location.hash.substring(1))) tab = window.location.hash.substring(1)">
         <nav class="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1 lg:sticky lg:top-24 lg:mx-0 lg:flex-col lg:self-start lg:overflow-visible lg:px-0" aria-label="Settings sections">
             @foreach ($settingsTabs as $key => [$label, $icon])
                 <button type="button" @click="tab = '{{ $key }}'" class="nav-item shrink-0 whitespace-nowrap" :class="tab === '{{ $key }}' && 'nav-item-active'">

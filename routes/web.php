@@ -163,11 +163,13 @@ if (env('E2E_HOOKS') === true && ! app()->isProduction()) {
 }
 // Root redirect fallback for hel.ink/l/ and /l when routed here (U-05).
 Route::match(['GET', 'HEAD'], '/l', function (Request $request) {
-    return redirect()->away('https://link.hel.ink/'.($request->getQueryString() ? '?'.$request->getQueryString() : ''), 301);
+    return redirect()->away(rtrim((string) config('app.url'), '/').'/'.($request->getQueryString() ? '?'.$request->getQueryString() : ''), 301);
 });
 Route::match(['GET', 'HEAD'], '/l/', function (Request $request) {
-    return redirect()->away('https://link.hel.ink/'.($request->getQueryString() ? '?'.$request->getQueryString() : ''), 301);
+    return redirect()->away(rtrim((string) config('app.url'), '/').'/'.($request->getQueryString() ? '?'.$request->getQueryString() : ''), 301);
 });
+// Health check for the watchdog: a plain answer (the framework's default /up page loads a CDN script and font).
+Route::get('/up', fn () => response('ok', 200, ['Content-Type' => 'text/plain; charset=UTF-8', 'Cache-Control' => 'no-store']));
 
 // Short links: hel.ink/l/{slug}. GET opens the link, POST submits a link password.
 Route::middleware('ip.ban')->match(['GET', 'POST'], '/l/{slug}', RedirectController::class)
