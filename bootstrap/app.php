@@ -18,6 +18,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -67,5 +68,16 @@ return Application::configure(basePath: dirname(__DIR__))
             return redirect()->back()
                 ->withInput(EncryptedNoteLink::scrubInput($request->except(['_token', 'password', 'password_confirmation', 'current_password', 'token', 'code', 'recovery_code'])))
                 ->with('session_expired', 'Sesi habis, silakan coba lagi.');
+        });
+        // With APP_DEBUG=true the error page prints the SQL of a failed query, values included. If one of the values
+        // is an encrypted-note address with its key, the page is replaced by the plain error response.
+        $exceptions->respond(function (SymfonyResponse $response, Throwable $e, Request $request) {
+            if (! config('app.debug') || $response->getStatusCode() < 500 || ! EncryptedNoteLink::textHoldsSecret((string) $response->getContent())) {
+                return $response;
+            }
+
+            return $request->expectsJson()
+                ? response()->json(['message' => 'Server Error'], $response->getStatusCode())
+                : response()->view('errors.500', [], $response->getStatusCode());
         });
     })->create();
