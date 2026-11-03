@@ -15,6 +15,7 @@ use App\Support\ClickInsights;
 use App\Support\DashboardStats;
 use App\Support\DeepLinks;
 use App\Support\LinkRouting;
+use App\Support\QrPng;
 use App\Support\RemoteUrl;
 use GuzzleHttp\Client;
 use Hop\Safety\UrlGuard;
@@ -425,15 +426,26 @@ class LinkController extends Controller
         }
         $fgColor = $this->hexToRgb($link->qr_fg_color ?? '#000000');
         $bgColor = $this->hexToRgb($link->qr_bg_color ?? '#ffffff');
-        $qrCode = QrCode::format($format)
-            ->size(512)
-            ->margin(2)
-            ->errorCorrection('H')
-            ->backgroundColor($bgColor['r'], $bgColor['g'], $bgColor['b'])
-            ->color($fgColor['r'], $fgColor['g'], $fgColor['b'])
-            ->generate($link->qr_url);
-        if (filled($link->qr_logo_url) && in_array($format, ['png', 'jpg'])) {
-            $qrCode = $this->links->overlayLogo($qrCode, $link->qr_logo_url);
+        if ($format === 'svg') {
+            $qrCode = QrCode::format('svg')
+                ->size(512)
+                ->margin(2)
+                ->errorCorrection('H')
+                ->backgroundColor($bgColor['r'], $bgColor['g'], $bgColor['b'])
+                ->color($fgColor['r'], $fgColor['g'], $fgColor['b'])
+                ->generate($link->qr_url);
+        } else {
+            // QrPng draws with GD when imagick is missing, so PNG and JPG work on every server.
+            $qrCode = QrPng::render($link->qr_url, 512, array_values($fgColor), array_values($bgColor), 2);
+            if (filled($link->qr_logo_url)) {
+                $qrCode = $this->links->overlayLogo($qrCode, $link->qr_logo_url);
+            }
+            if ($format === 'jpg') {
+                $image = imagecreatefromstring($qrCode);
+                ob_start();
+                imagejpeg($image, null, 92);
+                $qrCode = (string) ob_get_clean();
+            }
         }
         $mimeTypes = [
             'png' => 'image/png',
