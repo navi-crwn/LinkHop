@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">Short links moved - {{ config('app.name') }}</x-slot>
+    <x-slot name="pageTitle">{{ __('Short links moved') }}</x-slot>
     @php $until = \App\Support\ShortLinkMove::untilLabel(); $host = public_host(); @endphp
 
     <x-page-header title="Short links moved to {{ $host }}/l/…" subtitle="hel.ink is becoming the home of several HOP apps. Short links get their own path." />

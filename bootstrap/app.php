@@ -21,6 +21,7 @@ use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -51,6 +52,14 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        // An address that matches no route never meets the web middleware, so its 404 page would be English.
+        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
+            if ($request->route() === null) {
+                SetLocale::apply($request);
+            }
+
+            return null;
+        });
         // An expired CSRF token (session timed out while the page stayed open) is not an
         // attack worth a bare "419 Page Expired" page. CSRF stays on; only the reply changes.
         $exceptions->render(function (HttpException $e, Request $request) {

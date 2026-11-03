@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png" sizes="32x32">
     <link rel="apple-touch-icon" href="{{ route('brand.favicon') }}">
-    <title>{{ ($expired ?? false) ? 'Link Expired' : 'Link Not Found' }} - {{ config('app.name', 'LinkHop') }}</title>
+    <title>{{ ($expired ?? false) ? __('Link expired') : __('Link not found') }} · {{ config('app.name', 'LinkHop') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50 dark:bg-gray-900">
@@ -21,46 +21,46 @@
                 </div>
                 <div class="text-center mb-8">
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-3">
-                        {{ ($expired ?? false) ? 'Link Expired' : 'Link Not Found' }}
+                        {{ ($expired ?? false) ? __('Link expired') : __('Link not found') }}
                     </h1>
                     @if ($expired ?? false)
                     <p class="text-lg text-gray-600 dark:text-gray-400 mb-2">
-                        The short link <span class="font-semibold text-blue-600 dark:text-blue-400">{{ $slug }}</span> was a guest link and has expired.
+                        {!! __('The short link :slug was a guest link and has expired.', ['slug' => '<span class="font-semibold text-blue-600 dark:text-blue-400">'.e($slug).'</span>']) !!}
                     </p>
                     <p class="text-sm text-gray-500 dark:text-gray-500">
-                        Guest links are deleted after {{ config('shortener.guest_idle_days') }} days without a click, or after {{ config('shortener.guest_max_days') }} days. Ask the person who shared it for a new link.
+                        {{ __('Guest links are deleted after :idle days without a click, or after :max days. Ask the person who shared it for a new link.', ['idle' => config('shortener.guest_idle_days'), 'max' => config('shortener.guest_max_days')]) }}
                     </p>
                     @else
                     <p class="text-lg text-gray-600 dark:text-gray-400 mb-2">
-                        The short link <span class="font-semibold text-blue-600 dark:text-blue-400">{{ $slug ?? 'unknown' }}</span> doesn't exist or has been disabled.
+                        {!! __("The short link :slug doesn't exist or has been disabled.", ['slug' => '<span class="font-semibold text-blue-600 dark:text-blue-400">'.e($slug ?? '?').'</span>']) !!}
                     </p>
                     <p class="text-sm text-gray-500 dark:text-gray-500">
-                        It may have been deleted, expired, or you may have mistyped the URL.
+                        {{ __('It may have been deleted, expired, or you may have mistyped the URL.') }}
                     </p>
                     @endif
                 </div>
                 <div class="mb-8 rounded-lg bg-gray-50 dark:bg-gray-700/50 p-6">
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                        What you can do:
+                        {{ __('What you can do:') }}
                     </h3>
                     <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                         <li class="flex items-start gap-2">
                             <svg class="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
-                            <span>Double-check the URL for typos</span>
+                            <span>{{ __('Double-check the URL for typos') }}</span>
                         </li>
                         <li class="flex items-start gap-2">
                             <svg class="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
-                            <span>Contact the person who shared this link</span>
+                            <span>{{ __('Contact the person who shared this link') }}</span>
                         </li>
                         <li class="flex items-start gap-2">
                             <svg class="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
-                            <span>Create your own short links for free</span>
+                            <span>{{ __('Create your own short links for free') }}</span>
                         </li>
                     </ul>
                 </div>
@@ -69,20 +69,20 @@
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                         </svg>
-                        Go to Homepage
+                        {{ __('Go to homepage') }}
                     </a>
                     @auth
                     <a href="{{ route('dashboard') }}" class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-6 py-3 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
                         </svg>
-                        Go to Dashboard
+                        {{ __('Go to dashboard') }}
                     </a>
                     @endauth
                 </div>
                 <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
                     <p class="text-sm text-gray-600 dark:text-gray-400">
-                        Need help? Contact us at 
+                        {{ __('Need help? Contact us at') }}
                         <a href="mailto:{{ config('mail.addresses.support', 'support@hel.ink') }}" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
                             {{ config('mail.addresses.support', 'support@hel.ink') }}
                         </a>
