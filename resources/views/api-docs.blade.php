@@ -19,12 +19,12 @@
                 </div>
                 <div>
                     <p class="eyebrow mb-1.5">Headers</p>
-                    <pre class="{{ $code }}"><code>Authorization: Bearer YOUR_API_TOKEN
+                    <pre tabindex="0" role="region" aria-label="{{ __('Code example') }}" class="{{ $code }}"><code>Authorization: Bearer YOUR_API_TOKEN
 Content-Type: application/json</code></pre>
                 </div>
                 <div>
                     <p class="eyebrow mb-1.5">Request body</p>
-                    <pre class="{{ $code }}"><code>{
+                    <pre tabindex="0" role="region" aria-label="{{ __('Code example') }}" class="{{ $code }}"><code>{
   "url": "https://example.com/very/long/url",
   "alias": "my-custom-slug",
   "folder": "Marketing",
@@ -55,7 +55,7 @@ Content-Type: application/json</code></pre>
                         </table>
                     </div>
                     <p class="eyebrow mb-1.5 mt-3">Routing rules and A/B split</p>
-                    <pre class="{{ $code }}"><code>{
+                    <pre tabindex="0" role="region" aria-label="{{ __('Code example') }}" class="{{ $code }}"><code>{
   "url": "https://example.com/en",
   "routing_rules": [
     { "country": ["DE", "AT", "CH"], "url": "https://example.com/de" },
@@ -71,7 +71,7 @@ Content-Type: application/json</code></pre>
                 <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                     <div class="min-w-0">
                         <p class="eyebrow mb-1.5">Success <span class="chip-green ml-1">201</span></p>
-                        <pre class="{{ $code }}"><code>{
+                        <pre tabindex="0" role="region" aria-label="{{ __('Code example') }}" class="{{ $code }}"><code>{
   "success": true,
   "data": {
     "url": "https://hel.ink/abc123",
@@ -85,7 +85,7 @@ Content-Type: application/json</code></pre>
                     </div>
                     <div class="min-w-0">
                         <p class="eyebrow mb-1.5">Error <span class="chip-red ml-1">401 · 422 · 429</span></p>
-                        <pre class="{{ $code }}"><code>{
+                        <pre tabindex="0" role="region" aria-label="{{ __('Code example') }}" class="{{ $code }}"><code>{
   "success": false,
   "error": "Unauthorized",
   "message": "Invalid API token"
@@ -96,7 +96,7 @@ Content-Type: application/json</code></pre>
 
             <section class="glass-card space-y-2">
                 <h2 class="section-title">cURL example</h2>
-                <pre class="{{ $code }}"><code>curl -X POST {{ url('/api/shorten') }} \
+                <pre tabindex="0" role="region" aria-label="{{ __('Code example') }}" class="{{ $code }}"><code>curl -X POST {{ url('/api/shorten') }} \
   -H "Authorization: Bearer YOUR_API_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -119,7 +119,7 @@ Content-Type: application/json</code></pre>
                     <li>{{ __('Same key while the first request is still running: 409, try again in a moment.') }}</li>
                     <li>{{ __('Only successful answers (2xx) are kept, so a request that failed can be sent again with the same key. Keys are kept for 24 hours. A key is 1 to 255 printable characters.') }}</li>
                 </ul>
-                <pre class="{{ $code }}"><code>curl -X POST {{ url('/api/shorten') }} \
+                <pre tabindex="0" role="region" aria-label="{{ __('Code example') }}" class="{{ $code }}"><code>curl -X POST {{ url('/api/shorten') }} \
   -H "Authorization: Bearer YOUR_API_TOKEN" \
   -H "Idempotency-Key: 6f1c0b7e-3f58-4c0e-9d0e-2a2f4c9b1a10" \
   -H "Content-Type: application/json" \
@@ -146,7 +146,7 @@ Content-Type: application/json</code></pre>
                 </div>
                 <div>
                     <p class="eyebrow mb-1.5">{{ __('What you receive') }}</p>
-                    <pre class="{{ $code }}"><code>POST /your/endpoint
+                    <pre tabindex="0" role="region" aria-label="{{ __('Code example') }}" class="{{ $code }}"><code>POST /your/endpoint
 Content-Type: application/json
 User-Agent: LinkHop-Webhook/1
 X-LinkHop-Event: link.created
@@ -170,12 +170,12 @@ X-LinkHop-Signature: sha256=3f7a...c91
                 <div>
                     <p class="eyebrow mb-1.5">{{ __('Check the signature') }}</p>
                     <p class="mb-1.5 text-xs text-muted">{{ __('The signature is HMAC-SHA256 of the timestamp, a dot and the raw body, with your secret as the key. Compare it in constant time and refuse timestamps older than five minutes.') }}</p>
-                    <pre class="{{ $code }}"><code>$body = file_get_contents('php://input');
+                    <pre tabindex="0" role="region" aria-label="{{ __('Code example') }}" class="{{ $code }}"><code>$body = file_get_contents('php://input');
 $ts   = $_SERVER['HTTP_X_LINKHOP_TIMESTAMP'];
 $sig  = 'sha256=' . hash_hmac('sha256', $ts . '.' . $body, $secret);
 $ok   = abs(time() - (int) $ts) < 300
      && hash_equals($sig, $_SERVER['HTTP_X_LINKHOP_SIGNATURE']);</code></pre>
-                    <pre class="{{ $code }} mt-2"><code>// Node.js (Express, with the raw body)
+                    <pre tabindex="0" role="region" aria-label="{{ __('Code example') }}" class="{{ $code }} mt-2"><code>// Node.js (Express, with the raw body)
 const sig = 'sha256=' + crypto.createHmac('sha256', secret)
   .update(req.get('X-LinkHop-Timestamp') + '.' + rawBody).digest('hex');
 const ok = Math.abs(Date.now() / 1000 - Number(req.get('X-LinkHop-Timestamp'))) < 300
