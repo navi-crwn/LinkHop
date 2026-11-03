@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\User;
+use App\Services\LinkService;
+use App\Support\QrPng;
 use Hop\Safety\UrlGuard;
 
 /** A guard that resolves from a fixed table. `$allowLoopback` lets the table point at 127.0.0.1 for the local test server. */
@@ -81,4 +83,36 @@ test('the Open Graph and title lookups still refuse an internal address', functi
     $user = User::factory()->create();
     $this->actingAs($user)->postJson('/links/fetch-og', ['url' => 'http://127.0.0.1/admin'])->assertStatus(422);
     $this->actingAs($user)->postJson('/api/utils/fetch-title', ['url' => 'http://127.0.0.1/admin'])->assertStatus(422);
+});
+
+test('the QR logo fetch connects to the address that was checked, not to a second DNS answer', function () {
+    $image = imagecreatetruecolor(40, 40);
+    imagefilledrectangle($image, 0, 0, 40, 40, imagecolorallocate($image, 255, 0, 0));
+    ob_start();
+    imagepng($image);
+    $server = startPageServer((string) ob_get_clean());
+    try {
+        // logo.example does not exist in DNS: the logo can only be reached through the pinned address
+        app()->instance(UrlGuard::class, tableGuard(['logo.example' => ['127.0.0.1']], allowLoopback: true));
+        $qr = QrPng::render('https://example.com', 512);
+
+        $out = app(LinkService::class)->overlayLogo($qr, 'http://logo.example:'.$server[0].'/logo.png');
+
+        expect($out)->not->toBe($qr);
+        expect(imagecolorat(imagecreatefromstring($out), 256, 256) & 0xFFFFFF)->toBe(0xFF0000);
+    } finally {
+        stopPageServer($server);
+    }
+});
+
+test('a QR logo that is larger than the limit is cut off on the wire and left out', function () {
+    $server = startPageServer(str_repeat('x', QrPng::MAX_LOGO_BYTES * 4));
+    try {
+        app()->instance(UrlGuard::class, tableGuard(['logo.example' => ['127.0.0.1']], allowLoopback: true));
+        $qr = QrPng::render('https://example.com', 512);
+
+        expect(app(LinkService::class)->overlayLogo($qr, 'http://logo.example:'.$server[0].'/huge.png'))->toBe($qr);
+    } finally {
+        stopPageServer($server);
+    }
 });
