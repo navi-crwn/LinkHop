@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Link;
 use App\Services\LinkService;
+use App\Services\PinnedFetch;
 use App\Services\QuotaService;
 use GuzzleHttp\Client;
 use Hop\Bio\Contracts\ShortlinkCreator;
@@ -126,7 +127,7 @@ class LinkController extends Controller
             return response()->json(['title' => null], 422);
         }
         try {
-            $client = new Client(['timeout' => 5, 'verify' => true, 'allow_redirects' => false]);
+            $client = new Client(['timeout' => 5, 'curl' => PinnedFetch::curl($url), 'verify' => true, 'allow_redirects' => false]);
             $response = $client->get($url, [
                 'headers' => [
                     'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
