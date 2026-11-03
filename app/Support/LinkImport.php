@@ -121,7 +121,7 @@ class LinkImport
             $problems = [];
             $url = $row['destination'];
             if ($url !== '' && ! preg_match('/^https?:\/\//i', $url)) {
-                $url = 'https://'.$url;
+                $url = LinkRouting::address($url);
             }
             $slug = strtolower($row['slug']);
             $tags = array_values(array_unique(array_filter(array_map('trim', preg_split('/[,;|]/', $row['tags']) ?: []), fn ($t) => $t !== '')));

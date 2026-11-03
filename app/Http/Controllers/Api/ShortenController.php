@@ -141,7 +141,7 @@ class ShortenController extends Controller
         $targetUrl = $request->input('url');
         // Add https:// if missing
         if (! preg_match('/^https?:\/\//i', $targetUrl)) {
-            $targetUrl = 'https://'.$targetUrl;
+            $targetUrl = LinkRouting::address($targetUrl);
         }
         if ($reason = app(LinkSafety::class)->rejectionReason($targetUrl, (string) $request->input('alias'))) {
             return response()->json([
