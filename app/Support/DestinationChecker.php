@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Http;
  * Asks a link's destination whether it still answers, the way a polite stranger would: a HEAD (a GET when the
  * server dislikes HEAD) with a short timeout, redirects followed by hand up to a cap, and every address, the
  * first and each redirect target, checked with UrlGuard so a destination can never lead us to an internal host.
+ * The fragment (#...) is cut off before anything is asked: it is never part of a request, and for an encrypted
+ * note it is the key.
  */
 class DestinationChecker
 {
@@ -32,6 +34,7 @@ class DestinationChecker
     {
         $max = (int) config('shortener.monitor.max_redirects', 5);
         for ($hop = 0; $hop <= $max; $hop++) {
+            $url = (string) EncryptedNoteLink::withoutFragment($url);
             $parts = parse_url($url);
             $host = strtolower(trim((string) ($parts['host'] ?? ''), '[]'));
             if ($host === '' || ! in_array(strtolower((string) ($parts['scheme'] ?? '')), ['http', 'https'], true)) {

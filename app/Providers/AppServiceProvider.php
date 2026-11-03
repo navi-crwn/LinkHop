@@ -8,11 +8,14 @@ use App\Http\Controllers\BrandAssetController;
 use App\Models\Link;
 use App\Observers\LinkWebhookObserver;
 use App\Services\GeoIpService;
+use App\Services\LinkHopSafety;
 use App\Services\UserAgentService;
+use App\Support\EncryptedNoteLink;
 use Hop\Bio\Contracts\GeoLookup;
 use Hop\Bio\Contracts\ShortlinkCreator;
 use Hop\Bio\Contracts\UrlSafety;
 use Hop\Bio\Contracts\UserAgentParser;
+use Hop\Safety\LinkSafety;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Http\Request;
@@ -25,7 +28,9 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         // What the hop/bio package may call in this app (Hop\Bio\Contracts); nothing else.
-        // URL safety is the family's one LinkSafety (hop/safety), already scoped per request.
+        // URL safety is the family's one LinkSafety (hop/safety), scoped per request; LinkHop adds its own rules on top.
+        $this->app->scoped(EncryptedNoteLink::class);
+        $this->app->scoped(LinkSafety::class, LinkHopSafety::class);
         $this->app->bind(ShortlinkCreator::class, ShortlinkCreatorAdapter::class);
         $this->app->bind(UrlSafety::class, UrlSafetyAdapter::class);
         $this->app->bind(GeoLookup::class, GeoIpService::class);

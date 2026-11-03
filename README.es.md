@@ -78,6 +78,9 @@ Los datos se agregan sin almacenar información personal ni vender perfiles, y l
 **¿Es LinkHop gratuito y de código abierto?**
 Sí, LinkHop se distribuye bajo la licencia permisiva MIT.
 
+**¿Puedo acortar el enlace de una nota cifrada de NoteHop?**
+No. La clave de una nota cifrada es la parte de su enlace que va después del `#`, y un enlace corto la guardaría en el servidor, así que LinkHop rechaza estos enlaces: comparte el enlace de NoteHop tal como está (su botón de compartir ya da una dirección corta).
+
 <a id="family"></a>
 
 ## La familia HOP

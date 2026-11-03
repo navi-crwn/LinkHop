@@ -80,6 +80,9 @@ Klik diagregasi tanpa menyimpan data pribadi mentah atau menjual profil pengguna
 **Apakah LinkHop gratis dan open source?**
 Ya, LinkHop dirilis di bawah lisensi MIT yang bebas untuk digunakan dan dihosting mandiri oleh siapa saja.
 
+**Bisakah saya memendekkan tautan catatan NoteHop yang terenkripsi?**
+Tidak. Kunci catatan terenkripsi adalah bagian tautannya setelah `#`, dan tautan pendek akan menyimpannya di server, jadi LinkHop menolak tautan seperti ini: bagikan tautan NoteHop apa adanya (tombol bagikannya sudah memberi alamat pendek).
+
 <a id="family"></a>
 
 ## Keluarga HOP

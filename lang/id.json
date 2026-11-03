@@ -823,5 +823,8 @@
     "This kind of address cannot be used to open an app.": "Jenis alamat ini tidak dapat dipakai untuk membuka aplikasi.",
     "Use the page of the app in the App Store or Google Play.": "Gunakan halaman aplikasi di App Store atau Google Play.",
     "Visitors without the app go to its store page when you give one, otherwise to the destination. Desktop visitors and crawlers always go to the destination.": "Pengunjung tanpa aplikasi diarahkan ke halaman tokonya jika Anda mengisinya, jika tidak ke tujuan. Pengunjung desktop dan crawler selalu ke tujuan.",
-    "When someone opens this link on a phone": "Saat seseorang membuka tautan ini di ponsel"
+    "When someone opens this link on a phone": "Saat seseorang membuka tautan ini di ponsel",
+    "This link opens an encrypted NoteHop note, and the part after the # is its key. Shortening it would store that key on this server. Share the NoteHop link as it is (its share button already gives a short address), or use a Basic note, which the server can read anyway.": "Tautan ini membuka catatan NoteHop terenkripsi, dan bagian setelah # adalah kuncinya. Jika dipendekkan, kunci itu akan tersimpan di server ini. Bagikan tautan NoteHop apa adanya (tombol bagikannya sudah memberi alamat pendek), atau pakai catatan Dasar, yang memang bisa dibaca server.",
+    "Can I shorten the link of an encrypted NoteHop note?": "Bisakah saya memendekkan tautan catatan NoteHop yang terenkripsi?",
+    "No. The key of an encrypted note is the part of its link after the #. If LinkHop shortened the link, it would keep that key, and the note would stop being private. Share the NoteHop link as it is; its share button already gives a short address.": "Tidak. Kunci catatan terenkripsi adalah bagian tautannya setelah tanda #. Kalau LinkHop memendekkan tautan itu, kuncinya ikut tersimpan dan catatan tidak lagi privat. Bagikan tautan NoteHop apa adanya; tombol bagikannya sudah memberi alamat pendek."
 }
