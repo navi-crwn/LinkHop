@@ -1,0 +1,40 @@
+<?php
+
+/*
+| robots.txt names pages that exist, keeps the signed-in areas out of search results, and points at the sitemap.
+*/
+
+/** @return array{allow: list<string>, disallow: list<string>, sitemap: list<string>} */
+function robotsRules(): array
+{
+    $rules = ['allow' => [], 'disallow' => [], 'sitemap' => []];
+    foreach (preg_split('/\R/', (string) file_get_contents(public_path('robots.txt'))) as $line) {
+        if (preg_match('/^(Allow|Disallow|Sitemap):\s*(\S+)/i', $line, $m)) {
+            $rules[strtolower($m[1])][] = $m[2];
+        }
+    }
+
+    return $rules;
+}
+
+it('allows only pages that exist', function () {
+    foreach (robotsRules()['allow'] as $path) {
+        if ($path === '/' || str_ends_with($path, '/')) {
+            continue; // the home page and the bio prefix
+        }
+        expect($this->get($path)->status())->not->toBe(404, "Allow: {$path} is a 404");
+    }
+});
+
+it('keeps the signed-in areas out of search results', function () {
+    $disallowed = robotsRules()['disallow'];
+    foreach (['/dashboard', '/links', '/bio', '/folders', '/tags', '/analytics', '/api-docs', '/settings', '/api/', '/login'] as $path) {
+        expect($disallowed)->toContain($path);
+    }
+    // the public bio pages (/b/…) are not under a disallowed prefix
+    expect(collect($disallowed)->contains(fn ($d) => str_starts_with('/b/x', $d)))->toBeFalse();
+});
+
+it('points at the sitemap', function () {
+    expect(robotsRules()['sitemap'])->toContain('https://hel.ink/sitemap.xml');
+});
