@@ -77,7 +77,7 @@ class ManageLinkRequest extends FormRequest
         $url = $this->input('target_url');
         if ($url && ! preg_match('/^https?:\/\//i', $url)) {
             $this->merge([
-                'target_url' => 'https://'.$url,
+                'target_url' => LinkRouting::address($url),
             ]);
         }
         $this->merge(LinkRouting::tidy($this->all()));
