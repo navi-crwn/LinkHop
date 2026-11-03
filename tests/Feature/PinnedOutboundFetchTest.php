@@ -99,7 +99,9 @@ test('the QR logo fetch connects to the address that was checked, not to a secon
         $out = app(LinkService::class)->overlayLogo($qr, 'http://logo.example:'.$server[0].'/logo.png');
 
         expect($out)->not->toBe($qr);
-        expect(imagecolorat(imagecreatefromstring($out), 256, 256) & 0xFFFFFF)->toBe(0xFF0000);
+        $drawn = imagecreatefromstring($out);
+        imagepalettetotruecolor($drawn); // see QrLogoOverlayTest
+        expect(imagecolorat($drawn, 256, 256) & 0xFFFFFF)->toBe(0xFF0000);
     } finally {
         stopPageServer($server);
     }

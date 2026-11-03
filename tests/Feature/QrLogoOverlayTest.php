@@ -43,6 +43,7 @@ test('a QR logo is fetched through the guard, pinned to the checked address, and
 
     expect($out)->not->toBe($qr);
     $image = imagecreatefromstring($out);
+    imagepalettetotruecolor($image); // with imagick loaded the PNG is indexed, and imagecolorat then returns a palette index
     expect(imagecolorat($image, 256, 256) & 0xFFFFFF)->toBe(0xFF0000);
     expect($seen[0])->toBe(['logo.example:443:93.184.216.34']);
 });
