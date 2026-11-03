@@ -11,6 +11,7 @@ use App\Http\Middleware\RequireHopAdminClient;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\VerifyHopSignature;
 use App\Http\Middleware\VerifyHubRequest;
+use App\Support\EncryptedNoteLink;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -64,7 +65,7 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             return redirect()->back()
-                ->withInput($request->except(['_token', 'password', 'password_confirmation', 'current_password', 'token', 'code', 'recovery_code']))
+                ->withInput(EncryptedNoteLink::scrubInput($request->except(['_token', 'password', 'password_confirmation', 'current_password', 'token', 'code', 'recovery_code'])))
                 ->with('session_expired', 'Sesi habis, silakan coba lagi.');
         });
     })->create();
