@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">LinkHop - {{ __('Import links') }}</x-slot>
+    <x-slot name="pageTitle">{{ __('Import links') }}</x-slot>
     <x-page-header :title="__('Import links from CSV')" :subtitle="__('Upload a file, check what would be created, then confirm. The file is read on this server and goes nowhere else.')">
         <x-slot name="actions">
             <a href="{{ route('links.import.sample') }}" class="btn-soft btn-sm">{{ __('Download sample CSV') }}</a>

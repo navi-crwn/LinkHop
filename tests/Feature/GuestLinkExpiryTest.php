@@ -67,7 +67,7 @@ test('a guest link is gone at 00:00 after 14 full days in a row without a click'
 test('a deleted guest link shows an expired page and its slug stays blocked for a while', function () {
     $old = guestLink('promo1', ['created_at' => now()->subDays(40)]);
     Cache::flush();
-    $this->get('/l/promo1')->assertStatus(410)->assertSee('Link Expired');
+    $this->get('/l/promo1')->assertStatus(410)->assertSee('Link expired');
 
     $this->artisan('links:prune-guest')->assertSuccessful();
     expect(Link::find($old->id))->toBeNull()

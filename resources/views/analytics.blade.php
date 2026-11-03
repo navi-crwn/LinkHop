@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">LinkHop - Analytics</x-slot>
+    <x-slot name="pageTitle">{{ __('Analytics') }}</x-slot>
     @php
         $topCountryCode = $countries->keys()->first();
         $topDevice = collect($devices)->sortDesc()->keys()->first();

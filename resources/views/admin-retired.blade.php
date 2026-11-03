@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">LinkHop - {{ config('hop.control_name') }}</x-slot>
+    <x-slot name="pageTitle">{{ config('hop.control_name') }}</x-slot>
 
     <x-page-header title="The admin panel moved" subtitle="Moderation and settings now live in the HOP control center." />
 
