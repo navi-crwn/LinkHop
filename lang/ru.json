@@ -705,6 +705,7 @@
     "New secret": "Новый секрет",
     "Delete this webhook and its log?": "Удалить этот вебхук и его журнал?",
     "Delete": "Удалить",
+    "Could not delete :count link(s).": "Не удалось удалить ссылок: :count.",
     "Log of the last deliveries": "Журнал последних доставок",
     "Nothing sent yet.": "Пока ничего не отправлено.",
     "Time": "Время",

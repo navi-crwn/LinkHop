@@ -705,6 +705,7 @@
     "New secret": "Rahasia baru",
     "Delete this webhook and its log?": "Hapus webhook ini beserta lognya?",
     "Delete": "Hapus",
+    "Could not delete :count link(s).": "Gagal menghapus :count tautan.",
     "Log of the last deliveries": "Log pengiriman terakhir",
     "Nothing sent yet.": "Belum ada yang terkirim.",
     "Time": "Waktu",

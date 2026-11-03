@@ -207,7 +207,7 @@
                         }
                     }
                     if (failed > 0) {
-                        alert(`Failed to delete ${failed} link(s)`);
+                        alert(@js(__('Could not delete :count link(s).')).replace(':count', failed));
                     }
                     this.selectedLinks = [];
                     this.selectAll = false;
