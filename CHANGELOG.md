@@ -84,6 +84,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `/l` and `/l/` send visitors to this install's own address, `/up` is a plain answer that loads no script or font from another host, the footer language links keep the query string, the settings tab follows the address, and bulk delete says which links could not be deleted.
 - In the dashboard API, `example.com:8080/x` is read as a host and a port, as the web forms read it.
 - A page shown to a signed-in person is answered with `Cache-Control: no-store, private`, so the Back button after signing out does not show it again. Public files and responses with their own cache policy are not changed.
+- The `<title>` of every page is built as `Page · LinkHop` and follows the page language (it was English on the public pages and `LinkHop - Page` when signed in); the bio editor is titled `Edit bio page: <name>` instead of the home-page tagline.
+- The 404, 429 and 500 pages and the "link not found / expired" page are translated into the nine languages. An address that matches no route used to skip the language middleware, so its 404 page was always English; it now follows `?lang=` and the language cookie.
+- `robots.txt` no longer names `/products` (a 404) and keeps `/links`, `/bio`, `/folders`, `/tags`, `/analytics` and `/api-docs` out of search results.
+- The info pages no longer put a `<main>` inside the layout's `<main>`, and the bio editor's theme button no longer repeats an id.
+- A long address no longer makes the link analytics page wider than a 320 px screen, and the bio analytics page fits 320 px too. On a phone the bio editor header wraps so the Save button stays on screen, and the tab strip fades at its edge to show it scrolls.
+- Code blocks on `/docs` and `/api-docs` and the busiest-hours chart can be scrolled with the keyboard.
+- README: PHP 8.2+ with `intl`, Node.js 20.19+, MySQL/MariaDB/SQLite (not PostgreSQL), the Content Security Policy is enforced (not report-only), FlagCDN is gone, and routing, deep links, content warning, destination monitor, idempotency keys and webhooks are listed.
+- The test run asks PHP for 512 MB (`phpunit.xml`): the suite no longer fits in the default 128 MB.
 
 ### Dashboard chrome
 - The top bar holds settings-type controls (primary action, language, theme and an account menu with your HOP ID, settings and sign out). The other HOP apps are listed once, in the sidebar, with their marks; the app pill and grid are gone from the top bar, and the sidebar's user card became the account menu.
