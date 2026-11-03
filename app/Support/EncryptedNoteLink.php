@@ -24,6 +24,9 @@ class EncryptedNoteLink
     /** The English text is also the key in lang/*.json. */
     public const MESSAGE = 'This link opens an encrypted NoteHop note, and the part after the # is its key. Shortening it would store that key on this server. Share the NoteHop link as it is (its share button already gives a short address), or use a Basic note, which the server can read anyway.';
 
+    /** An Android intent address carries a fallback address (percent-encoded) that the browser opens when the app is missing. */
+    private const INTENT_FALLBACK = '~^intent://[^#]*#Intent;(?:[^;]*;)*?S\.browser_fallback_url=([^;]*)~i';
+
     /** @var list<string>|null */
     private ?array $hosts = null;
 
@@ -55,10 +58,23 @@ class EncryptedNoteLink
     /** True for a NoteHop address whose fragment carries the note key or the owner token. */
     public function matches(?string $url): bool
     {
-        // Read the address the way a browser does, not the way parse_url does: tabs and line breaks are dropped and
-        // a backslash ends the host like a slash, so "https://note.hel.ink\@example.com/#k=..." is a NoteHop address.
-        $clean = preg_replace('/[\t\r\n]/', '', trim((string) $url));
-        if (! preg_match('~^https?:[/\\\\]{2}([^/\\\\?#]*)~i', $clean, $m) || ($at = strpos($clean, '#')) === false) {
+        $clean = self::asBrowserReads((string) $url);
+        // "intent://x#Intent;...;S.browser_fallback_url=https%3A%2F%2Fnote.hel.ink%2FID%23k%3DKEY;end" opens the note in a browser
+        if (preg_match(self::INTENT_FALLBACK, $clean, $intent)) {
+            return $this->matches(rawurldecode($intent[1]));
+        }
+        // A bare "host/path" or "//host/path" gets https:// from the forms, so it is read that way here too.
+        if (! preg_match('~^[a-z][a-z0-9+.\-]*:~i', $clean) || preg_match('~^[^/:]+:\d+(/|$)~', $clean)) {
+            $clean = 'https://'.ltrim($clean, '/\\');
+        }
+        // The forms put https:// in front of anything that does not start with "http://", so "https:/note.hel.ink/..."
+        // can arrive as "https://https:/note.hel.ink/..." (the host is then "https", but the key is stored all the same).
+        while (preg_match('~^https?:[/\\\\]*[\x00-\x20]*(?=https?:)~i', $clean)) {
+            $clean = preg_replace('~^https?:[/\\\\]*[\x00-\x20]*~i', '', $clean);
+        }
+        // After "http:" or "https:" a browser skips every slash and backslash ("https:/host", "https:host" and
+        // "https:////host" all name the host); the host ends at the next slash, backslash, ? or #.
+        if (! preg_match('~^https?:[/\\\\]*([^/\\\\?#]*)~i', $clean, $m) || ($at = strpos($clean, '#')) === false) {
             return false;
         }
         $host = preg_replace('/:\d*$/', '', substr(strrchr('@'.$m[1], '@'), 1));
@@ -74,12 +90,17 @@ class EncryptedNoteLink
     }
 
     /**
-     * Read the fragment the way NoteHop does (URLSearchParams on location.hash): pairs split on &, names and values
-     * percent-decoded, so "%6B=..." is the k parameter too. A parameter with an empty value carries nothing.
+     * Read the fragment the way NoteHop does (new URLSearchParams(location.hash.slice(1))): one leading "?" is
+     * dropped ("#?k=..." is the k parameter), pairs split on &, names and values percent-decoded, so "%6B=..." is the
+     * k parameter too. A parameter with an empty value carries nothing.
      */
     public static function fragmentHasSecret(string $fragment): bool
     {
-        foreach (explode('&', ltrim($fragment, '#')) as $pair) {
+        $fragment = preg_replace('/[\t\r\n]/', '', ltrim($fragment, '#'));
+        if (str_starts_with($fragment, '?')) {
+            $fragment = substr($fragment, 1);
+        }
+        foreach (explode('&', $fragment) as $pair) {
             [$name, $value] = array_pad(explode('=', $pair, 2), 2, '');
             if (in_array(urldecode($name), self::SECRET_PARAMS, true) && urldecode($value) !== '') {
                 return true;
@@ -101,14 +122,73 @@ class EncryptedNoteLink
     }
 
     /**
-     * Cut the fragment out of every address in a stored text (a log line, a JSON payload) whose fragment carries a
-     * secret parameter. Only the fragment goes; the rest of the text stays as it was. Used by links:scrub-note-keys.
+     * The input of a refused form without the fragment of any encrypted-note address in it, at any depth. Everything
+     * else is returned as it was. Used so the old input flashed to the session does not hold a key.
+     *
+     * @param  array<array-key, mixed>  $input
+     * @return array<array-key, mixed>
+     */
+    public static function scrubInput(array $input): array
+    {
+        $notes = app(self::class);
+        foreach ($input as $name => $value) {
+            if (is_array($value)) {
+                $input[$name] = self::scrubInput($value);
+            } elseif (is_string($value)) {
+                // the whole value is a note address, or a note address sits inside a longer text (a report, a message)
+                $input[$name] = $notes->matches($value) ? self::withoutFragment($value) : self::scrubText($value);
+            }
+        }
+
+        return $input;
+    }
+
+    /**
+     * The address with only the secret parameters (k, a) taken out of its fragment; any other part of the fragment
+     * stays ("#new=1&k=KEY" becomes "#new=1", "#k=KEY" becomes nothing). A leading "?" in the fragment is kept.
+     */
+    public static function withoutSecrets(string $url): string
+    {
+        if (preg_match(self::INTENT_FALLBACK, $url, $intent, PREG_OFFSET_CAPTURE)) {
+            [$value, $offset] = $intent[1];
+
+            return substr($url, 0, $offset).rawurlencode(self::withoutSecrets(rawurldecode($value))).substr($url, $offset + strlen($value));
+        }
+        $at = strpos($url, '#');
+        if ($at === false) {
+            return $url;
+        }
+        $fragment = substr($url, $at + 1);
+        $mark = str_starts_with($fragment, '?') ? '?' : '';
+        $kept = array_filter(
+            explode('&', $mark === '' ? $fragment : substr($fragment, 1)),
+            fn (string $pair) => ! in_array(urldecode(explode('=', preg_replace('/[\t\r\n]/', '', $pair), 2)[0]), self::SECRET_PARAMS, true),
+        );
+        $kept = array_filter($kept, fn (string $pair) => $pair !== '');
+
+        return substr($url, 0, $at).($kept === [] ? '' : '#'.$mark.implode('&', $kept));
+    }
+
+    /**
+     * Take the secret parameters out of every NoteHop address in a stored text (a log line, a JSON payload). Only an
+     * address on a NoteHop host is touched, so a "#a=1" on another site stays as it was; JSON escapes ("\/", "\uff4e")
+     * are read before the host is compared. Used by links:scrub-note-keys.
      */
     public static function scrubText(string $text): string
     {
+        $notes = app(self::class);
+
         return preg_replace_callback(
-            '/#([^\s"\'<>\\\\]*)/',
-            fn (array $m) => self::fragmentHasSecret($m[1]) ? '' : $m[0],
+            '~(https?:[^\s"\'<>#]*)#([^\s"\'<>\\\\]*)~i',
+            function (array $m) use ($notes) {
+                $plain = str_contains($m[1], '\\') ? (json_decode('"'.$m[1].'"') ?? stripslashes($m[1])) : $m[1];
+                if (! is_string($plain) || ! $notes->matches($plain.'#'.$m[2])) {
+                    return $m[0];
+                }
+                $rest = substr(self::withoutSecrets('#'.$m[2]), 1);
+
+                return $m[1].($rest === '' ? '' : '#'.$rest);
+            },
             $text,
         ) ?? $text;
     }
@@ -123,8 +203,25 @@ class EncryptedNoteLink
         return is_string($host) && $host !== '' ? self::normalizeHost($host) : null;
     }
 
+    /** What a browser does before it reads an address: drop tabs and line breaks, trim control characters and spaces. */
+    private static function asBrowserReads(string $url): string
+    {
+        return preg_replace('/^[\x00-\x20]+|[\x00-\x20]+$/', '', preg_replace('/[\t\r\n]/', '', $url)) ?? '';
+    }
+
+    /**
+     * The host the way a browser reads it, so the comparison does not depend on how it was typed: percent-decoded,
+     * mapped by UTS 46 (full-width and other compatibility letters, U+3002 and similar dots, soft hyphens and
+     * zero-width characters are folded or dropped), lower case, no trailing dot, no www. Needs ext-intl; without it
+     * only the plain forms are caught, which is why composer.json requires it.
+     */
     private static function normalizeHost(string $host): string
     {
-        return preg_replace('/^www\./', '', rtrim(strtolower(trim($host, '[]')), '.'));
+        $host = rawurldecode(trim($host, '[]'));
+        if (function_exists('idn_to_ascii') && ($ascii = idn_to_ascii($host, IDNA_NONTRANSITIONAL_TO_ASCII, INTL_IDNA_VARIANT_UTS46)) !== false) {
+            $host = $ascii;
+        }
+
+        return preg_replace('/^www\./', '', rtrim(strtolower($host), '.'));
     }
 }
