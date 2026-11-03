@@ -3,7 +3,7 @@
 
 {{ __('The address behind your short link :link has not answered in several checks in a row.', ['link' => $link->short_url]) }}
 
-**{{ __('Goes to') }}:** {{ \Illuminate\Support\Str::limit($link->target_url, 120) }}
+**{{ __('Goes to') }}:** {{ \Illuminate\Support\Str::limit(\App\Support\EncryptedNoteLink::withoutFragment($link->target_url), 120) }}
 @if ($status)
 
 **{{ __('Last answer') }}:** HTTP {{ $status }}

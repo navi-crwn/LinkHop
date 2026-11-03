@@ -27,6 +27,8 @@ return [
     // NoteHop: encrypted notes (note.hel.ink).
     'notehop' => [
         'url' => env('NOTEHOP_URL'),
+        // NoteHop's optional second domain for share links (its NOTEHOP_SHARE_URL); also a NoteHop host here.
+        'share_url' => env('NOTEHOP_SHARE_URL'),
         'sso_secret' => env('NOTEHOP_SSO_SECRET'),
     ],
     // Imperium: the HOP control center (admin_client; hidden from the sidebar).

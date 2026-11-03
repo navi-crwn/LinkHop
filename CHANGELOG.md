@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Encrypted NoteHop links are refused
+- An encrypted NoteHop note keeps its key in the link after the `#` (`https://n.hel.ink/ID#k=KEY`). LinkHop stored the whole destination and sent the visitor on with it, so the key of a note ended up in the database. Every way of adding a destination (the home form, the dashboard, the API, CSV import, routing and split addresses, bio blocks) now refuses an address on a NoteHop host whose fragment carries `k=` or `a=`, with a message that says why and what to do instead. Other hosts and other fragments are unchanged.
+- The hosts are `note.hel.ink` and `n.hel.ink` plus `NOTEHOP_URL`, `NOTEHOP_SHARE_URL` and the registered NoteHop app; `HOP_NOTE_HOSTS` adds more.
+- The destination monitor, the title and preview fetches, and the Safe Browsing and URLhaus lookups no longer send a fragment. Activity-log lines and the broken-destination email no longer print it.
+- `php artisan links:scrub-note-keys` lists links that were saved with a key (counts and ids only, dry run by default). With `--apply` it cuts the fragment out of every stored copy, switches those links off and tells nobody.
+
 ### Open in the app (deep links)
 - A link can **try the installed app first** on iOS and Android. Choose "Open the app when the page belongs to a known app" (YouTube, Spotify, WhatsApp, Telegram, Instagram profiles, X profiles and posts, TikTok profiles, Zoom meetings, App Store and Google Play are recognised and the app address is built for you) or "Open the app address I give" (a URL scheme such as `myapp://item/42`, an https app link, or an Android `intent://...#Intent;...;end` address, separately for iOS and Android).
 - A small page does the work: it opens the app, and sends the visitor on to the App Store or Google Play page when you gave one, otherwise to the destination, if the app does not take over. It has two buttons for the cases where a phone wants a tap, and nothing to download first.
