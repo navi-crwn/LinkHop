@@ -5,6 +5,7 @@ use App\Http\Middleware\AutoLogout;
 use App\Http\Middleware\CheckIpBan;
 use App\Http\Middleware\CheckLinkQuota;
 use App\Http\Middleware\CheckSuspended;
+use App\Http\Middleware\NoStoreWhenSignedIn;
 use App\Http\Middleware\ContentSecurityPolicyMiddleware;
 use App\Http\Middleware\RemoveWwwPrefix;
 use App\Http\Middleware\RequireHopAdminClient;
@@ -33,6 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
             AutoLogout::class,
             CheckSuspended::class,
             ContentSecurityPolicyMiddleware::class,
+            NoStoreWhenSignedIn::class,
         ]);
         $middleware->encryptCookies(except: [SetLocale::COOKIE]);
         // Browsers POST CSP reports without a CSRF token; hub server-to-server calls are HMAC-signed.
