@@ -1,6 +1,8 @@
 <?php
 
-test('GET /l and /l/ redirect 301 to link.hel.ink preserving query parameters', function () {
+test('GET /l and /l/ redirect 301 to the app address (link.hel.ink in production) preserving query parameters', function () {
+    config(['app.url' => 'https://link.hel.ink']);
+
     $this->get('/l')
         ->assertStatus(301)
         ->assertRedirect('https://link.hel.ink/');
