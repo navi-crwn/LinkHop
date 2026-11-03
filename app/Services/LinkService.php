@@ -6,7 +6,6 @@ use App\Models\Link;
 use App\Models\RetiredSlug;
 use App\Support\QrPng;
 use App\Support\ReservedSlugs;
-use GuzzleHttp\Psr7\Utils;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -50,16 +49,18 @@ class LinkService
                 return $qrImageData; // Return original if failed
             }
             // Checked and pinned in one step: the fetch goes to the addresses that passed UrlGuard, with no redirects.
+            // No 'stream' option: Guzzle would then use PHP's stream handler, which ignores the curl options and so the pin.
+            // The size limit is enforced by curl instead: the transfer is aborted once more than the limit has arrived.
             $logo = Http::timeout(5)->connectTimeout(3)
-                ->withOptions(['allow_redirects' => false, 'stream' => true, 'curl' => PinnedFetch::curl($logoUrl)])
+                ->withOptions(['allow_redirects' => false, 'curl' => PinnedFetch::curl($logoUrl) + [
+                    CURLOPT_NOPROGRESS => false,
+                    CURLOPT_PROGRESSFUNCTION => fn ($ch, $total, $received) => $received > QrPng::MAX_LOGO_BYTES ? 1 : 0,
+                ]])
                 ->get($logoUrl);
             if (! $logo->successful()) {
                 return $qrImageData; // Return original if logo fetch failed
             }
-            // Read at most one byte more than the limit, so a huge answer is never held in memory.
-            $body = $logo->toPsrResponse()->getBody();
-            $logoData = Utils::copyToString($body, QrPng::MAX_LOGO_BYTES + 1);
-            $body->close();
+            $logoData = $logo->body();
             $info = $logoData === '' || strlen($logoData) > QrPng::MAX_LOGO_BYTES ? false : @getimagesizefromstring($logoData);
             if (! $info || $info[0] > QrPng::MAX_LOGO_SIDE || $info[1] > QrPng::MAX_LOGO_SIDE) {
                 return $qrImageData; // Too large, empty or not an image
