@@ -193,6 +193,17 @@ class EncryptedNoteLink
         ) ?? $text;
     }
 
+    /** True when scrubText would change the text, read as it is and with HTML entities decoded (a debug page). */
+    public static function textHoldsSecret(string $text): bool
+    {
+        if (! str_contains($text, '#') && ! str_contains($text, '%23') && ! str_contains($text, '&#')) {
+            return false;
+        }
+        $decoded = html_entity_decode($text, ENT_QUOTES | ENT_HTML5);
+
+        return self::scrubText($text) !== $text || self::scrubText($decoded) !== $decoded;
+    }
+
     private static function hostOf(mixed $url): ?string
     {
         if (! is_string($url) || trim($url) === '') {
