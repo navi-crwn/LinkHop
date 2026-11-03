@@ -30,6 +30,9 @@ class ScrubNoteKeys extends Command
         ['hop_audit', 'params'],
         ['api_idempotency_keys', 'response_body'],
         ['abuse_reports', 'url'],
+        // blocks of a bio page (the hop/bio package): the same address typed into a block
+        ['bio_links', 'url'],
+        ['bio_links', 'embed_url'],
     ];
 
     /** Queue tables hold serialized jobs, whose lengths a cut would break: counted, never edited. */
@@ -62,22 +65,25 @@ class ScrubNoteKeys extends Command
                         continue;
                     }
                     $wasLive = $link->status === Link::STATUS_ACTIVE;
-                    // saveQuietly: no webhook event and no other side effect; the redirect cache is dropped by hand.
-                    $link->forceFill($fixed + ['status' => Link::STATUS_INACTIVE])->saveQuietly();
+                    // One transaction per link: the cut, the switch-off and the line in the owner's log go together or not at all.
+                    DB::transaction(function () use ($link, $fixed) {
+                        // saveQuietly: no webhook event and no other side effect; the redirect cache is dropped by hand.
+                        $link->forceFill($fixed + ['status' => Link::STATUS_INACTIVE])->saveQuietly();
+                        if ($link->user_id !== null) {
+                            ActivityLog::create([
+                                'user_id' => $link->user_id,
+                                'action' => 'disabled',
+                                'model' => 'Link',
+                                'model_id' => $link->id,
+                                'description' => "Disabled link {$link->slug}: it pointed at an encrypted NoteHop note with its key in the address. LinkHop no longer keeps that key, so the link was switched off.",
+                                'ip_address' => null,
+                                'user_agent' => 'links:scrub-note-keys',
+                            ]);
+                        }
+                    });
                     $service->forgetCacheBySlug($link->slug);
                     if ($wasLive) {
                         $disabled++;
-                    }
-                    if ($link->user_id !== null) {
-                        ActivityLog::create([
-                            'user_id' => $link->user_id,
-                            'action' => 'disabled',
-                            'model' => 'Link',
-                            'model_id' => $link->id,
-                            'description' => "Disabled link {$link->slug}: it pointed at an encrypted NoteHop note with its key in the address. LinkHop no longer keeps that key, so the link was switched off.",
-                            'ip_address' => null,
-                            'user_agent' => 'links:scrub-note-keys',
-                        ]);
                     }
                 }
             });
@@ -94,19 +100,24 @@ class ScrubNoteKeys extends Command
             }
             $rows = 0;
             DB::table($table)->where($column, 'like', '%#%')->orderBy('id')->chunkById(500, function ($chunk) use ($table, $column, $apply, &$rows) {
-                foreach ($chunk as $row) {
-                    $clean = EncryptedNoteLink::scrubText((string) $row->{$column});
-                    if ($clean === (string) $row->{$column}) {
-                        continue;
+                DB::transaction(function () use ($chunk, $table, $column, $apply, &$rows) {
+                    foreach ($chunk as $row) {
+                        $clean = EncryptedNoteLink::scrubText((string) $row->{$column});
+                        if ($clean === (string) $row->{$column}) {
+                            continue;
+                        }
+                        $rows++;
+                        if ($apply) {
+                            DB::table($table)->where('id', $row->id)->update([$column => $clean]);
+                        }
                     }
-                    $rows++;
-                    if ($apply) {
-                        DB::table($table)->where('id', $row->id)->update([$column => $clean]);
-                    }
-                }
+                });
             });
             $this->line(sprintf('%s.%s rows %s: %d', $table, $column, $verb, $rows));
         }
+
+        $this->scrubSessions($apply, $verb);
+        $this->dropCachedCopies($apply);
 
         foreach (self::QUEUES as $table) {
             if (! Schema::hasTable($table)) {
@@ -131,11 +142,82 @@ class ScrubNoteKeys extends Command
         return self::SUCCESS;
     }
 
-    /** The value with the fragment cut out of every address that carries a note key; the same value when none does. */
+    /**
+     * The database session handler keeps base64(serialize(data)), so the old input of a refused form can hold a key
+     * where a LIKE cannot see it. The data is read back, cleaned string by string and written again.
+     */
+    private function scrubSessions(bool $apply, string $verb): void
+    {
+        if (! Schema::hasTable('sessions') || ! Schema::hasColumn('sessions', 'payload')) {
+            return;
+        }
+        $rows = 0;
+        DB::table('sessions')->orderBy('id')->chunkById(500, function ($chunk) use ($apply, &$rows) {
+            foreach ($chunk as $row) {
+                $raw = base64_decode((string) $row->payload, true);
+                if ($raw === false || ! str_contains($raw, '#')) {
+                    continue;
+                }
+                $data = @unserialize($raw, ['allowed_classes' => false]);
+                if (! is_array($data)) {
+                    continue;
+                }
+                $clean = $this->cleanDeep($data);
+                if ($clean === $data) {
+                    continue;
+                }
+                $rows++;
+                if ($apply) {
+                    DB::table('sessions')->where('id', $row->id)->update(['payload' => base64_encode(serialize($clean))]);
+                }
+            }
+        }, 'id');
+        $this->line(sprintf('sessions.payload rows %s: %d', $verb, $rows));
+    }
+
+    /** Cached redirects and CSV previews are only copies: an entry that holds a key is deleted, not edited. */
+    private function dropCachedCopies(bool $apply): void
+    {
+        $table = (string) config('cache.stores.database.table', 'cache');
+        if (config('cache.default') !== 'database' || ! Schema::hasTable($table)) {
+            return;
+        }
+        $drop = [];
+        DB::table($table)->where(fn ($q) => $q->where('key', 'like', '%slug:%')->orWhere('key', 'like', '%linkimport:%'))->orderBy('key')->get(['key', 'value'])->each(function ($row) use (&$drop) {
+            $value = (string) $row->value;
+            $plain = base64_decode($value, true);
+            foreach ([$value, $plain === false ? '' : $plain] as $text) {
+                if (EncryptedNoteLink::scrubText($text) !== $text) {
+                    $drop[] = $row->key;
+
+                    return;
+                }
+            }
+        });
+        if ($apply && $drop !== []) {
+            DB::table($table)->whereIn('key', $drop)->delete();
+        }
+        $this->line(sprintf('cache entries %s: %d', $apply ? 'deleted' : 'would be deleted', count($drop)));
+    }
+
+    /** Strings of a nested array with the secret parameters taken out of every NoteHop address in them. */
+    private function cleanDeep(mixed $value): mixed
+    {
+        if (is_string($value)) {
+            return EncryptedNoteLink::scrubText($value);
+        }
+        if (is_array($value)) {
+            return array_map(fn ($v) => $this->cleanDeep($v), $value);
+        }
+
+        return $value;
+    }
+
+    /** The value with the secret parameters cut out of every NoteHop address that carries one; the same value when none does. */
     private function clean(mixed $value, EncryptedNoteLink $notes): mixed
     {
         if (is_string($value)) {
-            return $notes->matches($value) ? EncryptedNoteLink::withoutFragment($value) : $value;
+            return $notes->matches($value) ? EncryptedNoteLink::withoutSecrets($value) : $value;
         }
         if (is_array($value)) {
             return array_map(fn ($v) => $this->clean($v, $notes), $value);
