@@ -3,6 +3,8 @@
 namespace App\Support;
 
 use App\Models\HopApp;
+use Hop\Safety\EncryptedNoteLink as AddressesInText;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -29,6 +31,8 @@ class EncryptedNoteLink
 
     /** @var list<string>|null */
     private ?array $hosts = null;
+
+    private ?AddressesInText $inText = null;
 
     /**
      * Lower-case NoteHop hosts: the HOP_NOTE_HOSTS list (default note.hel.ink and the short host n.hel.ink),
@@ -81,6 +85,63 @@ class EncryptedNoteLink
 
         return in_array(self::normalizeHost($host), $this->hosts(), true)
             && self::fragmentHasSecret(substr($clean, $at + 1));
+    }
+
+    /**
+     * True when a value holds the address of an encrypted note anywhere in it: a text of any kind (rich text, CSS, a
+     * label), or an array at any depth, its keys included. The text is also read the way a browser would read it, with
+     * HTML entities and CSS escapes undone and tabs and line breaks dropped. Other values never hold one.
+     */
+    public function holdsKey(mixed $value): bool
+    {
+        if (is_array($value)) {
+            foreach ($value as $name => $item) {
+                if ($this->holdsKey((string) $name) || $this->holdsKey($item)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        if (! is_string($value) || ! preg_match('/[#&\\\\]|%23/i', $value)) {
+            return false;
+        }
+        if (($data = self::jsonArray($value)) !== null && $this->holdsKey($data)) {
+            return true;
+        }
+        foreach (self::readings($value) as $reading) {
+            if ($this->matches($reading) || $this->inText()->containsKey($reading)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Add an error for each of the named fields that holds a key. For the fields that are no destination, which the
+     * safety rule does not see: free text, image addresses, names.
+     *
+     * @param  array<array-key, mixed>  $data
+     * @param  list<string>  $fields
+     */
+    public function refuseIn(Validator $validator, array $data, array $fields): void
+    {
+        foreach ($fields as $field) {
+            if ($this->holdsKey($data[$field] ?? null)) {
+                $validator->errors()->add($field, $this->message());
+            }
+        }
+    }
+
+    /** A validation rule for a field stored as it is: a comment, a name. */
+    public static function rule(): \Closure
+    {
+        return function (string $attribute, mixed $value, \Closure $fail) {
+            if (app(self::class)->holdsKey($value)) {
+                $fail(app(self::class)->message());
+            }
+        };
     }
 
     /** The error text for the person who tried to shorten the link, in the current language. */
@@ -136,7 +197,11 @@ class EncryptedNoteLink
                 $input[$name] = self::scrubInput($value);
             } elseif (is_string($value)) {
                 // the whole value is a note address, or a note address sits inside a longer text (a report, a message)
-                $input[$name] = $notes->matches($value) ? self::withoutFragment($value) : self::scrubText($value);
+                $input[$name] = $notes->matches($value) ? self::withoutFragment($value) : $notes->scrubAll($value);
+            }
+            if (is_string($name) && ($clean = $notes->scrubAll($name)) !== $name) {
+                $input[$clean] = $input[$name];
+                unset($input[$name]);
             }
         }
 
@@ -191,6 +256,96 @@ class EncryptedNoteLink
             },
             $text,
         ) ?? $text;
+    }
+
+    /**
+     * scrubText for a stored value of any kind: JSON is cleaned string by string and written back the way Laravel
+     * writes it, and an address scrubText cannot see (no scheme, written with entities or escapes) is cut out as well.
+     * The result only differs from the value when the value held a key; holdsKey() tells whether it still does.
+     */
+    public function scrubAll(string $text): string
+    {
+        if (($data = self::jsonArray($text)) !== null) {
+            $clean = $this->scrubArray($data);
+
+            return $clean === $data ? $text : (json_encode($clean) ?: $text);
+        }
+        $out = self::scrubText($text);
+        if (! $this->holdsKey($out)) {
+            return $out;
+        }
+        foreach (self::readings($out) as $reading) {
+            $clean = $this->inText()->scrub($reading);
+            if (! $this->holdsKey($clean)) {
+                return $clean;
+            }
+        }
+
+        return $out;
+    }
+
+    /**
+     * @param  array<array-key, mixed>  $data
+     * @return array<array-key, mixed>
+     */
+    private function scrubArray(array $data): array
+    {
+        $clean = [];
+        foreach ($data as $name => $value) {
+            $clean[is_string($name) ? $this->scrubAll($name) : $name] = match (true) {
+                is_array($value) => $this->scrubArray($value),
+                is_string($value) => $this->scrubAll($value),
+                default => $value,
+            };
+        }
+
+        return $clean;
+    }
+
+    /** The reader of addresses inside a longer text (hop/safety), with this app's host list. */
+    private function inText(): AddressesInText
+    {
+        return $this->inText ??= new AddressesInText($this->hosts());
+    }
+
+    /** The JSON array or object a text holds, or null when it holds none. */
+    private static function jsonArray(string $text): ?array
+    {
+        if (! preg_match('/^\s*[\[{]/', $text)) {
+            return null;
+        }
+        $data = json_decode($text, true);
+
+        return is_array($data) ? $data : null;
+    }
+
+    /**
+     * The text as it is, and as a browser would read it: HTML entities and CSS or JavaScript escapes undone (a few
+     * rounds, they can be nested), and each of those without tabs and line breaks.
+     *
+     * @return list<string>
+     */
+    private static function readings(string $text): array
+    {
+        $readings = [$text];
+        for ($round = 0; $round < 3; $round++) {
+            $decoded = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            $decoded = preg_replace_callback(
+                '/\\\\(?:u([0-9a-f]{4})|([0-9a-f]{1,6})[ \t\r\n\f]?)/i',
+                fn (array $m) => mb_chr((int) hexdec($m[1] !== '' ? $m[1] : $m[2]), 'UTF-8') ?: $m[0],
+                $decoded,
+            ) ?? $decoded;
+            $decoded = preg_replace('/\\\\([^0-9a-f\r\n])/i', '$1', $decoded) ?? $decoded;
+            if ($decoded === $text) {
+                break;
+            }
+            $readings[] = $text = $decoded;
+        }
+        foreach ($readings as $reading) {
+            $readings[] = (string) preg_replace('/[\t\r\n]/', '', $reading);
+        }
+
+        return array_values(array_unique($readings));
     }
 
     /** True when scrubText would change the text, read as it is and with HTML entities decoded (a debug page). */

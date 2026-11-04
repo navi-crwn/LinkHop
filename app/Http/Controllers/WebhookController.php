@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
 use App\Models\WebhookEndpoint;
+use App\Support\EncryptedNoteLink;
 use App\Support\WebhookGuard;
 use App\Support\Webhooks;
 use Illuminate\Http\RedirectResponse;
@@ -17,7 +18,7 @@ class WebhookController extends Controller
     {
         $user = $request->user();
         $data = $request->validate([
-            'url' => ['required', 'string', 'max:2000'],
+            'url' => ['required', 'string', 'max:2000', EncryptedNoteLink::rule()],
             'events' => ['nullable', 'array'],
             'events.*' => [Rule::in(Webhooks::EVENTS)],
         ]);

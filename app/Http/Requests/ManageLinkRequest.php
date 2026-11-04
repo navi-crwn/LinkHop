@@ -6,6 +6,7 @@ use App\Models\AbuseFlag;
 use App\Models\Link;
 use App\Models\RetiredSlug;
 use App\Support\DeepLinks;
+use App\Support\EncryptedNoteLink;
 use App\Support\LinkLimits;
 use App\Support\LinkRouting;
 use App\Support\ReservedSlugs;
@@ -115,6 +116,7 @@ class ManageLinkRequest extends FormRequest
                     $validator->errors()->add('target_url', $reason);
                 }
             }
+            app(EncryptedNoteLink::class)->refuseIn($validator, $this->all(), ['warning_reason', 'custom_title', 'custom_description', 'custom_image_url', 'qr_logo_url', 'comment']);
         });
     }
 }

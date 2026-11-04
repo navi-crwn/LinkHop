@@ -464,7 +464,7 @@ class LinkController extends Controller
         $this->authorizeLink($link);
         $validated = $request->validate([
             'qr_image' => 'required|string',
-            'settings' => 'nullable|array',
+            'settings' => ['nullable', 'array', EncryptedNoteLink::rule()],
         ]);
         try {
             $imageData = $validated['qr_image'];

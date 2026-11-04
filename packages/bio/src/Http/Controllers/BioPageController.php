@@ -6,6 +6,7 @@ use App\Helpers\SocialUrlHelper;
 use App\Http\Controllers\Controller;
 use App\Models\AbuseFlag;
 use App\Support\CssValue;
+use App\Support\EncryptedNoteLink;
 use App\Support\ReservedSlugs;
 use Hop\Bio\Contracts\UrlSafety;
 use Hop\Bio\Models\BioClick;
@@ -123,6 +124,12 @@ class BioPageController extends Controller
         if (! empty($data['background_image']) && ! str_starts_with($data['background_image'], '/')
             && ($reason = $safety->rejectionReason($data['background_image']))) {
             $errors['background_image'] = $reason;
+        }
+        // Whatever the field is for (design, CSS, QR settings), it is stored and may be published. A password is hashed.
+        foreach ($data as $field => $value) {
+            if ($field !== 'password' && app(EncryptedNoteLink::class)->holdsKey($value)) {
+                $errors[$field] = app(EncryptedNoteLink::class)->message();
+            }
         }
         if ($errors !== []) {
             throw ValidationException::withMessages($errors);

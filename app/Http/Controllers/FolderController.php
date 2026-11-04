@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
 use App\Models\Folder;
+use App\Support\EncryptedNoteLink;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -26,7 +27,7 @@ class FolderController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:120'],
+            'name' => ['required', 'string', 'max:120', EncryptedNoteLink::rule()],
         ]);
         $folder = $request->user()->folders()->create($data);
         ActivityLog::log('created', 'Folder', $folder->id, "Created folder: {$folder->name}");
@@ -51,7 +52,7 @@ class FolderController extends Controller
             return back()->withErrors(['folder' => 'Default folder cannot be edited.']);
         }
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:120'],
+            'name' => ['required', 'string', 'max:120', EncryptedNoteLink::rule()],
         ]);
         $originalName = $folder->name;
         $folder->update($data);

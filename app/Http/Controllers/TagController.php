@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
 use App\Models\Tag;
+use App\Support\EncryptedNoteLink;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -26,7 +27,7 @@ class TagController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:60'],
+            'name' => ['required', 'string', 'max:60', EncryptedNoteLink::rule()],
         ]);
         $tag = $request->user()->tags()->create($data);
         ActivityLog::log('created', 'Tag', $tag->id, "Created tag: {$tag->name}");
@@ -48,7 +49,7 @@ class TagController extends Controller
     {
         abort_unless($tag->user_id === $request->user()->id, 403);
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:60'],
+            'name' => ['required', 'string', 'max:60', EncryptedNoteLink::rule()],
         ]);
         $originalName = $tag->name;
         $tag->update($data);

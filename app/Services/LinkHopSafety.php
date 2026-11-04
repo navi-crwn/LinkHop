@@ -18,7 +18,7 @@ class LinkHopSafety extends LinkSafety
     /** Refuses the address of an encrypted NoteHop note: its key is in the fragment, and we would store it. */
     public function rejectionReason(?string $url, string $text = '', array $schemes = self::WEB_SCHEMES): ?string
     {
-        if ($this->notes->matches($url)) {
+        if ($this->notes->matches($url) || $this->notes->holdsKey($url) || $this->notes->holdsKey($text)) {
             return $this->notes->message();
         }
 
