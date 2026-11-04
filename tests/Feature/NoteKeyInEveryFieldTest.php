@@ -8,6 +8,7 @@ use Hop\Bio\Models\BioLink;
 use Hop\Bio\Models\BioPage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Schema;
 
 /*
 | The key of an encrypted NoteHop note is refused in every field a person can fill in, not only in the destination:
@@ -42,7 +43,7 @@ function efStored(): array
 {
     $hits = [];
     foreach (['links', 'comments', 'bio_links', 'bio_pages'] as $table) {
-        foreach (DB::table($table)->get() as $row) {
+        foreach (Schema::hasTable($table) ? DB::table($table)->get() : [] as $row) {
             foreach ((array) $row as $column => $value) {
                 if (is_string($value) && str_contains($value, EF_KEY)) {
                     $hits["{$table}.{$column}"] = true;
