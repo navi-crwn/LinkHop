@@ -872,5 +872,18 @@
     "Powered by :app": "Bereitgestellt von :app",
     "New folder": "Neuer Ordner",
     "New tag": "Neuer Tag",
-    "A quote in this row is not closed.": "Ein Anführungszeichen in dieser Zeile wird nicht geschlossen."
+    "A quote in this row is not closed.": "Ein Anführungszeichen in dieser Zeile wird nicht geschlossen.",
+    "Page address": "Seitenadresse",
+    "Your email": "Deine E-Mail",
+    "(so we can follow up)": "(damit wir nachfassen können)",
+    "What is wrong?": "Was ist das Problem?",
+    "Send report": "Meldung senden",
+    "Tell us about scams, phishing, impersonation, malware, or anything else that breaks the rules. A moderator reviews every report.": "Erzähl uns von Betrug, Phishing, Identitätsmissbrauch, Malware oder allem anderen, was gegen die Regeln verstößt. Jede Meldung wird von einem Moderator geprüft.",
+    "To prevent spam, each network can send a few reports per half hour.": "Um Spam zu verhindern, kann jedes Netzwerk alle 30 Minuten nur einige Meldungen senden.",
+    "This page contains adult content intended strictly for viewers aged 18 and older.": "Diese Seite enthält Inhalte für Erwachsene, die ausschließlich für Personen ab 18 Jahren bestimmt sind.",
+    "I am 18+ — Enter": "Ich bin 18+ – Weiter",
+    "Continue": "Weiter",
+    "Enter the password to continue to :url.": "Gib das Passwort ein, um zu :url zu gelangen.",
+    "Enter the password to view this page.": "Gib das Passwort ein, um diese Seite zu sehen.",
+    "Thank you. Your report has been submitted.": "Danke. Deine Meldung wurde übermittelt."
 }

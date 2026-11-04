@@ -872,5 +872,18 @@
     "Powered by :app": "Feito com :app",
     "New folder": "Nova pasta",
     "New tag": "Nova tag",
-    "A quote in this row is not closed.": "Uma aspa nesta linha não foi fechada."
+    "A quote in this row is not closed.": "Uma aspa nesta linha não foi fechada.",
+    "Page address": "Endereço da página",
+    "Your email": "Seu e-mail",
+    "(so we can follow up)": "(para que possamos responder se necessário)",
+    "What is wrong?": "Qual o motivo da denúncia?",
+    "Send report": "Enviar denúncia",
+    "Tell us about scams, phishing, impersonation, malware, or anything else that breaks the rules. A moderator reviews every report.": "Conte-nos sobre fraudes, phishing, vírus ou outras irregularidades. Um moderador examinará sua mensagem.",
+    "To prevent spam, each network can send a few reports per half hour.": "Para prevenir spam, cada conexão de rede pode enviar poucos relatos a cada 30 minutos.",
+    "This page contains adult content intended strictly for viewers aged 18 and older.": "Esta página contém conteúdo adulto destinado estritamente a maiores de 18 anos.",
+    "I am 18+ — Enter": "Tenho 18+ — Entrar",
+    "Continue": "Continuar",
+    "Enter the password to continue to :url.": "Digite a senha para continuar para :url.",
+    "Enter the password to view this page.": "Digite a senha para ver esta página.",
+    "Thank you. Your report has been submitted.": "Obrigado. Sua denúncia foi enviada."
 }

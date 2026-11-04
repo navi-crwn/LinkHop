@@ -872,5 +872,18 @@
     "Powered by :app": "Powered by :app",
     "New folder": "New folder",
     "New tag": "New tag",
-    "A quote in this row is not closed.": "A quote in this row is not closed."
+    "A quote in this row is not closed.": "A quote in this row is not closed.",
+    "Page address": "Page address",
+    "Your email": "Your email",
+    "(so we can follow up)": "(so we can follow up)",
+    "What is wrong?": "What is wrong?",
+    "Send report": "Send report",
+    "Tell us about scams, phishing, impersonation, malware, or anything else that breaks the rules. A moderator reviews every report.": "Tell us about scams, phishing, impersonation, malware, or anything else that breaks the rules. A moderator reviews every report.",
+    "To prevent spam, each network can send a few reports per half hour.": "To prevent spam, each network can send a few reports per half hour.",
+    "This page contains adult content intended strictly for viewers aged 18 and older.": "This page contains adult content intended strictly for viewers aged 18 and older.",
+    "I am 18+ — Enter": "I am 18+ — Enter",
+    "Continue": "Continue",
+    "Enter the password to continue to :url.": "Enter the password to continue to :url.",
+    "Enter the password to view this page.": "Enter the password to view this page.",
+    "Thank you. Your report has been submitted.": "Thank you. Your report has been submitted."
 }
