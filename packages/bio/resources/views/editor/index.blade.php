@@ -572,7 +572,7 @@
                     </a>
                     <div class="min-w-0">
                         <h1 class="truncate text-lg font-semibold" style="color: var(--editor-text);" x-text="bioPage.title || 'Untitled'"></h1>
-                        <a :href="'{{ public_url('b') }}/' + bioPage.slug" target="_blank" class="text-sm text-blue-700 dark:text-blue-400 hover:underline flex items-center gap-1">
+                        <a :href="bioPage.is_published ? '{{ public_url('b') }}/' + bioPage.slug : null" target="_blank" class="text-sm text-blue-700 dark:text-blue-400 hover:underline flex items-center gap-1">
                             <span x-text="'{{ public_host() }}/b/' + bioPage.slug"></span>
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
@@ -656,7 +656,7 @@
     <div class="preview-panel">
         <div class="preview-header">
             <span class="text-sm font-medium editor-text">Live Preview</span>
-            <a :href="'{{ public_url('b') }}/' + bioPage.slug" target="_blank" 
+            <a x-show="bioPage.is_published" :href="bioPage.is_published ? '{{ public_url('b') }}/' + bioPage.slug : null" target="_blank" 
                class="text-xs text-blue-700 dark:text-blue-400 hover:underline flex items-center gap-1">
                 Open in new tab
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

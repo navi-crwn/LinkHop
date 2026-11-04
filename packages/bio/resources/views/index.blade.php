@@ -33,7 +33,11 @@
                                         <span class="chip-amber">Draft</span>
                                     @endunless
                                 </div>
-                                <a href="{{ public_url('b/'.$bioPage->slug) }}" target="_blank" rel="noopener" class="block truncate text-xs text-muted hover:underline">{{ public_host() }}/b/{{ $bioPage->slug }}</a>
+                                @if ($bioPage->is_published)
+                                    <a href="{{ public_url('b/'.$bioPage->slug) }}" target="_blank" rel="noopener" class="block truncate text-xs text-muted hover:underline">{{ public_host() }}/b/{{ $bioPage->slug }}</a>
+                                @else
+                                    <span class="block truncate text-xs text-muted">{{ public_host() }}/b/{{ $bioPage->slug }}</span>
+                                @endif
                             </div>
                         </div>
 
