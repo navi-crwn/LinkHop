@@ -1,5 +1,6 @@
 <?php
 
+use App\Logging\ScrubNoteKeys;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -22,6 +23,7 @@ return [
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
+            'tap' => [ScrubNoteKeys::class],
         ],
         'daily' => [
             'driver' => 'daily',
@@ -29,6 +31,7 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
             'days' => env('LOG_DAILY_DAYS', 14),
             'replace_placeholders' => true,
+            'tap' => [ScrubNoteKeys::class],
         ],
         'slack' => [
             'driver' => 'slack',
@@ -57,6 +60,7 @@ return [
                 'stream' => 'php://stderr',
             ],
             'formatter' => env('LOG_STDERR_FORMATTER'),
+            'tap' => [ScrubNoteKeys::class],
             'processors' => [PsrLogMessageProcessor::class],
         ],
         'syslog' => [
@@ -64,11 +68,13 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
             'facility' => env('LOG_SYSLOG_FACILITY', LOG_USER),
             'replace_placeholders' => true,
+            'tap' => [ScrubNoteKeys::class],
         ],
         'errorlog' => [
             'driver' => 'errorlog',
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
+            'tap' => [ScrubNoteKeys::class],
         ],
         'null' => [
             'driver' => 'monolog',

@@ -197,10 +197,10 @@ if have "$PHP_BIN"; then
   if version_ge "$PHPV" "8.2"; then ok "PHP $PHPV ($PHP_BIN)"; else need "PHP $PHPV is too old (need 8.2 or newer)" "macOS: brew install php   ·   Debian/Ubuntu: https://deb.sury.org   ·   Windows: use WSL"; fi
   MISSING=''
   MODS="$("$PHP_BIN" -m 2>/dev/null)"
-  for e in mbstring openssl pdo tokenizer xml ctype fileinfo curl dom; do printf '%s\n' "$MODS" | grep -qi "^$e\$" || MISSING="$MISSING $e"; done
-  [ -n "$MISSING" ] && need "PHP extensions missing:$MISSING" "Debian/Ubuntu: sudo apt install php-mbstring php-xml php-curl php-sqlite3 php-mysql   ·   macOS (brew) has them"
+  for e in mbstring openssl pdo tokenizer xml ctype fileinfo curl dom intl; do printf '%s\n' "$MODS" | grep -qi "^$e\$" || MISSING="$MISSING $e"; done
+  [ -n "$MISSING" ] && need "PHP extensions missing:$MISSING" "Debian/Ubuntu: sudo apt install php-mbstring php-xml php-curl php-intl php-sqlite3 php-mysql   ·   macOS (brew) has them"
 else
-  need "PHP is not installed" "macOS: brew install php   ·   Debian/Ubuntu: sudo apt install php-cli php-mbstring php-xml php-curl php-sqlite3"
+  need "PHP is not installed" "macOS: brew install php   ·   Debian/Ubuntu: sudo apt install php-cli php-mbstring php-xml php-curl php-intl php-sqlite3"
 fi
 have composer && ok "Composer $(composer_run --version 2>/dev/null | awk '{print $3}')" || need "Composer is not installed" "https://getcomposer.org/download/"
 if have node && have npm; then
