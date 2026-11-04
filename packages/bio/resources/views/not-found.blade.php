@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Not Found - LinkHop</title>
+    <title>{{ __('Page not found') }} - LinkHop</title>
     <meta name="robots" content="noindex, nofollow">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -29,16 +29,16 @@
         </h1>
         <h2 class="text-2xl font-bold text-white mb-3">
             @if(isset($unpublished))
-                Page Not Available
+                {{ __('Page Not Available') }}
             @else
-                Page Not Found
+                {{ __('Page not found') }}
             @endif
         </h2>
         <p class="text-slate-400 mb-8 max-w-md mx-auto">
             @if(isset($unpublished))
-                This bio page is currently not published. The owner may have temporarily disabled it.
+                {{ __('This bio page is currently not published. The owner may have temporarily disabled it.') }}
             @else
-                The bio page <span class="text-indigo-400 font-semibold">{{ $slug ?? 'you requested' }}</span> doesn't exist or may have been removed.
+                {!! __("The bio page :slug doesn't exist or may have been removed.", ['slug' => '<span class="text-indigo-400 font-semibold">'.e($slug ?? '').'</span>']) !!}
             @endif
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
@@ -46,20 +46,20 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                 </svg>
-                Go to Homepage
+                {{ __('Go to Homepage') }}
             </a>
             <a href="{{ url('/register') }}" class="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl transition-colors border border-white/20 inline-flex items-center justify-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                 </svg>
-                Create Your Bio Page
+                {{ __('Create Your Bio Page') }}
             </a>
         </div>
         <div class="mt-12 p-6 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10">
-            <p class="text-slate-300 mb-4">Looking for something specific?</p>
+            <p class="text-slate-300 mb-4">{{ __('Looking for something specific?') }}</p>
             <form action="{{ url('/') }}" method="GET" class="flex gap-2">
-                <input type="text" name="search" placeholder="Search bio pages..." class="flex-1 px-4 py-2 bg-white/10 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-indigo-500">
-                <button aria-label="Search" type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg">
+                <input type="text" name="search" placeholder="{{ __('Search bio pages...') }}" class="flex-1 px-4 py-2 bg-white/10 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-indigo-500">
+                <button aria-label="{{ __('Search') }}" type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
@@ -68,7 +68,7 @@
         </div>
         <div class="mt-8">
             <img src="{{ route('brand.asset', 'linkhop-wordmark-white.svg') }}" alt="LinkHop" class="h-6 mx-auto opacity-50" data-fallback="hide">
-            <p class="text-slate-500 text-sm mt-2">Powered by LinkHop</p>
+            <p class="text-slate-500 text-sm mt-2">{{ __('Powered by :app', ['app' => 'LinkHop']) }}</p>
         </div>
     </div>
 </body>

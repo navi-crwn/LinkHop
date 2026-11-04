@@ -848,7 +848,6 @@
     "Go back": "Kembali",
     "Oops! Something went wrong": "Ups! Terjadi kesalahan",
     "We're sorry, but we encountered an unexpected error.": "Maaf, terjadi kesalahan yang tidak terduga.",
-    "Our team has been notified and we're working on fixing this issue.": "Tim kami sudah diberi tahu dan sedang memperbaikinya.",
     "Go to homepage": "Ke beranda",
     "Need help? Contact us at": "Butuh bantuan? Hubungi kami di",
     "Link expired": "Tautan kedaluwarsa",
@@ -861,5 +860,14 @@
     "Contact the person who shared this link": "Hubungi orang yang membagikan tautan ini",
     "Create your own short links for free": "Buat tautan pendekmu sendiri secara gratis",
     "Go to dashboard": "Ke dasbor",
-    "Code example": "Contoh kode"
+    "Code example": "Contoh kode",
+    "Page Not Available": "Halaman tidak tersedia",
+    "This bio page is currently not published. The owner may have temporarily disabled it.": "Halaman bio ini sedang tidak dipublikasikan. Pemiliknya mungkin menonaktifkannya sementara.",
+    "The bio page :slug doesn't exist or may have been removed.": "Halaman bio :slug tidak ada atau mungkin sudah dihapus.",
+    "Go to Homepage": "Ke beranda",
+    "Create Your Bio Page": "Buat halaman bio kamu",
+    "Looking for something specific?": "Mencari sesuatu yang spesifik?",
+    "Search bio pages...": "Cari halaman bio...",
+    "Try again in a moment. If it keeps happening, send a message to the address below.": "Coba lagi sebentar lagi. Jika masih terjadi, kirim pesan ke alamat di bawah.",
+    "Powered by :app": "Didukung oleh :app"
 }

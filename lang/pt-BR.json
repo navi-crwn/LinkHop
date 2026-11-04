@@ -848,7 +848,6 @@
     "Go back": "Voltar",
     "Oops! Something went wrong": "Ops! Algo deu errado",
     "We're sorry, but we encountered an unexpected error.": "Sentimos muito, mas ocorreu um erro inesperado.",
-    "Our team has been notified and we're working on fixing this issue.": "Nossa equipe foi avisada e está trabalhando para corrigir o problema.",
     "Go to homepage": "Ir para a página inicial",
     "Need help? Contact us at": "Precisa de ajuda? Fale com a gente em",
     "Link expired": "Link expirado",
@@ -861,5 +860,14 @@
     "Contact the person who shared this link": "Fale com quem compartilhou este link",
     "Create your own short links for free": "Crie seus próprios links curtos de graça",
     "Go to dashboard": "Ir para o painel",
-    "Code example": "Exemplo de código"
+    "Code example": "Exemplo de código",
+    "Page Not Available": "Página indisponível",
+    "This bio page is currently not published. The owner may have temporarily disabled it.": "Esta página de bio não está publicada no momento. O dono pode tê-la desativado temporariamente.",
+    "The bio page :slug doesn't exist or may have been removed.": "A página de bio :slug não existe ou pode ter sido removida.",
+    "Go to Homepage": "Ir ao início",
+    "Create Your Bio Page": "Crie sua página de bio",
+    "Looking for something specific?": "Procurando algo específico?",
+    "Search bio pages...": "Buscar páginas de bio...",
+    "Try again in a moment. If it keeps happening, send a message to the address below.": "Tente de novo em instantes. Se continuar acontecendo, envie uma mensagem para o endereço abaixo.",
+    "Powered by :app": "Feito com :app"
 }
