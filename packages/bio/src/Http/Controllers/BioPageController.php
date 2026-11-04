@@ -60,7 +60,7 @@ class BioPageController extends Controller
             'string',
             'max:20',
             'regex:/^[a-z0-9]+$/',
-            fn ($attribute, $value, $fail) => $value !== $current?->slug && strlen((string) $value) < $min
+            fn ($attribute, $value, $fail) => is_string($value) && $value !== $current?->slug && strlen($value) < $min
                 ? $fail("The slug must be at least {$min} letters or numbers.") : null,
             Rule::unique('bio_pages', 'slug')->ignore($current?->id),
             // Reserved words are refused for new slugs; an existing slug is left alone.
@@ -141,7 +141,9 @@ class BioPageController extends Controller
         if (auth()->user()->bioPages()->count() >= self::MAX_PAGES) {
             return back()->withErrors(['slug' => 'You have reached the maximum limit of '.self::MAX_PAGES.' bio pages.']);
         }
-        $request->merge(['slug' => strtolower($request->slug)]);
+        if (is_string($request->slug)) {
+            $request->merge(['slug' => strtolower($request->slug)]);
+        }
         $validated = $request->validate([
             'slug' => $this->slugRules(),
             'title' => 'required|string|max:'.BioPage::TITLE_MAX,
@@ -188,7 +190,7 @@ class BioPageController extends Controller
                 'conflict' => true,
             ], 409);
         }
-        if ($request->has('slug')) {
+        if (is_string($request->slug)) {
             $request->merge(['slug' => strtolower($request->slug)]);
         }
         $validated = $request->validate([

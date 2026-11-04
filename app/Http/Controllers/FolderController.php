@@ -80,7 +80,7 @@ class FolderController extends Controller
     public function manage(Request $request, Folder $folder): View
     {
         abort_unless($folder->user_id === $request->user()->id, 403);
-        $search = $request->string('q')->trim()->toString();
+        $search = trim($this->textInput($request, 'q'));
         $linksQuery = $folder->links()->with(['tags', 'folder'])->orderByDesc('created_at');
         if ($search) {
             $linksQuery->where(function ($query) use ($search) {

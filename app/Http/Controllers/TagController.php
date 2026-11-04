@@ -75,7 +75,7 @@ class TagController extends Controller
     public function manage(Request $request, Tag $tag): View
     {
         abort_unless($tag->user_id === $request->user()->id, 403);
-        $search = $request->string('q')->trim()->toString();
+        $search = trim($this->textInput($request, 'q'));
         $linksQuery = $tag->links()->with(['folder', 'tags'])->orderByDesc('links.created_at');
         if ($search) {
             $linksQuery->where(function ($query) use ($search) {
