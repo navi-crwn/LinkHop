@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixes
+- A destination with a login in it (`https://paypal.com@evil.example/`) or on a private address (loopback, private and link-local ranges, cloud metadata, `localhost`, `*.local` and the like, also written as `0x7f000001` or `127.1`) is refused everywhere a destination is taken: forms, API, `shorten-web`, CSV import, routing and fallback addresses, bio blocks. Webhooks already refused both. Links that already exist keep working until edited.
+- A CSV row with a quote that is never closed is an error in the preview, not one long destination marked Ready.
 - `composer.json` pins `hop/ui` to the commit in the lock (`6b4210c`, same tree as before); the old pin was a commit outside its main history.
 - `robots.txt` names this app's own sitemap (`link.hel.ink/sitemap.xml`); the hub's host has none.
 - `scripts/check-string-casts.sh` also finds `$request->string()`, which fails on an array the same way as a cast.

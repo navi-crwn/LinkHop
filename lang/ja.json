@@ -871,5 +871,6 @@
     "Try again in a moment. If it keeps happening, send a message to the address below.": "しばらくしてからもう一度お試しください。それでも続く場合は、下のアドレスまでご連絡ください。",
     "Powered by :app": ":app 提供",
     "New folder": "新しいフォルダ",
-    "New tag": "新しいタグ"
+    "New tag": "新しいタグ",
+    "A quote in this row is not closed.": "この行の引用符が閉じられていません。"
 }

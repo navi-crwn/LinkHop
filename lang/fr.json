@@ -871,5 +871,6 @@
     "Try again in a moment. If it keeps happening, send a message to the address below.": "Réessayez dans un instant. Si le problème persiste, écrivez à l’adresse ci-dessous.",
     "Powered by :app": "Propulsé par :app",
     "New folder": "Nouveau dossier",
-    "New tag": "Nouvelle étiquette"
+    "New tag": "Nouvelle étiquette",
+    "A quote in this row is not closed.": "Un guillemet de cette ligne n'est pas fermé."
 }

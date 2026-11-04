@@ -871,5 +871,6 @@
     "Try again in a moment. If it keeps happening, send a message to the address below.": "Versuche es gleich noch einmal. Wenn es weiterhin passiert, schreib an die Adresse unten.",
     "Powered by :app": "Bereitgestellt von :app",
     "New folder": "Neuer Ordner",
-    "New tag": "Neuer Tag"
+    "New tag": "Neuer Tag",
+    "A quote in this row is not closed.": "Ein Anführungszeichen in dieser Zeile wird nicht geschlossen."
 }

@@ -871,5 +871,6 @@
     "Try again in a moment. If it keeps happening, send a message to the address below.": "Tente de novo em instantes. Se continuar acontecendo, envie uma mensagem para o endereço abaixo.",
     "Powered by :app": "Feito com :app",
     "New folder": "Nova pasta",
-    "New tag": "Nova tag"
+    "New tag": "Nova tag",
+    "A quote in this row is not closed.": "Uma aspa nesta linha não foi fechada."
 }
