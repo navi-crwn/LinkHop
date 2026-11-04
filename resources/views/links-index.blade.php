@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">LinkHop - {{ __('My links') }}</x-slot>
+    <x-slot name="pageTitle">{{ __('My links') }}</x-slot>
     <div x-data="linksManager()" class="space-y-4">
         <x-page-header title="My links" subtitle="{{ number_format($links->total()) }} short links" />
 
@@ -186,19 +186,28 @@
                 },
                 async bulkDelete() {
                     if (!confirm(`Delete ${this.selectedLinks.length} links permanently?`)) return;
+                    let failed = 0;
                     for (const id of this.selectedLinks) {
                         try {
-                            await fetch(`/links/${id}`, {
+                            const response = await fetch(`/links/${id}`, {
                                 method: 'DELETE',
                                 headers: {
                                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                     'Accept': 'application/json'
                                 }
                             });
-                            this.deletedLinks.push(parseInt(id));
+                            if (response.ok) {
+                                this.deletedLinks.push(parseInt(id));
+                            } else {
+                                failed++;
+                            }
                         } catch (e) {
                             console.error('Delete error for', id, e);
+                            failed++;
                         }
+                    }
+                    if (failed > 0) {
+                        alert(@js(__('Could not delete :count link(s).')).replace(':count', failed));
                     }
                     this.selectedLinks = [];
                     this.selectAll = false;

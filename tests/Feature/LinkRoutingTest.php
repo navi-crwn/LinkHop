@@ -136,16 +136,21 @@ test('the country is not looked up when the cheaper conditions already fail, or 
 });
 
 test('a rule is cheap: loading the link and logging the click are the only queries it adds', function () {
+    // saveQuietly only issues its UPDATE when last_clicked_at changed, i.e. when the clock moved to another second
+    // since the warm-up visit. Freeze the clock, then step one second, so both measured visits always do the update.
+    $this->travelTo(now()->startOfSecond());
     $link = rtLink(['routing_rules' => [rtRule(['device' => 'mobile', 'url' => 'https://m.example.com/'])]]);
     rtVisit($link->slug, RT_WINDOWS_CHROME); // warms the link cache
     $without = rtLink();
     rtVisit($without->slug, RT_WINDOWS_CHROME);
+    $this->travelTo(now()->addSecond());
     DB::enableQueryLog();
     rtVisit($link->slug, RT_IPHONE)->assertRedirect('https://m.example.com/');
     $withRules = count(DB::getQueryLog());
     DB::flushQueryLog();
     rtVisit($without->slug, RT_IPHONE);
     $plain = count(DB::getQueryLog());
+    $this->travelBack();
     expect($withRules)->toBe($plain);
 });
 

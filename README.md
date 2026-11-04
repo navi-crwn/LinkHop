@@ -19,7 +19,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Laravel-12-FF2D20?style=flat-square&logo=laravel&logoColor=white" alt="Laravel 12"/>
-  <img src="https://img.shields.io/badge/PHP-8.3+-777BB4?style=flat-square&logo=php&logoColor=white" alt="PHP 8.3+"/>
+  <img src="https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat-square&logo=php&logoColor=white" alt="PHP 8.2+"/>
   <img src="https://img.shields.io/badge/Tailwind-4.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS"/>
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="MIT License"/>
   <img src="https://img.shields.io/github/stars/navi-crwn/LinkHop?style=flat-square&color=yellow" alt="Stars"/>
@@ -100,16 +100,20 @@ On your own development install, `php artisan db:seed --class=ExampleBioSeeder` 
 - **🙋 No account needed.** Anyone can shorten a link. Guest links are deleted after 14 days without a click, and after 30 days at most; sign up to keep them and see their stats.
 - **🪪 Bio pages live in BioHop.** On hel.ink, pages at `hel.ink/b/you` (blocks, 20 themes, animations, brand icons, private pages) are made in [BioHop](https://github.com/navi-crwn/BioHop). A single-server install can still turn on the bundled bio package (`BIO_ENABLED=true`, see the FAQ).
 - **📊 Analytics.** Clicks, unique visitors, countries and cities, devices, browsers and referrers, in real time, with CSV export.
+- **🧭 Routing & A/B split.** Up to 20 rules that send visitors elsewhere by country, language, device, operating system or browser, an A/B split of 2 to 5 addresses with weights, and a campaign tags (UTM) builder.
+- **📲 Open in the app.** On iOS and Android a link can try the installed app first (deep links), with the App Store, Google Play or the destination as the fallback.
+- **⚠️ Content warning.** A link can be marked sensitive or adult; visitors see a notice before they continue.
+- **🩺 Destination monitor & link check.** Once a day LinkHop checks that each live destination still answers and emails the owner after repeated failures (it can be switched off in Settings). `/check` shows where a short link leads without opening it.
 - **🗂️ Folders & tags.** Sort, tag and search your links, act on many at once, and leave comments on a link.
-- **🔌 API & ShareX.** A REST API with Bearer tokens, plus a ready-made ShareX config in Settings → API.
+- **🔌 API, webhooks & ShareX.** A REST API with Bearer tokens and idempotency keys (safe to retry), signed webhooks for link events (`link.created`, `link.updated`, `link.deleted`, `link.limit_reached`, `link.expired`), plus a ready-made ShareX config in Settings → API.
 - **🔐 Safe sign-in.** Email and password or Google login, two-factor codes (TOTP) and a login history.
 - **🛡️ Abuse protection.** Rate limits and quotas, a domain blacklist, proxy/VPN checks, a report form, and an hourly scan for phishing, scams and other harmful links, with optional Google Safe Browsing and URLhaus lookups.
 - **🏛️ HOP control center.** Moderation and settings (users, links, bio pages, abuse reports, IP bans, the domain blacklist, SEO, the job queue) live in Imperium, the HOP control center, through the signed admin API (`/api/hop/*`); `/admin` sends admins there (`HOP_CONTROL_URL`). Self-hosters without it can call the API directly or use the artisan commands (`abuse:scan`, `hop:bootstrap`, `queue:heartbeat`, …).
-- **🏠 Self-hostable.** Laravel 12 on your own server with MySQL, PostgreSQL or SQLite.
+- **🏠 Self-hostable.** Laravel 12 on your own server with MySQL, MariaDB or SQLite.
 
 ## Install
 
-**You need:** PHP 8.3+, Composer, Node.js 18+, a database (MySQL 8.0+, MariaDB or SQLite) and the [hub](https://github.com/navi-crwn/HEL.ink) running against the same database: the hub owns the accounts (`users`, `api_tokens`, …) and signs people in here. Redis is optional, for caching.
+**You need:** PHP 8.2+ with the `intl` extension (and `gd` or `imagick` for PNG QR codes), Composer, Node.js 20.19+, a database (MySQL 8.0+, MariaDB or SQLite) and the [hub](https://github.com/navi-crwn/HEL.ink) running against the same database: the hub owns the accounts (`users`, `api_tokens`, …) and signs people in here. Redis is optional, for caching.
 
 ```bash
 # 1. Get the code (the shared packages hop/auth, hop/ui and hop/safety come from GitHub through Composer)
@@ -163,7 +167,7 @@ Google sign-in, two-factor and password reset are the hub's; there is nothing to
 
 **Your own domains:** `APP_URL` is the dashboard and the API (`link.hel.ink`); `PUBLIC_URL` is where short links, QR codes, the sitemap and bio pages are reached (`hel.ink`). On a single-host install set both to the same value.
 
-**Behind Cloudflare:** LinkHop sends a strict, report-only Content Security Policy that only trusts scripts carrying the page's nonce, and logs what it would block to `storage/logs/csp-*.log`. Cloudflare's **Email Address Obfuscation** (Scrape Shield) and **Rocket Loader** (Speed → Optimization) inject their own scripts from `/cdn-cgi/scripts/.../cloudflare-static/` without that nonce, so they fill the log. Either turn them off in the Cloudflare dashboard (recommended: LinkHop doesn't need them, and it keeps the policy ready to enforce), or skip them only where needed with a Cloudflare Configuration Rule. Allowing them in the policy doesn't work with a nonce policy (`'strict-dynamic'` ignores host and `'self'` allowlists); it would mean dropping the nonce, which weakens the policy for everything else.
+**Behind Cloudflare:** LinkHop sends an enforced Content Security Policy (not report-only). Scripts must carry the page's per-request nonce (`'strict-dynamic'`), and violations are reported to `/csp-report` and logged to `storage/logs/csp-*.log`. Cloudflare's **Email Address Obfuscation** (Scrape Shield) and **Rocket Loader** (Speed → Optimization) inject their own scripts from `/cdn-cgi/scripts/.../cloudflare-static/` without that nonce, so the browser blocks them and they fill the log. Turn them off in the Cloudflare dashboard; LinkHop doesn't need them. Allowing them in the policy doesn't work with a nonce policy (`'strict-dynamic'` ignores host and `'self'` allowlists); it would mean dropping the nonce, which weakens the policy for everything else. The policy still allows `'unsafe-eval'` (Alpine.js), so it controls where scripts come from, not what an injected script may run.
 
 **Production:** keep a queue worker running.
 ```bash
@@ -274,13 +278,13 @@ No. The key of an encrypted note is the part of its link after the `#`, and a sh
 
 | Layer | Technologies |
 |---|---|
-| **Backend** | Laravel 12, PHP 8.2+, MySQL / PostgreSQL / SQLite |
+| **Backend** | Laravel 12, PHP 8.2+, MySQL / MariaDB / SQLite |
 | **Frontend** | Tailwind CSS 4, Alpine.js 3, Vite 7 |
 | **Charts & maps** | Chart.js 4, Leaflet 1.9 |
 | **Icons** | Heroicons, Simple Icons (150+ brands) |
 | **Accounts** | HOP ID at the hub; `hop/auth` (SSO client, `hop.auth` and `hop.token` middleware) |
 | **Shared packages** | `hop/auth`, `hop/ui` (app switcher), `hop/safety` (URL and content safety), `hop/bio` |
-| **Services** | Cloudflare Turnstile (abuse report form), IP-API, FlagCDN |
+| **Services** | Cloudflare Turnstile (guest form and abuse report), OpenStreetMap tiles (analytics map), optional IP lookup providers (IP-API and others) or a local MaxMind file. No CDN: the libraries are bundled or live in `public/vendor`. |
 
 | Folder | What's in it |
 |---|---|

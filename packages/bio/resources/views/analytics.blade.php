@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">LinkHop - {{ $bioPage->title }} analytics</x-slot>
+    <x-slot name="pageTitle">{{ __('Analytics') }}: {{ $bioPage->title }}</x-slot>
     <x-page-header :title="$bioPage->title" subtitle="hel.ink/b/{{ $bioPage->slug }} · last {{ $days }} days">
         <x-slot name="actions">
             <nav class="glass-inset flex rounded-xl p-0.5" aria-label="Period">
@@ -21,7 +21,7 @@
         <div class="stat"><p class="stat-label">Active links</p><p class="stat-value">{{ number_format($stats['activeLinks']) }}</p></div>
     </div>
 
-    <div class="grid gap-3 lg:grid-cols-3">
+    <div class="grid grid-cols-1 gap-3 lg:grid-cols-3">
         <section class="glass-card lg:col-span-2">
             <h2 class="section-title">Clicks over time</h2>
             <div class="mt-3 h-56"><canvas id="viewsChart"></canvas></div>
@@ -32,7 +32,7 @@
         </section>
     </div>
 
-    <div class="grid items-start gap-3 lg:grid-cols-3">
+    <div class="grid grid-cols-1 items-start gap-3 lg:grid-cols-3">
         <section class="glass-card">
             <h2 class="section-title">Top links</h2>
             <x-analytics.rank-list class="mt-3" :items="$stats['topLinks']->map(fn ($l) => ['label' => trim(($l->icon ? $l->icon.' ' : '').$l->title), 'value' => (int) $l->click_count, 'sub' => $l->url])" empty="No link clicks yet." />

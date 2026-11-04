@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Report abuse - LinkHop</title>
+        <title>{{ __('Report abuse') }} · LinkHop</title>
         <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png">
         <x-hop::fonts />
         @vite(['resources/css/app.css', 'resources/js/app.js'])

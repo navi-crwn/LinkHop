@@ -20,14 +20,21 @@ class SetLocale
 
     public function handle(Request $request, Closure $next): Response
     {
-        $requested = Locales::resolve((string) $request->query('lang', ''));
-        $locale = $requested ?? Locales::normalize((string) $request->cookie(self::COOKIE, Locales::DEFAULT));
-        app()->setLocale($locale);
+        $requested = self::apply($request);
         $response = $next($request);
         if ($requested !== null) {
             $response->headers->setCookie(cookie()->forever(self::COOKIE, $requested, null, null, $request->isSecure(), false, false, 'lax'));
         }
 
         return $response;
+    }
+
+    /** Sets the page language from the request and returns the one ?lang= asked for, if any. Needs no database. */
+    public static function apply(Request $request): ?string
+    {
+        $requested = Locales::resolve(is_string($request->query('lang')) ? $request->query('lang') : '');
+        app()->setLocale($requested ?? Locales::normalize((string) $request->cookie(self::COOKIE, Locales::DEFAULT)));
+
+        return $requested;
     }
 }

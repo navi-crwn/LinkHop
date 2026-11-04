@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">LinkHop - Analytics</x-slot>
+    <x-slot name="pageTitle">{{ __('Analytics') }}</x-slot>
     @php
         $topCountryCode = $countries->keys()->first();
         $topDevice = collect($devices)->sortDesc()->keys()->first();
@@ -126,7 +126,7 @@
                 <h2 id="heat-title" class="section-title">{{ __('Busiest hours') }}</h2>
                 <span class="text-[11px] text-muted">{{ __('Last 30 days, in UTC') }}</span>
             </div>
-            <div class="max-w-full overflow-x-auto">
+            <div class="max-w-full overflow-x-auto" tabindex="0" role="region" aria-labelledby="heat-title">
                 <div class="grid min-w-[560px] gap-[3px]" style="grid-template-columns: 2.5rem repeat(24, minmax(0, 1fr))" role="img" aria-label="{{ __('Clicks by weekday and hour') }}">
                     @foreach ($heatmap as $d => $row)
                         <span class="self-center text-[10px] text-muted">{{ $days[$d] }}</span>

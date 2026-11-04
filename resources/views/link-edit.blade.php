@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">LinkHop - Edit /{{ $link->slug }}</x-slot>
+    <x-slot name="pageTitle">{{ __('Edit') }} /{{ $link->slug }}</x-slot>
     <x-page-header title="Edit link" subtitle="{{ $link->short_url }}">
         <x-slot name="actions">
             <a href="{{ route('links.show', $link) }}" class="btn-ghost btn-sm">Analytics</a>

@@ -4,7 +4,11 @@
 User-agent: *
 Allow: /
 Allow: /about
-Allow: /products
+Allow: /features
+Allow: /docs
+Allow: /status
+Allow: /changelog
+Allow: /check
 Allow: /faq
 Allow: /help
 Allow: /privacy
@@ -15,6 +19,12 @@ Allow: /b/
 # Protect private areas
 Disallow: /admin
 Disallow: /dashboard
+Disallow: /links
+Disallow: /bio
+Disallow: /folders
+Disallow: /tags
+Disallow: /analytics
+Disallow: /api-docs
 Disallow: /api/
 Disallow: /login
 Disallow: /register

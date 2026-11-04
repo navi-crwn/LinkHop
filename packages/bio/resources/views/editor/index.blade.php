@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Edit Bio - ' . $bioPage->title)
+@section('title', __('Edit bio page').': '.$bioPage->title)
 @section('container-width', 'max-w-full')
 @push('styles')
 <style>
@@ -146,6 +146,9 @@
         background: var(--editor-card-bg);
         border-bottom: 1px solid var(--editor-border);
         overflow-x: auto;
+        /* A tab cut off by the edge fades out, so the strip reads as scrollable. The padding keeps the first and last tab clear of the fade. */
+        -webkit-mask-image: linear-gradient(to right, transparent, #000 16px, #000 calc(100% - 16px), transparent);
+        mask-image: linear-gradient(to right, transparent, #000 16px, #000 calc(100% - 16px), transparent);
         position: sticky;
         top: 0;
         z-index: 40;
@@ -560,15 +563,15 @@
     <div class="editor-container" autocomplete="off">
         <div class="editor-panel">
             <div class="border-b px-6 py-4 sticky top-0 z-40" style="background: var(--editor-card-bg); border-color: var(--editor-border);">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div class="flex min-w-0 items-center gap-4">
                     <a href="{{ route('bio.index') }}" @click.prevent="handleNavigation('{{ route('bio.index') }}')" class="hover:opacity-70" style="color: var(--editor-text-muted);" aria-label="Back to bio pages">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                         </svg>
                     </a>
-                    <div>
-                        <h1 class="text-lg font-semibold" style="color: var(--editor-text);" x-text="bioPage.title || 'Untitled'"></h1>
+                    <div class="min-w-0">
+                        <h1 class="truncate text-lg font-semibold" style="color: var(--editor-text);" x-text="bioPage.title || 'Untitled'"></h1>
                         <a :href="'{{ public_url('b') }}/' + bioPage.slug" target="_blank" class="text-sm text-blue-700 dark:text-blue-400 hover:underline flex items-center gap-1">
                             <span x-text="'{{ public_host() }}/b/' + bioPage.slug"></span>
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -577,12 +580,12 @@
                         </a>
                     </div>
                 </div>
-                <div class="flex items-center gap-3">
+                <div class="flex flex-wrap items-center gap-3">
                     <span x-show="hasUnsavedChanges" class="text-xs text-amber-700 dark:text-amber-400 flex items-center gap-1">
                         <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>
                         Unsaved
                     </span>
-                    <button type="button" data-call="toggleTheme" id="theme-toggle-button" class="p-2 rounded-lg editor-text-muted hover:editor-text hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" title="Toggle theme" aria-label="Toggle theme">
+                    <button type="button" data-call="toggleTheme" id="editor-theme-toggle-button" class="p-2 rounded-lg editor-text-muted hover:editor-text hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" title="Toggle theme" aria-label="Toggle theme">
                         <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
                         </svg>

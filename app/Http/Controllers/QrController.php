@@ -13,6 +13,12 @@ class QrController extends Controller
 {
     public function __invoke(Request $request)
     {
+        // ?data[]=x and similar arrays are a bad request, not a server error
+        foreach (['data', 'size', 'color', 'bgcolor', 'logo'] as $name) {
+            if (is_array($request->input($name))) {
+                return response('Invalid '.$name.' parameter', 400);
+            }
+        }
         $data = $request->input('data');
         $size = (int) $request->input('size', 300);
         $size = max(50, min($size, 1000)); // Clamp to prevent memory-exhaustion DoS

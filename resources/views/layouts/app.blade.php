@@ -4,7 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>{{ trim(($pageTitle ?? '') ?: config('app.name').' - Your Destination Is A Hop Away') }}</title>
+        @php $docTitle = trim((string) ($pageTitle ?? '')) ?: trim($__env->yieldContent('title')); @endphp
+        <title>{{ $docTitle !== '' ? $docTitle.' · LinkHop' : config('app.name').' · '.__('Your destination is a hop away') }}</title>
         <meta name="description" content="Manage every short link, analytics card, and quota from the LinkHop workspace.">
         <link rel="icon" href="{{ route('brand.favicon') }}">
         {{-- Apply the saved theme before first paint (no light flash in dark mode) --}}
@@ -43,7 +44,7 @@
                     ? \App\Models\AbuseReport::where('status', 'open')->count()
                         + \App\Models\AbuseFlag::where('status', 'open')->count()
                     : 0;
-                $sectionTitle = trim(\Illuminate\Support\Str::after($pageTitle ?? '', ' - ')) ?: 'LinkHop';
+                $sectionTitle = $docTitle !== '' ? $docTitle : 'LinkHop';
             @endphp
             <div x-data="{ nav: false }" @keydown.escape.window="nav = false" class="lg:pl-68">
                 {{-- Sidebar: floating glass panel on desktop, drawer on mobile --}}

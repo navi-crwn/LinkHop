@@ -23,6 +23,7 @@ use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\WebhookController;
 use App\Support\CspReport;
+use Hop\Auth\Http\Controllers\EventController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -138,7 +139,8 @@ Route::middleware(['hub.signed', 'throttle:60,1,internal'])->prefix('internal')-
     Route::get('/accounts/{user}/summary', [AccountDataController::class, 'summary'])->whereNumber('user')->name('accounts.summary');
     Route::delete('/accounts/{user}', [AccountDataController::class, 'purge'])->whereNumber('user')->name('accounts.purge');
 });
-Route::post('/hop/events', [AccountDataController::class, 'events'])
+// Account events from the hub (session.revoked, account.status, account.deleted): hop/auth's controller behind this app's own signature check; handlers in AppServiceProvider.
+Route::post('/hop/events', EventController::class)
     ->middleware(['hub.signed', 'throttle:60,1,internal'])
     ->name('hop.events');
 // CSP violation reports (report-only policy). Logged to storage/logs/csp-*.log.
@@ -163,11 +165,13 @@ if (env('E2E_HOOKS') === true && ! app()->isProduction()) {
 }
 // Root redirect fallback for hel.ink/l/ and /l when routed here (U-05).
 Route::match(['GET', 'HEAD'], '/l', function (Request $request) {
-    return redirect()->away('https://link.hel.ink/'.($request->getQueryString() ? '?'.$request->getQueryString() : ''), 301);
+    return redirect()->away(rtrim((string) config('app.url'), '/').'/'.($request->getQueryString() ? '?'.$request->getQueryString() : ''), 301);
 });
 Route::match(['GET', 'HEAD'], '/l/', function (Request $request) {
-    return redirect()->away('https://link.hel.ink/'.($request->getQueryString() ? '?'.$request->getQueryString() : ''), 301);
+    return redirect()->away(rtrim((string) config('app.url'), '/').'/'.($request->getQueryString() ? '?'.$request->getQueryString() : ''), 301);
 });
+// Health check for the watchdog: a plain answer (the framework's default /up page loads a CDN script and font).
+Route::get('/up', fn () => response('ok', 200, ['Content-Type' => 'text/plain; charset=UTF-8', 'Cache-Control' => 'no-store']));
 
 // Short links: hel.ink/l/{slug}. GET opens the link, POST submits a link password.
 Route::middleware('ip.ban')->match(['GET', 'POST'], '/l/{slug}', RedirectController::class)

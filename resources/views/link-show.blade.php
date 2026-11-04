@@ -1,6 +1,6 @@
 @php use Illuminate\Support\Str; use Illuminate\Support\Facades\Storage; @endphp
 <x-app-layout>
-    <x-slot name="pageTitle">LinkHop - /{{ $link->slug }} analytics</x-slot>
+    <x-slot name="pageTitle">{{ __('Analytics') }}: /{{ $link->slug }}</x-slot>
     <x-page-header title="/{{ $link->slug }}" subtitle="Analytics for the last {{ $rangeInDays }} days">
         <x-slot name="actions">
             <a href="{{ route('links.index') }}" class="btn-ghost btn-sm">My links</a>
@@ -10,7 +10,7 @@
 
     <x-flash />
 
-    <div class="grid gap-3 lg:grid-cols-4">
+    <div class="grid grid-cols-1 gap-3 lg:grid-cols-4">
         <section class="glass-card flex items-center gap-4 lg:col-span-3">
             <div class="min-w-0 flex-1">
                 <p class="eyebrow">Short link</p>
@@ -47,7 +47,7 @@
 
     <x-ab-results :link="$link" :card="true" />
 
-    <div class="grid items-start gap-3 lg:grid-cols-3">
+    <div class="grid grid-cols-1 items-start gap-3 lg:grid-cols-3">
         <section class="glass-card min-w-0 lg:col-span-2">
             <h2 class="section-title">Daily clicks</h2>
             <div class="relative mt-3 h-52"><canvas id="clickChart"></canvas></div>

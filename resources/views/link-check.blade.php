@@ -1,4 +1,4 @@
-<x-public-layout title="Check a link - LinkHop">
+<x-public-layout :title="__('Check a link').' · LinkHop'">
     @php
         $card = 'rounded-3xl border border-white/10 bg-white/4 backdrop-blur-xl';
         $host = public_host();

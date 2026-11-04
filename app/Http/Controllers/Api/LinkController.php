@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Link;
 use App\Services\LinkService;
+use App\Services\PinnedFetch;
 use App\Services\QuotaService;
 use App\Support\EncryptedNoteLink;
+use App\Support\LinkRouting;
 use GuzzleHttp\Client;
 use Hop\Bio\Contracts\ShortlinkCreator;
 use Hop\Safety\LinkSafety;
@@ -109,14 +111,10 @@ class LinkController extends Controller
         return response()->json($link, $link['reused'] ? 200 : 201);
     }
 
+    /** The same reading of a typed destination as the web forms (LinkRouting::address): "example.com:8080/x" is a host and a port, not a scheme. */
     private function normalizeUrl(string $url): string
     {
-        $url = trim($url);
-        if (! preg_match('/^[a-z][a-z0-9+.\-]*:/i', $url)) {
-            $url = 'https://'.ltrim($url, '/');
-        }
-
-        return $url;
+        return LinkRouting::address($url);
     }
 
     public function fetchTitle(Request $request)
@@ -128,7 +126,7 @@ class LinkController extends Controller
             return response()->json(['title' => null], 422);
         }
         try {
-            $client = new Client(['timeout' => 5, 'verify' => true, 'allow_redirects' => false]);
+            $client = new Client(['timeout' => 5, 'curl' => PinnedFetch::curl($url), 'verify' => true, 'allow_redirects' => false]);
             $response = $client->get($url, [
                 'headers' => [
                     'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',

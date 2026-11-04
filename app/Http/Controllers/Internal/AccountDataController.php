@@ -60,21 +60,4 @@ class AccountDataController extends Controller
 
         return response()->json(['ok' => true, 'app' => 'linkhop', 'data' => $stats]);
     }
-
-    /** POST /hop/events: handle account lifecycle events from the hub. */
-    public function events(Request $request, UserDeletion $deletion): JsonResponse
-    {
-        $type = (string) $request->input('type', '');
-        $data = (array) $request->input('data', []);
-        if ($type === 'account.deleted') {
-            $userId = (int) ($data['sub'] ?? $data['hop_id'] ?? 0);
-            $deletion->purgeById(
-                $userId,
-                (array) ($data['qr_codes'] ?? []),
-                (array) ($data['bio_uploads'] ?? []),
-            );
-        }
-
-        return response()->json(['ok' => true]);
-    }
 }
