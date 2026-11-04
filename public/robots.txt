@@ -40,4 +40,4 @@ Disallow: /sanctum/
 Disallow: /_debugbar/
 
 # Sitemap
-Sitemap: https://hel.ink/sitemap.xml
+Sitemap: https://link.hel.ink/sitemap.xml
