@@ -171,38 +171,6 @@ class NotificationService
     }
 
     /**
-     * Send critical exception notification to admin
-     */
-    public function notifyCriticalException(\Throwable $exception, array $context = []): void
-    {
-        try {
-            $data = [
-                'message' => $exception->getMessage(),
-                'file' => $exception->getFile(),
-                'line' => $exception->getLine(),
-                'trace' => $exception->getTraceAsString(),
-                'context' => $context,
-                'url' => request()->fullUrl(),
-                'method' => request()->method(),
-                'ip' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'timestamp' => now()->toDateTimeString(),
-            ];
-            Mail::to(config('mail.addresses.admin'))
-                ->send(new AdminNotification(
-                    'critical_exception',
-                    '🚨 Critical Exception: '.class_basename($exception),
-                    $data
-                ));
-        } catch (\Exception $e) {
-            Log::error('Failed to send critical exception notification', [
-                'error' => $e->getMessage(),
-                'original_exception' => $exception->getMessage(),
-            ]);
-        }
-    }
-
-    /**
      * Send feature request notification
      */
     public function notifyFeatureRequest(array $data): void
