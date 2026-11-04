@@ -123,6 +123,7 @@ class ShortenController extends Controller
             }
             LinkRouting::check($v, $request->all());
             DeepLinks::check($v, $request->all());
+            app(EncryptedNoteLink::class)->refuseIn($v, $request->all(), ['warning_reason', 'folder']);
         });
         if ($validator->fails()) {
             return response()->json([

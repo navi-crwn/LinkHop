@@ -168,6 +168,9 @@ class LinkImport
                     $problems[] = __($reason);
                 }
             }
+            if (app(EncryptedNoteLink::class)->holdsKey([$row['folder'], $tags])) {
+                $problems[] = app(EncryptedNoteLink::class)->message();
+            }
             if (count($tags) > self::MAX_TAGS_PER_ROW || collect($tags)->contains(fn ($t) => mb_strlen($t) > 60)) {
                 $problems[] = __('A row can have up to :max tags of 60 characters each.', ['max' => self::MAX_TAGS_PER_ROW]);
             }
@@ -196,7 +199,7 @@ class LinkImport
             }
             $out[] = [
                 // the preview is kept in the cache (database) for a while: an encrypted note's key must not wait there
-                'line' => (int) $row['line'], 'destination' => EncryptedNoteLink::scrubInput(['d' => $url])['d'], 'slug' => $slug, 'tags' => $tags, 'folder' => $row['folder'],
+                'line' => (int) $row['line'], 'destination' => EncryptedNoteLink::scrubInput(['d' => $url])['d'], 'slug' => $slug, 'tags' => EncryptedNoteLink::scrubInput($tags), 'folder' => EncryptedNoteLink::scrubInput(['f' => $row['folder']])['f'],
                 'expires_at' => $row['expires_at'], 'max_clicks' => $max === null || $validator->errors()->has('max_clicks') ? null : (int) $max,
                 'status' => $status, 'problems' => $problems,
             ];

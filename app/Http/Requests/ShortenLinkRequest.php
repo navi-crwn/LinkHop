@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Support\EncryptedNoteLink;
 use App\Support\LinkRouting;
 use App\Support\ReservedSlugs;
 use Hop\Safety\LinkSafety;
@@ -64,6 +65,7 @@ class ShortenLinkRequest extends FormRequest
                     $validator->errors()->add('target_url', $reason);
                 }
             }
+            app(EncryptedNoteLink::class)->refuseIn($validator, $this->all(), ['warning_reason']);
         });
     }
 }
