@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixes
+- `composer.json` pins `hop/ui` to the commit in the lock (`6b4210c`, same tree as before); the old pin was a commit outside its main history.
 - `robots.txt` names this app's own sitemap (`link.hel.ink/sitemap.xml`); the hub's host has none.
 - `scripts/check-string-casts.sh` also finds `$request->string()`, which fails on an array the same way as a cast.
 - A bio page in draft no longer links to its public address (the list, the editor, View live and QR code on its analytics page): those answered 404, also to the owner.
