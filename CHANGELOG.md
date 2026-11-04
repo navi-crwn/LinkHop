@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixes
 - The report form and the password and age pages (a link's and a bio page's) follow the visitor's language, `lang` attribute included.
 - A destination with a login in it (`https://paypal.com@evil.example/`) or on a private address (loopback, private and link-local ranges, cloud metadata, `localhost`, `*.local` and the like, also written as `0x7f000001` or `127.1`) is refused everywhere a destination is taken: forms, API, `shorten-web`, CSV import, routing and fallback addresses, bio blocks. Webhooks already refused both. Links that already exist keep working until edited.
+- `LINK_ALLOW_PRIVATE_DESTINATIONS=true` lets an install used inside its own network accept private addresses as destinations. It is off by default. A login in the address stays refused, and the server's own requests still never go to a private address.
 - A CSV row with a quote that is never closed is an error in the preview, not one long destination marked Ready.
 - `composer.json` pins `hop/ui` to the commit in the lock (`6b4210c`, same tree as before); the old pin was a commit outside its main history.
 - `robots.txt` names this app's own sitemap (`link.hel.ink/sitemap.xml`); the hub's host has none.

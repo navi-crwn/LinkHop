@@ -45,6 +45,9 @@ class LinkHopSafety extends LinkSafety
         if ($at !== false) {
             return 'userinfo';
         }
+        if (config('shortener.allow_private_destinations')) {
+            return null;
+        }
         $host = (string) preg_replace('/:\d*$/', '', $m[1]);
         $bracketed = str_starts_with($host, '[');
         $host = (string) NoteAddress::normalizeHost($host);
