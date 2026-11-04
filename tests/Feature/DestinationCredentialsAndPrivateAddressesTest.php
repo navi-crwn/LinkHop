@@ -2,6 +2,7 @@
 
 use App\Models\Link;
 use App\Models\User;
+use App\Support\DestinationChecker;
 use App\Support\LinkImport;
 use Hop\Auth\Models\ApiToken;
 use Hop\Bio\Models\BioLink;
@@ -128,4 +129,43 @@ it('still reads a quoted destination with a comma in it', function () {
     $parsed = LinkImport::parse("destination,slug\n\"https://example.com/a,b\",csv-comma\n");
     $checked = LinkImport::check(User::factory()->create(), $parsed['rows']);
     expect($checked[0]['destination'])->toBe('https://example.com/a,b')->and($checked[0]['status'])->toBe('ok');
+});
+
+/*
+| An install on an intranet can have links to its own hosts. The switch opens that and nothing else: a login in the
+| address still shows one host and opens another, and the server itself still never asks a private address anything.
+*/
+
+it('accepts private addresses when the install allows them', function () {
+    Http::fake();
+    config()->set('shortener.allow_private_destinations', true);
+    $user = User::factory()->create();
+    $private = array_filter(dcRefused(), fn (string $url) => ! str_contains($url, '@'));
+    foreach ($private as $url) {
+        $this->actingAs($user)->postJson('/api/shorten-web', ['url' => $url])->assertStatus(201);
+    }
+    expect(Link::count())->toBe(count($private));
+});
+
+it('still refuses a login in the address when the install allows private addresses', function () {
+    Http::fake();
+    config()->set('shortener.allow_private_destinations', true);
+    $user = User::factory()->create();
+    foreach (['https://user:pass@evil.example/', 'https://paypal.com@evil.example/', 'http://admin@10.0.0.1/'] as $url) {
+        $this->actingAs($user)->postJson('/api/shorten-web', ['url' => $url])->assertStatus(422);
+    }
+    expect(Link::count())->toBe(0);
+});
+
+it('does not let the destination check reach a private address when the install allows them', function () {
+    Http::fake();
+    config()->set('shortener.allow_private_destinations', true);
+    foreach (['http://127.0.0.1/', 'http://10.0.0.1/', 'http://169.254.169.254/latest/meta-data/', 'http://[::1]/'] as $url) {
+        expect(app(DestinationChecker::class)->check($url)['state'])->toBe(DestinationChecker::SKIPPED);
+    }
+    Http::assertNothingSent();
+});
+
+it('refuses private addresses unless the install says otherwise', function () {
+    expect(config('shortener.allow_private_destinations'))->toBeFalse();
 });
