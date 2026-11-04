@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixes
+- `robots.txt` names this app's own sitemap (`link.hel.ink/sitemap.xml`); the hub's host has none.
+- `scripts/check-string-casts.sh` also finds `$request->string()`, which fails on an array the same way as a cast.
 - A bio page in draft no longer links to its public address (the list, the editor, View live and QR code on its analytics page): those answered 404, also to the owner.
 - The icon-only main action of a page on a phone has an accessible name (New link, New folder, New tag, New bio page).
 - The 500 page no longer says the team has been notified: nothing reports an error to anyone. It asks to try again, and names the address to write to, in all nine languages.
