@@ -869,5 +869,7 @@
     "Looking for something specific?": "在找什么特定的内容吗？",
     "Search bio pages...": "搜索简介页面...",
     "Try again in a moment. If it keeps happening, send a message to the address below.": "请稍后再试。如果问题持续出现，请向下方地址发送消息。",
-    "Powered by :app": "由 :app 提供支持"
+    "Powered by :app": "由 :app 提供支持",
+    "New folder": "新建文件夹",
+    "New tag": "新建标签"
 }
