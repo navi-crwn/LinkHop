@@ -103,7 +103,7 @@ class EncryptedNoteLink
 
             return false;
         }
-        if (! is_string($value) || ! preg_match('/[#&\\\\]|%23/i', $value)) {
+        if (! is_string($value) || ! preg_match('/[#&\\\\]|%(25)*23/i', $value)) {
             return false;
         }
         if (($data = self::jsonArray($value)) !== null && $this->holdsKey($data)) {
@@ -244,7 +244,7 @@ class EncryptedNoteLink
         $notes = app(self::class);
 
         return preg_replace_callback(
-            '~(https?:[^\s"\'<>#]*)#([^\s"\'<>\\\\]*)~i',
+            '~(https?:[^\s"\'<>#]*)#([^\s"\'<>\\\\()\[\]{}]*)~i',
             function (array $m) use ($notes) {
                 $plain = str_contains($m[1], '\\') ? (json_decode('"'.$m[1].'"') ?? stripslashes($m[1])) : $m[1];
                 if (! is_string($plain) || ! $notes->matches($plain.'#'.$m[2])) {

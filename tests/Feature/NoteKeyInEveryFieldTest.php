@@ -140,6 +140,7 @@ it('reads an address the way the browser would before it decides', function () {
         'single quotes' => "<a href='https://note.hel.ink/Ab3dEf#k=".EF_KEY."'>x</a>",
         'no quotes' => '<a href=https://note.hel.ink/Ab3dEf#k='.EF_KEY.'>x</a>',
         'protocol relative' => '<a href="//note.hel.ink/Ab3dEf#k='.EF_KEY.'">x</a>',
+        'encoded twice in another address' => '<a href="https://example.com/?u=https%253A%252F%252Fnote.hel.ink%252FAb3dEf%2523k%253D'.EF_KEY.'">x</a>',
         'upper case' => '<A HREF="HTTPS://NOTE.HEL.INK/Ab3dEf#k='.EF_KEY.'">x</A>',
     ];
     foreach ($forms as $name => $html) {

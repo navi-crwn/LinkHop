@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Finds links that were saved with the key of an encrypted NoteHop note in the address (https://n.hel.ink/ID#k=KEY),
  * from before LinkHop refused them. By default it only counts. With --apply it cuts the fragment out of every stored
- * copy, switches the link off and leaves a line in the owner's activity log saying why. It sends nobody anything.
+ * copy, switches the link off and leaves a line in the owner's activity log saying why. The same address anywhere else
+ * a person can write (text, rich text, CSS, JSON on links, bio pages and reports) loses its key too; a link that only
+ * held one there stays live. A key it cannot cut out is reported by row. It sends nobody anything.
  *
  * It prints counts and link ids. Never an address, never a key.
  */
@@ -33,6 +35,44 @@ class ScrubNoteKeys extends Command
         // blocks of a bio page (the hop/bio package): the same address typed into a block
         ['bio_links', 'url'],
         ['bio_links', 'embed_url'],
+        // everything else a person can write into: text, rich text, CSS, JSON. Links stay live, the key just goes.
+        ['abuse_reports', 'reason'],
+        ['links', 'custom_title'],
+        ['links', 'custom_description'],
+        ['links', 'custom_image_url'],
+        ['links', 'qr_logo_url'],
+        ['links', 'warning_reason'],
+        ['comments', 'body'],
+        ['folders', 'name'],
+        ['tags', 'name'],
+        ['webhook_endpoints', 'url'],
+        ['bio_links', 'title'],
+        ['bio_links', 'icon'],
+        ['bio_links', 'thumbnail_url'],
+        ['bio_links', 'content'],
+        ['bio_links', 'description'],
+        ['bio_links', 'brand'],
+        ['bio_links', 'settings'],
+        ['bio_links', 'custom_icon'],
+        ['bio_links', 'countdown_label'],
+        ['bio_links', 'map_address'],
+        ['bio_links', 'vcard_name'],
+        ['bio_links', 'vcard_phone'],
+        ['bio_links', 'vcard_email'],
+        ['bio_links', 'vcard_company'],
+        ['bio_links', 'faq_items'],
+        ['bio_links', 'html_content'],
+        ['bio_pages', 'title'],
+        ['bio_pages', 'bio'],
+        ['bio_pages', 'avatar_url'],
+        ['bio_pages', 'social_links'],
+        ['bio_pages', 'socials'],
+        ['bio_pages', 'seo_title'],
+        ['bio_pages', 'seo_description'],
+        ['bio_pages', 'custom_css'],
+        ['bio_pages', 'background_value'],
+        ['bio_pages', 'background_image'],
+        ['bio_pages', 'qr_settings'],
     ];
 
     /** Queue tables hold serialized jobs, whose lengths a cut would break: counted, never edited. */
@@ -99,34 +139,46 @@ class ScrubNoteKeys extends Command
                 continue;
             }
             $rows = 0;
-            DB::table($table)->where($column, 'like', '%#%')->orderBy('id')->chunkById(500, function ($chunk) use ($table, $column, $apply, &$rows) {
-                DB::transaction(function () use ($chunk, $table, $column, $apply, &$rows) {
-                    foreach ($chunk as $row) {
-                        $clean = EncryptedNoteLink::scrubText((string) $row->{$column});
-                        if ($clean === (string) $row->{$column}) {
-                            continue;
+            $stuck = [];
+            // "#" as such, as %23, \23 or &#35;, or as &num;
+            DB::table($table)->where(fn ($q) => $q->where($column, 'like', '%#%')->orWhere($column, 'like', '%23%')->orWhere($column, 'like', '%&num;%'))
+                ->orderBy('id')->chunkById(500, function ($chunk) use ($table, $column, $apply, $notes, $service, &$rows, &$stuck) {
+                    DB::transaction(function () use ($chunk, $table, $column, $apply, $notes, $service, &$rows, &$stuck) {
+                        foreach ($chunk as $row) {
+                            $clean = $notes->scrubAll((string) $row->{$column});
+                            if ($notes->holdsKey($clean)) {
+                                $stuck[] = $row->id;
+                            }
+                            if ($clean === (string) $row->{$column}) {
+                                continue;
+                            }
+                            $rows++;
+                            if ($apply) {
+                                DB::table($table)->where('id', $row->id)->update([$column => $clean]);
+                                if ($table === 'links') {
+                                    $service->forgetCacheBySlug($row->slug);
+                                }
+                            }
                         }
-                        $rows++;
-                        if ($apply) {
-                            DB::table($table)->where('id', $row->id)->update([$column => $clean]);
-                        }
-                    }
+                    });
                 });
-            });
             $this->line(sprintf('%s.%s rows %s: %d', $table, $column, $verb, $rows));
+            if ($stuck !== []) {
+                $this->warn(sprintf('%s.%s: %d rows still hold a key that could not be cut out (ids: %s). Edit them by hand.', $table, $column, count($stuck), implode(', ', $stuck)));
+            }
         }
 
         $this->scrubSessions($apply, $verb);
-        $this->dropCachedCopies($apply);
+        $this->dropCachedCopies($apply, $notes);
 
         foreach (self::QUEUES as $table) {
             if (! Schema::hasTable($table)) {
                 continue;
             }
             $held = 0;
-            DB::table($table)->where('payload', 'like', '%#%')->orderBy('id')->chunkById(500, function ($chunk) use (&$held) {
+            DB::table($table)->where('payload', 'like', '%#%')->orderBy('id')->chunkById(500, function ($chunk) use ($notes, &$held) {
                 foreach ($chunk as $row) {
-                    $held += EncryptedNoteLink::scrubText((string) $row->payload) !== (string) $row->payload ? 1 : 0;
+                    $held += $notes->holdsKey((string) $row->payload) ? 1 : 0;
                 }
             });
             if ($held > 0) {
@@ -162,7 +214,7 @@ class ScrubNoteKeys extends Command
                 if (! is_array($data)) {
                     continue;
                 }
-                $clean = $this->cleanDeep($data);
+                $clean = EncryptedNoteLink::scrubInput($data);
                 if ($clean === $data) {
                     continue;
                 }
@@ -176,18 +228,18 @@ class ScrubNoteKeys extends Command
     }
 
     /** Cached redirects and CSV previews are only copies: an entry that holds a key is deleted, not edited. */
-    private function dropCachedCopies(bool $apply): void
+    private function dropCachedCopies(bool $apply, EncryptedNoteLink $notes): void
     {
         $table = (string) config('cache.stores.database.table', 'cache');
         if (config('cache.default') !== 'database' || ! Schema::hasTable($table)) {
             return;
         }
         $drop = [];
-        DB::table($table)->where(fn ($q) => $q->where('key', 'like', '%slug:%')->orWhere('key', 'like', '%linkimport:%'))->orderBy('key')->get(['key', 'value'])->each(function ($row) use (&$drop) {
+        DB::table($table)->where(fn ($q) => $q->where('key', 'like', '%slug:%')->orWhere('key', 'like', '%linkimport:%'))->orderBy('key')->get(['key', 'value'])->each(function ($row) use ($notes, &$drop) {
             $value = (string) $row->value;
             $plain = base64_decode($value, true);
             foreach ([$value, $plain === false ? '' : $plain] as $text) {
-                if (EncryptedNoteLink::scrubText($text) !== $text) {
+                if ($notes->holdsKey($text)) {
                     $drop[] = $row->key;
 
                     return;
@@ -198,19 +250,6 @@ class ScrubNoteKeys extends Command
             DB::table($table)->whereIn('key', $drop)->delete();
         }
         $this->line(sprintf('cache entries %s: %d', $apply ? 'deleted' : 'would be deleted', count($drop)));
-    }
-
-    /** Strings of a nested array with the secret parameters taken out of every NoteHop address in them. */
-    private function cleanDeep(mixed $value): mixed
-    {
-        if (is_string($value)) {
-            return EncryptedNoteLink::scrubText($value);
-        }
-        if (is_array($value)) {
-            return array_map(fn ($v) => $this->cleanDeep($v), $value);
-        }
-
-        return $value;
     }
 
     /** The value with the secret parameters cut out of every NoteHop address that carries one; the same value when none does. */
