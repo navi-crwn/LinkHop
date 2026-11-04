@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5fd87fa50552544c4e0b3416babf1b3c",
+    "content-hash": "f75eefcbecebda24f35c313311743531",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1297,16 +1297,16 @@
         },
         {
             "name": "hop/auth",
-            "version": "dev-fix/array-query-params",
+            "version": "v0.1.3",
             "source": {
                 "type": "git",
-                "url": "git@github.com:navi-crwn/hop-auth.git",
-                "reference": "cf5ab1eab41c363402c677127ba9abf969131551"
+                "url": "https://github.com/navi-crwn/hop-auth.git",
+                "reference": "caa26a306f640ece00059768cb062223cd1d90d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-auth/zipball/cf5ab1eab41c363402c677127ba9abf969131551",
-                "reference": "cf5ab1eab41c363402c677127ba9abf969131551",
+                "url": "https://api.github.com/repos/navi-crwn/hop-auth/zipball/caa26a306f640ece00059768cb062223cd1d90d4",
+                "reference": "caa26a306f640ece00059768cb062223cd1d90d4",
                 "shasum": ""
             },
             "require": {
@@ -1330,7 +1330,11 @@
                 "MIT"
             ],
             "description": "HOP shared package: auth.",
-            "time": "2026-11-03T19:25:27+00:00"
+            "support": {
+                "source": "https://github.com/navi-crwn/hop-auth/tree/v0.1.3",
+                "issues": "https://github.com/navi-crwn/hop-auth/issues"
+            },
+            "time": "2026-11-04T00:32:58+00:00"
         },
         {
             "name": "hop/bio",
@@ -11280,12 +11284,6 @@
     ],
     "aliases": [
         {
-            "package": "hop/auth",
-            "version": "dev-fix/array-query-params",
-            "alias": "0.1.99",
-            "alias_normalized": "0.1.99.0"
-        },
-        {
             "package": "hop/ui",
             "version": "dev-main",
             "alias": "0.2.99",
@@ -11294,7 +11292,6 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "hop/auth": 20,
         "hop/bio": 20,
         "hop/safety": 20,
         "hop/ui": 20
