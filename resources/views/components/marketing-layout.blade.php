@@ -54,7 +54,7 @@
         </div>
     @endif
         @include('partials.marketing-nav', ['themed' => $themed])
-        <main>
+        <main id="main">
             {{ $slot }}
         </main>
         @include('partials.marketing-footer')

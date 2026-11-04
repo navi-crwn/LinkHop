@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Signing out at the hub now ends the session here too (even when LinkHop was down)
+- Signing in through HOP ID uses `remember: true`, so the remember cookie (400 days) brought a person straight back in after their session rows were deleted, and the hub's "end sessions" action and its chained logout could not reach an app that was down at that moment. The hub now queues a signed `session.revoked` to every app; `POST /hop/events` handles it: the session rows of that account are deleted (database and file drivers) and its `remember_token` is rotated, so the cookie stops working. The hub retries for about 16 hours while LinkHop is unreachable.
+- `account.deleted` also ends the account's sessions, after the data purge that was already there. An event the hub sends twice (a retry) is handled once; a type LinkHop does not know gets a 200 so the hub stops retrying it.
+- `account.status` drops the cached short links of that account, so a suspended owner's links stop redirecting at once instead of after the five-minute cache. The suspended person is still signed out on their next request and sent to the hub's notice, as before.
+- Needs `hop/auth` with the event receiver (the lock file points at the head of hop-auth PR #10 until it is tagged) and an `apps` row for `linkhop` with the `events` capability at the hub.
+
 ### Encrypted NoteHop links are refused
 - An encrypted NoteHop note keeps its key in the link after the `#` (`https://n.hel.ink/ID#k=KEY`). LinkHop stored the whole destination and sent the visitor on with it, so the key of a note ended up in the database. Every way of adding a destination (the home form, the dashboard, the API, CSV import, routing and split addresses, bio blocks) now refuses an address on a NoteHop host whose fragment carries `k=` or `a=`, with a message that says why and what to do instead. Other hosts and other fragments are unchanged.
 - The hosts are `note.hel.ink` and `n.hel.ink` plus `NOTEHOP_URL`, `NOTEHOP_SHARE_URL` and the registered NoteHop app; `HOP_NOTE_HOSTS` adds more.
@@ -72,6 +78,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Searching My links used a column that does not exist on the links table (`title` instead of `custom_title`), which fails on MySQL.
 - Top bars keep their buttons on one line on phones: the "Sign up" button no longer breaks onto two lines, the logo is no longer squeezed, and the link-check page bar fits a 320 px screen.
 - The folder, tag, API and analytics pages no longer make the page wider than a phone.
+- The title and Open Graph lookups and the QR logo fetch connect only to the addresses that were checked (no second DNS lookup, no redirects), and an address with another scheme is refused instead of getting `https://` put in front of it. The QR logo fetch is cut off once it passes the size limit.
+- QR codes download as PNG, JPG and SVG on servers without the imagick extension, and a logo is drawn on the code.
+- A query parameter given as an array (`?lang[]=de`, `?url[]=x`, `?next[]=x`) gets a normal answer instead of a server error.
+- `/l` and `/l/` send visitors to this install's own address, `/up` is a plain answer that loads no script or font from another host, the footer language links keep the query string, the settings tab follows the address, and bulk delete says which links could not be deleted.
+- In the dashboard API, `example.com:8080/x` is read as a host and a port, as the web forms read it.
+- A page shown to a signed-in person is answered with `Cache-Control: no-store, private`, so the Back button after signing out does not show it again. Public files and responses with their own cache policy are not changed.
+- The `<title>` of every page is built as `Page · LinkHop` and follows the page language (it was English on the public pages and `LinkHop - Page` when signed in); the bio editor is titled `Edit bio page: <name>` instead of the home-page tagline.
+- The 404, 429 and 500 pages and the "link not found / expired" page are translated into the nine languages. An address that matches no route used to skip the language middleware, so its 404 page was always English; it now follows `?lang=` and the language cookie.
+- `robots.txt` no longer names `/products` (a 404) and keeps `/links`, `/bio`, `/folders`, `/tags`, `/analytics` and `/api-docs` out of search results.
+- The info pages no longer put a `<main>` inside the layout's `<main>`, and the bio editor's theme button no longer repeats an id.
+- A long address no longer makes the link analytics page wider than a 320 px screen, and the bio analytics page fits 320 px too. On a phone the bio editor header wraps so the Save button stays on screen, and the tab strip fades at its edge to show it scrolls.
+- Code blocks on `/docs` and `/api-docs` and the busiest-hours chart can be scrolled with the keyboard.
+- README: PHP 8.2+ with `intl`, Node.js 20.19+, MySQL/MariaDB/SQLite (not PostgreSQL), the Content Security Policy is enforced (not report-only), FlagCDN is gone, and routing, deep links, content warning, destination monitor, idempotency keys and webhooks are listed.
+- The test run asks PHP for 512 MB (`phpunit.xml`): the suite no longer fits in the default 128 MB.
 
 ### Dashboard chrome
 - The top bar holds settings-type controls (primary action, language, theme and an account menu with your HOP ID, settings and sign out). The other HOP apps are listed once, in the sidebar, with their marks; the app pill and grid are gone from the top bar, and the sidebar's user card became the account menu.

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Support\LinkRouting;
 use App\Support\ReservedSlugs;
 use Hop\Safety\LinkSafety;
 use Illuminate\Foundation\Http\FormRequest;
@@ -37,7 +38,7 @@ class ShortenLinkRequest extends FormRequest
         $url = $this->input('target_url');
         if ($url && ! preg_match('/^https?:\/\//i', $url)) {
             $this->merge([
-                'target_url' => 'https://'.$url,
+                'target_url' => LinkRouting::address($url),
             ]);
         }
     }

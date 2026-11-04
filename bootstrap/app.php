@@ -6,6 +6,7 @@ use App\Http\Middleware\CheckIpBan;
 use App\Http\Middleware\CheckLinkQuota;
 use App\Http\Middleware\CheckSuspended;
 use App\Http\Middleware\ContentSecurityPolicyMiddleware;
+use App\Http\Middleware\NoStoreWhenSignedIn;
 use App\Http\Middleware\RemoveWwwPrefix;
 use App\Http\Middleware\RequireHopAdminClient;
 use App\Http\Middleware\SetLocale;
@@ -20,13 +21,13 @@ use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
-        health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
         // Global middleware to remove www prefix
@@ -36,6 +37,7 @@ return Application::configure(basePath: dirname(__DIR__))
             AutoLogout::class,
             CheckSuspended::class,
             ContentSecurityPolicyMiddleware::class,
+            NoStoreWhenSignedIn::class,
         ]);
         $middleware->encryptCookies(except: [SetLocale::COOKIE]);
         // Browsers POST CSP reports without a CSRF token; hub server-to-server calls are HMAC-signed.
@@ -50,6 +52,14 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        // An address that matches no route never meets the web middleware, so its 404 page would be English.
+        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
+            if ($request->route() === null) {
+                SetLocale::apply($request);
+            }
+
+            return null;
+        });
         // An expired CSRF token (session timed out while the page stayed open) is not an
         // attack worth a bare "419 Page Expired" page. CSRF stays on; only the reply changes.
         $exceptions->render(function (HttpException $e, Request $request) {

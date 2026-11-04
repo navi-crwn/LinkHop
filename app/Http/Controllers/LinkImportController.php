@@ -25,7 +25,7 @@ class LinkImportController extends Controller
     public function show(Request $request)
     {
         $preview = null;
-        if ($token = (string) $request->query('preview')) {
+        if (is_string($request->query('preview')) && ($token = $request->query('preview'))) {
             $rows = Cache::get($this->cacheKey($request, $token));
             if ($rows === null) {
                 return redirect()->route('links.import')->withErrors(['file' => __('The preview has expired. Upload the file again.')]);
@@ -68,7 +68,7 @@ class LinkImportController extends Controller
 
     public function commit(Request $request)
     {
-        $token = (string) $request->input('token');
+        $token = is_string($request->input('token')) ? $request->input('token') : '';
         $rows = Cache::get($this->cacheKey($request, $token));
         if ($rows === null) {
             return redirect()->route('links.import')->withErrors(['file' => __('The preview has expired. Upload the file again.')]);

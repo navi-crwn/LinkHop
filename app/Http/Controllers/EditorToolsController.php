@@ -19,7 +19,7 @@ class EditorToolsController extends Controller
      */
     public function slugCheck(Request $request): JsonResponse
     {
-        $slug = Str::lower(trim((string) $request->query('slug')));
+        $slug = Str::lower(trim(is_string($request->query('slug')) ? $request->query('slug') : ''));
         $current = null;
         if ($id = $request->integer('link')) {
             $link = Link::find($id);
@@ -49,7 +49,7 @@ class EditorToolsController extends Controller
     /** GET /palette/links?q=: up to 8 of the caller's own links, newest first when there is no query. */
     public function links(Request $request): JsonResponse
     {
-        $q = Str::limit(trim((string) $request->query('q')), 80, '');
+        $q = Str::limit(trim(is_string($request->query('q')) ? $request->query('q') : ''), 80, '');
         $query = $request->user()->links()->latest()->orderByDesc('id')->limit(8);
         if ($q !== '') {
             // % and _ in the query are plain characters (an explicit escape works the same on MySQL and SQLite)

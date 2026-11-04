@@ -7,6 +7,10 @@ use App\Models\User;
 use App\Support\DashboardStats;
 use Illuminate\Support\Facades\DB;
 
+// The stats count by calendar day (UTC), and the clicks below are made "one hour ago": between 00:00 and 01:00 that is
+// yesterday. Pin the clock to midday of the current day so the tests do not depend on when they run.
+beforeEach(fn () => $this->travelTo(now()->setTime(12, 0)));
+
 function dashUser(): User
 {
     return User::factory()->create();

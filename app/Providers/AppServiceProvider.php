@@ -9,8 +9,11 @@ use App\Models\Link;
 use App\Observers\LinkWebhookObserver;
 use App\Services\GeoIpService;
 use App\Services\LinkHopSafety;
+use App\Services\LinkService;
 use App\Services\UserAgentService;
+use App\Services\UserDeletion;
 use App\Support\EncryptedNoteLink;
+use Hop\Auth\HopEvents;
 use Hop\Bio\Contracts\GeoLookup;
 use Hop\Bio\Contracts\ShortlinkCreator;
 use Hop\Bio\Contracts\UrlSafety;
@@ -52,6 +55,21 @@ class AppServiceProvider extends ServiceProvider
             });
         }
         Link::observe(LinkWebhookObserver::class);
+        // Account events from the hub (POST /hop/events). hop/auth already ends the sessions and rotates the remember
+        // token on session.revoked and account.deleted; these are what LinkHop adds.
+        HopEvents::on('account.deleted', function (array $data): void {
+            app(UserDeletion::class)->purgeById((int) ($data['sub'] ?? $data['hop_id'] ?? 0), (array) ($data['qr_codes'] ?? []), (array) ($data['bio_uploads'] ?? []));
+        });
+        // CheckSuspended already signs a suspended account out on its next request; the cached short links
+        // still hold their owner as they were for five minutes, so they are dropped here.
+        HopEvents::on('account.status', function (array $data): bool {
+            $id = HopEvents::accountId($data);
+            if ($id !== null) {
+                Link::where('user_id', $id)->pluck('slug')->each(fn (string $slug) => app(LinkService::class)->forgetCacheBySlug($slug));
+            }
+
+            return $id !== null;
+        });
         // Defined here (not in routes/web.php) so they exist when routes are cached.
         RateLimiter::for('shorten', function (Request $request) {
             return $request->user()
