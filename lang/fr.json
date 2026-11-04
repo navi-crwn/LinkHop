@@ -872,5 +872,18 @@
     "Powered by :app": "Propulsé par :app",
     "New folder": "Nouveau dossier",
     "New tag": "Nouvelle étiquette",
-    "A quote in this row is not closed.": "Un guillemet de cette ligne n'est pas fermé."
+    "A quote in this row is not closed.": "Un guillemet de cette ligne n'est pas fermé.",
+    "Page address": "Adresse de la page",
+    "Your email": "Votre adresse e-mail",
+    "(so we can follow up)": "(afin que nous puissions faire un suivi)",
+    "What is wrong?": "Quel est le motif du signalement ?",
+    "Send report": "Envoyer le signalement",
+    "Tell us about scams, phishing, impersonation, malware, or anything else that breaks the rules. A moderator reviews every report.": "Signalez tout cas de fraude, phishing, usurpation ou logiciel malveillant. Chaque signalement fait l'objet d'un examen par un modérateur.",
+    "To prevent spam, each network can send a few reports per half hour.": "Afin d'éviter les abus, chaque connexion est limitée à quelques signalements par demi-heure.",
+    "This page contains adult content intended strictly for viewers aged 18 and older.": "Cette page contient du contenu pour adultes réservé aux personnes de 18 ans et plus.",
+    "I am 18+ — Enter": "J'ai 18 ans ou plus — Entrer",
+    "Continue": "Continuer",
+    "Enter the password to continue to :url.": "Saisissez le mot de passe pour continuer vers :url.",
+    "Enter the password to view this page.": "Saisissez le mot de passe pour voir cette page.",
+    "Thank you. Your report has been submitted.": "Merci. Votre signalement a été envoyé."
 }

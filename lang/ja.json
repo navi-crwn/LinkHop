@@ -872,5 +872,18 @@
     "Powered by :app": ":app 提供",
     "New folder": "新しいフォルダ",
     "New tag": "新しいタグ",
-    "A quote in this row is not closed.": "この行の引用符が閉じられていません。"
+    "A quote in this row is not closed.": "この行の引用符が閉じられていません。",
+    "Page address": "ページのURLアドレス",
+    "Your email": "メールアドレス",
+    "(so we can follow up)": "（確認のご連絡用）",
+    "What is wrong?": "通報理由・問題の内容",
+    "Send report": "通報内容を送信",
+    "Tell us about scams, phishing, impersonation, malware, or anything else that breaks the rules. A moderator reviews every report.": "詐欺、フィッシング、なりすまし、マルウェア等の規約違反についてお知らせください。モデレーターが確認いたします。",
+    "To prevent spam, each network can send a few reports per half hour.": "スパム防止のため、ネットワークごとに30分あたりの送信通報数を制限しています。",
+    "This page contains adult content intended strictly for viewers aged 18 and older.": "このページには18歳以上の方のみを対象としたアダルトコンテンツが含まれています。",
+    "I am 18+ — Enter": "18歳以上です — 閲覧する",
+    "Continue": "続ける",
+    "Enter the password to continue to :url.": ":url に進むにはパスワードを入力してください。",
+    "Enter the password to view this page.": "このページを表示するにはパスワードを入力してください。",
+    "Thank you. Your report has been submitted.": "ありがとうございます。報告を送信しました。"
 }

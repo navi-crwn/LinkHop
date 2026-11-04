@@ -47,6 +47,6 @@ class AbuseReportController extends Controller
             'ip_address' => $ip,
         ]);
 
-        return back()->with('status', 'Thank you. Your report has been submitted.');
+        return back()->with('status', __('Thank you. Your report has been submitted.'));
     }
 }

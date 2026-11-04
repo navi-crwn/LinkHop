@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Contracts\Process\ProcessResult;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process;
 
@@ -8,7 +9,7 @@ use Illuminate\Support\Facades\Process;
 | passes it, and code that would give a 500 does not.
 */
 
-function casts(array $files = []): Illuminate\Contracts\Process\ProcessResult
+function casts(array $files = []): ProcessResult
 {
     $dir = sys_get_temp_dir().'/casts-'.uniqid();
     File::makeDirectory($dir);

@@ -872,5 +872,18 @@
     "Powered by :app": "由 :app 提供支持",
     "New folder": "新建文件夹",
     "New tag": "新建标签",
-    "A quote in this row is not closed.": "此行中的引号未闭合。"
+    "A quote in this row is not closed.": "此行中的引号未闭合。",
+    "Page address": "页面链接地址",
+    "Your email": "您的电子邮箱",
+    "(so we can follow up)": "（以便我们跟进处理）",
+    "What is wrong?": "违规情况说明",
+    "Send report": "提交举报",
+    "Tell us about scams, phishing, impersonation, malware, or anything else that breaks the rules. A moderator reviews every report.": "向我们反馈欺诈、钓鱼、仿冒、恶意软件等违规行为。人工审核员将认真审查每一份报告。",
+    "To prevent spam, each network can send a few reports per half hour.": "为防止恶意滥用，每个网络环境每半小时限制提交少量举报。",
+    "This page contains adult content intended strictly for viewers aged 18 and older.": "此页面包含仅限18岁及以上受众的成人内容。",
+    "I am 18+ — Enter": "我已满18岁 — 进入",
+    "Continue": "继续",
+    "Enter the password to continue to :url.": "输入密码以继续访问 :url。",
+    "Enter the password to view this page.": "输入密码以查看此页面。",
+    "Thank you. Your report has been submitted.": "谢谢。您的举报已提交。"
 }

@@ -872,5 +872,18 @@
     "Powered by :app": "Didukung oleh :app",
     "New folder": "Folder baru",
     "New tag": "Tag baru",
-    "A quote in this row is not closed.": "Ada tanda kutip di baris ini yang tidak ditutup."
+    "A quote in this row is not closed.": "Ada tanda kutip di baris ini yang tidak ditutup.",
+    "Page address": "Alamat halaman",
+    "Your email": "Email Anda",
+    "(so we can follow up)": "(agar kami dapat menindaklanjuti)",
+    "What is wrong?": "Apa masalahnya?",
+    "Send report": "Kirim laporan",
+    "Tell us about scams, phishing, impersonation, malware, or anything else that breaks the rules. A moderator reviews every report.": "Beri tahu kami mengenai penipuan, phishing, peniruan identitas, malware, atau hal lain yang melanggar aturan. Moderator memeriksa setiap laporan.",
+    "To prevent spam, each network can send a few reports per half hour.": "Untuk mencegah spam, setiap jaringan dibatasi hanya dapat mengirim beberapa laporan per setengah jam.",
+    "This page contains adult content intended strictly for viewers aged 18 and older.": "Halaman ini memuat konten dewasa khusus untuk pengguna berusia 18 tahun ke atas.",
+    "I am 18+ — Enter": "Saya berusia 18+ — Masuk",
+    "Continue": "Lanjut",
+    "Enter the password to continue to :url.": "Masukkan kata sandi untuk melanjutkan ke :url.",
+    "Enter the password to view this page.": "Masukkan kata sandi untuk melihat halaman ini.",
+    "Thank you. Your report has been submitted.": "Terima kasih. Laporan Anda telah dikirim."
 }
