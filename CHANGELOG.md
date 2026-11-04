@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixes
+- The 500 page no longer says the team has been notified: nothing reports an error to anyone. It asks to try again, and names the address to write to, in all nine languages.
+- The not-found page of a bio page (`/b/...`) follows the visitor's language.
 - A query value sent as an array (`?q[]=x`) no longer gives signed-in pages a 500: My links, the dashboard, Analytics, Settings, the folder and tag pages and `/api/links` treat it as not given. The same value in a form field (a destination, the start and end dates, a bio page's slug, the export's minimum clicks) is answered as a validation error or ignored.
 
 ### Signing out at the hub now ends the session here too (even when LinkHop was down)

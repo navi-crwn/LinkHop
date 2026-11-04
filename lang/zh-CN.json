@@ -848,7 +848,6 @@
     "Go back": "返回",
     "Oops! Something went wrong": "哎呀！出错了",
     "We're sorry, but we encountered an unexpected error.": "很抱歉，我们遇到了意外错误。",
-    "Our team has been notified and we're working on fixing this issue.": "我们的团队已收到通知，正在着手修复。",
     "Go to homepage": "前往首页",
     "Need help? Contact us at": "需要帮助？请联系",
     "Link expired": "链接已过期",
@@ -861,5 +860,14 @@
     "Contact the person who shared this link": "联系分享此链接的人",
     "Create your own short links for free": "免费创建你自己的短链接",
     "Go to dashboard": "前往控制面板",
-    "Code example": "代码示例"
+    "Code example": "代码示例",
+    "Page Not Available": "页面不可用",
+    "This bio page is currently not published. The owner may have temporarily disabled it.": "此简介页面目前未发布，可能是所有者暂时将其停用。",
+    "The bio page :slug doesn't exist or may have been removed.": "简介页面 :slug 不存在，或可能已被删除。",
+    "Go to Homepage": "前往首页",
+    "Create Your Bio Page": "创建你的简介页面",
+    "Looking for something specific?": "在找什么特定的内容吗？",
+    "Search bio pages...": "搜索简介页面...",
+    "Try again in a moment. If it keeps happening, send a message to the address below.": "请稍后再试。如果问题持续出现，请向下方地址发送消息。",
+    "Powered by :app": "由 :app 提供支持"
 }

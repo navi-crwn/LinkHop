@@ -848,7 +848,6 @@
     "Go back": "戻る",
     "Oops! Something went wrong": "おっと！問題が発生しました",
     "We're sorry, but we encountered an unexpected error.": "申し訳ありません。予期しないエラーが発生しました。",
-    "Our team has been notified and we're working on fixing this issue.": "担当チームに通知されました。現在、修正に取り組んでいます。",
     "Go to homepage": "ホームへ移動",
     "Need help? Contact us at": "お困りですか？こちらまでご連絡ください：",
     "Link expired": "リンクの期限が切れています",
@@ -861,5 +860,14 @@
     "Contact the person who shared this link": "このリンクを共有した人に連絡する",
     "Create your own short links for free": "自分の短縮リンクを無料で作る",
     "Go to dashboard": "ダッシュボードへ移動",
-    "Code example": "コード例"
+    "Code example": "コード例",
+    "Page Not Available": "ページを表示できません",
+    "This bio page is currently not published. The owner may have temporarily disabled it.": "このバイオページは現在公開されていません。持ち主が一時的に無効にしている可能性があります。",
+    "The bio page :slug doesn't exist or may have been removed.": "バイオページ :slug は存在しないか、削除された可能性があります。",
+    "Go to Homepage": "ホームへ",
+    "Create Your Bio Page": "バイオページを作成",
+    "Looking for something specific?": "お探しのものがありますか？",
+    "Search bio pages...": "バイオページを検索…",
+    "Try again in a moment. If it keeps happening, send a message to the address below.": "しばらくしてからもう一度お試しください。それでも続く場合は、下のアドレスまでご連絡ください。",
+    "Powered by :app": ":app 提供"
 }

@@ -848,7 +848,6 @@
     "Go back": "Назад",
     "Oops! Something went wrong": "Ой! Что-то пошло не так",
     "We're sorry, but we encountered an unexpected error.": "Приносим извинения, произошла непредвиденная ошибка.",
-    "Our team has been notified and we're working on fixing this issue.": "Наша команда уведомлена и работает над исправлением.",
     "Go to homepage": "На главную",
     "Need help? Contact us at": "Нужна помощь? Напишите нам:",
     "Link expired": "Ссылка истекла",
@@ -861,5 +860,14 @@
     "Contact the person who shared this link": "Свяжитесь с тем, кто поделился этой ссылкой",
     "Create your own short links for free": "Создавайте собственные короткие ссылки бесплатно",
     "Go to dashboard": "Перейти в панель",
-    "Code example": "Пример кода"
+    "Code example": "Пример кода",
+    "Page Not Available": "Страница недоступна",
+    "This bio page is currently not published. The owner may have temporarily disabled it.": "Эта bio-страница сейчас не опубликована. Возможно, владелец временно её отключил.",
+    "The bio page :slug doesn't exist or may have been removed.": "Bio-страницы :slug не существует, либо её могли удалить.",
+    "Go to Homepage": "На главную",
+    "Create Your Bio Page": "Создать свою bio-страницу",
+    "Looking for something specific?": "Ищете что-то конкретное?",
+    "Search bio pages...": "Поиск bio-страниц...",
+    "Try again in a moment. If it keeps happening, send a message to the address below.": "Повторите через минуту. Если ошибка не исчезает, напишите на адрес ниже.",
+    "Powered by :app": "На платформе :app"
 }
