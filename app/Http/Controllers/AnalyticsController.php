@@ -16,9 +16,9 @@ class AnalyticsController extends Controller
         $user = $request->user();
         $range = $request->integer('hours', 24);
         $start = now()->subHours($range);
-        $countryFilter = $request->input('country', 'all');
-        $deviceFilter = $request->input('device', 'all');
-        $linkFilter = $request->input('link_id', 'all');
+        $countryFilter = $this->textInput($request, 'country', 'all');
+        $deviceFilter = $this->textInput($request, 'device', 'all');
+        $linkFilter = $this->textInput($request, 'link_id', 'all');
         // The same filters over any period: this one, the one before it, and the last 30 days for the heat map.
         $filtered = function () use ($user, $countryFilter, $deviceFilter, $linkFilter) {
             $query = LinkClick::query()->whereHas('link', fn ($q) => $q->where('user_id', $user->id));

@@ -37,7 +37,7 @@ class ShortenLinkRequest extends FormRequest
     protected function prepareForValidation()
     {
         $url = $this->input('target_url');
-        if ($url && ! preg_match('/^https?:\/\//i', $url)) {
+        if ($url && is_string($url) && ! preg_match('/^https?:\/\//i', $url)) {
             $this->merge([
                 'target_url' => LinkRouting::address($url),
             ]);
