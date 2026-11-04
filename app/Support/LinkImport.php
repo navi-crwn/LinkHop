@@ -79,8 +79,12 @@ class LinkImport
         }
         $rows = [];
         $line = 1;
+        $start = ftell($handle);
         while (($cells = fgetcsv($handle, 0, $delimiter, '"', '')) !== false) {
             $line++;
+            // A quote that is never closed swallows the rest of the file as one cell, which can look like a fine address.
+            $unclosed = substr_count(substr($csv, $start, ftell($handle) - $start), '"') % 2 === 1;
+            $start = ftell($handle);
             if ($cells === [null] || count(array_filter($cells, fn ($c) => trim((string) $c) !== '')) === 0) {
                 continue;
             }
@@ -88,7 +92,7 @@ class LinkImport
             foreach ($columns as $i => $field) {
                 $row[$field] = trim((string) ($cells[$i] ?? ''));
             }
-            $rows[] = $row;
+            $rows[] = $row + ($unclosed ? ['unclosed_quote' => '1'] : []);
             if (count($rows) > self::MAX_ROWS) {
                 return ['rows' => [], 'error' => __('The file has more than :max rows. Split it into smaller files.', ['max' => self::MAX_ROWS])];
             }
@@ -118,7 +122,7 @@ class LinkImport
         $seenSlugs = [];
         $out = [];
         foreach ($rows as $row) {
-            $problems = [];
+            $problems = isset($row['unclosed_quote']) ? [__('A quote in this row is not closed.')] : [];
             $url = $row['destination'];
             if ($url !== '' && ! preg_match('/^https?:\/\//i', $url)) {
                 $url = LinkRouting::address($url);

@@ -871,5 +871,6 @@
     "Try again in a moment. If it keeps happening, send a message to the address below.": "Inténtalo de nuevo en un momento. Si sigue ocurriendo, escribe a la dirección de abajo.",
     "Powered by :app": "Con tecnología de :app",
     "New folder": "Nueva carpeta",
-    "New tag": "Nueva etiqueta"
+    "New tag": "Nueva etiqueta",
+    "A quote in this row is not closed.": "Una comilla de esta fila no está cerrada."
 }

@@ -871,5 +871,6 @@
     "Try again in a moment. If it keeps happening, send a message to the address below.": "Повторите через минуту. Если ошибка не исчезает, напишите на адрес ниже.",
     "Powered by :app": "На платформе :app",
     "New folder": "Новая папка",
-    "New tag": "Новый тег"
+    "New tag": "Новый тег",
+    "A quote in this row is not closed.": "В этой строке не закрыта кавычка."
 }
