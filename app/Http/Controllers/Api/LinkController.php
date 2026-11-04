@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Link;
 use App\Services\LinkService;
 use App\Services\QuotaService;
+use App\Support\EncryptedNoteLink;
 use GuzzleHttp\Client;
 use Hop\Bio\Contracts\ShortlinkCreator;
 use Hop\Safety\LinkSafety;
@@ -121,7 +122,8 @@ class LinkController extends Controller
     public function fetchTitle(Request $request)
     {
         $request->validate(['url' => 'required|url']);
-        $url = $request->input('url');
+        // no fragment on the way out: it is not part of a request, and for an encrypted note it is the key
+        $url = (string) EncryptedNoteLink::withoutFragment($request->input('url'));
         if (! app(UrlGuard::class)->isSafe($url)) {
             return response()->json(['title' => null], 422);
         }

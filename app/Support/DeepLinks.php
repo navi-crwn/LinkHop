@@ -165,8 +165,10 @@ class DeepLinks
         if (preg_match('/S\.browser_fallback_url=([^;]*)/', $url, $m) && ! preg_match('#^https%3A%2F%2F#i', $m[1])) {
             return 'The fallback address inside an intent has to be an https address.';
         }
+        // the fallback is opened in a browser, so it follows the same rule as any destination (an encrypted note's key is refused)
+        $notes = app(EncryptedNoteLink::class);
 
-        return null;
+        return $notes->matches($url) ? $notes->message() : null;
     }
 
     /** A store page: App Store, Google Play, or their app schemes. */

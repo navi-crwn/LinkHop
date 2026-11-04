@@ -88,6 +88,15 @@ return [
         ],
     ],
 
+    // Hosts of NoteHop. An encrypted note keeps its key in the address fragment (#k=...), so LinkHop refuses to
+    // shorten an address on these hosts that carries one. note.hel.ink and the short host n.hel.ink always count;
+    // NOTEHOP_URL, NOTEHOP_SHARE_URL and the registered NoteHop app are added automatically, and HOP_NOTE_HOSTS
+    // (comma separated) adds any other domain that serves NoteHop.
+    'note_hosts' => array_values(array_unique(array_filter(array_map('trim', array_merge(
+        ['note.hel.ink', 'n.hel.ink'],
+        explode(',', (string) env('HOP_NOTE_HOSTS', '')),
+    ))))),
+
     // Days a released username stays unavailable to other people.
     'username_hold_days' => 90,
 

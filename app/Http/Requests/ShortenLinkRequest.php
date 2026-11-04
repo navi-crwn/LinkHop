@@ -8,6 +8,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ShortenLinkRequest extends FormRequest
 {
+    use ForgetsNoteKeysOnFailure;
+
     public function authorize(): bool
     {
         return true;
