@@ -26,6 +26,8 @@ Schedule::command('abuse:scan --full --purge')->dailyAt('04:30')->withoutOverlap
 // Guest links expire at 00:00 in the guest timezone; delete them right then.
 Schedule::command('links:prune-guest')->dailyAt('00:00')->timezone(config('shortener.guest_timezone'))->withoutOverlapping();
 Schedule::command('abuse:feeds')->dailyAt('03:45')->withoutOverlapping();
+// Guest links of the last day by destination domain, for Imperium (spikes = a kit at work).
+Schedule::command('links:guest-digest')->dailyAt('06:00')->withoutOverlapping();
 // Database + uploads + .env backup (spatie/laravel-backup); needs mysqldump on the server.
 Schedule::command('backup:clean')->dailyAt('02:30');
 Schedule::command('backup:run')->dailyAt('02:45');
