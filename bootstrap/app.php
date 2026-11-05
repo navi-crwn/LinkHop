@@ -13,6 +13,7 @@ use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\VerifyHopSignature;
 use App\Http\Middleware\VerifyHubRequest;
 use App\Support\EncryptedNoteLink;
+use App\Support\ServerErrorAlert;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -91,6 +92,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // With APP_DEBUG=true the error page prints the SQL of a failed query, values included. If one of the values
         // is an encrypted-note address with its key, the page is replaced by the plain error response.
         $exceptions->respond(function (SymfonyResponse $response, Throwable $e, Request $request) {
+            ServerErrorAlert::afterResponse($e, $request, $response->getStatusCode());
             if (! config('app.debug') || $response->getStatusCode() < 500 || ! EncryptedNoteLink::textHoldsSecret((string) $response->getContent())) {
                 return $response;
             }
