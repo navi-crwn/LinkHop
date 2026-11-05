@@ -34,6 +34,21 @@
         </div>
     </div>
 </div>
+<!-- Favicon -->
+<div class="editor-card">
+    <div class="editor-card-header">
+        <h3 class="editor-card-title">{{ __('Favicon') }}</h3>
+    </div>
+    <div class="space-y-3">
+        <p class="text-xs editor-text-muted">{{ __('The small icon in the browser tab. A square PNG, 64×64 or larger.') }}</p>
+        <input aria-label="{{ __('Upload favicon') }}" type="file" accept="image/png,image/webp,image/jpeg,image/gif" class="hidden" x-ref="faviconInput" @change="uploadFavicon($event)">
+        <div class="flex items-center gap-3">
+            <template x-if="bioPage.favicon"><img :src="faviconUrl(bioPage.favicon)" alt="" class="w-10 h-10 rounded-md object-contain" style="background: var(--editor-input-bg)"></template>
+            <button type="button" @click="$refs.faviconInput.click()" class="btn btn-secondary text-sm py-2 flex-1">{{ __('Upload favicon') }}</button>
+            <button type="button" x-show="bioPage.favicon" @click="bioPage.favicon = ''" class="btn btn-secondary text-sm py-2">{{ __('Remove') }}</button>
+        </div>
+    </div>
+</div>
 <!-- Privacy & Visibility -->
 <div class="editor-card">
     <div class="editor-card-header">

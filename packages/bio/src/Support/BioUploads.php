@@ -13,10 +13,13 @@ use Illuminate\Support\Facades\Storage;
  */
 class BioUploads
 {
+    /** The shape of a stored page favicon: a file uploadImage() put under bio-images/, never an address. */
+    public const FAVICON = '#^bio-images/[A-Za-z0-9._-]+$#';
+
     /** @return array<int, string|null> */
     public static function ofPage(BioPage $bioPage): array
     {
-        $files = [$bioPage->avatar_url, $bioPage->background_image, $bioPage->qr_settings['image'] ?? null, $bioPage->qr_settings['logo_url'] ?? null];
+        $files = [$bioPage->avatar_url, $bioPage->background_image, $bioPage->favicon, $bioPage->qr_settings['image'] ?? null, $bioPage->qr_settings['logo_url'] ?? null];
         foreach ($bioPage->links()->get(['thumbnail_url', 'custom_icon', 'content']) as $link) {
             array_push($files, ...self::ofLink($link));
         }
@@ -54,7 +57,8 @@ class BioUploads
         $inUse = BioPage::where(fn ($q) => $q->where('avatar_url', 'like', $like)
             ->orWhere('qr_settings', 'like', $like)
             ->orWhere('background_value', 'like', $like)
-            ->orWhere('background_image', 'like', $like))->exists()
+            ->orWhere('background_image', 'like', $like)
+            ->orWhere('favicon', 'like', $like))->exists()
             || BioLink::where(fn ($q) => $q->where('thumbnail_url', 'like', $like)
                 ->orWhere('custom_icon', 'like', $like)
                 ->orWhere('content', 'like', $like))->exists();

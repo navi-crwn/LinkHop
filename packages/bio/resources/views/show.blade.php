@@ -11,7 +11,7 @@
     @if(!($bioPage->allow_indexing ?? true))
         <meta name="robots" content="noindex, nofollow">
     @endif
-    <link rel="icon" href="{{ route('brand.favicon') }}">
+    <link rel="icon" href="{{ $bioPage->favicon ? Storage::disk('public')->url($bioPage->favicon) : route('brand.favicon') }}">
     <meta property="og:title" content="{{ $bioPage->seo_title ?? $bioPage->title }} | By LinkHop">
     <meta property="og:description" content="{{ $bioPage->seo_description ?? $bioPage->bio ?? 'Check out my links' }}">
     @if($bioPage->avatar_url)
