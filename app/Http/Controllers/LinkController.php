@@ -42,7 +42,7 @@ class LinkController extends Controller
     {
         $user = $request->user();
         $linksQuery = $user->links()->with(['folder', 'tags']);
-        if ($search = $request->string('q')->trim()->toString()) {
+        if ($search = trim($this->textInput($request, 'q'))) {
             $linksQuery->where(function ($q) use ($search) {
                 $q->where('slug', 'like', "%{$search}%")
                     ->orWhere('target_url', 'like', "%{$search}%")
@@ -57,7 +57,7 @@ class LinkController extends Controller
                 $query->where('tags.id', $tagId);
             });
         }
-        $sort = $request->string('sort')->toString() ?: 'created_desc';
+        $sort = $this->textInput($request, 'sort') ?: 'created_desc';
         switch ($sort) {
             case 'created_asc':
                 $linksQuery->oldest();
@@ -87,7 +87,7 @@ class LinkController extends Controller
             'folders' => $user->folders()->orderBy('name')->get(),
             'tags' => $user->tags()->orderBy('name')->get(),
             'filters' => [
-                'q' => $request->string('q')->toString(),
+                'q' => $this->textInput($request, 'q'),
                 'folder' => $request->integer('folder'),
                 'tag' => $request->integer('tag'),
                 'sort' => $sort,
@@ -100,7 +100,7 @@ class LinkController extends Controller
     {
         $user = $request->user();
         $linksQuery = $user->links()->with(['folder', 'tags']);
-        if ($search = $request->string('q')->trim()->toString()) {
+        if ($search = trim($this->textInput($request, 'q'))) {
             $linksQuery->where(function ($q) use ($search) {
                 $q->where('slug', 'like', "%{$search}%")
                     ->orWhere('target_url', 'like', "%{$search}%");
@@ -114,7 +114,7 @@ class LinkController extends Controller
                 $query->where('tags.id', $tagId);
             });
         }
-        $sort = $request->string('sort')->toString() ?: 'created_desc';
+        $sort = $this->textInput($request, 'sort') ?: 'created_desc';
         switch ($sort) {
             case 'created_asc':
                 $linksQuery->oldest();
@@ -173,10 +173,10 @@ class LinkController extends Controller
             'folders' => $user->folders()->orderBy('name')->get(),
             'tags' => $user->tags()->orderBy('name')->get(),
             'filters' => [
-                'q' => $request->string('q')->toString(),
+                'q' => $this->textInput($request, 'q'),
                 'folder' => $request->integer('folder'),
                 'tag' => $request->integer('tag'),
-                'sort' => $request->string('sort')->toString() ?: 'created_desc',
+                'sort' => $this->textInput($request, 'sort') ?: 'created_desc',
             ],
             'latestLinks' => $latestLinks,
             'topLinks' => $topLinks,
@@ -464,7 +464,7 @@ class LinkController extends Controller
         $this->authorizeLink($link);
         $validated = $request->validate([
             'qr_image' => 'required|string',
-            'settings' => 'nullable|array',
+            'settings' => ['nullable', 'array', EncryptedNoteLink::rule()],
         ]);
         try {
             $imageData = $validated['qr_image'];

@@ -5,6 +5,7 @@ namespace Hop\Bio\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\AbuseFlag;
 use App\Support\CssValue;
+use App\Support\EncryptedNoteLink;
 use Hop\Bio\Contracts\UrlSafety;
 use Hop\Bio\Models\BioLink;
 use Hop\Bio\Models\BioPage;
@@ -50,6 +51,12 @@ class BioLinkController extends Controller
             $result = $safety->assess(null, $text);
             if (array_intersect($result['signals'], config('safety.block_categories', [])) !== []) {
                 $errors['title'] = 'This content is not allowed due to our security policy.';
+            }
+        }
+        // Whatever the field is for (rich text, FAQ, settings), it is stored and may be published.
+        foreach ($data as $field => $value) {
+            if (app(EncryptedNoteLink::class)->holdsKey($value)) {
+                $errors[$field] = app(EncryptedNoteLink::class)->message();
             }
         }
         if ($errors !== []) {

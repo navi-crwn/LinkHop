@@ -90,9 +90,8 @@ it('with --apply cuts the keys out everywhere, disables the links and tells the 
     Mail::fake();
     Notification::fake();
     $seed = skSeed();
-    // the redirect had been cached before
-    $this->get('/l/liveone')->assertRedirect(SK_URL);
-    expect(Cache::has('slug:liveone'))->toBeTrue();
+    // the redirect had been cached before such rows stopped being cached
+    Cache::put('slug:liveone', Link::where('slug', 'liveone')->first(), 300);
     $deliveries = WebhookDelivery::count();
     Queue::fake();
 

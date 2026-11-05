@@ -23,7 +23,7 @@ class LinkController extends Controller
         if (! $user) {
             return response()->json([], 200);
         }
-        $query = trim((string) $request->get('query', ''));
+        $query = trim($this->textInput($request, 'query'));
         $links = Link::query()
             ->where('user_id', $user->id)
             ->when($query !== '', function ($q) use ($query) {

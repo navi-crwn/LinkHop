@@ -19,6 +19,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -78,6 +79,14 @@ return Application::configure(basePath: dirname(__DIR__))
             return redirect()->back()
                 ->withInput(EncryptedNoteLink::scrubInput($request->except(['_token', 'password', 'password_confirmation', 'current_password', 'token', 'code', 'recovery_code'])))
                 ->with('session_expired', 'Sesi habis, silakan coba lagi.');
+        });
+        // A refused form comes back with what was typed, kept in the session: without the key of an encrypted note.
+        $exceptions->render(function (ValidationException $e, Request $request) {
+            if (! $request->expectsJson()) {
+                $request->merge(EncryptedNoteLink::scrubInput($request->input()));
+            }
+
+            return null;
         });
         // With APP_DEBUG=true the error page prints the SQL of a failed query, values included. If one of the values
         // is an encrypted-note address with its key, the page is replaced by the plain error response.

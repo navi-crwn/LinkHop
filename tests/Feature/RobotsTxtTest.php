@@ -36,5 +36,7 @@ it('keeps the signed-in areas out of search results', function () {
 });
 
 it('points at the sitemap', function () {
-    expect(robotsRules()['sitemap'])->toContain('https://hel.ink/sitemap.xml');
+    // this file is served by the app's own host, and that is where its sitemap is; the hub's host has no such page
+    expect(robotsRules()['sitemap'])->toBe(['https://link.hel.ink/sitemap.xml']);
+    $this->get('/sitemap.xml')->assertOk();
 });

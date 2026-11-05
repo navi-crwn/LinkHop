@@ -1,6 +1,5 @@
 <?php
 
-use App\Exceptions\Handler;
 use App\Models\AbuseReport;
 use App\Models\Link;
 use App\Models\User;
@@ -10,7 +9,6 @@ use Hop\Auth\Models\ApiToken;
 use Hop\Bio\Models\BioLink;
 use Hop\Bio\Models\BioPage;
 use Hop\Safety\UrlGuard;
-use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Http\Client\Factory;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Session\TokenMismatchException;
@@ -219,10 +217,6 @@ it('does not flash the key back when the CSRF token has expired', function () {
 
     expect(json_encode(session()->all()))->not->toContain(BP_KEY)
         ->and(session()->getOldInput('title'))->toBe('kept');
-});
-
-it('documents that app/Exceptions/Handler.php is not the handler in use, so its $dontFlash does nothing', function () {
-    expect(app(ExceptionHandler::class))->not->toBeInstanceOf(Handler::class);
 });
 
 it('does not keep the key in the CSV preview that waits in the cache', function (string $url) {

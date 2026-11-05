@@ -6,6 +6,7 @@ use App\Helpers\SocialUrlHelper;
 use App\Http\Controllers\Controller;
 use App\Models\AbuseFlag;
 use App\Support\CssValue;
+use App\Support\EncryptedNoteLink;
 use App\Support\ReservedSlugs;
 use Hop\Bio\Contracts\UrlSafety;
 use Hop\Bio\Models\BioClick;
@@ -59,7 +60,7 @@ class BioPageController extends Controller
             'string',
             'max:20',
             'regex:/^[a-z0-9]+$/',
-            fn ($attribute, $value, $fail) => $value !== $current?->slug && strlen((string) $value) < $min
+            fn ($attribute, $value, $fail) => is_string($value) && $value !== $current?->slug && strlen($value) < $min
                 ? $fail("The slug must be at least {$min} letters or numbers.") : null,
             Rule::unique('bio_pages', 'slug')->ignore($current?->id),
             // Reserved words are refused for new slugs; an existing slug is left alone.
@@ -124,6 +125,12 @@ class BioPageController extends Controller
             && ($reason = $safety->rejectionReason($data['background_image']))) {
             $errors['background_image'] = $reason;
         }
+        // Whatever the field is for (design, CSS, QR settings), it is stored and may be published. A password is hashed.
+        foreach ($data as $field => $value) {
+            if ($field !== 'password' && app(EncryptedNoteLink::class)->holdsKey($value)) {
+                $errors[$field] = app(EncryptedNoteLink::class)->message();
+            }
+        }
         if ($errors !== []) {
             throw ValidationException::withMessages($errors);
         }
@@ -134,7 +141,9 @@ class BioPageController extends Controller
         if (auth()->user()->bioPages()->count() >= self::MAX_PAGES) {
             return back()->withErrors(['slug' => 'You have reached the maximum limit of '.self::MAX_PAGES.' bio pages.']);
         }
-        $request->merge(['slug' => strtolower($request->slug)]);
+        if (is_string($request->slug)) {
+            $request->merge(['slug' => strtolower($request->slug)]);
+        }
         $validated = $request->validate([
             'slug' => $this->slugRules(),
             'title' => 'required|string|max:'.BioPage::TITLE_MAX,
@@ -181,7 +190,7 @@ class BioPageController extends Controller
                 'conflict' => true,
             ], 409);
         }
-        if ($request->has('slug')) {
+        if (is_string($request->slug)) {
             $request->merge(['slug' => strtolower($request->slug)]);
         }
         $validated = $request->validate([

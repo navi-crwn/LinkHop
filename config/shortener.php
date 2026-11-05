@@ -122,6 +122,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Private destinations
+    |--------------------------------------------------------------------------
+    |
+    | Off: a destination on a private address (loopback, private and link-local
+    | ranges, localhost, *.local and the like) is refused. Turn it on only for an
+    | install used inside its own network. A login in the address stays refused,
+    | and the server's own requests (destination monitor, QR logo, webhooks) still
+    | never go to a private address.
+    |
+    */
+    'allow_private_destinations' => (bool) env('LINK_ALLOW_PRIVATE_DESTINATIONS', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Destination monitor
     |--------------------------------------------------------------------------
     |

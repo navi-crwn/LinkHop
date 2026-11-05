@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
 use App\Models\Folder;
+use App\Support\EncryptedNoteLink;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -26,7 +27,7 @@ class FolderController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:120'],
+            'name' => ['required', 'string', 'max:120', EncryptedNoteLink::rule()],
         ]);
         $folder = $request->user()->folders()->create($data);
         ActivityLog::log('created', 'Folder', $folder->id, "Created folder: {$folder->name}");
@@ -51,7 +52,7 @@ class FolderController extends Controller
             return back()->withErrors(['folder' => 'Default folder cannot be edited.']);
         }
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:120'],
+            'name' => ['required', 'string', 'max:120', EncryptedNoteLink::rule()],
         ]);
         $originalName = $folder->name;
         $folder->update($data);
@@ -79,7 +80,7 @@ class FolderController extends Controller
     public function manage(Request $request, Folder $folder): View
     {
         abort_unless($folder->user_id === $request->user()->id, 403);
-        $search = $request->string('q')->trim()->toString();
+        $search = trim($this->textInput($request, 'q'));
         $linksQuery = $folder->links()->with(['tags', 'folder'])->orderByDesc('created_at');
         if ($search) {
             $linksQuery->where(function ($query) use ($search) {

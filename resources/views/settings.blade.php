@@ -176,11 +176,11 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label for="fsettin-15" class="label">From date</label>
-                                <input id="fsettin-15" type="date" name="activity_from" value="{{ request('activity_from') }}" class="input mt-1">
+                                <input id="fsettin-15" type="date" name="activity_from" value="{{ $activityFrom }}" class="input mt-1">
                             </div>
                             <div>
                                 <label for="fsettin-16" class="label">To date</label>
-                                <input id="fsettin-16" type="date" name="activity_to" value="{{ request('activity_to') }}" class="input mt-1">
+                                <input id="fsettin-16" type="date" name="activity_to" value="{{ $activityTo }}" class="input mt-1">
                             </div>
                         </div>
                         <div class="mt-3 flex gap-2">

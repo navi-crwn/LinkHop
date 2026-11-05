@@ -8,9 +8,13 @@
                        class="rounded-lg px-3 py-1 text-xs font-medium transition {{ $days === $range ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'text-muted hover:text-ink' }}">{{ $range }}d</a>
                 @endforeach
             </nav>
-            <a href="{{ public_url('b/'.$bioPage->slug.'/qr') }}" target="_blank" rel="noopener" class="btn-ghost btn-sm">QR code</a>
+            @if ($bioPage->is_published)
+                <a href="{{ public_url('b/'.$bioPage->slug.'/qr') }}" target="_blank" rel="noopener" class="btn-ghost btn-sm">QR code</a>
+            @endif
             <a href="{{ route('bio.edit', $bioPage) }}" class="btn-soft btn-sm">Edit</a>
-            <a href="{{ public_url('b/'.$bioPage->slug) }}" target="_blank" rel="noopener" class="btn-primary btn-sm">View live</a>
+            @if ($bioPage->is_published)
+                <a href="{{ public_url('b/'.$bioPage->slug) }}" target="_blank" rel="noopener" class="btn-primary btn-sm">View live</a>
+            @endif
         </x-slot>
     </x-page-header>
 
