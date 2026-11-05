@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- `composer.lock` moves `hop/safety` from `12d72dd` to `df5e938` (navi-crwn/hop-safety#9): the bundled domain blacklist (`fnjphdp.com` and its subdomains, the Telegram account-takeover kit of 2026-11-05), the kit's phrases as phishing keywords matched in the address too, and the `random_subdomain` signal (weight 30, never blocking on its own; `safety.known_domains` lists the CDNs where such labels are normal). No code change here; `abuse:scan` and the forms pick the rules up at once.
+
 ### Fixes
 - The report form and the password and age pages (a link's and a bio page's) follow the visitor's language, `lang` attribute included.
 - A destination with a login in it (`https://paypal.com@evil.example/`) or on a private address (loopback, private and link-local ranges, cloud metadata, `localhost`, `*.local` and the like, also written as `0x7f000001` or `127.1`) is refused everywhere a destination is taken: forms, API, `shorten-web`, CSV import, routing and fallback addresses, bio blocks. Webhooks already refused both. Links that already exist keep working until edited.
