@@ -95,7 +95,8 @@ it('scores the shape of the kit address for everyone, so the scan disables an ac
 
     expect($link->fresh()->status)->toBe('inactive')
         ->and($link->fresh()->safety_status)->toBeNull()
-        ->and(AbuseFlag::where('subject_id', $link->id)->value('score'))->toBe(60);
+        ->and(AbuseFlag::where('subject_id', $link->id)->value('score'))->toBe(90)
+        ->and(AbuseFlag::where('subject_id', $link->id)->value('signals'))->toContain('phishing_shape', 'random_subdomain');
 });
 
 it('refuses a guest link whose destination looks like the kit, and one on a random subdomain', function (string $url) {
