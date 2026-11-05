@@ -17,7 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `scripts/check-string-casts.sh` also finds `$request->string()`, which fails on an array the same way as a cast.
 - A bio page in draft no longer links to its public address (the list, the editor, View live and QR code on its analytics page): those answered 404, also to the owner.
 - The icon-only main action of a page on a phone has an accessible name (New link, New folder, New tag, New bio page).
-- The 500 page no longer says the team has been notified: nothing reports an error to anyone. It asks to try again, and names the address to write to, in all nine languages.
+- The 500 page no longer says the team has been notified. It asks to try again, and names the address to write to, in all nine languages.
+- A 500 mails one address, at most once per kind of error per hour, in production and staging: the one set under `errors.alert_email` in Imperium's settings for LinkHop, or `admin@hel.ink` on hel.ink's own hosts. Any other install sends nothing until it sets one. The mail names the error class, the file and line, the route and a count, and leaves out the URL, the address, the message and the trace. It goes out after the visitor has the answer.
 - The not-found page of a bio page (`/b/...`) follows the visitor's language.
 - A query value sent as an array (`?q[]=x`) no longer gives signed-in pages a 500: My links, the dashboard, Analytics, Settings, the folder and tag pages and `/api/links` treat it as not given. The same value in a form field (a destination, the start and end dates, a bio page's slug, the export's minimum clicks) is answered as a validation error or ignored.
 
