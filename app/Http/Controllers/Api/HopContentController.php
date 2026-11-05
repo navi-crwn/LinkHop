@@ -14,6 +14,7 @@ use App\Models\LinkClick;
 use App\Models\SeoSetting;
 use App\Models\User;
 use App\Services\LinkService;
+use App\Support\GuestDigest;
 use App\Support\ServerErrorAlert;
 use Carbon\Carbon;
 use Hop\Bio\Models\BioLink;
@@ -84,6 +85,8 @@ class HopContentController extends Controller
                 'clicks_30d' => LinkClick::where('clicked_at', '>=', $now->copy()->subDays(30))->count(),
                 'open_reports' => AbuseReport::where('status', 'open')->count(),
                 'open_flags' => AbuseFlag::where('status', 'open')->count(),
+                'guest_links_24h' => Link::whereNull('user_id')->where('created_at', '>=', $now->copy()->subDay())->count(),
+                'guest_links_pending' => Link::where('safety_status', Link::SAFETY_PENDING)->where('status', Link::STATUS_ACTIVE)->count(),
             ],
             'series' => ['clicks' => $series],
         ]]);
@@ -99,7 +102,7 @@ class HopContentController extends Controller
                 ['type' => 'link', 'label' => 'Links', 'actions' => ['disable', 'enable', 'delete', 'transfer', 'rescan', 'mark_nsfw', 'unmark_nsfw', 'mark_sensitive']],
                 bio_enabled() ? ['type' => 'bio', 'label' => 'Bio pages', 'actions' => ['unpublish', 'publish', 'delete', 'transfer']] : null,
             ])),
-            'extensions' => ['ip', 'domains', 'queue', 'analytics'],
+            'extensions' => ['ip', 'domains', 'queue', 'analytics', 'guest_digest'],
             'settings_schema' => [
                 ...array_map(fn ($k) => ['key' => 'seo.'.$k, 'type' => 'string', 'restart_required' => false], SeoSetting::make()->getFillable()),
                 ['key' => ServerErrorAlert::SETTING, 'type' => 'string', 'restart_required' => false],
@@ -531,6 +534,12 @@ class HopContentController extends Controller
             'top_links' => $topLinks,
             'referrers' => $topReferrers,
         ]]);
+    }
+
+    /** GET /api/hop/x/guest-digest: the last daily digest of guest links by domain (links:guest-digest), built now if none was stored. */
+    public function guestDigest(GuestDigest $digests): JsonResponse
+    {
+        return response()->json(['ok' => true, 'data' => $digests->last() ?? $digests->build()]);
     }
 
     // ---- settings ---------------------------------------------------------------

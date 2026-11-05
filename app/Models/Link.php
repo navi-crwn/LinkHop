@@ -19,7 +19,9 @@ class Link extends Model
         'slug',
         'target_url',
         'user_id',
+        'creator_hash',
         'status',
+        'safety_status',
         'content_warning',
         'warning_reason',
         'clicks',
@@ -53,6 +55,7 @@ class Link extends Model
         'ab_variants' => 'array',
         'app_links' => 'array',
         'last_checked_at' => 'datetime',
+        'last_safety_scan_at' => 'datetime',
         'broken_since' => 'datetime',
         'check_failures' => 'integer',
     ];
@@ -60,6 +63,13 @@ class Link extends Model
     public const STATUS_ACTIVE = 'active';
 
     public const STATUS_INACTIVE = 'inactive';
+
+    /** safety_status of a guest link to a site the allowlist does not know: a warning page until abuse:scan clears it. */
+    public const SAFETY_PENDING = 'pending';
+
+    public const SAFETY_SAFE = 'safe';
+
+    public const SAFETY_FLAGGED = 'flagged';
 
     public const WARNING_NONE = 'none';
 
@@ -269,6 +279,12 @@ class Link extends Model
             $today->copy()->subDays(max(0, (int) config('shortener.guest_max_days', 30) - 1)),
             $today->copy()->subDays((int) config('shortener.guest_idle_days', 14)),
         ];
+    }
+
+    /** A guest link to an unknown site that no scan has cleared yet: visitors see a warning page first. */
+    public function isPendingSafety(): bool
+    {
+        return $this->safety_status === self::SAFETY_PENDING;
     }
 
     public function requiresPassword(): bool

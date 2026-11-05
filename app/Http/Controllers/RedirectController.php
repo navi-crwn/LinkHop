@@ -96,6 +96,21 @@ class RedirectController extends Controller
                 return response()->view('link-gate', compact('link'));
             }
         }
+        // A guest link to a site the allowlist does not know, not yet cleared by abuse:scan: say so before sending anyone on.
+        if ($link->isPendingSafety()) {
+            $sessionKey = 'link_unverified_passed_'.$link->id;
+            if (! session($sessionKey)) {
+                if ($request->isMethod('post') && $request->input('unverified_confirm') === 'yes') {
+                    session([$sessionKey => true]);
+
+                    return redirect()->to($request->fullUrl(), 303);
+                }
+
+                return response()->view('link-unverified', ['link' => $link, 'host' => $this->destinationHost($link)])
+                    ->header('Cache-Control', 'no-store')
+                    ->header('X-Robots-Tag', 'noindex');
+            }
+        }
         $counted = false;
         if ($link->max_clicks !== null && ! app(UserAgentService::class)->parse($request->userAgent())['bot']) {
             // Take the click before sending the visitor on: when the last one is gone, the next visitor is turned away,
@@ -156,6 +171,14 @@ class RedirectController extends Controller
         return response()
             ->view('errors.link-ended', ['link' => $link, 'reason' => $reason], $reason === 'scheduled' ? 404 : 410)
             ->header('Cache-Control', 'no-store');
+    }
+
+    /** The destination's host as a person would read it (no www., no brackets), for the warning page. */
+    protected function destinationHost(Link $link): string
+    {
+        $host = (string) parse_url($link->target_url, PHP_URL_HOST);
+
+        return (string) preg_replace('/^www\./', '', strtolower(trim($host, '[]')));
     }
 
     protected function shouldServePreview(Request $request, Link $link): bool

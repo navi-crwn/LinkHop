@@ -28,6 +28,10 @@ return [
     'control_url' => env('HOP_CONTROL_URL'),
     'control_name' => env('HOP_CONTROL_NAME', 'Control center'),
 
+    // Imperium's notification inbox (POST /hop/notify, loopback only on the same machine, e.g. http://127.0.0.1:8100).
+    // Empty: the daily guest digest (links:guest-digest) is only kept here and served at /api/hop/x/guest-digest.
+    'notify_url' => env('HOP_NOTIFY_URL'),
+
     // Seconds a signed server-to-server request (Imperium -> /api/hop/*, hub -> /internal/*) stays valid.
     'request_max_age' => 120,
 

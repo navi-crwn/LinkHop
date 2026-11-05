@@ -889,5 +889,11 @@
     "Favicon": "Favicon",
     "The small icon in the browser tab. A square PNG, 64×64 or larger.": "La petite icône dans l'onglet du navigateur. Un PNG carré, 64×64 ou plus.",
     "Upload favicon": "Téléverser le favicon",
-    "Favicon uploaded. Save the page to use it.": "Favicon téléversé. Enregistrez la page pour l’utiliser."
+    "Favicon uploaded. Save the page to use it.": "Favicon téléversé. Enregistrez la page pour l’utiliser.",
+    "Guests can make :max short links a day from one connection. Create a free account to make more.": "Les invités peuvent créer :max liens courts par jour depuis une même connexion. Créez un compte gratuit pour en créer davantage.",
+    "This destination is on a very new or unknown site, so it cannot be shortened as a guest. Sign in with a free HOP ID to shorten it.": "Cette destination se trouve sur un site très récent ou inconnu et ne peut pas être raccourcie en tant qu'invité. Connectez-vous avec un HOP ID gratuit pour la raccourcir.",
+    "Unverified destination": "Destination non vérifiée",
+    "This short link was created by a guest and points to a site LinkHop does not know yet. It has not been checked.": "Ce lien court a été créé par un invité et mène vers un site que LinkHop ne connaît pas encore. Il n'a pas été vérifié.",
+    "Never enter passwords, verification codes or payment details on a page you did not expect to see.": "Ne saisissez jamais de mots de passe, de codes de vérification ou de données de paiement sur une page que vous ne vous attendiez pas à voir.",
+    "Continue to :host": "Continuer vers :host"
 }

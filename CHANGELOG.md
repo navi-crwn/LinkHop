@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- `composer.lock` moves `hop/safety` from `12d72dd` to `df5e938` (navi-crwn/hop-safety#9): the bundled domain blacklist (`fnjphdp.com` and its subdomains, the Telegram account-takeover kit of 2026-11-05), the kit's phrases as phishing keywords matched in the address too, and the `random_subdomain` signal (weight 30, never blocking on its own; `safety.known_domains` lists the CDNs where such labels are normal). No code change here; `abuse:scan` and the forms pick the rules up at once.
+
 ### Fixes
 - An address without a host (`https://#k=...`) no longer reaches `idn_to_ascii()` with an empty string, which PHP 8.5 refuses with a `ValueError`: the note-key check answers "no NoteHop link" instead, so the suite passes on PHP 8.3 and 8.5.
 - The report form and the password and age pages (a link's and a bio page's) follow the visitor's language, `lang` attribute included.

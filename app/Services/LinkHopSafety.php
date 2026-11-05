@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Support\EncryptedNoteLink;
+use App\Support\PhishingShape;
 use App\Support\WebhookGuard;
 use Hop\Safety\EncryptedNoteLink as NoteAddress;
 use Hop\Safety\LinkSafety;
@@ -15,7 +16,18 @@ use Hop\Safety\LinkSafety;
  */
 class LinkHopSafety extends LinkSafety
 {
-    public function __construct(private readonly EncryptedNoteLink $notes) {}
+    /** Whether assess() may look up a domain's age (one RDAP request per domain, cached). Off on the request path. */
+    private bool $domainAge = false;
+
+    public function __construct(private readonly EncryptedNoteLink $notes, private readonly DomainAge $ages) {}
+
+    /** abuse:scan and the sweep turn this on; forms and the API never wait for a registry. */
+    public function withDomainAge(bool $on = true): static
+    {
+        $this->domainAge = $on;
+
+        return $this;
+    }
 
     /** Refuses the address of an encrypted NoteHop note: its key is in the fragment, and we would store it. */
     public function rejectionReason(?string $url, string $text = '', array $schemes = self::WEB_SCHEMES): ?string
@@ -84,12 +96,41 @@ class LinkHopSafety extends LinkSafety
     {
         $bare = EncryptedNoteLink::withoutFragment($url);
         if (! $remote || $bare === $url) {
-            return parent::assess($url, $text, $remote);
+            $result = parent::assess($url, $text, $remote);
+        } else {
+            $local = parent::assess($url, $text, false);
+            $far = parent::assess($bare, $text, true);
+            $result = ['score' => 0, 'signals' => array_values(array_unique([...$local['signals'], ...$far['signals']]))];
         }
-        $local = parent::assess($url, $text, false);
-        $far = parent::assess($bare, $text, true);
-        $signals = array_values(array_unique([...$local['signals'], ...$far['signals']]));
-        $weights = config('safety.weights', []);
+
+        return $this->withOwnSignals($url, $result);
+    }
+
+    /**
+     * LinkHop's own signals on top of the package's: the shape of a phishing kit's address (App\Support\PhishingShape)
+     * and, when allowed, a domain registered fewer than guest_policy.min_domain_age_days ago. Weights come from
+     * config/shortener.php (guest_policy.weights); the package's weights stay as they are.
+     *
+     * @param  array{score: int, signals: array<int, string>}  $result
+     * @return array{score: int, signals: array<int, string>}
+     */
+    private function withOwnSignals(?string $url, array $result): array
+    {
+        $signals = $result['signals'];
+        $shape = PhishingShape::assess($url);
+        if ($shape['hit']) {
+            $signals[] = 'phishing_shape';
+        }
+        $minAge = (int) config('shortener.guest_policy.min_domain_age_days', 0);
+        if ($this->domainAge && $minAge > 0 && $shape['host'] !== null && ! filter_var($shape['host'], FILTER_VALIDATE_IP)
+            && ! app(GuestLinkPolicy::class)->isAllowlisted($shape['host'], (array) config('shortener.guest_policy.allowlist', []))) {
+            $age = $this->ages->ageInDays($shape['host']);
+            if ($age !== null && $age < $minAge) {
+                $signals[] = 'young_domain';
+            }
+        }
+        $signals = array_values(array_unique($signals));
+        $weights = array_merge((array) config('safety.weights', []), (array) config('shortener.guest_policy.weights', []));
 
         return ['score' => array_sum(array_map(fn ($s) => (int) ($weights[$s] ?? 0), $signals)), 'signals' => $signals];
     }
