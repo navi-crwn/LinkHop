@@ -17,7 +17,7 @@ const SE_KEY = 'FAKEKEYzzz999';
 
 /** Columns a person cannot write free text into, or that are never about an address: anything else must be scrubbed. */
 const SE_NOT_FREE_TEXT = [
-    'links' => ['slug', 'status', 'password_hash', 'redirect_type', 'qr_code_path', 'qr_fg_color', 'qr_bg_color', 'content_warning', 'target_url', 'fallback_url', 'routing_rules', 'ab_variants', 'app_links'],
+    'links' => ['slug', 'status', 'safety_status', 'creator_hash', 'password_hash', 'redirect_type', 'qr_code_path', 'qr_fg_color', 'qr_bg_color', 'content_warning', 'target_url', 'fallback_url', 'routing_rules', 'ab_variants', 'app_links'],
     'bio_links' => ['type', 'public_id', 'btn_bg_color', 'btn_text_color', 'btn_border_color', 'entrance_animation', 'attention_animation'],
     'bio_pages' => ['slug', 'password', 'theme', 'layout', 'background_type', 'text_color', 'font_family', 'block_shape', 'block_shadow', 'social_icon_color', 'social_placement', 'social_icons_position', 'title_color', 'bio_color', 'link_bg_color', 'link_text_color', 'header_bg_color', 'background_color', 'background_gradient', 'button_bg_color', 'button_text_color', 'button_shape', 'button_shadow', 'socials_position', 'google_analytics_id', 'facebook_pixel_id', 'avatar_shape', 'badge', 'badge_color', 'tiktok_pixel_id', 'hover_effect', 'background_animation'],
     'abuse_reports' => ['slug', 'url', 'email', 'ip_address', 'status'],
