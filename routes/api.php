@@ -45,6 +45,7 @@ Route::middleware(['hop.signed', 'throttle:600,1,hop', 'hop.admin_client'])->pre
     Route::post('/x/domains/actions', [HopContentController::class, 'domainsAct']);
     Route::get('/x/queue', [HopContentController::class, 'queue']);
     Route::get('/x/analytics', [HopContentController::class, 'analytics']);
+    Route::get('/x/guest-digest', [HopContentController::class, 'guestDigest']);
     Route::get('/settings', [HopContentController::class, 'settings']);
     Route::put('/settings', [HopContentController::class, 'saveSettings']);
 });

@@ -885,5 +885,11 @@
     "Continue": "Continuer",
     "Enter the password to continue to :url.": "Saisissez le mot de passe pour continuer vers :url.",
     "Enter the password to view this page.": "Saisissez le mot de passe pour voir cette page.",
-    "Thank you. Your report has been submitted.": "Merci. Votre signalement a été envoyé."
+    "Thank you. Your report has been submitted.": "Merci. Votre signalement a été envoyé.",
+    "Guests can make :max short links a day from one connection. Create a free account to make more.": "Les invités peuvent créer :max liens courts par jour depuis une même connexion. Créez un compte gratuit pour en créer davantage.",
+    "This destination is on a very new or unknown site, so it cannot be shortened as a guest. Sign in with a free HOP ID to shorten it.": "Cette destination se trouve sur un site très récent ou inconnu et ne peut pas être raccourcie en tant qu'invité. Connectez-vous avec un HOP ID gratuit pour la raccourcir.",
+    "Unverified destination": "Destination non vérifiée",
+    "This short link was created by a guest and points to a site LinkHop does not know yet. It has not been checked.": "Ce lien court a été créé par un invité et mène vers un site que LinkHop ne connaît pas encore. Il n'a pas été vérifié.",
+    "Never enter passwords, verification codes or payment details on a page you did not expect to see.": "Ne saisissez jamais de mots de passe, de codes de vérification ou de données de paiement sur une page que vous ne vous attendiez pas à voir.",
+    "Continue to :host": "Continuer vers :host"
 }
