@@ -384,6 +384,9 @@ class EncryptedNoteLink
     private static function normalizeHost(string $host): string
     {
         $host = rawurldecode(trim($host, '[]'));
+        if ($host === '') {
+            return ''; // idn_to_ascii() throws a ValueError on an empty string (PHP 8.5); an empty host is no NoteHop host
+        }
         if (function_exists('idn_to_ascii') && ($ascii = idn_to_ascii($host, IDNA_NONTRANSITIONAL_TO_ASCII, INTL_IDNA_VARIANT_UTS46)) !== false) {
             $host = $ascii;
         }

@@ -297,3 +297,19 @@ it('keeps the fragment out of the activity log and the broken-destination email'
     $mail = (new LinkDestinationBroken($link, 404))->render();
     expect($mail)->toContain('https://example.com/doc')->not->toContain('notasecret');
 });
+
+it('treats an address without a host as no note link, on every PHP version', function (string $url) {
+    // idn_to_ascii('') returns false on PHP 8.3 and throws a ValueError on PHP 8.5: the host is checked before it is mapped.
+    $notes = app(EncryptedNoteLink::class);
+
+    expect($notes->matches($url))->toBeFalse()
+        ->and($notes->holdsKey($url))->toBeFalse()
+        ->and(EncryptedNoteLink::scrubInput(['target_url' => $url]))->toBe(['target_url' => $url]);
+})->with([
+    'no host' => 'https://#k=secretkey',
+    'only slashes' => 'https:///#k=secretkey',
+    'fragment alone' => '#k=secretkey',
+    'login without a host' => 'https://user@#k=secretkey',
+    'port without a host' => 'https://:443/#k=secretkey',
+    'empty brackets' => 'https://[]/#k=secretkey',
+]);

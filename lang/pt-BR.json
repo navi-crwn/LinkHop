@@ -885,5 +885,9 @@
     "Continue": "Continuar",
     "Enter the password to continue to :url.": "Digite a senha para continuar para :url.",
     "Enter the password to view this page.": "Digite a senha para ver esta página.",
-    "Thank you. Your report has been submitted.": "Obrigado. Sua denúncia foi enviada."
+    "Thank you. Your report has been submitted.": "Obrigado. Sua denúncia foi enviada.",
+    "Favicon": "Favicon",
+    "The small icon in the browser tab. A square PNG, 64×64 or larger.": "O ícone pequeno na aba do navegador. Um PNG quadrado, 64×64 ou maior.",
+    "Upload favicon": "Enviar favicon",
+    "Favicon uploaded. Save the page to use it.": "Favicon enviado. Salve a página para usá-lo."
 }

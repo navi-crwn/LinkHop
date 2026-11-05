@@ -233,6 +233,8 @@ class BioPageController extends Controller
             'seo_title' => 'nullable|string|max:47',
             'seo_description' => 'nullable|string|max:160',
             'seo_noindex' => 'nullable|boolean',
+            // An upload of this install only (see uploadImage): a favicon on another host would fetch from it on every visit.
+            'favicon' => ['nullable', 'string', 'max:500', 'regex:'.BioUploads::FAVICON],
             'custom_css' => 'nullable|string',
             'is_published' => 'nullable|boolean',
             'is_adult_content' => 'nullable|boolean',
@@ -259,7 +261,7 @@ class BioPageController extends Controller
         if (array_key_exists('avatar_url', $validated) && $validated['avatar_url'] !== null && $validated['avatar_url'] !== $bioPage->avatar_url) {
             unset($validated['avatar_url']);
         }
-        $oldFiles = [$bioPage->avatar_url, $bioPage->qr_settings['image'] ?? null, $bioPage->qr_settings['logo_url'] ?? null];
+        $oldFiles = [$bioPage->avatar_url, $bioPage->favicon, $bioPage->qr_settings['image'] ?? null, $bioPage->qr_settings['logo_url'] ?? null];
         if ($request->hasFile('avatar')) {
             $validated['avatar_url'] = $request->file('avatar')->store('avatars', 'public');
         }
