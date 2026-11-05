@@ -889,5 +889,11 @@
     "Favicon": "Favicon",
     "The small icon in the browser tab. A square PNG, 64×64 or larger.": "The small icon in the browser tab. A square PNG, 64×64 or larger.",
     "Upload favicon": "Upload favicon",
-    "Favicon uploaded. Save the page to use it.": "Favicon uploaded. Save the page to use it."
+    "Favicon uploaded. Save the page to use it.": "Favicon uploaded. Save the page to use it.",
+    "Guests can make :max short links a day from one connection. Create a free account to make more.": "Guests can make :max short links a day from one connection. Create a free account to make more.",
+    "This destination is on a very new or unknown site, so it cannot be shortened as a guest. Sign in with a free HOP ID to shorten it.": "This destination is on a very new or unknown site, so it cannot be shortened as a guest. Sign in with a free HOP ID to shorten it.",
+    "Unverified destination": "Unverified destination",
+    "This short link was created by a guest and points to a site LinkHop does not know yet. It has not been checked.": "This short link was created by a guest and points to a site LinkHop does not know yet. It has not been checked.",
+    "Never enter passwords, verification codes or payment details on a page you did not expect to see.": "Never enter passwords, verification codes or payment details on a page you did not expect to see.",
+    "Continue to :host": "Continue to :host"
 }

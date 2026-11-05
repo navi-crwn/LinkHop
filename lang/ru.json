@@ -889,5 +889,11 @@
     "Favicon": "Фавикон",
     "The small icon in the browser tab. A square PNG, 64×64 or larger.": "Маленький значок на вкладке браузера. Квадратный PNG, 64×64 или больше.",
     "Upload favicon": "Загрузить фавикон",
-    "Favicon uploaded. Save the page to use it.": "Фавикон загружен. Сохраните страницу, чтобы использовать его."
+    "Favicon uploaded. Save the page to use it.": "Фавикон загружен. Сохраните страницу, чтобы использовать его.",
+    "Guests can make :max short links a day from one connection. Create a free account to make more.": "Гости могут создать :max коротких ссылок в день с одного подключения. Создайте бесплатный аккаунт, чтобы создавать больше.",
+    "This destination is on a very new or unknown site, so it cannot be shortened as a guest. Sign in with a free HOP ID to shorten it.": "Этот адрес находится на очень новом или неизвестном сайте, поэтому гость не может его сократить. Войдите с бесплатным HOP ID, чтобы сократить его.",
+    "Unverified destination": "Непроверенный адрес",
+    "This short link was created by a guest and points to a site LinkHop does not know yet. It has not been checked.": "Эту короткую ссылку создал гость, и она ведёт на сайт, который LinkHop ещё не знает. Она не проверялась.",
+    "Never enter passwords, verification codes or payment details on a page you did not expect to see.": "Никогда не вводите пароли, коды подтверждения или платёжные данные на странице, которую вы не ожидали увидеть.",
+    "Continue to :host": "Перейти на :host"
 }

@@ -889,5 +889,11 @@
     "Favicon": "ファビコン",
     "The small icon in the browser tab. A square PNG, 64×64 or larger.": "ブラウザのタブに表示される小さなアイコン。正方形の PNG、64×64 以上。",
     "Upload favicon": "ファビコンをアップロード",
-    "Favicon uploaded. Save the page to use it.": "ファビコンをアップロードしました。使用するにはページを保存してください。"
+    "Favicon uploaded. Save the page to use it.": "ファビコンをアップロードしました。使用するにはページを保存してください。",
+    "Guests can make :max short links a day from one connection. Create a free account to make more.": "ゲストは同じ接続から1日に :max 件まで短縮リンクを作成できます。もっと作成するには無料アカウントを作成してください。",
+    "This destination is on a very new or unknown site, so it cannot be shortened as a guest. Sign in with a free HOP ID to shorten it.": "このリンク先はごく新しい、または不明なサイトのため、ゲストでは短縮できません。無料の HOP ID でサインインすると短縮できます。",
+    "Unverified destination": "未確認のリンク先",
+    "This short link was created by a guest and points to a site LinkHop does not know yet. It has not been checked.": "この短縮リンクはゲストが作成したもので、LinkHop がまだ知らないサイトを指しています。まだ確認されていません。",
+    "Never enter passwords, verification codes or payment details on a page you did not expect to see.": "予期しないページでパスワード、確認コード、支払い情報を入力しないでください。",
+    "Continue to :host": ":host に進む"
 }

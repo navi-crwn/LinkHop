@@ -54,6 +54,79 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Guest policy
+    |--------------------------------------------------------------------------
+    |
+    | What a link made without an account may point at, on top of the safety
+    | rules that apply to everyone (hop/safety). Accounts are not affected by
+    | any of this; abuse:scan scores every link the same way.
+    |
+    |  - allowlist: destinations on these domains (and their subdomains) are
+    |    taken as they are. Any other destination of a guest gets
+    |    safety_status = pending and a warning page until the hourly scan
+    |    clears it (pending_unknown_hosts).
+    |  - min_domain_age_days: a destination whose domain was registered fewer
+    |    days ago than this is refused for guests (RDAP lookup, cached). 0
+    |    turns the rule off. When the lookup fails or the registry does not
+    |    say, unknown_age_is_young decides. The lookup is one request per
+    |    domain to rdap.org (which forwards to the registry) and never
+    |    touches the destination itself.
+    |  - refuse_random_subdomain: a machine-made label left of the domain
+    |    (mjdgdqgk.example.com) is refused for guests.
+    |  - refuse_phishing_shape: the shape of a known phishing kit's landing
+    |    address (random subdomain or path, r=/t= tracking parameters, a
+    |    throwaway TLD) is refused for guests. App\Support\PhishingShape.
+    |  - per_ip_per_day: guest links one connection may make per calendar
+    |    day (counted in the database, next to the per-minute limiter).
+    |  - weights: what the LinkHop-only signals add to a link's abuse score.
+    |
+    */
+    'guest_policy' => [
+        'enabled' => (bool) env('GUEST_POLICY_ENABLED', true),
+        'pending_unknown_hosts' => (bool) env('GUEST_PENDING_UNKNOWN_HOSTS', true),
+        'min_domain_age_days' => max(0, (int) env('GUEST_MIN_DOMAIN_AGE_DAYS', 30)),
+        'domain_age_lookup' => (bool) env('GUEST_DOMAIN_AGE_LOOKUP', true),
+        'unknown_age_is_young' => (bool) env('GUEST_UNKNOWN_AGE_IS_YOUNG', true),
+        'refuse_random_subdomain' => (bool) env('GUEST_REFUSE_RANDOM_SUBDOMAIN', true),
+        'refuse_phishing_shape' => (bool) env('GUEST_REFUSE_PHISHING_SHAPE', true),
+        'per_ip_per_day' => max(0, (int) env('GUEST_LINKS_PER_IP_PER_DAY', 20)),
+        // RDAP: how long a registration date is remembered, and how long a failed lookup is not retried.
+        'rdap_url' => env('GUEST_RDAP_URL', 'https://rdap.org/domain/'),
+        'rdap_cache_days' => 7,
+        'rdap_failure_minutes' => 60,
+        'rdap_timeout' => 4,
+        // Hosts of phishing kits seen on this install (links:sweep-phishing --hosts adds more for one run).
+        'kit_hosts' => array_values(array_filter(array_map('trim', explode(',', (string) env('GUEST_KIT_HOSTS', 'fnjphdp.com,bgp09.icu'))))),
+        'weights' => [
+            'phishing_shape' => (int) env('GUEST_WEIGHT_PHISHING_SHAPE', 60),
+            'young_domain' => (int) env('GUEST_WEIGHT_YOUNG_DOMAIN', 20),
+        ],
+        // Daily digest (links:guest-digest): a domain with at least this many new guest links in a day is a spike.
+        'digest_spike' => max(1, (int) env('GUEST_DIGEST_SPIKE', 10)),
+        // Well-known destinations: taken from a guest without a warning page. GUEST_ALLOWLIST_EXTRA adds more.
+        'allowlist' => array_values(array_unique(array_filter(array_map('trim', array_merge([
+            'hel.ink',
+            'example.com', 'example.org', 'example.net',
+            'google.com', 'youtube.com', 'youtu.be', 'gmail.com', 'goo.gl', 'googleusercontent.com', 'blogspot.com',
+            'facebook.com', 'fb.com', 'instagram.com', 'whatsapp.com', 'wa.me', 'messenger.com', 'threads.net',
+            'twitter.com', 'x.com', 't.co', 'tiktok.com', 'linkedin.com', 'pinterest.com', 'reddit.com', 'tumblr.com', 'quora.com',
+            'telegram.org', 't.me', 'telegram.me', 'discord.com', 'discord.gg', 'twitch.tv', 'snapchat.com', 'line.me', 'kakao.com', 'vk.com',
+            'github.com', 'gitlab.com', 'bitbucket.org', 'stackoverflow.com', 'npmjs.com', 'pypi.org', 'wikipedia.org', 'wikimedia.org', 'archive.org',
+            'microsoft.com', 'live.com', 'outlook.com', 'office.com', 'apple.com', 'icloud.com', 'mozilla.org', 'cloudflare.com',
+            'amazon.com', 'amazon.co.jp', 'amazon.de', 'amazon.co.uk', 'ebay.com', 'etsy.com', 'aliexpress.com', 'shopee.co.id', 'tokopedia.com',
+            'bukalapak.com', 'lazada.co.id', 'blibli.com', 'mercadolivre.com.br', 'rakuten.co.jp', 'mercari.com',
+            'paypal.com', 'stripe.com', 'netflix.com', 'spotify.com', 'soundcloud.com', 'vimeo.com', 'imdb.com', 'medium.com', 'substack.com',
+            'wordpress.com', 'notion.so', 'canva.com', 'figma.com', 'dropbox.com', 'zoom.us', 'slack.com', 'trello.com', 'atlassian.net',
+            'yahoo.com', 'bing.com', 'duckduckgo.com', 'baidu.com', 'naver.com', 'yandex.ru', 'mail.ru',
+            'detik.com', 'kompas.com', 'tribunnews.com', 'cnnindonesia.com', 'liputan6.com', 'tempo.co', 'kumparan.com',
+            'nytimes.com', 'bbc.co.uk', 'bbc.com', 'theguardian.com', 'cnn.com', 'reuters.com', 'apnews.com', 'lemonde.fr', 'spiegel.de',
+            'zeit.de', 'asahi.com', 'nikkei.com', 'globo.com', 'uol.com.br', 'elpais.com', 'marca.com', 'rt.com', 'ria.ru',
+            'gojek.com', 'grab.com', 'traveloka.com', 'tiket.com', 'booking.com', 'airbnb.com', 'agoda.com',
+        ], explode(',', (string) env('GUEST_ALLOWLIST_EXTRA', ''))))))),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Reserved Slugs
     |--------------------------------------------------------------------------
     |
