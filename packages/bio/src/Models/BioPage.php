@@ -56,6 +56,7 @@ class BioPage extends Model
         'seo_title',
         'seo_description',
         'seo_noindex',
+        'favicon',
         'custom_css',
         'is_published',
         'is_adult_content',
