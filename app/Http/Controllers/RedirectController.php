@@ -9,6 +9,7 @@ use App\Services\LinkService;
 use App\Services\UserAgentService;
 use App\Support\ClickSource;
 use App\Support\DeepLinks;
+use App\Support\EncryptedNoteLink;
 use App\Support\LinkRouting;
 use App\Support\Webhooks;
 use Illuminate\Http\Request;
@@ -26,9 +27,14 @@ class RedirectController extends Controller
 
     public function __invoke(Request $request, string $slug)
     {
-        $link = Cache::remember($this->links->cacheKey($slug), 300, function () use ($slug) {
-            return Link::with(['user'])->where('slug', $slug)->first();
-        });
+        $link = Cache::get($this->links->cacheKey($slug));
+        if (! $link) {
+            $link = Link::with(['user'])->where('slug', $slug)->first();
+            // A row saved before encrypted note links were refused still redirects, but no copy of its key is made.
+            if (! $link || ! app(EncryptedNoteLink::class)->holdsKey($link->getAttributes())) {
+                Cache::put($this->links->cacheKey($slug), $link, 300);
+            }
+        }
         if ($link?->isGuestExpired() || (! $link && RetiredSlug::isBlocked($slug))) {
             return response()->view('errors.link-missing', ['slug' => $slug, 'expired' => true], 410);
         }

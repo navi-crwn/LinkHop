@@ -47,7 +47,7 @@ class LinkLimits
     /** Expiry has to come after the start. */
     public static function orderProblem(mixed $startsAt, mixed $expiresAt): ?string
     {
-        if (blank($startsAt) || blank($expiresAt)) {
+        if (blank($startsAt) || blank($expiresAt) || is_array($startsAt) || is_array($expiresAt)) {
             return null;
         }
 

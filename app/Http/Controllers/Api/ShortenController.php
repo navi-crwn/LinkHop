@@ -123,6 +123,7 @@ class ShortenController extends Controller
             }
             LinkRouting::check($v, $request->all());
             DeepLinks::check($v, $request->all());
+            app(EncryptedNoteLink::class)->refuseIn($v, $request->all(), ['warning_reason', 'folder']);
         });
         if ($validator->fails()) {
             return response()->json([
@@ -144,7 +145,7 @@ class ShortenController extends Controller
         if (! preg_match('/^https?:\/\//i', $targetUrl)) {
             $targetUrl = LinkRouting::address($targetUrl);
         }
-        if ($reason = app(LinkSafety::class)->rejectionReason($targetUrl, (string) $request->input('alias'))) {
+        if ($reason = app(LinkSafety::class)->rejectionReason($targetUrl, $this->textInput($request, 'alias'))) {
             return response()->json([
                 'success' => false,
                 'error' => 'Validation Error',

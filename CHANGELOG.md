@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixes
+- The report form and the password and age pages (a link's and a bio page's) follow the visitor's language, `lang` attribute included.
+- A destination with a login in it (`https://paypal.com@evil.example/`) or on a private address (loopback, private and link-local ranges, cloud metadata, `localhost`, `*.local` and the like, also written as `0x7f000001` or `127.1`) is refused everywhere a destination is taken: forms, API, `shorten-web`, CSV import, routing and fallback addresses, bio blocks. Webhooks already refused both. Links that already exist keep working until edited.
+- `LINK_ALLOW_PRIVATE_DESTINATIONS=true` lets an install used inside its own network accept private addresses as destinations. It is off by default. A login in the address stays refused, and the server's own requests still never go to a private address.
+- A CSV row with a quote that is never closed is an error in the preview, not one long destination marked Ready.
+- `composer.json` pins `hop/ui` to the commit in the lock (`6b4210c`, same tree as before); the old pin was a commit outside its main history.
+- `robots.txt` names this app's own sitemap (`link.hel.ink/sitemap.xml`); the hub's host has none.
+- `scripts/check-string-casts.sh` also finds `$request->string()`, which fails on an array the same way as a cast.
+- A bio page in draft no longer links to its public address (the list, the editor, View live and QR code on its analytics page): those answered 404, also to the owner.
+- The icon-only main action of a page on a phone has an accessible name (New link, New folder, New tag, New bio page).
+- The 500 page no longer says the team has been notified: nothing reports an error to anyone. It asks to try again, and names the address to write to, in all nine languages.
+- The not-found page of a bio page (`/b/...`) follows the visitor's language.
+- A query value sent as an array (`?q[]=x`) no longer gives signed-in pages a 500: My links, the dashboard, Analytics, Settings, the folder and tag pages and `/api/links` treat it as not given. The same value in a form field (a destination, the start and end dates, a bio page's slug, the export's minimum clicks) is answered as a validation error or ignored.
+
 ### Signing out at the hub now ends the session here too (even when LinkHop was down)
 - Signing in through HOP ID uses `remember: true`, so the remember cookie (400 days) brought a person straight back in after their session rows were deleted, and the hub's "end sessions" action and its chained logout could not reach an app that was down at that moment. The hub now queues a signed `session.revoked` to every app; `POST /hop/events` handles it: the session rows of that account are deleted (database and file drivers) and its `remember_token` is rotated, so the cookie stops working. The hub retries for about 16 hours while LinkHop is unreachable.
 - `account.deleted` also ends the account's sessions, after the data purge that was already there. An event the hub sends twice (a retry) is handled once; a type LinkHop does not know gets a 200 so the hub stops retrying it.
@@ -22,6 +36,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A refused form no longer sends the key back in the page or stores it in the session: the fragment is cut from the address before the form is shown again, the CSV preview kept in the cache, and an abuse report (and the mail to the admin).
 - The destination monitor now really connects to the addresses it checked (the `stream` option made Guzzle ignore the pin), and no longer reads the body.
 - A key that still reaches a database error (a note address pasted into a free-text field, a row saved before this fix) is cut out of the log line before `laravel.log` (and the other text log channels) write it, and an `APP_DEBUG=true` error page that would print one is replaced by the plain error response. Keep `APP_DEBUG=false` in production.
+- A link saved with a key and not scrubbed yet still redirects, but its address is no longer kept in the redirect cache, and webhooks send it without the key.
+- The key is now refused in every field a person can fill in, not only in destinations and the main text fields: rich-text and code blocks, FAQ items, block settings, map, vCard and countdown fields, page background, custom CSS, QR settings, socials, a link's preview image, QR logo, warning text and comments, folder and tag names (also from a CSV row), and webhook addresses. An address written with HTML entities or CSS escapes, or with a line break in it, counts. A NoteHop link without a key and ordinary HTML are accepted as before, and any refused form comes back without the key.
+- `links:scrub-note-keys` now also takes the key out of those fields on rows saved earlier: bio page socials, background, CSS, text and QR settings, every text field of a bio block, abuse report reasons, a link's preview, warning text and comments, folder and tag names, and webhook addresses. Each column gets a line in the output, a link that only held a key there stays live, and a key it cannot cut out (encoded twice inside another address) is reported by row instead of being passed over.
 
 ### Open in the app (deep links)
 - A link can **try the installed app first** on iOS and Android. Choose "Open the app when the page belongs to a known app" (YouTube, Spotify, WhatsApp, Telegram, Instagram profiles, X profiles and posts, TikTok profiles, Zoom meetings, App Store and Google Play are recognised and the app address is built for you) or "Open the app address I give" (a URL scheme such as `myapp://item/42`, an https app link, or an Android `intent://...#Intent;...;end` address, separately for iOS and Android).

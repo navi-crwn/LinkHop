@@ -91,22 +91,22 @@
                         <p class="truncate pl-1 text-sm font-semibold text-ink">{{ $sectionTitle }}</p>
                         <div class="ml-auto flex items-center gap-1.5">
                             @if (request()->routeIs('bio.*'))
-                                <a href="{{ route('bio.create') }}" class="btn-primary btn-sm sm:btn">
+                                <a href="{{ route('bio.create') }}" aria-label="{{ __('New bio page') }}" class="btn-primary btn-sm sm:btn">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
                                     <span class="hidden sm:inline">New bio</span>
                                 </a>
                             @elseif (request()->routeIs('folders.index'))
-                                <button type="button" data-call="openFolderModal" class="btn-primary btn-sm sm:btn">
+                                <button type="button" data-call="openFolderModal" aria-label="{{ __('New folder') }}" class="btn-primary btn-sm sm:btn">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
                                     <span class="hidden sm:inline">New folder</span>
                                 </button>
                             @elseif (request()->routeIs('tags.index'))
-                                <button type="button" data-call="openTagModal" class="btn-primary btn-sm sm:btn">
+                                <button type="button" data-call="openTagModal" aria-label="{{ __('New tag') }}" class="btn-primary btn-sm sm:btn">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
                                     <span class="hidden sm:inline">New tag</span>
                                 </button>
                             @else
-                                <button type="button" data-call="openLinkPanel" data-fallback-href="{{ route('links.index') }}?create=1" class="create-link-trigger btn-primary btn-sm sm:btn">
+                                <button type="button" data-call="openLinkPanel" data-fallback-href="{{ route('links.index') }}?create=1" aria-label="{{ __('New link') }}" class="create-link-trigger btn-primary btn-sm sm:btn">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
                                     <span class="hidden sm:inline">New link</span>
                                 </button>

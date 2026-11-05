@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protected Link - {{ config('app.name') }}</title>
+    <title>{{ __('Password required') }} - {{ config('app.name') }}</title>
     <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png">
     <x-hop::fonts />
     @if($link->custom_title)
@@ -26,13 +26,13 @@
 <body>
     <form method="POST" action="{{ request()->fullUrl() }}" class="card">
         @csrf
-        <h1 class="text-xl font-semibold">This shortlink is password protected</h1>
-        <p class="text-sm text-slate-400 mt-2">Enter the password to continue to <span class="text-slate-200">{{ $link->short_url }}</span>.</p>
-        <input type="password" name="password" placeholder="Password" required autofocus>
+        <h1 class="text-xl font-semibold">{{ __('Password required') }}</h1>
+        <p class="text-sm text-slate-400 mt-2">{!! __('Enter the password to continue to :url.', ['url' => '<span class="text-slate-200">'.e($link->short_url).'</span>']) !!}</p>
+        <input type="password" name="password" placeholder="{{ __('Password') }}" required autofocus>
         @error('password')
             <div class="error">{{ $message }}</div>
         @enderror
-        <button type="submit">Unlock link</button>
+        <button type="submit">{{ __('Continue') }}</button>
     </form>
 </body>
 </html>

@@ -36,7 +36,7 @@
                         {{ __("We're sorry, but we encountered an unexpected error.") }}
                     </p>
                     <p class="text-sm text-gray-500 dark:text-gray-500">
-                        {{ __("Our team has been notified and we're working on fixing this issue.") }}
+                        {{ __('Try again in a moment. If it keeps happening, send a message to the address below.') }}
                     </p>
                 </div>
                 @if(config('app.debug'))

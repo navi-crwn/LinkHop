@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinkHop - Password Protected</title>
+    <title>LinkHop - {{ __('Password required') }}</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" href="{{ route('brand.favicon') }}">
     <link rel="stylesheet" href="/fonts/bio/all.css">
@@ -238,8 +238,8 @@
                 </svg>
             </div>
             <div class="header">
-                <h1>Password Protected</h1>
-                <p>This page requires a password to view</p>
+                <h1>{{ __('Password required') }}</h1>
+                <p>{{ __('Enter the password to view this page.') }}</p>
                 @if($bioPage->title)
                     <span class="page-title">{{ $bioPage->title }}</span>
                 @endif
@@ -252,7 +252,7 @@
                                name="password" 
                                id="password"
                                class="password-input"
-                               placeholder="Enter password" 
+                               placeholder="{{ __('Password') }}" 
                                autofocus
                                required>
                         <button type="button" class="toggle-btn" id="toggle-btn">
@@ -260,7 +260,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                             </svg>
-                            <span id="toggle-text">Show</span>
+                            <span id="toggle-text">{{ __('Show') }}</span>
                         </button>
                     </div>
                     @error('password')
@@ -276,15 +276,15 @@
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/>
                     </svg>
-                    Unlock Page
+                    {{ __('Continue') }}
                 </button>
             </form>
             <div class="back-link">
-                <a href="{{ url('/') }}">← Back to home</a>
+                <a href="{{ url('/') }}">← {{ __('Go to homepage') }}</a>
             </div>
         </div>
         <div class="branding">
-            <p>Powered by <a href="{{ url('/') }}">LinkHop</a></p>
+            <p>{!! __('Powered by :app', ['app' => '<a href="'.e(url('/')).'">LinkHop</a>']) !!}</p>
         </div>
     </div>
     <script nonce="{{ Vite::cspNonce() }}">
@@ -294,11 +294,11 @@
             const eyeIcon = document.getElementById('eye-icon');
             if (input.type === 'password') {
                 input.type = 'text';
-                toggleText.textContent = 'Hide';
+                toggleText.textContent = @js(__('Hide'));
                 eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>';
             } else {
                 input.type = 'password';
-                toggleText.textContent = 'Show';
+                toggleText.textContent = @js(__('Show'));
                 eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>';
             }
         document.getElementById('toggle-btn').addEventListener('click', togglePassword);

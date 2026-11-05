@@ -130,6 +130,8 @@ class Webhooks
         if (! $userId) {
             return;
         }
+        // A row saved before encrypted note links were refused can still hold a key: the outbox and the receiver do not get it.
+        $data = EncryptedNoteLink::scrubInput($data);
         // A webhook problem (database, queue) must never undo or slow down the change that caused it.
         try {
             WebhookEndpoint::where('user_id', $userId)->where('is_active', true)->get()

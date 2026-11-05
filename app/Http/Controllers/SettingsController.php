@@ -17,11 +17,13 @@ class SettingsController extends Controller
         $activityQuery = DB::table('activity_logs')
             ->where('user_id', $user->id)
             ->orderBy('created_at', 'desc');
-        if ($request->filled('activity_from')) {
-            $activityQuery->whereDate('created_at', '>=', $request->activity_from);
+        $activityFrom = $this->textInput($request, 'activity_from');
+        $activityTo = $this->textInput($request, 'activity_to');
+        if ($activityFrom !== '') {
+            $activityQuery->whereDate('created_at', '>=', $activityFrom);
         }
-        if ($request->filled('activity_to')) {
-            $activityQuery->whereDate('created_at', '<=', $request->activity_to);
+        if ($activityTo !== '') {
+            $activityQuery->whereDate('created_at', '<=', $activityTo);
         }
         $activityLogs = $activityQuery->limit(50)->get();
         $folders = $user->folders()->orderBy('name')->get();
@@ -29,6 +31,8 @@ class SettingsController extends Controller
 
         return view('settings', [
             'activityLogs' => $activityLogs,
+            'activityFrom' => $activityFrom,
+            'activityTo' => $activityTo,
             'folders' => $folders,
             'tags' => $tags,
             'webhooks' => $user->webhookEndpoints()->with(['deliveries' => fn ($q) => $q->latest('id')->limit(10)])->orderBy('id')->get(),
@@ -65,8 +69,8 @@ class SettingsController extends Controller
                 $q->where('tags.id', $request->tag_id);
             });
         }
-        if ($request->filled('min_clicks')) {
-            $query->having('clicks_count', '>=', $request->min_clicks);
+        if (is_numeric($request->input('min_clicks'))) {
+            $query->having('clicks_count', '>=', $request->input('min_clicks'));
         }
         $sortBy = $request->input('sort_by', 'created_at');
         if ($sortBy === 'most_clicked') {

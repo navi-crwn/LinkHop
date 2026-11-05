@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinkHop - Age Verification</title>
+    <title>LinkHop - {{ __('Age Verification Required') }}</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" href="{{ route('brand.favicon') }}">
     <link rel="stylesheet" href="/fonts/bio/all.css">
@@ -230,14 +230,14 @@
                 <span>18+</span>
             </div>
             <div class="header">
-                <h1>Age Verification Required</h1>
-                <p>This page contains content intended for adults only</p>
+                <h1>{{ __('Age Verification Required') }}</h1>
+                <p>{{ __('This page contains adult content intended strictly for viewers aged 18 and older.') }}</p>
                 @if($bioPage->title)
                     <span class="page-title">{{ $bioPage->title }}</span>
                 @endif
             </div>
             <div class="disclaimer">
-                By clicking "I'm 18+ Enter", you confirm that you are at least 18 years old and agree to view adult content.
+                {{ __('By continuing, you confirm that you are of legal age to view adult content in your jurisdiction.') }}
             </div>
             <form method="POST" action="{{ request()->url() }}">
                 @csrf
@@ -246,16 +246,13 @@
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    I'm 18+ Enter
+                    {{ __('I am 18+ — Enter') }}
                 </button>
-                <a href="{{ url('/') }}" class="leave-btn">Leave Page</a>
+                <a href="{{ url('/') }}" class="leave-btn">{{ __('Go Back') }}</a>
             </form>
-            <p class="footer-disclaimer">
-                By continuing, you agree that you are of legal age to view adult content in your jurisdiction.
-            </p>
         </div>
         <div class="branding">
-            <p>Powered by <a href="{{ url('/') }}">LinkHop</a></p>
+            <p>{!! __('Powered by :app', ['app' => '<a href="'.e(url('/')).'">LinkHop</a>']) !!}</p>
         </div>
     </div>
 </body>
