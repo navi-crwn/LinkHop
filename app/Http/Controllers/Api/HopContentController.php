@@ -14,6 +14,7 @@ use App\Models\LinkClick;
 use App\Models\SeoSetting;
 use App\Models\User;
 use App\Services\LinkService;
+use App\Support\ServerErrorAlert;
 use Carbon\Carbon;
 use Hop\Bio\Models\BioLink;
 use Hop\Bio\Models\BioPage;
@@ -99,7 +100,10 @@ class HopContentController extends Controller
                 bio_enabled() ? ['type' => 'bio', 'label' => 'Bio pages', 'actions' => ['unpublish', 'publish', 'delete', 'transfer']] : null,
             ])),
             'extensions' => ['ip', 'domains', 'queue', 'analytics'],
-            'settings_schema' => array_map(fn ($k) => ['key' => 'seo.'.$k, 'type' => 'string', 'restart_required' => false], SeoSetting::make()->getFillable()),
+            'settings_schema' => [
+                ...array_map(fn ($k) => ['key' => 'seo.'.$k, 'type' => 'string', 'restart_required' => false], SeoSetting::make()->getFillable()),
+                ['key' => ServerErrorAlert::SETTING, 'type' => 'string', 'restart_required' => false],
+            ],
         ]]);
     }
 
@@ -539,6 +543,7 @@ class HopContentController extends Controller
         foreach (SeoSetting::make()->getFillable() as $k) {
             $rows[] = ['key' => 'seo.'.$k, 'type' => 'string', 'value' => $seo?->{$k}, 'default' => null, 'description' => 'Site & SEO: '.str_replace('_', ' ', $k), 'restart_required' => false, 'readonly' => false];
         }
+        $rows[] = ['key' => ServerErrorAlert::SETTING, 'type' => 'string', 'value' => ServerErrorAlert::recipient(), 'default' => null, 'description' => 'Email for server errors (500), at most one per kind of error per hour. Empty on an own install: no mail', 'restart_required' => false, 'readonly' => false];
         $env = [
             'guest_link_max_days' => config('shortener.guest_link_max_days'), 'guest_link_idle_days' => config('shortener.guest_link_idle_days'),
             'retired_slug_days' => config('shortener.retired_slug_days'), 'bio_slug_min_length' => config('bio.slug_min_length'),
@@ -564,10 +569,26 @@ class HopContentController extends Controller
                 $changes[substr($k, 4)] = is_null($v) ? null : mb_substr((string) $v, 0, 500);
             }
         }
-        if (! $changes) {
+        $all = (array) $request->all();
+        $hasAddress = array_key_exists(ServerErrorAlert::SETTING, $all);
+        if (! $changes && ! $hasAddress) {
             return $this->fail('bad_params', 'nothing editable in the body', 422);
         }
-        SeoSetting::updateOrCreate(['id' => 1], $changes);
+        if ($hasAddress) {
+            $address = $all[ServerErrorAlert::SETTING] ?? '';
+            if (! ServerErrorAlert::validAddress($address)) {
+                return $this->fail('bad_params', ServerErrorAlert::SETTING.' must be one email address', 422);
+            }
+            if (! ServerErrorAlert::store(trim($address))) {
+                return $this->fail('not_stored', ServerErrorAlert::SETTING.' could not be stored', 500);
+            }
+        }
+        if ($changes) {
+            SeoSetting::updateOrCreate(['id' => 1], $changes);
+        }
+        if ($hasAddress) {
+            $changes[ServerErrorAlert::SETTING] = trim($address);
+        }
         Cache::forget('seo.settings');
         HopAudit::create($this->auditBase($request, 'settings.update', 'settings', 'seo', null) + ['params' => $changes]);
 
