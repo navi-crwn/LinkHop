@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixes
+- An address without a host (`https://#k=...`) no longer reaches `idn_to_ascii()` with an empty string, which PHP 8.5 refuses with a `ValueError`: the note-key check answers "no NoteHop link" instead, so the suite passes on PHP 8.3 and 8.5.
 - The report form and the password and age pages (a link's and a bio page's) follow the visitor's language, `lang` attribute included.
 - A destination with a login in it (`https://paypal.com@evil.example/`) or on a private address (loopback, private and link-local ranges, cloud metadata, `localhost`, `*.local` and the like, also written as `0x7f000001` or `127.1`) is refused everywhere a destination is taken: forms, API, `shorten-web`, CSV import, routing and fallback addresses, bio blocks. Webhooks already refused both. Links that already exist keep working until edited.
 - `LINK_ALLOW_PRIVATE_DESTINATIONS=true` lets an install used inside its own network accept private addresses as destinations. It is off by default. A login in the address stays refused, and the server's own requests still never go to a private address.
@@ -21,6 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A 500 mails one address, at most once per kind of error per hour, in production and staging: the one set under `errors.alert_email` in Imperium's settings for LinkHop, or `admin@hel.ink` on hel.ink's own hosts. Any other install sends nothing until it sets one. The mail names the error class, the file and line, the route and a count, and leaves out the URL, the address, the message and the trace. It goes out after the visitor has the answer.
 - The not-found page of a bio page (`/b/...`) follows the visitor's language.
 - A query value sent as an array (`?q[]=x`) no longer gives signed-in pages a 500: My links, the dashboard, Analytics, Settings, the folder and tag pages and `/api/links` treat it as not given. The same value in a form field (a destination, the start and end dates, a bio page's slug, the export's minimum clicks) is answered as a validation error or ignored.
+
+### Bio page favicon
+- A bio page can have a favicon of its own (editor, Settings, Favicon): a PNG, WebP, JPEG or GIF uploaded to this install, shown in the browser tab of `/b/slug` instead of LinkHop's. The file is stored as it is, is deleted with the page or when replaced unless another page uses it, and only an upload of this install is accepted, never an address on another host. Same column as BioHop.
 
 ### Signing out at the hub now ends the session here too (even when LinkHop was down)
 - Signing in through HOP ID uses `remember: true`, so the remember cookie (400 days) brought a person straight back in after their session rows were deleted, and the hub's "end sessions" action and its chained logout could not reach an app that was down at that moment. The hub now queues a signed `session.revoked` to every app; `POST /hop/events` handles it: the session rows of that account are deleted (database and file drivers) and its `remember_token` is rotated, so the cookie stops working. The hub retries for about 16 hours while LinkHop is unreachable.

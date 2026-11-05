@@ -885,5 +885,9 @@
     "Continue": "Lanjut",
     "Enter the password to continue to :url.": "Masukkan kata sandi untuk melanjutkan ke :url.",
     "Enter the password to view this page.": "Masukkan kata sandi untuk melihat halaman ini.",
-    "Thank you. Your report has been submitted.": "Terima kasih. Laporan Anda telah dikirim."
+    "Thank you. Your report has been submitted.": "Terima kasih. Laporan Anda telah dikirim.",
+    "Favicon": "Favicon",
+    "The small icon in the browser tab. A square PNG, 64×64 or larger.": "Ikon kecil di tab browser. PNG persegi, 64×64 atau lebih besar.",
+    "Upload favicon": "Unggah favicon",
+    "Favicon uploaded. Save the page to use it.": "Favicon diunggah. Simpan halaman untuk memakainya."
 }

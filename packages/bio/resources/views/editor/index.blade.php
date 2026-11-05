@@ -2337,6 +2337,28 @@ window.bioEditorV2 = function() {
                 }
             });
         },
+        uploadFavicon(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const formData = new FormData();
+            formData.append('image', file);
+            formData.append('_token', '{{ csrf_token() }}');
+            fetch(bioEditorUrl('/upload-image'), { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.path) {
+                    this.bioPage.favicon = data.path;
+                    this.showNotification(@json(__('Favicon uploaded. Save the page to use it.')), 'success');
+                } else {
+                    throw new Error(data.message || 'Upload failed');
+                }
+            })
+            .catch(error => this.showNotification(error.message || 'Failed to upload', 'error'))
+            .finally(() => { event.target.value = ''; });
+        },
+        faviconUrl(path) {
+            return !path ? '' : (path.startsWith('/') || path.startsWith('http') ? path : '/storage/' + path);
+        },
         uploadBackgroundImage(event) {
             const file = event.target.files[0];
             if (!file) return;

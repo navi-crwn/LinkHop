@@ -885,5 +885,9 @@
     "Continue": "继续",
     "Enter the password to continue to :url.": "输入密码以继续访问 :url。",
     "Enter the password to view this page.": "输入密码以查看此页面。",
-    "Thank you. Your report has been submitted.": "谢谢。您的举报已提交。"
+    "Thank you. Your report has been submitted.": "谢谢。您的举报已提交。",
+    "Favicon": "网站图标",
+    "The small icon in the browser tab. A square PNG, 64×64 or larger.": "浏览器标签页上的小图标。正方形 PNG，64×64 或更大。",
+    "Upload favicon": "上传网站图标",
+    "Favicon uploaded. Save the page to use it.": "网站图标已上传。保存页面后生效。"
 }
