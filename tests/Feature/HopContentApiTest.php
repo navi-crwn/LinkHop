@@ -227,7 +227,7 @@ class HopContentApiTest extends TestCase
         LinkClick::create(['link_id' => $l1->id, 'country' => 'US', 'country_name' => 'United States', 'referer' => 'https://twitter.com', 'clicked_at' => now()->subHours(5)]);
 
         // Manifest should expose analytics extension
-        $this->signed('GET', '/api/hop/manifest')->assertOk()->assertJsonPath('data.extensions', ['ip', 'domains', 'queue', 'analytics']);
+        $this->signed('GET', '/api/hop/manifest')->assertOk()->assertJsonPath('data.extensions', ['ip', 'domains', 'queue', 'analytics', 'guest_digest']);
 
         $res = $this->signed('GET', '/api/hop/x/analytics');
         $res->assertOk()

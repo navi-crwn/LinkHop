@@ -885,5 +885,11 @@
     "Continue": "Lanjut",
     "Enter the password to continue to :url.": "Masukkan kata sandi untuk melanjutkan ke :url.",
     "Enter the password to view this page.": "Masukkan kata sandi untuk melihat halaman ini.",
-    "Thank you. Your report has been submitted.": "Terima kasih. Laporan Anda telah dikirim."
+    "Thank you. Your report has been submitted.": "Terima kasih. Laporan Anda telah dikirim.",
+    "Guests can make :max short links a day from one connection. Create a free account to make more.": "Tamu dapat membuat :max tautan pendek per hari dari satu koneksi. Buat akun gratis untuk membuat lebih banyak.",
+    "This destination is on a very new or unknown site, so it cannot be shortened as a guest. Sign in with a free HOP ID to shorten it.": "Tujuan ini berada di situs yang sangat baru atau tidak dikenal, jadi tidak bisa dipendekkan sebagai tamu. Masuk dengan HOP ID gratis untuk memendekkannya.",
+    "Unverified destination": "Tujuan belum diverifikasi",
+    "This short link was created by a guest and points to a site LinkHop does not know yet. It has not been checked.": "Tautan pendek ini dibuat oleh tamu dan mengarah ke situs yang belum dikenal LinkHop. Tautan ini belum diperiksa.",
+    "Never enter passwords, verification codes or payment details on a page you did not expect to see.": "Jangan pernah memasukkan kata sandi, kode verifikasi, atau data pembayaran di halaman yang tidak Anda duga.",
+    "Continue to :host": "Lanjutkan ke :host"
 }

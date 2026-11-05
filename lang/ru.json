@@ -885,5 +885,11 @@
     "Continue": "Далее",
     "Enter the password to continue to :url.": "Введите пароль, чтобы перейти к :url.",
     "Enter the password to view this page.": "Введите пароль, чтобы открыть эту страницу.",
-    "Thank you. Your report has been submitted.": "Спасибо. Ваша жалоба отправлена."
+    "Thank you. Your report has been submitted.": "Спасибо. Ваша жалоба отправлена.",
+    "Guests can make :max short links a day from one connection. Create a free account to make more.": "Гости могут создать :max коротких ссылок в день с одного подключения. Создайте бесплатный аккаунт, чтобы создавать больше.",
+    "This destination is on a very new or unknown site, so it cannot be shortened as a guest. Sign in with a free HOP ID to shorten it.": "Этот адрес находится на очень новом или неизвестном сайте, поэтому гость не может его сократить. Войдите с бесплатным HOP ID, чтобы сократить его.",
+    "Unverified destination": "Непроверенный адрес",
+    "This short link was created by a guest and points to a site LinkHop does not know yet. It has not been checked.": "Эту короткую ссылку создал гость, и она ведёт на сайт, который LinkHop ещё не знает. Она не проверялась.",
+    "Never enter passwords, verification codes or payment details on a page you did not expect to see.": "Никогда не вводите пароли, коды подтверждения или платёжные данные на странице, которую вы не ожидали увидеть.",
+    "Continue to :host": "Перейти на :host"
 }

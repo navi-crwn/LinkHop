@@ -6,6 +6,7 @@ use App\Helpers\SocialUrlHelper;
 use App\Models\AbuseFlag;
 use App\Models\Link;
 use App\Models\User;
+use App\Services\LinkHopSafety;
 use App\Services\LinkService;
 use App\Services\NotificationService;
 use Hop\Bio\Models\BioLink;
@@ -54,6 +55,10 @@ class AbuseScan extends Command
         $this->remote = $this->option('remote') || ! $this->option('full');
         $since = $this->option('full') ? null : $this->parseWindow((string) $this->option('since'));
         $this->safety->forgetBlacklist();
+        if ($this->safety instanceof LinkHopSafety) {
+            // The scan may wait for a registry: a domain registered days ago adds to the score (guest_policy.weights).
+            $this->safety->withDomainAge($this->remote);
+        }
         $protected = $this->protectedUserIds();
 
         $this->scanLinks($since, $protected);
@@ -91,22 +96,38 @@ class AbuseScan extends Command
         return self::SUCCESS;
     }
 
+    /**
+     * Guest links first (they are the ones behind a warning page, and the ones a kit makes by the hundred), then the
+     * accounts' links. A guest link that was pending is cleared (safe) when the scan finds nothing, or marked flagged
+     * when it is disabled; the warning page follows safety_status.
+     */
     private function scanLinks(?\DateTimeInterface $since, array $protected): void
     {
-        $query = Link::query()->where('status', Link::STATUS_ACTIVE);
-        $this->window($query, $since)
-            ->where(fn ($q) => $q->whereNull('user_id')->orWhereNotIn('user_id', $protected))
-            ->chunkById(500, function ($links) {
+        $passes = [
+            // Every pending guest link is looked at, whatever its age: a run the schedule missed must not leave the
+            // warning page up until the nightly full scan.
+            fn (Builder $q) => $since === null
+                ? $q->whereNull('user_id')
+                : $q->whereNull('user_id')->where(fn (Builder $w) => $this->window($w, $since)->orWhere('safety_status', Link::SAFETY_PENDING)),
+            fn (Builder $q) => $this->window($q, $since)->whereNotNull('user_id')->whereNotIn('user_id', $protected),
+        ];
+        foreach ($passes as $owners) {
+            $owners(Link::query()->where('status', Link::STATUS_ACTIVE))->chunkById(500, function ($links) {
                 foreach ($links as $link) {
                     $text = implode(' ', array_filter([$link->slug, $link->custom_title, $link->custom_description]));
                     $result = $this->safety->assess($link->target_url, $text, $this->remote);
                     $summary = '/'.$link->slug.' -> '.($this->safety->host($link->target_url) ?? '?');
-                    $this->judge('link', $link->id, $link->user_id, $result, $summary, function () use ($link) {
-                        $link->forceFill(['status' => Link::STATUS_INACTIVE])->save();
+                    $disabled = $this->judge('link', $link->id, $link->user_id, $result, $summary, function () use ($link) {
+                        $link->forceFill(['status' => Link::STATUS_INACTIVE, 'safety_status' => $link->safety_status ? Link::SAFETY_FLAGGED : null])->save();
                         $this->links->forgetCache($link);
                     });
+                    if (! $disabled && $link->isPendingSafety() && ! $this->dryRun) {
+                        $link->forceFill(['safety_status' => Link::SAFETY_SAFE, 'last_safety_scan_at' => now()])->save();
+                        $this->links->forgetCache($link);
+                    }
                 }
             });
+        }
     }
 
     private function scanBioPages(?\DateTimeInterface $since, array $protected): void
@@ -151,18 +172,19 @@ class AbuseScan extends Command
     }
 
     /**
-     * Record a finding and disable the subject when the score is high enough.
+     * Record a finding and disable the subject when the score is high enough. True when the subject was (or, in a
+     * dry run, would be) disabled.
      */
-    private function judge(string $type, int $id, ?int $userId, array $result, string $summary, callable $disable): void
+    private function judge(string $type, int $id, ?int $userId, array $result, string $summary, callable $disable): bool
     {
         $this->stats['scanned']++;
         $score = $result['score'];
         if ($score < 10) {
-            return;
+            return false;
         }
         // An admin dismissed a previous finding for this subject: trust that decision.
         if (AbuseFlag::where('subject_type', $type)->where('subject_id', $id)->where('status', AbuseFlag::STATUS_DISMISSED)->exists()) {
-            return;
+            return false;
         }
         $isCsam = in_array('csam', $result['signals'], true);
         // Never store full URLs for CSAM hits; the summary is slug/domain only.
@@ -180,7 +202,7 @@ class AbuseScan extends Command
                 $this->record($type, $id, $userId, $result, AbuseFlag::ACTION_FLAGGED, $summary);
             }
 
-            return;
+            return false;
         }
         $this->stats['disabled']++;
         $this->notable[] = 'DISABLED '.$label;
@@ -188,6 +210,8 @@ class AbuseScan extends Command
             $disable();
         }
         $this->record($type, $id, $userId, $result, AbuseFlag::ACTION_DISABLED, $summary);
+
+        return true;
     }
 
     private function suspendRepeatOffenders(array $protected): void

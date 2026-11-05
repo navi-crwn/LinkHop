@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ShortenLinkRequest;
 use App\Models\IpWatchlist;
 use App\Models\Link;
+use App\Services\GuestLinkPolicy;
 use App\Services\LinkService;
 use App\Services\TurnstileService;
+use Illuminate\Support\Facades\Log;
 
 class PublicLinkController extends Controller
 {
@@ -14,7 +16,8 @@ class PublicLinkController extends Controller
 
     public function __construct(
         private readonly TurnstileService $turnstile,
-        private readonly LinkService $links
+        private readonly LinkService $links,
+        private readonly GuestLinkPolicy $policy,
     ) {}
 
     /** link.hel.ink/: LinkHop's own landing for guests, the dashboard once signed in. */
@@ -35,6 +38,13 @@ class PublicLinkController extends Controller
             return back()->withErrors(['turnstile' => 'Security verification failed. Please try again.'])->withInput();
         }
         $data = $request->validated();
+        // The guest policy (config/shortener.php, guest_policy): refuse, or allow with a warning page until scanned.
+        $decision = $this->policy->decide($data['target_url'], $request->ip());
+        if (! $decision['allowed']) {
+            Log::info('guest link refused', ['reason' => $decision['reason'], 'host' => parse_url($data['target_url'], PHP_URL_HOST)]);
+
+            return back()->withErrors(['target_url' => $decision['message']])->withInput();
+        }
         $watchlistEntry = IpWatchlist::where('ip_address', $request->ip())->first();
         if ($watchlistEntry) {
             $watchlistEntry->increment('attempt_count');
@@ -47,6 +57,8 @@ class PublicLinkController extends Controller
             'target_url' => $data['target_url'],
             'slug' => $this->prepareSlug($data['slug'] ?? null),
             'status' => Link::STATUS_ACTIVE,
+            'safety_status' => $decision['safety_status'],
+            'creator_hash' => $decision['creator_hash'],
             'content_warning' => $data['content_warning'] ?? 'none',
             'warning_reason' => $data['warning_reason'] ?? null,
         ]);
