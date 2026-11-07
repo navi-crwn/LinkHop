@@ -40,9 +40,9 @@ class SweepPhishingLinks extends Command
     protected $description = 'Find short links that point at a phishing kit by the shape of the destination; --apply disables them';
 
     /** What each reason adds to the score written on the flag. */
-    private const WEIGHTS = ['kit_host' => 100, 'blacklisted' => 100, 'page_text' => 100, 'phishing_keywords' => 80, 'random_subdomain' => 30, 'random_path' => 20, 'tracking_params' => 20, 'risky_tld' => 5];
+    private const WEIGHTS = ['kit_host' => 100, 'kit_path' => 100, 'blacklisted' => 100, 'page_text' => 100, 'phishing_keywords' => 80, 'random_subdomain' => 30, 'random_path' => 20, 'tracking_params' => 20, 'risky_tld' => 5];
 
-    private const SHAPE_SIGNALS = ['random_subdomain', 'random_path', 'tracking_params'];
+    private const SHAPE_SIGNALS = ['random_subdomain', 'random_path', 'tracking_params', 'kit_path'];
 
     private const FETCH_MAX_BYTES = 262144;
 

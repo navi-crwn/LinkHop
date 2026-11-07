@@ -44,10 +44,11 @@ final class PhishingShape
         if (self::isKitHost($host)) {
             $signals[] = 'kit_host';
         }
+        $path = (string) ($parts['path'] ?? '');
         if (self::hasRandomSubdomain($host)) {
             $signals[] = 'random_subdomain';
         }
-        if (self::hasRandomPath((string) ($parts['path'] ?? ''))) {
+        if (self::hasRandomPath($path)) {
             $signals[] = 'random_path';
         }
         if (self::hasTrackingParams((string) ($parts['query'] ?? ''))) {
@@ -57,14 +58,27 @@ final class PhishingShape
         if ($tld !== '' && in_array($tld, (array) config('safety.risky_tlds', []), true)) {
             $signals[] = 'risky_tld';
         }
+        if (self::hasKitPath($path) && in_array('tracking_params', $signals, true)) {
+            $signals[] = 'kit_path';
+        }
+        // A known kit host or the observed kit path is enough with its tracking pair. Otherwise two machine-made
+        // parts, or one plus the tracking pair on a throwaway TLD, is the shape. A subdomain plus the random path
+        // and tracking pair also catches the same kit after it changes to a readable-looking subdomain.
         $has = fn (string $s) => in_array($s, $signals, true);
-        // A known kit host is the kit. Otherwise two machine-made parts, or one plus the tracking pair on a
-        // throwaway TLD, is the shape; a lone random label (a CDN, an S3 bucket) is not.
         $hit = $has('kit_host')
+            || $has('kit_path')
             || ($has('random_subdomain') && ($has('random_path') || $has('tracking_params')))
-            || ($has('random_path') && $has('tracking_params') && $has('risky_tld'));
+            || ($has('random_path') && $has('tracking_params') && ($has('risky_tld') || $host !== $domain));
 
         return ['hit' => $hit, 'signals' => $signals, 'host' => $host, 'domain' => $domain];
+    }
+
+    /** The landing path of the observed Telegram account-takeover kit. */
+    public static function hasKitPath(string $path): bool
+    {
+        $segment = explode('/', trim($path, '/'))[0] ?? '';
+
+        return in_array(strtolower($segment), ['wqamhcsom'], true);
     }
 
     /** True when the fetched page reads like the kit's form. */
