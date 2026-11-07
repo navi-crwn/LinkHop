@@ -87,6 +87,20 @@ it('clears a pending link the hourly scan had missed, however old, while the win
         ->and($oldKit->fresh()->status)->toBe('active'); // outside the window, not pending: left for the nightly full scan
 });
 
+it('disables an incident kit path even without a known host or random subdomain', function () {
+    $user = User::factory()->create();
+    $link = Link::create([
+        'slug' => 'incid1',
+        'target_url' => 'https://pylinss.jehenmy.com/wqamhcsom?r=gnqhLD&t=1793793002',
+        'status' => 'active',
+        'user_id' => $user->id,
+    ]);
+
+    $this->artisan('abuse:scan', ['--full' => true])->assertSuccessful();
+
+    expect($link->fresh()->status)->toBe('inactive')
+        ->and(AbuseFlag::where('subject_id', $link->id)->value('signals'))->toContain('phishing_shape', 'kit_path');
+});
 it('scores the shape of the kit address for everyone, so the scan disables an account link to it too', function () {
     $user = User::factory()->create();
     $link = Link::create(['slug' => 'acct01', 'target_url' => 'https://xkpqtrvz.brand-new-site.com/qwrtzpsk?r=1&t=2', 'status' => 'active', 'user_id' => $user->id]);
@@ -106,6 +120,7 @@ it('refuses a guest link whose destination looks like the kit, and one on a rand
     'the kit' => ['https://mjdgdqgk.fnjphdp.com/wqamhcsom?r=1&t=2'],
     'the shape on a new domain' => ['https://xkpqtrvz.brand-new-site.com/qwrtzpsk?r=1&t=2'],
     'a random subdomain alone' => ['https://xkpqtrvz.some-site.com/page'],
+    'the kit path on an ordinary domain' => ['https://example.com/wqamhcsom?r=1&t=2'],
 ]);
 
 it('says that an account is needed, in the visitor language', function () {
@@ -151,10 +166,10 @@ it('does not ask the registry for an allowlisted site, and never on the account 
     $user = User::factory()->create();
 
     guestShorten('https://github.com/navi-crwn')->assertSessionHasNoErrors();
-    $this->actingAs($user)->postJson('/api/shorten-web', ['url' => 'https://xkpqtrvz.brand-new-site.com/qwrtzpsk?r=1&t=2'])->assertCreated();
+    $this->actingAs($user)->postJson('/api/shorten-web', ['url' => 'https://xkpqtrvz.brand-new-site.com/qwrtzpsk?r=1&t=2'])->assertUnprocessable();
 
     Http::assertNothingSent();
-    expect(Link::where('user_id', $user->id)->sole()->safety_status)->toBeNull();
+    expect(Link::where('user_id', $user->id)->count())->toBe(0);
 });
 
 it('caps the guest links one connection may make in a day, next to the per-minute limiter', function () {

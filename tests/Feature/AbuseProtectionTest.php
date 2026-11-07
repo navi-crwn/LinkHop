@@ -69,6 +69,17 @@ test('bio blocks reject dangerous url schemes and blacklisted domains', function
         ->assertOk();
 });
 
+test('bio blocks reject the phishing kit path and keep ordinary product pages', function () {
+    $user = User::factory()->create();
+    $page = bioPageFor($user, 'safe-links');
+
+    $this->actingAs($user)
+        ->postJson("/bio/{$page->slug}/links", ['type' => 'link', 'title' => 'x', 'url' => 'https://example.com/wqamhcsom?r=1&t=2'])
+        ->assertUnprocessable()->assertJsonValidationErrors('url');
+    $this->actingAs($user)
+        ->postJson("/bio/{$page->slug}/links", ['type' => 'link', 'title' => 'Products', 'url' => 'https://mecivietnam.com/products/san-nang-thuy-luc'])
+        ->assertOk();
+});
 test('bio shorten endpoint enforces the blacklist', function () {
     $user = User::factory()->create();
     DomainBlacklist::create(['domain' => '*.evil.test', 'match_type' => 'wildcard', 'category' => 'phishing']);
