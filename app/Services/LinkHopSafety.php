@@ -39,6 +39,10 @@ class LinkHopSafety extends LinkSafety
             return WebhookGuard::message($problem);
         }
 
+        if (PhishingShape::assess($url)['hit']) {
+            return 'This destination is not allowed due to our security policy.';
+        }
+
         return parent::rejectionReason($url, $text, $schemes);
     }
 
@@ -120,6 +124,7 @@ class LinkHopSafety extends LinkSafety
         $shape = PhishingShape::assess($url);
         if ($shape['hit']) {
             $signals[] = 'phishing_shape';
+            $signals = array_merge($signals, array_intersect($shape['signals'], ['kit_host', 'kit_path', 'random_path', 'tracking_params']));
         }
         $minAge = (int) config('shortener.guest_policy.min_domain_age_days', 0);
         if ($this->domainAge && $minAge > 0 && $shape['host'] !== null && ! filter_var($shape['host'], FILTER_VALIDATE_IP)
