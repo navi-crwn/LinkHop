@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Guest links across days
+- Guest links are now recorded in `guest_link_logs` (new table, `App\Models\GuestLinkLog`): a keyed hash of the connection (`VisitorHash`, never the address), the destination normalized to host and path with the tracking query and fragment stripped (`App\Support\GuestDestination`), the slug and when. Enough to count a connection's links across midnight and to see many connections reaching one address; useless for locating a visitor. Rows older than `guest_policy.retention_days` (14 by default) are deleted by the new `links:prune-guest-log`, scheduled daily at 03:20.
+- Two caps that do not restart at midnight, on top of the existing calendar-day one: `guest_policy.per_ip_per_hour` (6 by default) stops a burst from one connection, and `per_ip_per_rolling_day` (25) counts the last 24 hours whenever it is asked, so waiting for midnight no longer resets anything. Both are configurable and 0 turns them off.
+- Repeated-destination detection: when `guest_policy.burst_ips` different connections (5 by default) reach the same normalized destination inside `burst_window_minutes` (60), a new guest link to that destination is held behind the existing warning page and flagged for review (`guest_burst`, plus the phishing shape signals when the address has them). Nothing is suspended, and the links already made stay as they are. The burst check runs before the allowlist: a well-known address that suddenly attracts many connections is exactly the case worth a second look.
+
 ### Changed
 - `composer.lock` moves `hop/safety` from `12d72dd` to `df5e938` (navi-crwn/hop-safety#9): the bundled domain blacklist (`fnjphdp.com` and its subdomains, the Telegram account-takeover kit of 2026-11-05), the kit's phrases as phishing keywords matched in the address too, and the `random_subdomain` signal (weight 30, never blocking on its own; `safety.known_domains` lists the CDNs where such labels are normal). No code change here; `abuse:scan` and the forms pick the rules up at once.
 
