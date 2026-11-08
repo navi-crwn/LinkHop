@@ -43,7 +43,9 @@
     // the BioHop mark: a rounded square with three lines
     biohop: ['.#######.', '#########', '##wwwww##', '#########', '##wwwww##', '#########', '##www####', '#########', '.#######.'],
     // the PixelHop mark: the pixel rabbit
-    pixelhop: ['.#....#.', '.#....#.', '.##..##.', '.######.', '##.##.##', '########', '########', '.######.']
+    pixelhop: ['.#....#.', '.#....#.', '.##..##.', '.######.', '##.##.##', '########', '########', '.######.'],
+    // the FileHop mark (v3): a document with a folded corner and a white arrow down
+    filehop: ['######..', '#######.', '###ww###', '###ww###', '#wwwwww#', '##wwww##', '###ww###', '########']
   };
   // the LinkHop mark: a rabbit head, two tall ears over a ring-shaped face
   MAPS.linkhop = ['..#...#..', '..#...#..', '..#...#..', '..#####..', '.##...##.', '##.....##', '##.....##', '.##...##.', '..#####..'];
@@ -52,7 +54,8 @@
     hub: [[.13, .83, .93], [.55, .36, .97], [.96, .28, .65]],
     linkhop: [[.22, .74, 1], [.3, .4, .95], [.55, .36, .97]],
     biohop: [[.85, .27, .94], [.7, .33, .96], [.55, .36, .97]],
-    pixelhop: [[.64, .9, .21], [.13, .83, .93], [.55, .36, .97]]
+    pixelhop: [[.64, .9, .21], [.13, .83, .93], [.55, .36, .97]],
+    filehop: [[.984, .749, .141], [.961, .62, .043], [.545, .361, .965]]
   };
   var WHITE = [.97, .97, 1], PINK = [.957, .447, .714], DARK = [.11, .12, .2];
 
@@ -381,7 +384,10 @@
   var lazy = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (!entry.isIntersecting) return;
-      var api = mount(entry.target, {preset: entry.target.dataset.hopHero || 'notehop', interactive: true});
+      var preset = entry.target.dataset.hopHero || 'notehop';
+      // An app without a block map here (a newer member of the family) keeps its flat mark: never someone else's logo.
+      if (!MAPS[preset]) { lazy.unobserve(entry.target); return; }
+      var api = mount(entry.target, {preset: preset, interactive: true});
       if (api || !preference.matches) lazy.unobserve(entry.target);
       if (entry.target.id === 'h3d') window.NHHero3D = api || {settled: function () { return true; }};
     });

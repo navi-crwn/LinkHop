@@ -50,6 +50,10 @@ test('the engine in the shared home folder animates every canvas in a row', func
     expect(file_get_contents(public_path('hop-home/hop-hero3d.js')))->toContain('.slice(0, 4)');
 });
 
+test('a family app the 3D engine has no block map for keeps its flat mark instead of borrowing another logo', function () {
+    expect(file_get_contents(public_path('hop-home/hop-hero3d.js')))->toContain('if (!MAPS[preset]) { lazy.unobserve(entry.target); return; }');
+});
+
 test('top bar buttons keep their text on one line, and the bars fit a 320 px phone without squeezing the logo', function () {
     $nav = file_get_contents(base_path('resources/views/partials/marketing-nav.blade.php'));
     $public = file_get_contents(base_path('resources/views/components/public-layout.blade.php'));
