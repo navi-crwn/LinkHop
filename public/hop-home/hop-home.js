@@ -134,6 +134,16 @@
          } catch (_) { if (current === revision) output.textContent = '—'; }
       }
       text.addEventListener('input', encrypt); encrypt();
+    } else if (kind === 'filehop') {
+      // v3: a small CSV becomes JSON in the page, the way FileHop converts without uploading
+      var table = root.querySelector('textarea');
+      function cell(v) { return /^-?\d+(\.\d+)?$/.test(v) && !/^0\d/.test(v) ? Number(v) : v; }
+      function convert() {
+        var rows = table.value.trim().split(/\r?\n/).filter(Boolean).map(function (r) { return r.split(',').map(function (c) { return c.trim(); }); });
+        var head = rows[0] || [];
+        output.textContent = JSON.stringify(rows.slice(1, 5).map(function (r) { var o = {}; head.forEach(function (h, i) { o[h] = cell(r[i] || ''); }); return o; }));
+      }
+      table.addEventListener('input', convert); convert();
     } else if (kind === 'pixelhop') {
       var image = root.querySelector('img'), drop = root.querySelector('[data-drop]'), button = root.querySelector('button');
        async function compress() {
