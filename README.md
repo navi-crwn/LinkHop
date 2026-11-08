@@ -244,7 +244,7 @@ HTTP 201
 
 Errors keep one shape, `{"success": false, "error": "…", "message": "…"}`: `401` unknown or expired token, `403` missing scope, suspended or unverified account, `422` validation (`messages` lists the fields), `429` quota or rate limit.
 
-**Read a link** (`link:read`): `GET /api/links/{slug}` → the same `data` plus `clicks`. **Delete a link** (`link:delete`): `DELETE /api/links/{slug}` → `{"success": true}`. Both answer `404` for a slug that is not on the token's account.
+**List your links** (`link:read`): `GET /api/me/links?search=&limit=&cursor=` → `{data: [{id, slug, title, url, short_url, created_at}], next}`, only links that still resolve, newest first, up to 50 a page. **Read a link** (`link:read`): `GET /api/links/{slug}` → the same `data` plus `clicks`. **Delete a link** (`link:delete`): `DELETE /api/links/{slug}` → `{"success": true}`. Both answer `404` for a slug that is not on the token's account.
 
 A ShareX config is ready to download on the **API docs** page of the dashboard.
 
