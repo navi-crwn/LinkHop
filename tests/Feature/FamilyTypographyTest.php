@@ -4,7 +4,8 @@ test('public pages load the HOP family fonts from hel.ink, not a font CDN', func
     foreach (['/', '/check', '/report-abuse'] as $path) {
         $html = $this->get($path)->assertOk()->getContent();
 
-        expect($html)->toContain('https://hel.ink/hop-assets/v1/fonts-amnesia.css')
+        // hop/ui takes the version from the family manifest (v3 since FileHop joined); any version is fine here.
+        expect($html)->toMatch('#https://hel.ink/hop-assets/v\d+/fonts-amnesia.css#')
             ->toContain('integrity="sha384-')
             ->not->toContain('fonts.bunny.net');
     }

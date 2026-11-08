@@ -2,7 +2,7 @@
     <h2>{{ __('Is it really free?') }}</h2>
     <p>{{ __('Yes. There is no paid plan and no locked feature, and the code is MIT licensed.') }}</p>
     <h2>{{ __('Do I need an account?') }}</h2>
-    <p>{{ __('Not to shorten a link. A free HOP ID keeps your links, shows their stats, and also signs you in to BioHop, PixelHop and NoteHop.') }}</p>
+    <p>{{ __('Not to shorten a link. A free HOP ID keeps your links, shows their stats, and also signs you in to BioHop, PixelHop, NoteHop and FileHop.') }}</p>
     <h2>{{ __('What does a click record?') }}</h2>
     <p>{{ __('The time, country and city, device, browser and referrer, plus a keyed hash of the IP address for counting unique visitors. Never the IP address itself.') }}</p>
     <h2>{{ __('Where is my bio page?') }}</h2>
