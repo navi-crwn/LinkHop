@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "031749722becf9be5728b626252f1d3e",
+    "content-hash": "b446c5fe351cca20cbd9f03ea74f5590",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1297,16 +1297,16 @@
         },
         {
             "name": "hop/auth",
-            "version": "v0.1.3",
+            "version": "v0.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/navi-crwn/hop-auth.git",
-                "reference": "caa26a306f640ece00059768cb062223cd1d90d4"
+                "reference": "83753e32d9073a9b1f16302d931f27725276a924"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-auth/zipball/caa26a306f640ece00059768cb062223cd1d90d4",
-                "reference": "caa26a306f640ece00059768cb062223cd1d90d4",
+                "url": "https://api.github.com/repos/navi-crwn/hop-auth/zipball/83753e32d9073a9b1f16302d931f27725276a924",
+                "reference": "83753e32d9073a9b1f16302d931f27725276a924",
                 "shasum": ""
             },
             "require": {
@@ -1331,10 +1331,10 @@
             ],
             "description": "HOP shared package: auth.",
             "support": {
-                "source": "https://github.com/navi-crwn/hop-auth/tree/v0.1.3",
+                "source": "https://github.com/navi-crwn/hop-auth/tree/v0.1.4",
                 "issues": "https://github.com/navi-crwn/hop-auth/issues"
             },
-            "time": "2026-11-04T00:32:58+00:00"
+            "time": "2026-11-08T07:45:34+00:00"
         },
         {
             "name": "hop/bio",
@@ -1420,12 +1420,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/navi-crwn/hop-ui.git",
-                "reference": "6b4210ce1cd42a7f3db9836112df4ea28c7c45cf"
+                "reference": "1a0b1bbc02a77b53614249d0317d2fc15e75e6f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-ui/zipball/6b4210ce1cd42a7f3db9836112df4ea28c7c45cf",
-                "reference": "6b4210ce1cd42a7f3db9836112df4ea28c7c45cf",
+                "url": "https://api.github.com/repos/navi-crwn/hop-ui/zipball/1a0b1bbc02a77b53614249d0317d2fc15e75e6f4",
+                "reference": "1a0b1bbc02a77b53614249d0317d2fc15e75e6f4",
                 "shasum": ""
             },
             "require": {
@@ -1454,7 +1454,7 @@
                 "source": "https://github.com/navi-crwn/hop-ui/tree/main",
                 "issues": "https://github.com/navi-crwn/hop-ui/issues"
             },
-            "time": "2026-11-01T15:32:42+00:00"
+            "time": "2026-11-08T07:46:14+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
