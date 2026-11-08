@@ -381,7 +381,10 @@
   var lazy = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (!entry.isIntersecting) return;
-      var api = mount(entry.target, {preset: entry.target.dataset.hopHero || 'notehop', interactive: true});
+      var preset = entry.target.dataset.hopHero || 'notehop';
+      // An app without a block map here (a newer member of the family) keeps its flat mark: never someone else's logo.
+      if (!MAPS[preset]) { lazy.unobserve(entry.target); return; }
+      var api = mount(entry.target, {preset: preset, interactive: true});
       if (api || !preference.matches) lazy.unobserve(entry.target);
       if (entry.target.id === 'h3d') window.NHHero3D = api || {settled: function () { return true; }};
     });
