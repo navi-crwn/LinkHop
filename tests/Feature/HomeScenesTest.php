@@ -25,9 +25,9 @@ test('the timing, routing and protect scenes describe features the app really ha
     }
 });
 
-test('the four other apps appear as 3D marks with the flat mark behind them', function () {
+test('the five other apps appear as 3D marks with the flat mark behind them', function () {
     $html = $this->get('/')->assertOk()->getContent();
-    expect(substr_count($html, 'data-hop-hero="'))->toBe(4)->and($html)->toContain('data-lk-family');
+    expect(substr_count($html, 'data-hop-hero="'))->toBe(5)->and($html)->toContain('data-lk-family');
     foreach (['hub', 'biohop', 'pixelhop', 'notehop'] as $slug) {
         expect($html)->toContain('data-hop-hero="'.$slug.'"');
     }
