@@ -97,6 +97,24 @@ O LinkHop faz parte da família HOP de aplicativos web abertos e auto-hospedáve
 
 <a id="security"></a>
 
+## Hospedagem própria
+
+<!-- self-hosting:start -->
+Tudo o que o LinkHop precisa está em repositórios públicos: nenhum repositório privado, nenhum token e nenhuma conta no hel.ink. Os detalhes estão no guia da família: [docs/self-hosting.md](https://github.com/navi-crwn/HEL.ink/blob/main/docs/self-hosting.md) (em inglês).
+
+| Peça | Para o LinkHop | O que faz |
+| --- | --- | --- |
+| [HEL.ink](https://github.com/navi-crwn/HEL.ink) (hub, HOP ID) | **Obrigatório**: as contas ficam lá, no mesmo banco de dados | Contas e login para todos os apps |
+| [hop/auth](https://github.com/navi-crwn/hop-auth), [hop/ui](https://github.com/navi-crwn/hop-ui), [hop/safety](https://github.com/navi-crwn/hop-safety) | Instalados pelo `composer install` a partir do GitHub público | Código PHP compartilhado: login, interface, segurança de links |
+| [Imperium](https://github.com/navi-crwn/Imperium) | Opcional, mas as páginas de administração do LinkHop ficam lá | Painel de administração de toda a família; precisa do hub |
+| Fontes e blocos da família | Nada a instalar: carregados de `hel.ink/hop-assets` | Sem hel.ink: fontes do sistema, sem blocos flutuantes |
+
+- **Ordem de instalação**: primeiro o [hub](https://github.com/navi-crwn/HEL.ink), depois o LinkHop. `./install.sh --hub new` instala os dois.
+- **Configuração mínima**: `APP_URL`, `PUBLIC_URL`, `HOP_APP=linkhop`, `HOP_HUB_URL`, `HOP_SSO_SECRET` (o mesmo do hub), `DB_*` (o banco de dados do hub), `HOP_TRUSTED_HOSTS` (seus nomes de host); com o Imperium: `HOP_CONTROL_URL`.
+- **Sozinho ou na família**: o LinkHop não funciona sem um hub. Na família, ele compartilha o banco de dados e o `HOP_SSO_SECRET` do hub.
+- **Sem o Imperium**: `/admin` mostra um aviso. Gerencie as contas nas páginas de administração do próprio hub e use a API assinada `/api/hop/*` e os comandos artisan.
+<!-- self-hosting:end -->
+
 ## Ajuda e suporte
 
 Encontrou um problema ou precisa de ajuda? Abra uma issue no <a href="https://github.com/navi-crwn/LinkHop/issues">GitHub Issues</a>ou envie uma pull request.

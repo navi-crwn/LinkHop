@@ -83,6 +83,24 @@ Non. La clé d'une note chiffrée est la partie de son lien située après le `#
 
 <a id="family"></a>
 
+## Auto-hébergement
+
+<!-- self-hosting:start -->
+Tout ce dont LinkHop a besoin se trouve dans des dépôts publics : aucun dépôt privé, aucun jeton et aucun compte hel.ink. Les détails sont dans le guide de la famille : [docs/self-hosting.md](https://github.com/navi-crwn/HEL.ink/blob/main/docs/self-hosting.md) (en anglais).
+
+| Élément | Pour LinkHop | Rôle |
+| --- | --- | --- |
+| [HEL.ink](https://github.com/navi-crwn/HEL.ink) (hub, HOP ID) | **Obligatoire** : les comptes y sont, dans la même base de données | Comptes et connexion pour toutes les apps |
+| [hop/auth](https://github.com/navi-crwn/hop-auth), [hop/ui](https://github.com/navi-crwn/hop-ui), [hop/safety](https://github.com/navi-crwn/hop-safety) | Installés par `composer install` depuis GitHub public | Code PHP partagé : connexion, interface, sécurité des liens |
+| [Imperium](https://github.com/navi-crwn/Imperium) | Facultatif, mais les pages d'administration de LinkHop s'y trouvent | Panneau d'administration de toute la famille ; nécessite le hub |
+| Polices et tuiles de la famille | Rien à installer : chargés depuis `hel.ink/hop-assets` | Sans hel.ink : polices système, pas de tuiles flottantes |
+
+- **Ordre d'installation** : d'abord le [hub](https://github.com/navi-crwn/HEL.ink), puis LinkHop. `./install.sh --hub new` installe les deux.
+- **Réglages minimaux** : `APP_URL`, `PUBLIC_URL`, `HOP_APP=linkhop`, `HOP_HUB_URL`, `HOP_SSO_SECRET` (celui du hub), `DB_*` (la base de données du hub), `HOP_TRUSTED_HOSTS` (vos noms d'hôte); avec Imperium: `HOP_CONTROL_URL`.
+- **Seul ou en famille** : LinkHop ne fonctionne pas sans hub. Dans la famille, il partage la base de données et le `HOP_SSO_SECRET` du hub.
+- **Sans Imperium** : `/admin` affiche un avis. Gérez les comptes dans les pages d'administration du hub et utilisez l'API signée `/api/hop/*` et les commandes artisan.
+<!-- self-hosting:end -->
+
 ## La famille HOP
 
 LinkHop fait partie de la famille d'applications web ouvertes HOP.

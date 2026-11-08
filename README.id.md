@@ -85,6 +85,24 @@ Tidak. Kunci catatan terenkripsi adalah bagian tautannya setelah `#`, dan tautan
 
 <a id="family"></a>
 
+## Hosting sendiri
+
+<!-- self-hosting:start -->
+Semua yang dibutuhkan LinkHop ada di repositori publik: tanpa repositori privat, tanpa token, dan tanpa akun hel.ink. Rinciannya ada di panduan keluarga: [docs/self-hosting.md](https://github.com/navi-crwn/HEL.ink/blob/main/docs/self-hosting.md) (bahasa Inggris).
+
+| Komponen | Untuk LinkHop | Fungsinya |
+| --- | --- | --- |
+| [HEL.ink](https://github.com/navi-crwn/HEL.ink) (hub, HOP ID) | **Wajib**: akun disimpan di sana, dalam database yang sama | Akun dan proses masuk untuk semua aplikasi |
+| [hop/auth](https://github.com/navi-crwn/hop-auth), [hop/ui](https://github.com/navi-crwn/hop-ui), [hop/safety](https://github.com/navi-crwn/hop-safety) | Dipasang oleh `composer install` dari GitHub publik | Kode PHP bersama: proses masuk, antarmuka, keamanan tautan |
+| [Imperium](https://github.com/navi-crwn/Imperium) | Opsional, tetapi halaman admin LinkHop ada di sana | Panel admin untuk seluruh keluarga; butuh hub |
+| Font dan ubin keluarga | Tidak perlu dipasang: dimuat dari `hel.ink/hop-assets` | Tanpa hel.ink: font sistem, tanpa ubin melayang |
+
+- **Urutan pemasangan**: [hub](https://github.com/navi-crwn/HEL.ink) dulu, lalu LinkHop. `./install.sh --hub new` memasang keduanya.
+- **Pengaturan minimum**: `APP_URL`, `PUBLIC_URL`, `HOP_APP=linkhop`, `HOP_HUB_URL`, `HOP_SSO_SECRET` (sama dengan hub), `DB_*` (database hub), `HOP_TRUSTED_HOSTS` (nama host Anda); dengan Imperium: `HOP_CONTROL_URL`.
+- **Sendiri atau dalam keluarga**: LinkHop tidak berjalan tanpa hub. Dalam keluarga, ia berbagi database dan `HOP_SSO_SECRET` dengan hub.
+- **Tanpa Imperium**: `/admin` hanya menampilkan pemberitahuan. Kelola akun di halaman admin milik hub, dan gunakan API bertanda tangan `/api/hop/*` dan perintah artisan.
+<!-- self-hosting:end -->
+
 ## Keluarga HOP
 
 LinkHop adalah bagian dari keluarga aplikasi web open-source HOP yang dapat dipasang mandiri.

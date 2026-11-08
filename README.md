@@ -60,7 +60,7 @@ The homepage has an interactive 3D island-and-rabbit scene. Move your pointer or
 | **PixelHop** | [pixel.hel.ink](https://pixel.hel.ink) · `p.hel.ink/…` | [navi-crwn/PixelHop](https://github.com/navi-crwn/PixelHop) | Image hosting with albums and direct links. |
 | **NoteHop** | [note.hel.ink](https://note.hel.ink) · `n.hel.ink/…` | [navi-crwn/NoteHop](https://github.com/navi-crwn/NoteHop) | Encrypted notes you share with a link. |
 | **FileHop** | [file.hel.ink](https://file.hel.ink) | [navi-crwn/FileHop](https://github.com/navi-crwn/FileHop) | Convert files in your browser; nothing is uploaded. |
-| **Imperium** | private (owner only) | private | The HOP control panel. |
+| **Imperium** | not public-facing: optional, for admins | [navi-crwn/Imperium](https://github.com/navi-crwn/Imperium) | The HOP control panel. |
 <!-- hop-family:end -->
 
 Everything is included for every account. No premium tier, no locked features. And because it's open source, you can also run the whole thing on your own server and your own domain.
@@ -192,6 +192,24 @@ LinkHop keeps running at `hel.ink` with `APP_URL=https://hel.ink` until every HO
 8. Rollback: the previous release with `APP_URL=https://hel.ink` and the old nginx config; the database needs nothing (the hub's migrations only added tables and columns).
 
 </details>
+
+## Self-hosting
+
+<!-- self-hosting:start -->
+Everything LinkHop needs is in public repositories: no private repository, no token and no hel.ink account. The family guide has the details: [docs/self-hosting.md](https://github.com/navi-crwn/HEL.ink/blob/main/docs/self-hosting.md).
+
+| Piece | For LinkHop | What it does |
+| --- | --- | --- |
+| [HEL.ink](https://github.com/navi-crwn/HEL.ink) (hub, HOP ID) | **Required**: the accounts live there, in the same database | Accounts and sign-in for every app |
+| [hop/auth](https://github.com/navi-crwn/hop-auth), [hop/ui](https://github.com/navi-crwn/hop-ui), [hop/safety](https://github.com/navi-crwn/hop-safety) | Installed by `composer install` from public GitHub | Shared PHP code: sign-in, interface, link safety |
+| [Imperium](https://github.com/navi-crwn/Imperium) | Optional, but the admin pages of LinkHop live there | Admin panel for the whole family; needs the hub |
+| Family fonts and tiles | Nothing to install: loaded from `hel.ink/hop-assets` | Without hel.ink: system fonts, no floating tiles |
+
+- **Install order**: the [hub](https://github.com/navi-crwn/HEL.ink) first, then LinkHop. `./install.sh --hub new` installs both.
+- **Minimum settings**: `APP_URL`, `PUBLIC_URL`, `HOP_APP=linkhop`, `HOP_HUB_URL`, `HOP_SSO_SECRET` (the hub's), `DB_*` (the hub's database), `HOP_TRUSTED_HOSTS` (your host names); with Imperium: `HOP_CONTROL_URL`.
+- **Alone or in the family**: LinkHop does not run without a hub. In the family it shares the hub's database and `HOP_SSO_SECRET`.
+- **Without Imperium**: `/admin` shows a notice. Manage accounts in the hub's own admin pages, and use the signed `/api/hop/*` API and the artisan commands.
+<!-- self-hosting:end -->
 
 ## How to use it
 
