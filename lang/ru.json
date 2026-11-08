@@ -895,5 +895,6 @@
     "Unverified destination": "Непроверенный адрес",
     "This short link was created by a guest and points to a site LinkHop does not know yet. It has not been checked.": "Эту короткую ссылку создал гость, и она ведёт на сайт, который LinkHop ещё не знает. Она не проверялась.",
     "Never enter passwords, verification codes or payment details on a page you did not expect to see.": "Никогда не вводите пароли, коды подтверждения или платёжные данные на странице, которую вы не ожидали увидеть.",
-    "Continue to :host": "Перейти на :host"
+    "Continue to :host": "Перейти на :host",
+    "No folder": "Без папки"
 }

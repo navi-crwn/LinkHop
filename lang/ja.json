@@ -895,5 +895,6 @@
     "Unverified destination": "未確認のリンク先",
     "This short link was created by a guest and points to a site LinkHop does not know yet. It has not been checked.": "この短縮リンクはゲストが作成したもので、LinkHop がまだ知らないサイトを指しています。まだ確認されていません。",
     "Never enter passwords, verification codes or payment details on a page you did not expect to see.": "予期しないページでパスワード、確認コード、支払い情報を入力しないでください。",
-    "Continue to :host": ":host に進む"
+    "Continue to :host": ":host に進む",
+    "No folder": "フォルダなし"
 }

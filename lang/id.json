@@ -895,5 +895,6 @@
     "Unverified destination": "Tujuan belum diverifikasi",
     "This short link was created by a guest and points to a site LinkHop does not know yet. It has not been checked.": "Tautan pendek ini dibuat oleh tamu dan mengarah ke situs yang belum dikenal LinkHop. Tautan ini belum diperiksa.",
     "Never enter passwords, verification codes or payment details on a page you did not expect to see.": "Jangan pernah memasukkan kata sandi, kode verifikasi, atau data pembayaran di halaman yang tidak Anda duga.",
-    "Continue to :host": "Lanjutkan ke :host"
+    "Continue to :host": "Lanjutkan ke :host",
+    "No folder": "Tanpa folder"
 }

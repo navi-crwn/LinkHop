@@ -895,5 +895,6 @@
     "Unverified destination": "Destino não verificado",
     "This short link was created by a guest and points to a site LinkHop does not know yet. It has not been checked.": "Este link curto foi criado por um visitante e aponta para um site que o LinkHop ainda não conhece. Ele ainda não foi verificado.",
     "Never enter passwords, verification codes or payment details on a page you did not expect to see.": "Nunca digite senhas, códigos de verificação ou dados de pagamento em uma página que você não esperava ver.",
-    "Continue to :host": "Continuar para :host"
+    "Continue to :host": "Continuar para :host",
+    "No folder": "Sem pasta"
 }

@@ -895,5 +895,6 @@
     "Unverified destination": "未验证的目标",
     "This short link was created by a guest and points to a site LinkHop does not know yet. It has not been checked.": "这个短链接由访客创建，指向 LinkHop 尚不了解的网站。它尚未经过检查。",
     "Never enter passwords, verification codes or payment details on a page you did not expect to see.": "切勿在意料之外的页面上输入密码、验证码或付款信息。",
-    "Continue to :host": "继续前往 :host"
+    "Continue to :host": "继续前往 :host",
+    "No folder": "无文件夹"
 }

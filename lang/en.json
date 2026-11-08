@@ -895,5 +895,6 @@
     "Unverified destination": "Unverified destination",
     "This short link was created by a guest and points to a site LinkHop does not know yet. It has not been checked.": "This short link was created by a guest and points to a site LinkHop does not know yet. It has not been checked.",
     "Never enter passwords, verification codes or payment details on a page you did not expect to see.": "Never enter passwords, verification codes or payment details on a page you did not expect to see.",
-    "Continue to :host": "Continue to :host"
+    "Continue to :host": "Continue to :host",
+    "No folder": "No folder"
 }

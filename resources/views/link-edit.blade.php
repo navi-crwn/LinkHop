@@ -75,7 +75,10 @@
             <div class="space-y-3 md:col-span-2">
                 <div>
                     <label class="label" for="folder_id">Folder</label>
-                    <select id="folder_id" name="folder_id" class="input" required>
+                    {{-- Optional: a link may sit in no folder. Without the empty choice the form could not be saved
+                         when there were no folders, and saving silently moved an unfiled link into the first one. --}}
+                    <select id="folder_id" name="folder_id" class="input">
+                        <option value="" @selected(blank(old('folder_id', $link->folder_id)))>{{ __('No folder') }}</option>
                         @foreach ($folders as $folder)
                             <option value="{{ $folder->id }}" @selected((int) old('folder_id', $link->folder_id) === (int) $folder->id)>{{ $folder->name }}</option>
                         @endforeach
