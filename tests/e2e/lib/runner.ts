@@ -93,7 +93,10 @@ export async function runJourney(browser: Browser, j: Pick<Journey, 'role' | 'st
   const ctx = { page, me, others: () => [], memo: {} as Record<string, unknown> };
   let pos = START;
   try {
-    await page.goto('/');
+    // Every journey starts in START (guest_check), so open that page. '/' is the landing page,
+    // which has no checker form: a journey whose first step is a checker action (nightly
+    // pair-user-003, check_weird_input) timed out on its first fill.
+    await page.goto('/check');
     for (const [n, id] of j.steps.entries()) {
       const action = ACTION_BY_ID[id];
       try {
