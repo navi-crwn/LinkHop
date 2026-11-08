@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Token route for the pickers in the other HOP apps
+- `GET /api/me/links` (scope `link:read`): the token owner's links that still resolve, newest first, as `{data: [{id, slug, title, url, short_url, created_at}], next}`. `?search=` matches the title, the destination or the slug (LIKE wildcards are plain text), `?limit=` 1 to 50 (default 20), `?cursor=` is the previous page's `next`. Sent with `Cache-Control: no-store`. BioHop's "Select existing link" asked `GET /api/links` with a service token, but that route only knows a web session, so the picker was always empty and every search left one more "BioHop" token in the member's token list.
+
 ### Guest links across days
 - Guest links are now recorded in `guest_link_logs` (new table, `App\Models\GuestLinkLog`): a keyed hash of the connection (`VisitorHash`, never the address), the destination normalized to host and path with the tracking query and fragment stripped (`App\Support\GuestDestination`), the slug and when. Enough to count a connection's links across midnight and to see many connections reaching one address; useless for locating a visitor. Rows older than `guest_policy.retention_days` (14 by default) are deleted by the new `links:prune-guest-log`, scheduled daily at 03:20.
 - Two caps that do not restart at midnight, on top of the existing calendar-day one: `guest_policy.per_ip_per_hour` (6 by default) stops a burst from one connection, and `per_ip_per_rolling_day` (25) counts the last 24 hours whenever it is asked, so waiting for midnight no longer resets anything. Both are configurable and 0 turns them off.

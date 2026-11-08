@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 // `Idempotency-Key` (IdempotentRequest) makes a retried create safe; it has to run after the token middleware.
 Route::post('/shorten', [ShortenController::class, 'store'])->middleware(['hop.token:link:create', IdempotentRequest::class]);
 Route::get('/links/{slug}', [ShortenController::class, 'show'])->where('slug', '[A-Za-z0-9-]+')->middleware('hop.token:link:read');
+// The caller's own live links, newest first, for pickers in the other HOP apps (BioHop's editor): ?search=&limit=&cursor=.
+Route::get('/me/links', [ShortenController::class, 'index'])->middleware('hop.token:link:read');
 Route::delete('/links/{slug}', [ShortenController::class, 'destroy'])->where('slug', '[A-Za-z0-9-]+')->middleware('hop.token:link:delete');
 // The dashboard's own JavaScript (web session, not an API token).
 Route::middleware(['web', 'hop.auth'])->group(function () {
