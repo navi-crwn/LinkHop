@@ -215,7 +215,9 @@ class LinkController extends Controller
                 ? response()->json(['error' => $duplicate['message'], 'duplicate' => ['slug' => $duplicate['slug'], 'short_url' => $duplicate['short_url']]], 409)
                 : back()->withInput()->withErrors(['target_url' => $duplicate['message']]);
         }
-        if (empty($data['folder_id'])) {
+        // The default folder is for a request that says nothing about folders (an older client). A form that sends
+        // an empty folder asked for none.
+        if (empty($data['folder_id']) && ! $request->exists('folder_id')) {
             $defaultFolder = Folder::where('user_id', $request->user()->id)
                 ->where('is_default', true)
                 ->first();
