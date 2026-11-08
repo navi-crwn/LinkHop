@@ -56,11 +56,19 @@ async function nav(page: Page, path: string) {
     // The bio editor asks before leaving with unsaved changes; a person confirms.
     // isVisible() looks only once (its timeout is ignored), so wait for either the
     // new page or the dialog, whichever comes first.
-    const arrived = page.waitForURL(u => u.pathname.endsWith(path), { waitUntil: 'domcontentloaded' });
+    const arrival = () => page.waitForURL(u => u.pathname.endsWith(path), { waitUntil: 'domcontentloaded' });
+    const arrived = arrival();
     const discard = page.getByRole('button', { name: 'Discard Changes' });
     const confirmed = discard.waitFor({ state: 'visible' }).then(() => discard.click()).catch(() => {});
-    await Promise.race([arrived, confirmed]);
-    await arrived;
+    await Promise.race([arrived, confirmed]).catch(() => {});
+    try {
+      await arrived;
+    } catch (e) {
+      // The editor replaces the click's navigation with its own after "Discard Changes"; the first one is
+      // then aborted (net::ERR_ABORTED, nightly pair-user-026), while a person still lands on the page.
+      if (!String(e).includes('ERR_ABORTED')) throw e;
+      if (!new URL(page.url()).pathname.endsWith(path)) await arrival();
+    }
   } else {
     await page.goto(path);
   }

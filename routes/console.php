@@ -32,5 +32,7 @@ Schedule::command('abuse:feeds')->dailyAt('03:45')->withoutOverlapping();
 Schedule::command('links:guest-digest')->dailyAt('06:00')->withoutOverlapping();
 // Database + uploads + .env backup (spatie/laravel-backup); needs mysqldump on the server.
 Schedule::command('backup:clean')->dailyAt('02:30');
-Schedule::command('backup:run')->dailyAt('02:45');
+// Also in maintenance mode: the 20-hour maintenance of 2026-11-06 skipped the 2026-11-07 backup, and
+// backup:monitor then failed because the newest backup was more than a day old.
+Schedule::command('backup:run')->dailyAt('02:45')->evenInMaintenanceMode();
 Schedule::command('backup:monitor')->dailyAt('09:00');
