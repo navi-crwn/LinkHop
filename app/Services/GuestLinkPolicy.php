@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\AbuseFlag;
+use App\Models\GuestLinkLog;
 use App\Models\Link;
+use App\Support\GuestDestination;
 use App\Support\PhishingShape;
 use App\Support\VisitorHash;
 
@@ -23,6 +26,10 @@ class GuestLinkPolicy
 
     public const REFUSED_PHISHING_SHAPE = 'phishing_shape';
 
+    public const REFUSED_HOURLY_CAP = 'hourly_cap';
+
+    public const REFUSED_ROLLING_DAY_CAP = 'rolling_day_cap';
+
     public function __construct(private readonly DomainAge $ages) {}
 
     /**
@@ -32,9 +39,22 @@ class GuestLinkPolicy
     {
         $cfg = (array) config('shortener.guest_policy', []);
         $hash = VisitorHash::make($ip);
-        $allow = fn (?string $status) => ['allowed' => true, 'reason' => null, 'message' => null, 'safety_status' => $status, 'creator_hash' => $hash];
+        $allow = fn (?string $status, ?bool $burst = null) => [
+            'allowed' => true, 'reason' => null, 'message' => null, 'safety_status' => $status,
+            'creator_hash' => $hash, 'burst' => $burst ?? false,
+        ];
         if (empty($cfg['enabled'])) {
             return $allow(null);
+        }
+        // Caps that do not restart at midnight: a kit is happy to wait for the clock. The hourly one stops a burst
+        // from one connection; the rolling-day one counts the last 24 hours whenever it is asked.
+        $perHour = (int) ($cfg['per_ip_per_hour'] ?? 0);
+        if ($perHour > 0 && $hash !== null && $this->madeSince($hash, now()->subHour()) >= $perHour) {
+            return $this->refuse(self::REFUSED_HOURLY_CAP, __('Guests can make :max short links an hour from one connection. Create a free account to make more.', ['max' => $perHour]), $hash);
+        }
+        $perRolling = (int) ($cfg['per_ip_per_rolling_day'] ?? 0);
+        if ($perRolling > 0 && $hash !== null && $this->madeSince($hash, now()->subDay()) >= $perRolling) {
+            return $this->refuse(self::REFUSED_ROLLING_DAY_CAP, __('Guests can make :max short links a day from one connection. Create a free account to make more.', ['max' => $perRolling]), $hash);
         }
         $cap = (int) ($cfg['per_ip_per_day'] ?? 0);
         if ($cap > 0 && $hash !== null && $this->madeToday($hash) >= $cap) {
@@ -44,8 +64,12 @@ class GuestLinkPolicy
         if ($host === null) {
             return $allow(null);
         }
+        // Many connections to one destination in a short window: a kit handing out the same address. Checked before
+        // the allowlist, because a burst is the point where being well known stops being a reason to trust it. The
+        // link is held behind the warning page and flagged; nothing is suspended and the links already made stay.
+        $burst = $this->isBurst($url, $hash);
         if ($this->isAllowlisted($host, (array) ($cfg['allowlist'] ?? []))) {
-            return $allow(null);
+            return $burst ? $allow(Link::SAFETY_PENDING, true) : $allow(null);
         }
         $shape = PhishingShape::assess($url);
         if (! empty($cfg['refuse_phishing_shape']) && $shape['hit']) {
@@ -65,7 +89,75 @@ class GuestLinkPolicy
             }
         }
 
-        return $allow(! empty($cfg['pending_unknown_hosts']) ? Link::SAFETY_PENDING : null);
+        return $allow($burst || ! empty($cfg['pending_unknown_hosts']) ? Link::SAFETY_PENDING : null, $burst);
+    }
+
+    /** Guest links this connection made since a moment, from the log (across midnight). */
+    public function madeSince(string $creatorHash, \DateTimeInterface $since): int
+    {
+        return GuestLinkLog::query()->where('creator_hash', $creatorHash)->where('created_at', '>=', $since)->count();
+    }
+
+    /**
+     * True when guest_policy.burst_ips different connections reached this destination inside
+     * guest_policy.burst_window_minutes. Distinct connections only: one person shortening the same site several
+     * times is not a burst.
+     */
+    public function isBurst(string $url, ?string $hash): bool
+    {
+        $cfg = (array) config('shortener.guest_policy', []);
+        $ips = (int) ($cfg['burst_ips'] ?? 0);
+        $destination = GuestDestination::normalize($url);
+        if ($ips <= 0 || $destination === null) {
+            return false;
+        }
+        $minutes = max(1, (int) ($cfg['burst_window_minutes'] ?? 60));
+
+        return GuestLinkLog::query()
+            ->where('destination', $destination)
+            ->where('created_at', '>=', now()->subMinutes($minutes))
+            ->when($hash !== null, fn ($q) => $q->where('creator_hash', '!=', $hash))
+            ->distinct()
+            ->count('creator_hash') >= $ips;
+    }
+
+    /**
+     * Put a held link in the abuse queue for review, with the reason. Called after the link exists, because a flag
+     * points at the object it is about; the operator decides what happens next, not this class.
+     */
+    public function flagBurst(Link $link, string $url): void
+    {
+        $destination = GuestDestination::normalize($url) ?? $url;
+        $signals = ['guest_burst'];
+        $shape = PhishingShape::assess($url);
+        if ($shape['hit']) {
+            $signals = array_values(array_unique(array_merge($signals, ['phishing_shape'], $shape['signals'])));
+        }
+        AbuseFlag::firstOrCreate(
+            ['subject_type' => 'link', 'subject_id' => $link->id],
+            [
+                'user_id' => null,
+                'score' => 60,
+                'signals' => $signals,
+                'action' => AbuseFlag::ACTION_FLAGGED,
+                'status' => AbuseFlag::STATUS_OPEN,
+                'summary' => 'guest burst: '.((int) config('shortener.guest_policy.burst_ips', 0)).'+ connections reached '.$destination.' within '.((int) config('shortener.guest_policy.burst_window_minutes', 60)).' minutes; this link is held',
+            ],
+        );
+    }
+
+    /** Remember what this guest made, so the next request can count it (also across midnight). */
+    public function remember(string $url, ?string $hash, ?string $slug): void
+    {
+        if ($hash === null) {
+            return;
+        }
+        GuestLinkLog::create([
+            'creator_hash' => $hash,
+            'destination' => GuestDestination::normalize($url) ?? '',
+            'slug' => $slug,
+            'created_at' => now(),
+        ]);
     }
 
     /** Guest links this connection made since midnight (the server's day). */

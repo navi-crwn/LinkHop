@@ -90,6 +90,17 @@ return [
         'refuse_random_subdomain' => (bool) env('GUEST_REFUSE_RANDOM_SUBDOMAIN', true),
         'refuse_phishing_shape' => (bool) env('GUEST_REFUSE_PHISHING_SHAPE', true),
         'per_ip_per_day' => max(0, (int) env('GUEST_LINKS_PER_IP_PER_DAY', 20)),
+        // Caps that do not restart at midnight, counted from guest_link_logs: a burst in one hour, and a rolling
+        // day that follows a connection across midnight. 0 turns either off. Conservative defaults.
+        'per_ip_per_hour' => max(0, (int) env('GUEST_LINKS_PER_IP_PER_HOUR', 6)),
+        'per_ip_per_rolling_day' => max(0, (int) env('GUEST_LINKS_PER_IP_PER_ROLLING_DAY', 25)),
+        // Many connections to one destination in a short window: the shape of a kit handing out a single address.
+        // A new guest link to that destination is held behind the warning page and the destination is flagged for
+        // review; nothing is suspended. 0 turns it off.
+        'burst_ips' => max(0, (int) env('GUEST_BURST_IPS', 5)),
+        'burst_window_minutes' => max(1, (int) env('GUEST_BURST_WINDOW_MINUTES', 60)),
+        // guest_link_logs rows are deleted after this many days by links:prune-guest-log.
+        'retention_days' => max(1, (int) env('GUEST_LOG_RETENTION_DAYS', 14)),
         // RDAP: how long a registration date is remembered, and how long a failed lookup is not retried.
         'rdap_url' => env('GUEST_RDAP_URL', 'https://rdap.org/domain/'),
         'rdap_cache_days' => 7,
