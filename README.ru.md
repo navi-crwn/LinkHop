@@ -18,6 +18,24 @@ curl -fsSL https://raw.githubusercontent.com/navi-crwn/LinkHop/main/install.sh |
 
 Из клона: `./install.sh` · обновление: `./update.sh` · удаление: `./uninstall.sh`. С `--yes` берутся все значения по умолчанию; `--help` показывает параметры.
 
+## Собственный хостинг
+
+<!-- self-hosting:start -->
+Всё, что нужно LinkHop, лежит в публичных репозиториях: не нужны ни приватный репозиторий, ни токен, ни учётная запись на hel.ink. Подробности — в руководстве по семейству: [docs/self-hosting.md](https://github.com/navi-crwn/HEL.ink/blob/main/docs/self-hosting.md) (на английском).
+
+| Компонент | Для LinkHop | Зачем |
+| --- | --- | --- |
+| [HEL.ink](https://github.com/navi-crwn/HEL.ink) (хаб, HOP ID) | **Обязательно**: учётные записи хранятся там, в той же базе данных | Учётные записи и вход для всех приложений |
+| [hop/auth](https://github.com/navi-crwn/hop-auth), [hop/ui](https://github.com/navi-crwn/hop-ui), [hop/safety](https://github.com/navi-crwn/hop-safety) | Устанавливаются `composer install` из публичного GitHub | Общий PHP-код: вход, интерфейс, безопасность ссылок |
+| [Imperium](https://github.com/navi-crwn/Imperium) | Необязательно, но страницы администрирования LinkHop находятся там | Панель администратора для всего семейства; нужен хаб |
+| Шрифты и плитки семейства | Ничего устанавливать не нужно: загружаются с `hel.ink/hop-assets` | Без hel.ink: системные шрифты, без плавающих плиток |
+
+- **Порядок установки**: сначала [хаб](https://github.com/navi-crwn/HEL.ink), затем LinkHop. `./install.sh --hub new` устанавливает оба.
+- **Минимальные настройки**: `APP_URL`, `PUBLIC_URL`, `HOP_APP=linkhop`, `HOP_HUB_URL`, `HOP_SSO_SECRET` (как у хаба), `DB_*` (база данных хаба), `HOP_TRUSTED_HOSTS` (ваши имена хостов); с Imperium: `HOP_CONTROL_URL`.
+- **Отдельно или в семействе**: LinkHop не работает без хаба. В семействе оно использует общую с хабом базу данных и `HOP_SSO_SECRET`.
+- **Без Imperium**: `/admin` показывает уведомление. Учётными записями управляйте на страницах администрирования хаба, а также используйте подписанный API `/api/hop/*` и команды artisan.
+<!-- self-hosting:end -->
+
 ## Подробнее
 
 Полная документация (возможности, настройки, безопасность) — на английском в [README](README.md).

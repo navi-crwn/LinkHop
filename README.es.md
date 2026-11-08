@@ -83,6 +83,24 @@ No. La clave de una nota cifrada es la parte de su enlace que va después del `#
 
 <a id="family"></a>
 
+## Autoalojamiento
+
+<!-- self-hosting:start -->
+Todo lo que LinkHop necesita está en repositorios públicos: ningún repositorio privado, ningún token y ninguna cuenta en hel.ink. Los detalles están en la guía de la familia: [docs/self-hosting.md](https://github.com/navi-crwn/HEL.ink/blob/main/docs/self-hosting.md) (en inglés).
+
+| Pieza | Para LinkHop | Qué hace |
+| --- | --- | --- |
+| [HEL.ink](https://github.com/navi-crwn/HEL.ink) (hub, HOP ID) | **Obligatorio**: las cuentas están allí, en la misma base de datos | Cuentas e inicio de sesión para todas las apps |
+| [hop/auth](https://github.com/navi-crwn/hop-auth), [hop/ui](https://github.com/navi-crwn/hop-ui), [hop/safety](https://github.com/navi-crwn/hop-safety) | Los instala `composer install` desde GitHub público | Código PHP compartido: inicio de sesión, interfaz, seguridad de enlaces |
+| [Imperium](https://github.com/navi-crwn/Imperium) | Opcional, pero las páginas de administración de LinkHop están allí | Panel de administración de toda la familia; necesita el hub |
+| Fuentes y mosaicos de la familia | Nada que instalar: se cargan desde `hel.ink/hop-assets` | Sin hel.ink: fuentes del sistema, sin mosaicos flotantes |
+
+- **Orden de instalación**: primero el [hub](https://github.com/navi-crwn/HEL.ink), luego LinkHop. `./install.sh --hub new` instala ambos.
+- **Ajustes mínimos**: `APP_URL`, `PUBLIC_URL`, `HOP_APP=linkhop`, `HOP_HUB_URL`, `HOP_SSO_SECRET` (el del hub), `DB_*` (la base de datos del hub), `HOP_TRUSTED_HOSTS` (tus nombres de host); con Imperium: `HOP_CONTROL_URL`.
+- **Solo o en la familia**: LinkHop no funciona sin un hub. En la familia comparte la base de datos y el `HOP_SSO_SECRET` del hub.
+- **Sin Imperium**: `/admin` muestra un aviso. Gestiona las cuentas en las páginas de administración del propio hub y usa la API firmada `/api/hop/*` y los comandos artisan.
+<!-- self-hosting:end -->
+
 ## La familia HOP
 
 LinkHop forma parte de la familia de herramientas web abiertas HOP.
