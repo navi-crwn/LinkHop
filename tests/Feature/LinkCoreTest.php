@@ -62,7 +62,9 @@ test('a password page does not use a click until the visitor is let through', fu
     $link = coreLink(['max_clicks' => 1, 'password_hash' => bcrypt('secret1')]);
     $this->withHeader('User-Agent', HUMAN)->get('/l/'.$link->slug)->assertOk();
     expect($link->fresh()->clicks)->toBe(0);
-    $this->withHeader('User-Agent', HUMAN)->post('/l/'.$link->slug, ['password' => 'secret1'])->assertRedirect($link->target_url);
+    $this->withHeader('User-Agent', HUMAN)->post('/l/'.$link->slug, ['password' => 'secret1'])->assertOk();
+    expect($link->fresh()->clicks)->toBe(0);
+    $this->withHeader('User-Agent', HUMAN)->get('/l/'.$link->slug)->assertRedirect($link->target_url);
     expect($link->fresh()->clicks)->toBe(1);
 });
 

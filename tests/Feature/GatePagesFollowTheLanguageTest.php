@@ -65,5 +65,5 @@ it('keeps the forms working', function () {
     Link::create(['user_id' => $user->id, 'slug' => 'gatelink', 'target_url' => 'https://example.com/x', 'status' => 'active', 'password_hash' => Hash::make('secret123')]);
     $html = $this->get('/l/gatelink')->getContent();
     expect($html)->toContain('name="password"');
-    $this->post('/l/gatelink', ['password' => 'secret123'])->assertRedirect();
+    $this->post('/l/gatelink', ['password' => 'secret123'])->assertOk()->assertHeader('Refresh');
 });

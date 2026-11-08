@@ -51,7 +51,7 @@ it('marks a guest link to an unknown site pending and shows the warning page unt
     expect($link->fresh()->clicks)->toBe(0);
 
     // "Continue" is a POST, remembered for the session, then the normal redirect
-    $this->post('/l/'.$link->slug, ['unverified_confirm' => 'yes'])->assertStatus(303);
+    $this->post('/l/'.$link->slug, ['unverified_confirm' => 'yes'])->assertOk();
     $this->get('/l/'.$link->slug)->assertRedirect('https://my-little-shop.test/sale');
 
     // the hourly scan finds nothing and clears it: no page any more, for anyone

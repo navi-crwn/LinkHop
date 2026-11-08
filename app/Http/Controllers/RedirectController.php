@@ -85,7 +85,7 @@ class RedirectController extends Controller
             if (! $isUnlocked) {
                 if ($request->isMethod('post') && in_array($request->input('gate_confirm'), ['yes', '1', 'continue'], true)) {
                     session([$sessionKey => true]);
-                    $response = redirect()->to($request->fullUrl(), 303);
+                    $response = $this->continueTo($request, $link);
                     if ($request->boolean('remember')) {
                         $response->withCookie(new Cookie($cookieKey, '1', now()->addDay(), '/', null, $request->isSecure(), true, false, 'lax'));
                     }
@@ -103,13 +103,18 @@ class RedirectController extends Controller
                 if ($request->isMethod('post') && $request->input('unverified_confirm') === 'yes') {
                     session([$sessionKey => true]);
 
-                    return redirect()->to($request->fullUrl(), 303);
+                    return $this->continueTo($request, $link);
                 }
 
                 return response()->view('link-unverified', ['link' => $link, 'host' => $this->destinationHost($link)])
                     ->header('Cache-Control', 'no-store')
                     ->header('X-Robots-Tag', 'noindex');
             }
+        }
+        // Every gate is passed. A form post (the password) is never the visit itself: open the link with a fresh GET,
+        // which is the request that counts the click and leaves for the destination.
+        if ($request->isMethod('post')) {
+            return $this->continueTo($request, $link);
         }
         $counted = false;
         if ($link->max_clicks !== null && ! app(UserAgentService::class)->parse($request->userAgent())['bot']) {
@@ -171,6 +176,23 @@ class RedirectController extends Controller
         return response()
             ->view('errors.link-ended', ['link' => $link, 'reason' => $reason], $reason === 'scheduled' ? 404 : 410)
             ->header('Cache-Control', 'no-store');
+    }
+
+    /**
+     * The answer to an accepted gate form (password, content warning, unverified destination): a page that opens the link
+     * again with a GET. The browser checks CSP form-action against every redirect that follows a form post, so a 303 back
+     * to /l/{slug} that then leaves for another site was blocked and the visitor stayed on the gate. A Refresh is a new
+     * navigation, not part of the form post; the button covers a browser that ignores it.
+     */
+    protected function continueTo(Request $request, Link $link)
+    {
+        $url = $request->fullUrl();
+
+        return response()
+            ->view('link-continue', ['link' => $link, 'url' => $url, 'host' => $this->destinationHost($link)])
+            ->header('Refresh', '0;url='.$url)
+            ->header('Cache-Control', 'no-store')
+            ->header('X-Robots-Tag', 'noindex');
     }
 
     /** The destination's host as a person would read it (no www., no brackets), for the warning page. */

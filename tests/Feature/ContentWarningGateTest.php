@@ -70,7 +70,7 @@ test('sensitive link gate can be unlocked via form post without js', function ()
         'gate_confirm' => 'yes',
     ]);
 
-    $postResponse->assertStatus(303);
+    $postResponse->assertOk();
     $postResponse->assertSessionHas('link_gate_passed_'.$link->id, true);
 
     // Subsequent GET request with session redirects to destination
@@ -101,7 +101,7 @@ test('adult link gate and remember cookie', function () {
         'remember' => '1',
     ]);
 
-    $postResponse->assertStatus(303);
+    $postResponse->assertOk();
     $postResponse->assertCookie('hop_gate_link_'.$link->slug, '1');
 
     // Clear session, make request with cookie only
@@ -157,7 +157,7 @@ test('password protected links can complete the content gate without losing the 
     ]);
 
     $this->post('/l/'.$link->slug, ['password' => 'demo-password'])->assertSee('Age Verification Required');
-    $this->post('/l/'.$link->slug, ['gate_confirm' => 'yes'])->assertStatus(303);
+    $this->post('/l/'.$link->slug, ['gate_confirm' => 'yes'])->assertOk();
     $this->get('/l/'.$link->slug)->assertRedirect($link->target_url);
 });
 
