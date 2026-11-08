@@ -8,6 +8,7 @@ use App\Models\Link;
 use App\Services\GuestLinkPolicy;
 use App\Services\LinkService;
 use App\Services\TurnstileService;
+use App\Support\GuestDestination;
 use Illuminate\Support\Facades\Log;
 
 class PublicLinkController extends Controller
@@ -64,6 +65,12 @@ class PublicLinkController extends Controller
         ]);
         $this->links->generateQr($link);
         $this->links->forgetCache($link);
+        // What a guest made, for the hourly and rolling-day caps and for burst detection across days.
+        $this->policy->remember($link->target_url, $decision['creator_hash'], $link->slug);
+        if (! empty($decision['burst'])) {
+            $this->policy->flagBurst($link, $link->target_url);
+            Log::info('guest link held: destination burst', ['destination' => GuestDestination::normalize($link->target_url)]);
+        }
 
         return redirect()
             ->route('home')

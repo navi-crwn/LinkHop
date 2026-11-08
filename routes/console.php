@@ -25,6 +25,8 @@ Schedule::command('abuse:scan --since=75m')->hourly()->withoutOverlapping();
 Schedule::command('abuse:scan --full --purge')->dailyAt('04:30')->withoutOverlapping();
 // Guest links expire at 00:00 in the guest timezone; delete them right then.
 Schedule::command('links:prune-guest')->dailyAt('00:00')->timezone(config('shortener.guest_timezone'))->withoutOverlapping();
+// The guest link log (caps across days, burst detection) is kept for two weeks.
+Schedule::command('links:prune-guest-log')->dailyAt('03:20')->withoutOverlapping();
 Schedule::command('abuse:feeds')->dailyAt('03:45')->withoutOverlapping();
 // Guest links of the last day by destination domain, for Imperium (spikes = a kit at work).
 Schedule::command('links:guest-digest')->dailyAt('06:00')->withoutOverlapping();
