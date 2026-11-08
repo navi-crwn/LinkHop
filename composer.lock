@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b446c5fe351cca20cbd9f03ea74f5590",
+    "content-hash": "b349ebefcb8d5b6b9192dcc9858a6a9e",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1420,12 +1420,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/navi-crwn/hop-ui.git",
-                "reference": "1a0b1bbc02a77b53614249d0317d2fc15e75e6f4"
+                "reference": "cf9db5a075a5b9246fab901d22f24edd02a56d9e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-ui/zipball/1a0b1bbc02a77b53614249d0317d2fc15e75e6f4",
-                "reference": "1a0b1bbc02a77b53614249d0317d2fc15e75e6f4",
+                "url": "https://api.github.com/repos/navi-crwn/hop-ui/zipball/cf9db5a075a5b9246fab901d22f24edd02a56d9e",
+                "reference": "cf9db5a075a5b9246fab901d22f24edd02a56d9e",
                 "shasum": ""
             },
             "require": {
@@ -1454,7 +1454,7 @@
                 "source": "https://github.com/navi-crwn/hop-ui/tree/main",
                 "issues": "https://github.com/navi-crwn/hop-ui/issues"
             },
-            "time": "2026-11-08T07:46:14+00:00"
+            "time": "2026-11-08T10:07:50+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",

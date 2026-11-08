@@ -10,5 +10,5 @@ it('pins hop/ui to the commit in the lock', function () {
     $lock = json_decode((string) file_get_contents(base_path('composer.lock')), true);
     $locked = collect($lock['packages'])->firstWhere('name', 'hop/ui');
     expect($json['require']['hop/ui'])->toBe('dev-main#'.$locked['source']['reference'].' as 0.2.99')
-        ->and($locked['source']['reference'])->toBe('1a0b1bbc02a77b53614249d0317d2fc15e75e6f4');
+        ->and($locked['source']['reference'])->toBe('cf9db5a075a5b9246fab901d22f24edd02a56d9e');
 });
