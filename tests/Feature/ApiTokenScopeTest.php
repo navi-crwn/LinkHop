@@ -52,3 +52,29 @@ test('an invalid, expired or missing token is refused with the usual JSON shape'
     $expired = ApiToken::generate($user->id, 'old', 100, now()->subDay())['plain_token'];
     $this->withHeader('Authorization', 'Bearer '.$expired)->postJson('/api/shorten', ['url' => 'https://example.com'])->assertUnauthorized();
 });
+
+test('GET /api/me/links needs link:read and lists only the caller’s live links, with search and pages', function () {
+    $user = User::factory()->create();
+    $other = User::factory()->create();
+    foreach (range(1, 3) as $i) {
+        Link::create(['user_id' => $user->id, 'slug' => "mine{$i}x", 'target_url' => "https://example.com/{$i}", 'custom_title' => "Mine {$i}", 'status' => 'active']);
+    }
+    Link::create(['user_id' => $user->id, 'slug' => 'offline1', 'target_url' => 'https://example.com/off', 'status' => 'disabled']);
+    Link::create(['user_id' => $other->id, 'slug' => 'theirs9', 'target_url' => 'https://example.com/mine', 'custom_title' => 'Mine too', 'status' => 'active']);
+
+    $this->withHeaders(bearer($user, ['link:create']))->getJson('/api/me/links')->assertForbidden();
+    $this->flushHeaders()->getJson('/api/me/links')->assertUnauthorized();
+
+    $read = bearer($user, ['link:read']);
+    $all = $this->withHeaders($read)->getJson('/api/me/links?search=mine')->assertOk()->assertHeader('Cache-Control', 'no-store, private');
+    expect(collect($all->json('data'))->pluck('slug')->all())->toBe(['mine3x', 'mine2x', 'mine1x'])
+        ->and($all->json('next'))->toBe('');
+
+    $first = $this->withHeaders($read)->getJson('/api/me/links?limit=2')->assertOk();
+    expect(collect($first->json('data'))->pluck('slug')->all())->toBe(['mine3x', 'mine2x']);
+    $second = $this->withHeaders($read)->getJson('/api/me/links?limit=2&cursor='.$first->json('next'))->assertOk();
+    expect(collect($second->json('data'))->pluck('slug')->all())->toBe(['mine1x'])->and($second->json('next'))->toBe('');
+
+    // LIKE wildcards are plain text.
+    expect($this->withHeaders($read)->getJson('/api/me/links?search=%25')->json('data'))->toBe([]);
+});

@@ -34,6 +34,43 @@ class ShortenController extends Controller
         private LinkService $links
     ) {}
 
+    /**
+     * GET /api/me/links: the caller's links that still resolve, newest first, for a picker in another HOP app.
+     * ?search= matches the title, the destination or the slug; ?limit= 1..50 (default 20); ?cursor= is the
+     * `next` of the previous page. Only the caller's own links: the token's owner is the request user.
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $search = is_string($request->query('search')) ? trim(mb_substr($request->query('search'), 0, 100)) : '';
+        $limit = max(1, min(50, (int) ($request->query('limit') ?: 20)));
+        $cursor = max(0, (int) $request->query('cursor'));
+        $like = '%'.addcslashes($search, '%_\\').'%';
+        $rows = Link::query()->live()
+            ->where('links.user_id', $request->user()->id)
+            ->when($cursor > 0, fn ($q) => $q->where('links.id', '<', $cursor))
+            ->when($search !== '', fn ($q) => $q->where(fn ($sub) => $sub
+                ->where('links.custom_title', 'like', $like)
+                ->orWhere('links.target_url', 'like', $like)
+                ->orWhere('links.slug', 'like', $like)))
+            ->orderByDesc('links.id')
+            ->limit($limit + 1)
+            ->get();
+        $more = $rows->count() > $limit;
+        $rows = $rows->take($limit);
+
+        return response()->json([
+            'data' => $rows->map(fn (Link $link) => [
+                'id' => $link->id,
+                'slug' => $link->slug,
+                'title' => (string) ($link->custom_title ?: $link->slug),
+                'url' => $link->target_url,
+                'short_url' => $link->short_url,
+                'created_at' => $link->created_at?->toIso8601String(),
+            ])->values(),
+            'next' => $more ? (string) $rows->last()->id : '',
+        ])->header('Cache-Control', 'no-store');
+    }
+
     /** GET /api/links/{slug}: one of the caller's links with its click count. */
     public function show(Request $request, string $slug): JsonResponse
     {
