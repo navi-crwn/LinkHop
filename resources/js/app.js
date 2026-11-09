@@ -3,6 +3,7 @@ import Alpine from 'alpinejs';
 import collapse from '@alpinejs/collapse';
 import Sortable from 'sortablejs';
 import modal from './modal';
+import './dialogs';
 import installInlineActions from './inline-actions';
 import { registerEditorComponents } from './editor-tools';
 import { registerCommandPalette } from './command-palette';
@@ -129,14 +130,14 @@ window.turnstileForm = (siteKey) => ({
 // (e.g. Logout) would fail with 419. When the tab is shown again after a while, fetch a fresh
 // token and put it in the page. Values baked into inline scripts are not updated.
 let csrfFetchedAt = Date.now();
-const refreshCsrfToken = async () => {
-    if (Date.now() - csrfFetchedAt < 5 * 60 * 1000) {
-        return;
+const refreshCsrfToken = async (force = false) => {
+    if (!force && Date.now() - csrfFetchedAt < 5 * 60 * 1000) {
+        return null;
     }
     try {
         const response = await fetch('/csrf-token', { headers: { Accept: 'application/json' }, credentials: 'same-origin' });
         if (!response.ok) {
-            return;
+            return null;
         }
         const { token } = await response.json();
         csrfFetchedAt = Date.now();
@@ -147,10 +148,15 @@ const refreshCsrfToken = async () => {
         if (window.axios) {
             window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
         }
+
+        return token;
     } catch {
         // Offline or blocked: the server-side handling of an expired token still applies.
+        return null;
     }
 };
+// A fetch() that got a 419 asks for the current token with this, then sends its request once more.
+window.hopFreshCsrf = () => refreshCsrfToken(true);
 document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
         refreshCsrfToken();

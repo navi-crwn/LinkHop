@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-slate-950 text-white">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full dark bg-slate-950 text-white">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,23 +32,23 @@
                     @csrf
                     <input type="hidden" name="slug" value="{{ old('slug', $prefill['slug'] ?? '') }}">
                     <div>
-                        <label for="freport-1" class="text-sm text-white/80">{{ __('Page address') }}</label>
-                        <input id="freport-1" type="url" name="url" value="{{ old('url', $prefill['url'] ?? '') }}" class="mt-1 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/40 focus:border-blue-500 focus:ring-blue-500" placeholder="https://hel.ink/..." required>
+                        <label for="freport-1" class="label">{{ __('Page address') }}</label>
+                        <input id="freport-1" type="url" name="url" value="{{ old('url', $prefill['url'] ?? '') }}" class="input" placeholder="https://hel.ink/..." required>
                     </div>
                     <div>
-                        <label for="freport-2" class="text-sm text-white/80">{{ __('Your email') }} {{ __('(so we can follow up)') }}</label>
-                        <input id="freport-2" type="email" name="email" value="{{ old('email') }}" class="mt-1 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/40 focus:border-blue-500 focus:ring-blue-500" placeholder="your@email.com" required>
+                        <label for="freport-2" class="label">{{ __('Your email') }} {{ __('(so we can follow up)') }}</label>
+                        <input id="freport-2" type="email" name="email" value="{{ old('email') }}" class="input" placeholder="your@email.com" required>
                     </div>
                     <div>
-                        <label for="freport-3" class="text-sm text-white/80">{{ __('What is wrong?') }}</label>
-                        <textarea id="freport-3" name="reason" rows="4" class="mt-1 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/40 focus:border-blue-500 focus:ring-blue-500" required>{{ old('reason') }}</textarea>
+                        <label for="freport-3" class="label">{{ __('What is wrong?') }}</label>
+                        <textarea id="freport-3" name="reason" rows="4" class="input" required>{{ old('reason') }}</textarea>
                     </div>
                     <x-turnstile />
                     <div class="flex items-center justify-between text-xs text-white/60">
                         <span>{{ __('To prevent spam, each network can send a few reports per half hour.') }}</span>
                         <a href="{{ url('/') }}" class="text-blue-300 hover:underline">{{ __('Go to homepage') }}</a>
                     </div>
-                    <button type="submit" class="w-full rounded-2xl bg-blue-500 py-3 text-lg font-semibold text-white shadow-lg shadow-blue-500/40 hover:bg-blue-400"><span x-show="!waiting">{{ __('Send report') }}</span><span x-cloak x-show="waiting">{{ __('Verifying…') }}</span></button>
+                    <button type="submit" class="btn-primary btn-lg max-sm:w-full"><span x-show="!waiting">{{ __('Send report') }}</span><span x-cloak x-show="waiting">{{ __('Verifying…') }}</span></button>
                 </form>
             </div>
         </div>

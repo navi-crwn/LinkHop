@@ -1,6 +1,10 @@
 <x-app-layout>
     <x-slot name="pageTitle">{{ __('Edit') }} /{{ $link->slug }}</x-slot>
-    <x-page-header title="Edit link" subtitle="{{ $link->short_url }}">
+    @php
+        // The state a visitor meets, next to the address: an exhausted or expired link is not simply "active".
+        $state = $link->isExpired() ? __('Expired') : ($link->status !== 'active' ? __('Inactive') : ($link->isLimitReached() ? __('Limit reached') : ($link->isNotStarted() ? __('Not started yet') : __('Active'))));
+    @endphp
+    <x-page-header title="Edit link" subtitle="{{ $link->short_url }} · {{ $state }}">
         <x-slot name="actions">
             <a href="{{ route('links.show', $link) }}" class="btn-ghost btn-sm">Analytics</a>
             <a href="{{ route('links.index') }}" class="btn-soft btn-sm">My links</a>
@@ -55,14 +59,15 @@
                         </select>
                     </div>
                 </div>
-                <div>
+                <div x-data="{ redirect: @js($redirect) }">
                     <label class="label" for="redirect_type">Redirect type</label>
-                    <select id="redirect_type" name="redirect_type" class="input sm:w-60!">
+                    <select id="redirect_type" name="redirect_type" class="input sm:w-60!" x-model="redirect" aria-describedby="redirect-note">
                         <option value="302" @selected($redirect === '302')>302 · temporary</option>
                         <option value="301" @selected($redirect === '301')>301 · permanent</option>
                         <option value="307" @selected($redirect === '307')>307 · temporary, keeps method</option>
                         <option value="308" @selected($redirect === '308')>308 · permanent, keeps method</option>
                     </select>
+                    <p id="redirect-note" x-show="redirect === '301' || redirect === '308'" x-cloak class="mt-1 text-xs text-amber-700 dark:text-amber-300">{{ __('Browsers remember a permanent redirect: visitors who already opened the link keep going to the old address if you change it. A link with a warning, a password, a rule, a limit or a start or end time answers with a temporary redirect instead.') }}</p>
                 </div>
             </div>
         </div>
@@ -75,7 +80,10 @@
             <div class="space-y-3 md:col-span-2">
                 <div>
                     <label class="label" for="folder_id">Folder</label>
-                    <select id="folder_id" name="folder_id" class="input" required>
+                    {{-- Optional: a link may sit in no folder. Without the empty choice the form could not be saved
+                         when there were no folders, and saving silently moved an unfiled link into the first one. --}}
+                    <select id="folder_id" name="folder_id" class="input">
+                        <option value="" @selected(blank(old('folder_id', $link->folder_id)))>{{ __('No folder') }}</option>
                         @foreach ($folders as $folder)
                             <option value="{{ $folder->id }}" @selected((int) old('folder_id', $link->folder_id) === (int) $folder->id)>{{ $folder->name }}</option>
                         @endforeach
@@ -85,13 +93,13 @@
                     <div class="flex items-center justify-between gap-2">
                         <span class="label">Tags</span>
                         @if (count($tags) > 12)
-                            <input type="search" x-model="search" placeholder="Filter tags" aria-label="Filter tags" class="input w-40! py-1! text-xs">
+                            <input type="search" x-model="search" placeholder="Filter tags" aria-label="Filter tags" class="input input-dense w-40!">
                         @endif
                     </div>
                     @if (count($tags) === 0)
                         <p class="text-xs text-muted">No tags yet. <a href="{{ route('tags.index') }}" class="underline">Create one</a>.</p>
                     @else
-                        <div class="flex max-h-36 flex-wrap gap-1.5 overflow-y-auto">
+                        <div class="flex max-h-36 flex-wrap gap-1.5 overflow-y-auto" role="group" aria-label="{{ __('Tags') }}">
                             @foreach ($tags as $tag)
                                 <label class="cursor-pointer" x-show="!search || @js(mb_strtolower($tag->name)).includes(search.toLowerCase())">
                                     <input type="checkbox" name="tags[]" value="{{ $tag->id }}" class="peer sr-only" @checked(in_array((int) $tag->id, $selectedTags, true))>
@@ -115,13 +123,13 @@
                     <input id="flinked-1" type="password" name="password" class="input" placeholder="Leave blank to keep" autocomplete="new-password">
                     @if ($link->requiresPassword())
                         <label class="mt-2 flex items-center gap-2 text-xs text-muted">
-                            <input type="checkbox" name="remove_password" value="1" class="rounded-sm border-slate-400/50 text-indigo-600 focus:ring-indigo-500">
+                            <input type="checkbox" name="remove_password" value="1" class="border-slate-400/50 text-indigo-600 focus:ring-indigo-500">
                             Remove the current password
                         </label>
                     @endif
                 </div>
                 <div>
-                    <label for="flinked-2" class="label">Expires at</label>
+                    <label for="flinked-2" class="label">{{ __('Expires at') }} <span class="font-normal text-muted">(UTC)</span></label>
                     <input id="flinked-2" type="datetime-local" name="expires_at" value="{{ old('expires_at', optional($link->expires_at)->format('Y-m-d\TH:i')) }}" class="input">
                     <x-input-error :messages="$errors->get('expires_at')" class="mt-1" />
                 </div>

@@ -69,7 +69,7 @@
     }"
     {{ $attributes->class(['rounded-xl border border-slate-500/20 p-3']) }}
 >
-    <button type="button" x-on:click="toggle()" x-bind:aria-expanded="open" class="flex w-full items-center justify-between gap-2 text-left text-sm font-medium text-ink">
+    <button type="button" x-on:click="toggle()" x-bind:aria-expanded="open" data-ctl="disclosure" class="flex min-h-9 pointer-coarse:min-h-11 w-full items-center justify-between gap-2 rounded-lg text-left text-sm font-medium text-ink">
         <span>{{ __('Campaign tags (UTM)') }}</span>
         <span class="text-xs text-muted" x-text="open ? @js(__('Hide')) : @js(__('Show'))">{{ __('Show') }}</span>
     </button>

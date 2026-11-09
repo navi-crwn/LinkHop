@@ -27,8 +27,8 @@
             <form method="POST" action="{{ request()->fullUrl() }}" class="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
                 @csrf
                 <input type="hidden" name="unverified_confirm" value="yes">
-                <button type="submit" class="inline-block whitespace-nowrap rounded-xl bg-slate-900 px-5 py-2.5 font-semibold text-white dark:bg-white dark:text-slate-900">{{ __('Continue to :host', ['host' => $host]) }}</button>
-                <a href="{{ route('home') }}" class="inline-block whitespace-nowrap rounded-xl border border-gray-300 px-5 py-2.5 font-semibold text-gray-700 dark:border-gray-600 dark:text-gray-200">{{ __('Back to LinkHop') }}</a>
+                <button type="submit" class="btn-primary btn-lg">{{ __('Continue to :host', ['host' => $host]) }}</button>
+                <a href="{{ route('home') }}" class="btn-outline btn-lg">{{ __('Back to LinkHop') }}</a>
             </form>
             <p class="mt-6 text-xs text-gray-500 dark:text-gray-500">
                 <a href="{{ route('report.create', ['url' => $link->short_url]) }}" class="underline underline-offset-2">{{ __('Report abuse') }}</a>

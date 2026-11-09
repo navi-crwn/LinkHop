@@ -69,7 +69,8 @@ class TagController extends Controller
         $tag->delete();
         ActivityLog::log('deleted', 'Tag', $tagId, "Deleted tag: {$tagName}");
 
-        return back()->with('status', 'Tag deleted successfully.');
+        // Not back(): from the tag's own page that would be the address of a tag that no longer exists (a 404).
+        return redirect()->route('tags.index')->with('status', __('Tag deleted successfully.'));
     }
 
     public function manage(Request $request, Tag $tag): View

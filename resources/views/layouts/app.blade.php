@@ -12,6 +12,7 @@
         <script nonce="{{ Vite::cspNonce() }}">
             (function () {
                 try {
+                    if (/(^|; )hop_ui=clean/.test(document.cookie)) document.documentElement.dataset.ui = 'clean';
                     var t = localStorage.getItem('helink-theme');
                     if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                         document.documentElement.classList.add('dark');
@@ -20,6 +21,17 @@
             })();
         </script>
         <x-hop::fonts />
+        {{-- The family's dialogs and reminder buttons (hop-assets hop-ui, v5 on): loaded once the hub's manifest lists
+             them, and only with their SRI hashes. Until then the dashboard asks with the browser's dialogs (resources/js/dialogs.js)
+             and the reminder cards have no Hide button. --}}
+        @php
+            $hopUiCss = \Hop\Ui\Assets::asset('ui_css');
+            $hopUiJs = \Hop\Ui\Assets::asset('ui_js');
+        @endphp
+        @if (! empty($hopUiCss['url']) && ! empty($hopUiCss['integrity']) && ! empty($hopUiJs['url']) && ! empty($hopUiJs['integrity']))
+            <link rel="stylesheet" href="{{ $hopUiCss['url'] }}" integrity="{{ $hopUiCss['integrity'] }}" crossorigin="anonymous">
+            <script nonce="{{ Vite::cspNonce() }}" src="{{ $hopUiJs['url'] }}" integrity="{{ $hopUiJs['integrity'] }}" crossorigin="anonymous" defer></script>
+        @endif
         {{-- Self-hosted copies (public/vendor, see its README): no script, style or image from a third-party host. --}}
         @php
             $vendor = fn (string $path) => asset('vendor/'.$path).'?v='.substr((string) @md5_file(public_path('vendor/'.$path)), 0, 8);
@@ -65,7 +77,8 @@
                             </button>
                         </div>
                         <div class="px-3 pb-2">
-                            <button type="button" @click="$dispatch('open-palette')" class="nav-item w-full" aria-haspopup="dialog">
+                            {{-- Closes the drawer first, so the palette's input can take the focus. --}}
+                            <button type="button" @click="nav = false; $dispatch('open-palette')" data-ctl="tab" class="nav-item w-full" aria-haspopup="dialog">
                                 <svg class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="m20 20-3.5-3.5"/></svg>
                                 <span class="flex-1 text-left">{{ __('Search') }}</span>
                                 <kbd class="font-mono text-[11px] text-muted" x-text="/Mac|iPhone|iPad/.test(navigator.platform) ? '⌘K' : 'Ctrl K'">Ctrl K</kbd>
@@ -91,22 +104,22 @@
                         <p class="truncate pl-1 text-sm font-semibold text-ink">{{ $sectionTitle }}</p>
                         <div class="ml-auto flex items-center gap-1.5">
                             @if (request()->routeIs('bio.*'))
-                                <a href="{{ route('bio.create') }}" aria-label="{{ __('New bio page') }}" class="btn-primary btn-sm sm:btn">
+                                <a href="{{ route('bio.create') }}" aria-label="{{ __('New bio page') }}" class="btn-primary btn-sm">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
                                     <span class="hidden sm:inline">New bio</span>
                                 </a>
                             @elseif (request()->routeIs('folders.index'))
-                                <button type="button" data-call="openFolderModal" aria-label="{{ __('New folder') }}" class="btn-primary btn-sm sm:btn">
+                                <button type="button" data-call="openFolderModal" aria-label="{{ __('New folder') }}" class="btn-primary btn-sm">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
                                     <span class="hidden sm:inline">New folder</span>
                                 </button>
                             @elseif (request()->routeIs('tags.index'))
-                                <button type="button" data-call="openTagModal" aria-label="{{ __('New tag') }}" class="btn-primary btn-sm sm:btn">
+                                <button type="button" data-call="openTagModal" aria-label="{{ __('New tag') }}" class="btn-primary btn-sm">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
                                     <span class="hidden sm:inline">New tag</span>
                                 </button>
                             @else
-                                <button type="button" data-call="openLinkPanel" data-fallback-href="{{ route('links.index') }}?create=1" aria-label="{{ __('New link') }}" class="create-link-trigger btn-primary btn-sm sm:btn">
+                                <button type="button" data-call="openLinkPanel" data-fallback-href="{{ route('links.index') }}?create=1" aria-label="{{ __('New link') }}" class="create-link-trigger btn-primary btn-sm">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
                                     <span class="hidden sm:inline">New link</span>
                                 </button>
@@ -116,7 +129,7 @@
                                 <svg class="h-[18px] w-[18px] dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></svg>
                                 <svg class="hidden h-[18px] w-[18px] dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path stroke-linecap="round" d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
                             </button>
-                            <x-hop::account-menu :user="$user" :settings-url="route('settings')" :account-url="hub_url('profile')" :logout-url="route('logout')" />
+                            <x-hop::account-menu :user="$user" :settings-url="route('settings')" :account-url="hub_url('settings').'#account'" :logout-url="route('logout')" />
                         </div>
                     </div>
                 </header>
@@ -132,17 +145,23 @@
                             {{ $slot ?? '' }}
                         @endif
                     </div>
+                    <footer class="coss-footer-brand"><img src="{{ route('brand.logo') }}" alt=""><span><b>LinkHop</b> · Hop Easy Link</span></footer>
                 </main>
                 <x-command-palette />
             </div>
         @else
+            {{-- A signed-out reader (the short-links notice from an email): the page body with room around it, no sidebar. --}}
             <div class="min-h-screen">
-                <main>
-                    @hasSection('content')
-                        @yield('content')
-                    @else
-                        {{ $slot ?? '' }}
-                    @endif
+                <main class="app-shell px-3 pb-10 pt-4 sm:px-5 sm:pt-6">
+                    <div class="mx-auto w-full max-w-3xl space-y-5">
+                        <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-sm text-muted hover:text-ink"><x-wordmark class="h-9 w-auto" /></a>
+                        @hasSection('content')
+                            @yield('content')
+                        @else
+                            {{ $slot ?? '' }}
+                        @endif
+                        <p class="text-xs text-muted"><a href="{{ route('login') }}" class="underline">{{ __('Sign in') }}</a> · <a href="{{ route('home') }}" class="underline">LinkHop</a></p>
+                    </div>
                 </main>
             </div>
         @endauth

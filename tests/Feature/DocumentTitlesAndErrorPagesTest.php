@@ -69,8 +69,10 @@ it('titles the bio editor and the bio analytics page after what they are', funct
 it('answers an unknown address with a 404 page in the language of ?lang= and of the cookie', function () {
     foreach (Locales::codes() as $lang) {
         $viaQuery = $this->get('/no/such/deep/page?lang='.$lang)->assertNotFound();
+        // A missing dashboard page is not a missing short link: the page says "page", not "short link".
         expect($viaQuery->getContent())->toContain('<html lang="'.$lang.'"')
-            ->toContain('>'.e(trans('Link not found', [], $lang)).'</h1>');
+            ->toContain('>'.e(trans('Page not found', [], $lang)).'</h1>')
+            ->not->toContain(e(trans('Link not found', [], $lang)));
         $viaCookie = $this->withUnencryptedCookie('hop_lang', $lang)->get('/no/such/deep/page')->assertNotFound();
         expect($viaCookie->getContent())->toContain('<html lang="'.$lang.'"');
     }

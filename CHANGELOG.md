@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Repeated-destination detection: when `guest_policy.burst_ips` different connections (5 by default) reach the same normalized destination inside `burst_window_minutes` (60), a new guest link to that destination is held behind the existing warning page and flagged for review (`guest_burst`, plus the phishing shape signals when the address has them). Nothing is suspended, and the links already made stay as they are. The burst check runs before the allowlist: a well-known address that suddenly attracts many connections is exactly the case worth a second look.
 
 ### Changed
+- Controls follow the HOP control standard (`--hop-ctl-*` tokens): one shape and one height for inputs, selects, buttons, chips and search, capped field widths per kind, 16 px text and 44 px touch targets on phones, and no motion under reduced motion. The primary button now uses the accent color.
 - `composer.lock` moves `hop/safety` from `12d72dd` to `df5e938` (navi-crwn/hop-safety#9): the bundled domain blacklist (`fnjphdp.com` and its subdomains, the Telegram account-takeover kit of 2026-11-05), the kit's phrases as phishing keywords matched in the address too, and the `random_subdomain` signal (weight 30, never blocking on its own; `safety.known_domains` lists the CDNs where such labels are normal). No code change here; `abuse:scan` and the forms pick the rules up at once.
 
 ### Fixes

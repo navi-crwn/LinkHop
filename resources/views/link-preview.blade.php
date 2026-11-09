@@ -18,6 +18,9 @@
     <meta name="twitter:description" content="{{ $link->custom_description ?? 'Shortlink by '.config('app.name') }}" />
     @if($link->custom_image_url)
         <meta name="twitter:image" content="{{ $link->custom_image_url }}" />
+    @else
+        {{-- The link has no picture of its own: the family mark, so the card is not left with a broken image. --}}
+        <meta name="twitter:image" content="{{ route('brand.logo.dark') }}" />
     @endif
     <meta http-equiv="refresh" content="0;url={{ $link->target_url }}">
     <title>{{ $link->custom_title ?? config('app.name') }}</title>

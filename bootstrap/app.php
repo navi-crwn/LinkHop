@@ -77,9 +77,12 @@ return Application::configure(basePath: dirname(__DIR__))
                 return redirect()->away(hub_url('logout'));
             }
 
+            // The token is checked before the locale middleware runs: pick the visitor's language here.
+            SetLocale::apply($request);
+
             return redirect()->back()
                 ->withInput(EncryptedNoteLink::scrubInput($request->except(['_token', 'password', 'password_confirmation', 'current_password', 'token', 'code', 'recovery_code'])))
-                ->with('session_expired', 'Sesi habis, silakan coba lagi.');
+                ->with('session_expired', __('Your session expired. Please try again.'));
         });
         // A refused form comes back with what was typed, kept in the session: without the key of an encrypted note.
         $exceptions->render(function (ValidationException $e, Request $request) {

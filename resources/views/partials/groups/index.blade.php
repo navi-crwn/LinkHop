@@ -38,26 +38,27 @@
                             @endif
                         </div>
                         @unless ($isDefault)
-                            <form x-show="renaming" x-cloak method="POST" action="{{ route($plural.'.update', $group) }}" class="flex gap-1.5">
+                            {{-- The name takes the whole row; the buttons sit under it, so the input is never squeezed to 90px. --}}
+                            <form x-show="renaming" x-cloak method="POST" action="{{ route($plural.'.update', $group) }}" class="flex flex-wrap gap-1.5">
                                 @csrf
                                 @method('PUT')
-                                <input type="text" name="name" value="{{ $group->name }}" aria-label="{{ $label }} name" class="input py-1! text-sm" required>
-                                <button class="btn-primary btn-sm">Save</button>
-                                <button type="button" class="btn-ghost btn-sm" @click="renaming = false">Cancel</button>
+                                <input type="text" name="name" value="{{ $group->name }}" aria-label="{{ $label }} name" class="input" required x-ref="rename" x-effect="if (renaming) $nextTick(() => { $refs.rename.focus(); $refs.rename.select(); })">
+                                <button class="btn-primary btn-sm">{{ __('Save') }}</button>
+                                <button type="button" class="btn-ghost btn-sm" @click="renaming = false">{{ __('Cancel') }}</button>
                             </form>
                         @endunless
                         <p class="text-xs text-muted">{{ number_format($group->links_count) }} {{ Str::plural('link', $group->links_count) }} · {{ number_format((int) $group->links_sum_clicks) }} clicks</p>
                     </div>
                     <div class="flex shrink-0 items-center gap-0.5" x-show="!renaming">
                         @unless ($isDefault)
-                            <button type="button" class="icon-btn h-8! w-8!" title="Rename" aria-label="Rename {{ $group->name }}" @click="renaming = true">
+                            <button type="button" class="icon-btn icon-btn-dense" title="Rename" aria-label="Rename {{ $group->name }}" @click="renaming = true">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                             </button>
                         @endunless
-                        <form method="POST" action="{{ route($plural.'.destroy', $group) }}" data-confirm="Delete the {{ $kind }} {{ $group->name }}?">
+                        <form method="POST" action="{{ route($plural.'.destroy', $group) }}" data-confirm="{{ $kind === 'folder' ? __('Delete this folder?') : __('Delete this tag?') }}" data-confirm-message="{{ $kind === 'folder' ? __('A folder that still holds links cannot be deleted: move them out first.') : __('Links keep working but lose this tag.') }}" data-confirm-danger data-confirm-subject="{{ $group->name }}">
                             @csrf
                             @method('DELETE')
-                            <button class="icon-btn h-8! w-8! hover:text-rose-500!" title="Delete" aria-label="Delete {{ $group->name }}">
+                            <button class="icon-btn icon-btn-dense hover:text-rose-500!" title="Delete" aria-label="Delete {{ $group->name }}">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                             </button>
                         </form>
@@ -78,7 +79,7 @@
                     @endforelse
                 </ul>
 
-                <a href="{{ route($plural.'.manage', $group) }}" class="btn-soft btn-sm justify-center">Open {{ $kind }}</a>
+                <a href="{{ route($plural.'.manage', $group) }}" class="btn-soft btn-sm self-start">Open {{ $kind }}</a>
             </section>
         @endforeach
     </div>

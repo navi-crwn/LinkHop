@@ -17,7 +17,9 @@ use App\Support\DeepLinks;
 use App\Support\EncryptedNoteLink;
 use App\Support\LinkRouting;
 use App\Support\QrPng;
+use App\Support\Reminders;
 use App\Support\RemoteUrl;
+use App\Support\ShortLinkMove;
 use GuzzleHttp\Client;
 use Hop\Safety\UrlGuard;
 use Illuminate\Http\Request;
@@ -25,6 +27,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class LinkController extends Controller
@@ -151,7 +154,8 @@ class LinkController extends Controller
         $stats = [
             'total_links' => $user->links()->count(),
             'total_clicks' => $user->links()->sum('clicks'),
-            'active_links' => $user->links()->where('status', Link::STATUS_ACTIVE)->count(),
+            // Links a visitor can still open: switched on, not expired, not out of clicks, already started.
+            'active_links' => $user->links()->live()->count(),
         ];
         $quota = [
             'daily' => [
@@ -159,7 +163,8 @@ class LinkController extends Controller
                 'limit' => $limits['max_links_per_day'],
             ],
             'active' => [
-                'used' => $stats['active_links'],
+                // The cap counts switched-on links (QuotaService), whatever their state, so the meter does the same.
+                'used' => $user->links()->where('status', Link::STATUS_ACTIVE)->count(),
                 'limit' => $limits['max_active_links'],
             ],
         ];
@@ -186,7 +191,10 @@ class LinkController extends Controller
             'highlightTop' => $topLinks->first(),
             'week' => DashboardStats::week($user),
             'sparks' => DashboardStats::sparklines($topLinks->pluck('id')->merge($latestLinks->pluck('id'))->unique()->values()->all()),
-            'checklist' => DashboardStats::checklist($user),
+            'checklist' => $checklist = DashboardStats::checklist($user),
+            // Reminder cards: gone for good once their task is done, away for a week after "Hide" (App\Support\Reminders).
+            'showChecklist' => $checklist['done'] < count($checklist['items']) && ! Reminders::hidden($user, 'checklist'),
+            'showMoveNotice' => ShortLinkMove::active() && ! Reminders::hidden($user, 'short-links-move'),
         ];
 
         return view('dashboard', $data);
@@ -215,7 +223,9 @@ class LinkController extends Controller
                 ? response()->json(['error' => $duplicate['message'], 'duplicate' => ['slug' => $duplicate['slug'], 'short_url' => $duplicate['short_url']]], 409)
                 : back()->withInput()->withErrors(['target_url' => $duplicate['message']]);
         }
-        if (empty($data['folder_id'])) {
+        // The default folder is for a request that says nothing about folders (an older client). A form that sends
+        // an empty folder asked for none.
+        if (empty($data['folder_id']) && ! $request->exists('folder_id')) {
             $defaultFolder = Folder::where('user_id', $request->user()->id)
                 ->where('is_default', true)
                 ->first();
@@ -274,20 +284,16 @@ class LinkController extends Controller
     {
         $this->authorizeLink($link);
         $data = $request->validated();
+        $before = $link->getAttributes();
         $originalSlug = $link->slug;
-        $originalRedirectType = $link->redirect_type;
         $originalTags = $link->tags->pluck('id')->toArray();
         $link->update($this->mapPayload($data, $link));
         $this->syncRelations($link, $request);
-        $changes = [];
         if ($originalSlug !== $link->slug) {
-            $changes[] = "slug: {$originalSlug} → {$link->slug}";
             $this->links->generateQr($link);
             $this->links->forgetCacheBySlug($originalSlug);
         }
-        if ($originalRedirectType !== $link->redirect_type) {
-            $changes[] = "redirect type: {$originalRedirectType} → {$link->redirect_type}";
-        }
+        $changes = $this->describeChanges($before, $link);
         $newTags = $link->fresh()->tags->pluck('id')->toArray();
         if ($originalTags != $newTags) {
             $changes[] = 'tags updated';
@@ -298,6 +304,64 @@ class LinkController extends Controller
         }
 
         return redirect()->route('links.show', $link)->with('status', 'Link updated.');
+    }
+
+    /**
+     * What an edit changed, for the activity log: every field a person can set on the edit form, old → new, never a
+     * password or a note key. $before is the row as it was (getAttributes()), $link the saved model.
+     *
+     * @return array<int, string>
+     */
+    protected function describeChanges(array $before, Link $link): array
+    {
+        $after = $link->getAttributes();
+        $show = fn ($value, string $empty = 'none'): string => blank($value) ? $empty : (string) $value;
+        $folderName = function ($id) {
+            return blank($id) ? 'none' : (Folder::whereKey($id)->value('name') ?? "#{$id}");
+        };
+        $address = fn ($url) => $show(EncryptedNoteLink::withoutFragment((string) $url));
+        $same = fn ($a, $b) => (string) $a === (string) $b || json_encode($a) === json_encode($b);
+        $fields = [
+            'slug' => ['slug', $show],
+            'target_url' => ['destination', $address],
+            'status' => ['status', $show],
+            'redirect_type' => ['redirect type', $show],
+            'folder_id' => ['folder', $folderName],
+            'custom_title' => ['title', fn ($v) => $show(Str::limit((string) $v, 60), 'none')],
+            'expires_at' => ['expires', fn ($v) => $show($v, 'never')],
+            'starts_at' => ['starts', fn ($v) => $show($v, 'at once')],
+            'max_clicks' => ['click limit', fn ($v) => $show($v, 'none')],
+            'fallback_url' => ['fallback', $address],
+            'content_warning' => ['content warning', fn ($v) => $show($v, 'none')],
+        ];
+        $changes = [];
+        foreach ($fields as $column => [$label, $format]) {
+            if (array_key_exists($column, $after) && ! $same($before[$column] ?? null, $after[$column])) {
+                $changes[] = "{$label}: ".$format($before[$column] ?? null).' → '.$format($after[$column]);
+            }
+        }
+        $summaries = [
+            'warning_reason' => 'warning reason updated',
+            'custom_description' => 'social preview updated',
+            'custom_image_url' => 'social preview updated',
+            'routing_rules' => 'routing rules updated',
+            'ab_variants' => 'A/B split updated',
+            'app_links' => 'app links updated',
+        ];
+        foreach ($summaries as $column => $summary) {
+            if (array_key_exists($column, $after) && ! $same($before[$column] ?? null, $after[$column]) && ! in_array($summary, $changes, true)) {
+                $changes[] = $summary;
+            }
+        }
+        $hadPassword = filled($before['password_hash'] ?? null);
+        $hasPassword = filled($after['password_hash'] ?? null);
+        if ($hadPassword !== $hasPassword) {
+            $changes[] = $hasPassword ? 'password set' : 'password removed';
+        } elseif ($hasPassword && ($before['password_hash'] ?? null) !== $after['password_hash']) {
+            $changes[] = 'password changed';
+        }
+
+        return $changes;
     }
 
     public function destroy(Link $link)
@@ -457,6 +521,27 @@ class LinkController extends Controller
         return response($qrCode)
             ->header('Content-Type', $mimeTypes[$format])
             ->header('Content-Disposition', "attachment; filename=\"{$link->slug}-qr.{$format}\"");
+    }
+
+    /** The QR colours from the analytics page: saved on the link, so every download (and the stored PNG) uses them. */
+    public function updateQr(Request $request, Link $link)
+    {
+        $this->authorizeLink($link);
+        $data = $request->validate([
+            'qr_fg_color' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
+            'qr_bg_color' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
+        ], [
+            'qr_fg_color.regex' => __('Enter a colour as six hex digits, like #1e40af.'),
+            'qr_bg_color.regex' => __('Enter a colour as six hex digits, like #ffffff.'),
+        ]);
+        $before = [$link->qr_fg_color ?: '#000000', $link->qr_bg_color ?: '#ffffff'];
+        $link->forceFill(['qr_fg_color' => strtolower($data['qr_fg_color']), 'qr_bg_color' => strtolower($data['qr_bg_color'])])->save();
+        $this->links->generateQr($link);
+        if ($before !== [$link->qr_fg_color, $link->qr_bg_color]) {
+            ActivityLog::log('updated', 'Link', $link->id, "Updated link {$link->slug}: QR colours {$before[0]}/{$before[1]} → {$link->qr_fg_color}/{$link->qr_bg_color}");
+        }
+
+        return redirect()->route('links.show', $link)->with('status', __('QR code colours saved.'));
     }
 
     public function saveCustomQr(Request $request, Link $link)

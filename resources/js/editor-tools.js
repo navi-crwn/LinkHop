@@ -31,12 +31,18 @@ const legacyCopy = (text) => {
 };
 
 // Copy and show "copied" at once; the clipboard answer only matters when it fails, and then the button says so.
-// The button may carry data-copied / data-failed (translated words). Icon buttons change colour and title,
-// text buttons change their text. No animation, so it is the same with reduced motion.
+// The button may carry data-copied / data-failed (translated words). Icon buttons swap their icon for a check
+// (or a cross) and show the word in a small label above, text buttons change their text. No animation, so it is
+// the same with reduced motion.
 const copyTimers = new WeakMap();
+const COPY_ICONS = {
+    copied: '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>',
+    failed: '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" d="M6 6l12 12M18 6 6 18"/></svg>',
+};
+const COPY_TIP_CLASS = 'pointer-events-none absolute -top-8 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-[11px] font-medium text-white shadow-lg dark:bg-white dark:text-slate-900';
 window.hopCopy = (text, el) => {
     const isText = el.textContent.trim() !== '';
-    const original = el._copyOriginal ??= { html: el.innerHTML, title: el.getAttribute('title') };
+    const original = el._copyOriginal ??= { html: el.innerHTML, title: el.getAttribute('title'), position: el.style.position };
     const show = (state, label) => {
         clearTimeout(copyTimers.get(el));
         el.dataset.copyState = state;
@@ -46,12 +52,17 @@ window.hopCopy = (text, el) => {
             el.textContent = label;
         } else if (label) {
             el.setAttribute('title', label);
+            if (getComputedStyle(el).position === 'static') {
+                el.style.position = 'relative';
+            }
+            el.innerHTML = COPY_ICONS[state] + `<span class="${COPY_TIP_CLASS}" aria-hidden="true">${label.replace(/[<>&]/g, '')}</span>`;
         }
         announce(label);
         copyTimers.set(el, setTimeout(() => {
             delete el.dataset.copyState;
             el.classList.remove('text-emerald-500!', 'text-rose-500!');
             el.innerHTML = original.html;
+            el.style.position = original.position;
             original.title === null ? el.removeAttribute('title') : el.setAttribute('title', original.title);
         }, state === 'failed' ? 2500 : 1400));
     };

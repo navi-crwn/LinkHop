@@ -38,7 +38,7 @@
         @endforeach
         @if ($items->count() > $limit)
             <li>
-                <button type="button" class="w-full rounded-lg py-1 text-center text-xs font-medium text-indigo-600 hover:bg-indigo-500/5 dark:text-indigo-300" @click="all = !all" x-text="all ? 'Show less' : 'Show all ({{ $items->count() }})'"></button>
+                <button type="button" class="btn-ghost btn-dense" @click="all = !all" x-text="all ? 'Show less' : 'Show all ({{ $items->count() }})'"></button>
             </li>
         @endif
     </ul>

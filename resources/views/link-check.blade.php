@@ -10,8 +10,8 @@
         <form method="GET" action="{{ route('link.check') }}" class="{{ $card }} mt-8 flex flex-col gap-2 p-2 sm:flex-row">
             <label for="url" class="sr-only">Short link</label>
             <input id="url" name="url" value="{{ $input }}" required autofocus placeholder="{{ $host }}/abc123"
-                class="min-w-0 flex-1 rounded-2xl border-0 bg-white/6 px-4 py-3.5 text-[15px] text-white placeholder-white/35 focus:outline-hidden focus:ring-2 focus:ring-indigo-400/50">
-            <button class="rounded-2xl bg-white px-6 py-3.5 font-semibold text-slate-900 transition hover:bg-white/90 active:scale-[0.98]">Check</button>
+                data-ctl-max="640" class="input input-lg min-w-0 flex-1 max-w-none!">
+            <button class="btn-primary btn-lg">Check</button>
         </form>
 
         @if ($result)
@@ -24,7 +24,7 @@
 
                     @case('missing')
                         <p class="font-medium">No link found.</p>
-                        <p class="mt-1 text-sm text-white/60">{{ $host }}/{{ $result['slug'] }} doesn't exist, was removed, or has expired.</p>
+                        <p class="mt-1 text-sm text-white/60">{{ $host }}/l/{{ $result['slug'] }} doesn't exist, was removed, or has expired.</p>
                         @break
 
                     @case('bio')
@@ -37,7 +37,7 @@
                     @case('link')
                         @php $link = $result['link']; @endphp
                         <div class="flex flex-wrap items-center gap-2">
-                            <p class="font-mono text-sm text-white/70">{{ $host }}/{{ $link->slug }}</p>
+                            <p class="font-mono text-sm text-white/70">{{ $host }}/l/{{ $link->slug }}</p>
                             @if ($result['state'] === 'active')
                                 <span class="rounded-full bg-emerald-400/15 px-2 py-0.5 text-[11px] font-semibold text-emerald-300">Active</span>
                             @else
@@ -84,7 +84,7 @@
                             @endif
 
                             <div class="mt-5 flex flex-wrap gap-2" x-data="{ copied: false }">
-                                <button type="button" class="rounded-xl border border-white/15 px-4 py-2 text-sm text-white/85 hover:bg-white/10"
+                                <button type="button" class="btn-outline"
                                     @click="navigator.clipboard.writeText(@js($link->target_url)); copied = true; setTimeout(() => copied = false, 2000)">
                                     <span x-text="copied ? 'Copied' : 'Copy destination'">Copy destination</span>
                                 </button>

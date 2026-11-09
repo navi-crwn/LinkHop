@@ -1,91 +1,75 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full dark bg-slate-950 text-white">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png" sizes="32x32">
     <link rel="apple-touch-icon" href="{{ route('brand.favicon') }}">
     <title>{{ ($expired ?? false) ? __('Link expired') : __('Link not found') }} · {{ config('app.name', 'LinkHop') }}</title>
+    <x-hop::fonts />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        body {font-family: var(--hop-font-body, system-ui, sans-serif);}
+    </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900">
-    <div class="min-h-screen flex items-center justify-center px-4">
-        <div class="max-w-2xl w-full">
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 md:p-12">
-                <div class="flex justify-center mb-6">
-                    <div class="rounded-full bg-blue-100 dark:bg-blue-900/30 p-4">
-                        <svg class="h-16 w-16 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
-                        </svg>
-                    </div>
-                </div>
-                <div class="text-center mb-8">
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-3">
+{{-- The public "no such short link" page, in the HOP family's dress (dark backdrop, glass card, the family fonts),
+     the same as the 404 and the gate pages, instead of the blue-and-white template it had. --}}
+<body class="min-h-full bg-linear-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+    <div class="flex min-h-screen items-center justify-center px-4 py-10">
+        <div class="w-full max-w-xl">
+            <div class="rounded-3xl border border-white/10 bg-slate-900/60 p-6 shadow-2xl shadow-black/40 backdrop-blur-xl sm:p-10">
+                <div class="flex flex-col items-center text-center">
+                    <img src="{{ route('brand.logo') }}" alt="{{ __('LinkHop logo') }}" class="h-14 w-14 rounded-full shadow-lg">
+                    <p class="mt-3 text-xs uppercase tracking-[0.4em] text-white/50">LinkHop</p>
+                    <h1 class="mt-4 text-3xl font-semibold tracking-tight">
                         {{ ($expired ?? false) ? __('Link expired') : __('Link not found') }}
                     </h1>
                     @if ($expired ?? false)
-                    <p class="text-lg text-gray-600 dark:text-gray-400 mb-2">
+                    <p class="mt-3 text-base text-white/75">
                         {!! __('The short link :slug was a guest link and has expired.', ['slug' => '<span class="font-semibold text-blue-600 dark:text-blue-400">'.e($slug).'</span>']) !!}
                     </p>
-                    <p class="text-sm text-gray-500 dark:text-gray-500">
+                    <p class="mt-2 text-sm text-white/55">
                         {{ __('Guest links are deleted after :idle days without a click, or after :max days. Ask the person who shared it for a new link.', ['idle' => config('shortener.guest_idle_days'), 'max' => config('shortener.guest_max_days')]) }}
                     </p>
                     @else
-                    <p class="text-lg text-gray-600 dark:text-gray-400 mb-2">
+                    <p class="mt-3 text-base text-white/75">
                         {!! __("The short link :slug doesn't exist or has been disabled.", ['slug' => '<span class="font-semibold text-blue-600 dark:text-blue-400">'.e($slug ?? '?').'</span>']) !!}
                     </p>
-                    <p class="text-sm text-gray-500 dark:text-gray-500">
+                    <p class="mt-2 text-sm text-white/55">
                         {{ __('It may have been deleted, expired, or you may have mistyped the URL.') }}
                     </p>
                     @endif
                 </div>
-                <div class="mb-8 rounded-lg bg-gray-50 dark:bg-gray-700/50 p-6">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+                <div class="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5 text-left">
+                    <h3 class="text-sm font-semibold text-white">
                         {{ __('What you can do:') }}
                     </h3>
-                    <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                        <li class="flex items-start gap-2">
-                            <svg class="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            <span>{{ __('Double-check the URL for typos') }}</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <svg class="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            <span>{{ __('Contact the person who shared this link') }}</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <svg class="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            <span>{{ __('Create your own short links for free') }}</span>
-                        </li>
+                    <ul class="mt-3 space-y-2 text-sm text-white/70">
+                        @foreach ([__('Double-check the URL for typos'), __('Contact the person who shared this link'), __('Create your own short links for free')] as $tip)
+                            <li class="flex items-start gap-2">
+                                <svg class="mt-0.5 h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span>{{ $tip }}</span>
+                            </li>
+                        @endforeach
                     </ul>
                 </div>
-                <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                    <a href="{{ url('/') }}" class="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                        </svg>
+                <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+                    <a href="{{ url('/') }}" class="btn-primary btn-lg">
                         {{ __('Go to homepage') }}
                     </a>
                     @auth
-                    <a href="{{ route('dashboard') }}" class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-6 py-3 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
-                        </svg>
+                    <a href="{{ route('dashboard') }}" class="btn-outline btn-lg">
                         {{ __('Go to dashboard') }}
                     </a>
                     @endauth
                 </div>
-                <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
-                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                <div class="mt-8 border-t border-white/10 pt-6 text-center">
+                    <p class="text-sm text-white/60">
                         {{ __('Need help? Contact us at') }}
-                        <a href="mailto:{{ config('mail.addresses.support', 'support@hel.ink') }}" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
-                            {{ config('mail.addresses.support', 'support@hel.ink') }}
-                        </a>
+                        {{-- <!--email_off--> keeps Cloudflare's Email Obfuscation from rewriting the address into "[email protected]". --}}
+                        <!--email_off--><a href="mailto:{{ config('mail.addresses.support', 'support@hel.ink') }}" class="font-medium text-blue-400 hover:underline">{{ config('mail.addresses.support', 'support@hel.ink') }}</a><!--/email_off-->
                     </p>
                 </div>
             </div>

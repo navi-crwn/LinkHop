@@ -25,9 +25,11 @@
         @if ($folders->isNotEmpty())
             <div>
                 <label for="flinkcr-3" class="label">Folder</label>
+                @php($chosenFolder = old('folder_id', request('folder', $folders->firstWhere('is_default', true)?->id)))
                 <select id="flinkcr-3" name="folder_id" class="input">
+                    <option value="" @selected(blank($chosenFolder))>{{ __('No folder') }}</option>
                     @foreach ($folders as $folder)
-                        <option value="{{ $folder->id }}" @selected((int) old('folder_id', request('folder', $folders->firstWhere('is_default', true)?->id)) === (int) $folder->id)>{{ $folder->name }}</option>
+                        <option value="{{ $folder->id }}" @selected((int) $chosenFolder === (int) $folder->id)>{{ $folder->name }}</option>
                     @endforeach
                 </select>
             </div>

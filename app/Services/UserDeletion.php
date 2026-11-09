@@ -8,6 +8,7 @@ use App\Models\Tag;
 use App\Models\User;
 use App\Models\WebhookDelivery;
 use App\Models\WebhookEndpoint;
+use App\Support\Reminders;
 use Hop\Bio\Models\BioPage;
 use Hop\Bio\Support\BioUploads;
 use Illuminate\Support\Facades\DB;
@@ -67,6 +68,7 @@ class UserDeletion
         WebhookDelivery::whereIn('webhook_endpoint_id', $endpointIds)->delete();
         WebhookEndpoint::whereKey($endpointIds)->delete();
         DB::table('api_idempotency_keys')->where('user_id', $userId)->delete();
+        Reminders::forget($userId);
 
         $bioPages = bio_enabled() ? BioPage::where('user_id', $userId)->get() : collect();
         $bioFiles = $bioPages->flatMap(fn (BioPage $page) => BioUploads::ofPage($page))->all();

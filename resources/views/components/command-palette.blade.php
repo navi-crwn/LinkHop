@@ -33,7 +33,7 @@
                        placeholder="{{ __('Search pages and your links…') }}"
                        @keydown.arrow-down.prevent="move(1)" @keydown.arrow-up.prevent="move(-1)"
                        @keydown.enter.prevent="run(null, $event.shiftKey)"
-                       class="min-w-0 flex-1 border-0 bg-transparent py-3.5 text-sm text-ink outline-none placeholder:text-muted focus:ring-0">
+                       data-ctl-max="640" class="h-10 min-w-0 flex-1 rounded-lg border-0 bg-transparent px-0 text-sm text-ink outline-none placeholder:text-muted focus:ring-0 max-sm:h-11 max-sm:text-base">
                 <button type="button" @click="close()" class="icon-btn shrink-0" aria-label="{{ __('Close') }}">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" d="M6 6l12 12M18 6 6 18"/></svg>
                 </button>

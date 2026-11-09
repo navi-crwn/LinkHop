@@ -39,13 +39,13 @@
             <div class="flex gap-2 sm:shrink-0">
                 <button 
                     @click="declineCookies()"
-                    class="px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-sm transition-colors"
+                    class="btn-soft btn-dense"
                 >
                     Decline
                 </button>
                 <button 
                     @click="acceptCookies()"
-                    class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-sm transition-colors"
+                    class="btn-primary btn-dense"
                 >
                     Accept
                 </button>

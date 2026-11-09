@@ -94,7 +94,7 @@ test('the dashboard lists the HOP family in the sidebar and links the account pa
 
     $this->actingAs($user)->get('/dashboard')->assertOk()
         ->assertSee('HOP family')->assertDontSee('aria-label="HOP Family"', false)->assertSee('hop-account', false)
-        ->assertSee('https://hub.example.test/profile')
+        ->assertSee('https://hub.example.test/settings#account')
         ->assertSee('BioHop')->assertSee('PixelHop')->assertSee('NoteHop');
     $this->actingAs($user)->get('/profile')->assertRedirect('https://hub.example.test/profile');
     $this->actingAs($user)->get('/settings')->assertOk()->assertSee('https://hub.example.test/settings')->assertDontSee('Two-Factor Authentication');

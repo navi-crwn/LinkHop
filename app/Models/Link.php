@@ -291,4 +291,25 @@ class Link extends Model
     {
         return filled($this->password_hash);
     }
+
+    /**
+     * True when what a visitor meets can still change after the redirect: a warning, a password, a routing
+     * rule, the A/B split, a click limit, a start or end time, a fallback address, the preview page,
+     * "open in the app", or a pending safety check. A browser that stored a permanent redirect keeps the old
+     * answer, so these links must answer with a temporary one (see RedirectController).
+     */
+    public function hasDynamicFeatures(): bool
+    {
+        return $this->requiresContentWarning()
+            || $this->requiresPassword()
+            || $this->isPendingSafety()
+            || (bool) $this->enable_preview
+            || $this->max_clicks !== null
+            || $this->expires_at !== null
+            || $this->starts_at !== null
+            || filled($this->fallback_url)
+            || ! empty($this->routing_rules)
+            || ! empty($this->ab_variants)
+            || ! empty($this->app_links);
+    }
 }

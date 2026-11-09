@@ -31,7 +31,9 @@ test('a password-protected link asks for the password at /l/ and the form posts 
     $link = Link::create(['slug' => 'secret1', 'target_url' => 'https://example.com/s', 'status' => 'active', 'password_hash' => bcrypt('pw')]);
 
     $this->get('/l/secret1')->assertOk()->assertSee('action="'.url('/l/secret1').'"', false);
-    $this->post('/l/secret1', ['password' => 'pw'])->assertRedirect('https://example.com/s');
+    // The accepted password opens /l/ again with a GET (a redirect chain after a form post is held to CSP form-action).
+    $this->post('/l/secret1', ['password' => 'pw'])->assertOk()->assertHeader('Refresh', '0;url='.url('/l/secret1'));
+    $this->get('/l/secret1')->assertRedirect('https://example.com/s');
 });
 
 test('once the legacy date has passed the old form is a 404 while /l/ keeps working', function () {

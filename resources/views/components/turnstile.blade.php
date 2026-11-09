@@ -9,7 +9,7 @@
         <div x-ref="captcha" data-size="{{ $size }}"></div>
         <p x-cloak x-show="status === 'error'" class="mt-2 text-sm text-red-500" role="alert">
             Security check could not load.
-            <button type="button" class="font-semibold underline" @click="retry()">Try again</button>
+            <button type="button" data-ctl="link" class="font-semibold underline" @click="retry()">Try again</button>
         </p>
         <x-input-error :messages="$errors->get('turnstile')" class="mt-2" />
         <input type="hidden" name="cf-turnstile-response" :value="token">

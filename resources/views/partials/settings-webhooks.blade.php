@@ -18,7 +18,7 @@
         <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4" role="status">
             <p class="text-sm font-medium text-ink">{{ __('Your signing secret') }}</p>
             <div class="mt-2 flex flex-wrap items-center gap-2">
-                <input id="webhook-secret" type="text" readonly value="{{ $revealed['secret'] }}" class="input min-w-0 flex-1 font-mono text-xs" aria-label="{{ __('Your signing secret') }}" @focus="$el.select()">
+                <input id="webhook-secret" type="text" readonly value="{{ $revealed['secret'] }}" class="input min-w-0 flex-1 font-mono" aria-label="{{ __('Your signing secret') }}" @focus="$el.select()">
                 <button type="button" class="btn-primary btn-sm" data-copied="{{ __('Copied') }}" data-failed="{{ __('Copy failed') }}" @click="hopCopy(@js($revealed['secret']), $el)">{{ __('Copy') }}</button>
             </div>
             <p class="mt-2 text-xs text-muted">{{ __('It is shown only once. Keep it in your server settings, never in a web page or a repository.') }}</p>
@@ -38,7 +38,7 @@
             <div class="flex flex-wrap gap-x-4 gap-y-1.5">
                 @foreach (\App\Support\Webhooks::EVENTS as $event)
                     <label class="flex items-center gap-2 text-sm text-ink">
-                        <input type="checkbox" name="events[]" value="{{ $event }}" checked class="rounded-sm border-slate-400/50 text-indigo-600 focus:ring-indigo-500">
+                        <input type="checkbox" name="events[]" value="{{ $event }}" checked class="border-slate-400/50 text-indigo-600 focus:ring-indigo-500">
                         <span class="font-mono text-xs">{{ $event }}</span>
                     </label>
                 @endforeach
@@ -65,8 +65,8 @@
             <div class="flex flex-wrap gap-2">
                 <form method="POST" action="{{ route('webhooks.test', $hook) }}">@csrf<button type="submit" class="btn-soft btn-sm">{{ __('Send test') }}</button></form>
                 <form method="POST" action="{{ route('webhooks.update', $hook) }}">@csrf @method('PATCH')<input type="hidden" name="is_active" value="{{ $hook->is_active ? 0 : 1 }}"><button type="submit" class="btn-soft btn-sm">{{ $hook->is_active ? __('Switch off') : __('Switch on') }}</button></form>
-                <form method="POST" action="{{ route('webhooks.rotate', $hook) }}" x-data @submit="if (!confirm(@js(__('Make a new secret? The old one stops working at once.')))) $event.preventDefault()">@csrf<button type="submit" class="btn-soft btn-sm">{{ __('New secret') }}</button></form>
-                <form method="POST" action="{{ route('webhooks.destroy', $hook) }}" x-data @submit="if (!confirm(@js(__('Delete this webhook and its log?')))) $event.preventDefault()">@csrf @method('DELETE')<button type="submit" class="btn-ghost btn-sm text-rose-600 dark:text-rose-300">{{ __('Delete') }}</button></form>
+                <form method="POST" action="{{ route('webhooks.rotate', $hook) }}" data-confirm="{{ __('Make a new secret?') }}" data-confirm-message="{{ __('The old one stops working at once.') }}">@csrf<button type="submit" class="btn-soft btn-sm">{{ __('New secret') }}</button></form>
+                <form method="POST" action="{{ route('webhooks.destroy', $hook) }}" data-confirm="{{ __('Delete this webhook and its log?') }}" data-confirm-message="{{ __('Deliveries to this address stop. This cannot be undone.') }}" data-confirm-danger data-confirm-subject="{{ parse_url($hook->url, PHP_URL_HOST) }}">@csrf @method('DELETE')<button type="submit" class="btn-danger-outline btn-sm">{{ __('Delete') }}</button></form>
             </div>
             <details class="text-sm">
                 <summary class="cursor-pointer text-muted">{{ __('Log of the last deliveries') }} ({{ $hook->deliveries->count() }})</summary>

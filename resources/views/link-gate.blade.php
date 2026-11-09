@@ -7,6 +7,7 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" href="{{ asset('favicon.ico') }}">
     <x-hop::fonts />
+<script nonce="{{ Vite::cspNonce() }}">if (/(^|; )hop_ui=clean/.test(document.cookie)) document.documentElement.dataset.ui = 'clean';</script>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -21,15 +22,15 @@
         }
         .container {
             width: 100%;
-            max-width: 440px;
+            max-width: 24rem;
             margin: 0 auto;
         }
         .card {
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
-            border-radius: 24px;
-            padding: 2.25rem 2rem;
+            border-radius: 14px;
+            padding: 2rem 1.5rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
             text-align: center;
@@ -45,7 +46,7 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            font-family: 'Syne', sans-serif;
+            font-family: var(--hop-font-display, var(--hop-font-body, system-ui)), sans-serif;
             font-size: 1.25rem;
             font-weight: 700;
             color: #fff;
@@ -93,7 +94,7 @@
             color: #f59e0b;
         }
         h1 {
-            font-family: 'Syne', sans-serif;
+            font-family: var(--hop-font-display, var(--hop-font-body, system-ui)), sans-serif;
             font-size: 1.5rem;
             font-weight: 700;
             color: #ffffff;
@@ -148,58 +149,78 @@
         }
         .checkbox-container input {
             cursor: pointer;
-            accent-color: #6366f1;
+            appearance: none;
+            -webkit-appearance: none;
+            flex: none;
+            display: inline-grid;
+            place-content: center;
             width: 16px;
             height: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            border-radius: 6px;
+            background: rgba(15, 23, 42, 0.6);
         }
+        .checkbox-container input:checked { background: #6366f1; border-color: #6366f1; }
+        .checkbox-container input:checked::after {
+            content: '';
+            width: 9px;
+            height: 5px;
+            border: solid #fff;
+            border-width: 0 0 2px 2px;
+            transform: translateY(-1px) rotate(-45deg);
+        }
+        .checkbox-container input:focus-visible { outline: none; box-shadow: 0 0 0 3px rgb(129 140 248 / 0.45); }
+        /* The HOP control standard: 8px radius, 40px for the one action of the card (full width, the card is 24rem),
+           36px for Go Back, which is as wide as its text. Hover changes the colour only. */
         .btn-continue {
             width: 100%;
-            padding: 0.875rem 1.25rem;
-            border-radius: 12px;
-            font-size: 0.95rem;
+            height: 40px;
+            padding: 0 16px;
+            border-radius: 8px;
+            font: inherit;
+            font-size: 14px;
             font-weight: 600;
-            border: none;
+            white-space: nowrap;
+            border: 1px solid transparent;
             cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
+            transition: background-color .15s ease, box-shadow .15s ease, transform .12s ease;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 8px;
             margin-bottom: 0.75rem;
             color: #ffffff;
         }
-        .btn-adult {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.35);
-        }
-        .btn-adult:hover {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            transform: translateY(-1px);
-        }
-        .btn-sensitive {
-            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
-            box-shadow: 0 4px 15px rgba(217, 119, 6, 0.35);
-        }
-        .btn-sensitive:hover {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            transform: translateY(-1px);
-        }
+        .btn-continue:active { transform: scale(.97); }
+        .btn-continue:focus-visible, .btn-back:focus-visible { outline: none; box-shadow: 0 0 0 3px rgb(129 140 248 / 0.45); }
+        .btn-adult { background-color: #dc2626; }
+        .btn-adult:hover { background-color: #b91c1c; }
+        .btn-sensitive { background-color: #b45309; }
+        .btn-sensitive:hover { background-color: #92400e; }
         .btn-back {
-            display: block;
-            width: 100%;
-            padding: 0.75rem 1.25rem;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #94a3b8;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 36px;
+            padding: 0 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            color: #cbd5e1;
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.14);
             text-decoration: none;
-            transition: all 0.2s;
+            transition: background-color .15s ease, color .15s ease;
         }
         .btn-back:hover {
             background: rgba(255, 255, 255, 0.1);
             color: #ffffff;
+        }
+        @media (pointer: coarse) { .btn-continue, .btn-back { min-height: 44px; } }
+        @media (prefers-reduced-motion: reduce) {
+            .btn-continue, .btn-back { transition: none; }
+            .btn-continue:active { transform: none; }
         }
         .footer-note {
             font-size: 0.75rem;
@@ -224,6 +245,8 @@
         .brand-credit a:hover {
             color: #ffffff;
         }
+        html[data-ui="clean"] body {background:#0a0a0c;}
+        html[data-ui="clean"] .card {background:#141418; backdrop-filter:none; -webkit-backdrop-filter:none; border-color:rgba(255,255,255,0.09); box-shadow:none;}
     </style>
 </head>
 <body>
@@ -282,17 +305,26 @@
                     <span>{{ __('Remember for 24 hours on this device') }}</span>
                 </label>
 
-                <button type="submit" class="btn-continue {{ $link->isSensitive() ? 'btn-sensitive' : 'btn-adult' }}">
+                <button type="submit" data-ctl-block class="btn-continue {{ $link->isSensitive() ? 'btn-sensitive' : 'btn-adult' }}">
                     <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>
                     <span>{{ $link->isSensitive() ? __('I understand — Continue') : __('I am 18+ — Continue') }}</span>
                 </button>
 
-                <a href="{{ route('home') }}" class="btn-back">
+                {{-- Back to the page the visitor came from; the home page only when there is none (a link opened directly). --}}
+                <a href="{{ route('home') }}" class="btn-back" id="gate-back">
                     {{ __('Go Back') }}
                 </a>
             </form>
+            <script nonce="{{ Vite::cspNonce() }}">
+                document.getElementById('gate-back').addEventListener('click', function (e) {
+                    if (window.history.length > 1 && document.referrer && document.referrer !== window.location.href) {
+                        e.preventDefault();
+                        window.history.back();
+                    }
+                });
+            </script>
 
             @if($link->isAdult())
             <p class="footer-note">

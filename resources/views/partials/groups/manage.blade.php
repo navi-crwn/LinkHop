@@ -28,25 +28,25 @@
                     @csrf
                     @method('PUT')
                     <input id="{{ $kind }}-name" type="text" name="name" value="{{ $group->name }}" aria-label="{{ $label }} name" class="input" required>
-                    <button class="btn-primary btn-sm w-full">Save name</button>
+                    <button class="btn-primary btn-sm">Save name</button>
                 </form>
             @endif
         </section>
-        <form method="POST" action="{{ route($plural.'.destroy', $group) }}" data-confirm="Delete the {{ $kind }} {{ $group->name }}?" class="glass-card space-y-2">
+        <form method="POST" action="{{ route($plural.'.destroy', $group) }}" data-confirm="{{ $kind === 'folder' ? __('Delete this folder?') : __('Delete this tag?') }}" data-confirm-message="{{ $kind === 'folder' ? __('A folder that still holds links cannot be deleted: move them out first.') : __('Links keep working but lose this tag.') }}" data-confirm-danger data-confirm-subject="{{ $group->name }}" class="glass-card space-y-2">
             @csrf
             @method('DELETE')
             <h2 class="section-title">Delete {{ $kind }}</h2>
             <p class="text-xs text-muted">{{ $kind === 'folder' ? 'Empty the folder before deleting it.' : 'Links keep working but lose this tag.' }}</p>
-            <button class="btn-danger btn-sm w-full">Delete {{ $kind }}</button>
+            <button class="btn-danger-outline btn-sm">Delete {{ $kind }}</button>
         </form>
     </aside>
 
     <section class="glass overflow-hidden rounded-2xl">
         <form method="GET" class="flex items-center gap-2 px-4 pb-2 pt-4">
             <h2 class="section-title flex-1">Links</h2>
-            <div class="relative w-full max-w-xs">
-                <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
-                <input type="search" name="q" value="{{ $search }}" placeholder="Search links" aria-label="Search links" class="input py-1.5! pl-9 text-sm">
+            <div class="search">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
+                <input type="search" name="q" value="{{ $search }}" placeholder="Search links" aria-label="Search links" class="input">
             </div>
         </form>
         <div class="overflow-x-auto">
@@ -81,13 +81,13 @@
                             </td>
                             <td class="whitespace-nowrap text-right">
                                 <div class="inline-flex items-center gap-0.5">
-                                    <a href="{{ route('links.edit', $link) }}" class="icon-btn h-8! w-8!" title="Edit" aria-label="Edit {{ $link->slug }}">
+                                    <a href="{{ route('links.edit', $link) }}" class="icon-btn icon-btn-dense" title="Edit" aria-label="Edit {{ $link->slug }}">
                                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                     </a>
-                                    <form method="POST" action="{{ route('links.destroy', $link) }}" data-confirm="Delete /{{ $link->slug }}?">
+                                    <form method="POST" action="{{ route('links.destroy', $link) }}" data-confirm="{{ __('Delete this link permanently?') }}" data-confirm-message="{{ __('The short link stops working and its statistics are removed. This cannot be undone.') }}" data-confirm-danger data-confirm-subject="/l/{{ $link->slug }}">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="icon-btn h-8! w-8! hover:text-rose-500!" title="Delete" aria-label="Delete {{ $link->slug }}">
+                                        <button class="icon-btn icon-btn-dense hover:text-rose-500!" title="Delete" aria-label="Delete {{ $link->slug }}">
                                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                         </button>
                                     </form>
