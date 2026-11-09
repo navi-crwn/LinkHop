@@ -1,7 +1,10 @@
 <x-app-layout>
     <x-slot name="pageTitle">{{ __('My links') }}</x-slot>
     <div x-data="linksManager()" class="space-y-4">
-        <x-page-header title="My links" subtitle="{{ number_format($links->total()) }} short links" />
+        <x-page-header :title="__('My links')">
+            {{-- Kept current by the script after a delete, so it never says "4 short links" above 3 rows. --}}
+            <x-slot name="sub"><span class="tabular-nums" x-text="countLabel()">{{ $links->total() === 1 ? __('1 short link') : __(':count short links', ['count' => number_format($links->total())]) }}</span></x-slot>
+        </x-page-header>
 
         @if (session('status'))
             <div class="glass rounded-2xl px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">{{ session('status') }}</div>
@@ -55,9 +58,9 @@
 
         {{-- Bulk actions --}}
         <div x-show="selectedLinks.length > 0" x-cloak x-transition class="glass sticky top-20 z-20 flex items-center gap-3 rounded-2xl px-4 py-2.5">
-            <span class="text-sm font-medium text-ink" x-text="selectedLinks.length + ' selected'"></span>
-            <button @click="bulkDelete()" class="btn-danger btn-sm ml-auto">Delete</button>
-            <button @click="selectedLinks = []; selectAll = false" class="btn-ghost btn-sm">Clear</button>
+            <span class="text-sm font-medium tabular-nums text-ink" x-text="@js(__(':count selected')).replace(':count', selectedLinks.length)"></span>
+            <button type="button" @click="bulkDelete()" class="btn-danger btn-sm ml-auto">{{ __('Delete') }}</button>
+            <button type="button" @click="selectedLinks = []; selectAll = false" class="btn-ghost btn-sm">{{ __('Clear') }}</button>
         </div>
 
         <section class="glass overflow-hidden rounded-2xl">
@@ -72,8 +75,8 @@
             @endif
             <div class="divide-glass">
                 @forelse ($links as $link)
-                    <div class="list-row flex-wrap md:flex-nowrap" x-show="!deletedLinks.includes({{ $link->id }})">
-                        <input type="checkbox" aria-label="Select {{ $link->slug }}" value="{{ $link->id }}" x-model="selectedLinks" class="rounded-sm border-slate-400/50 bg-transparent text-indigo-500">
+                    <div class="list-row flex-wrap md:flex-nowrap" x-show="!deletedLinks.includes('{{ $link->id }}')">
+                        <input type="checkbox" aria-label="{{ __('Select :slug', ['slug' => $link->slug]) }}" value="{{ $link->id }}" x-model="selectedLinks" class="rounded-sm border-slate-400/50 bg-transparent text-indigo-500">
                         <div class="min-w-0 flex-1">
                             <div class="flex flex-wrap items-center gap-1.5">
                                 <a href="{{ route('links.show', $link) }}" class="truncate text-sm font-semibold text-ink hover:text-indigo-600 dark:hover:text-indigo-300">/l/{{ $link->slug }}</a>
@@ -124,7 +127,7 @@
                         </div>
                         <p class="hidden w-24 text-right text-xs text-muted md:block" title="{{ $link->created_at }}">{{ $link->created_at->format('M d, Y') }}</p>
                         <div class="flex w-full justify-end md:w-28">
-                            <button type="button" class="icon-btn" title="Copy" aria-label="{{ __('Copy link') }}" data-copied="{{ __('Copied') }}" data-failed="{{ __('Copy failed') }}" x-data @click="hopCopy(@js($link->short_url), $el)">
+                            <button type="button" class="icon-btn" title="{{ __('Copy link') }}" aria-label="{{ __('Copy link') }}" data-copied="{{ __('Copied') }}" data-failed="{{ __('Copy failed') }}" x-data @click="hopCopy(@js($link->short_url), $el)">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
                             </button>
                             <a href="{{ route('links.show', $link) }}" class="icon-btn" title="Analytics">
@@ -133,7 +136,7 @@
                             <a href="{{ route('links.edit', $link) }}" class="icon-btn" title="Edit">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m15 5 4 4L8 20H4v-4L15 5Z"/></svg>
                             </a>
-                            <button @click="deleteLink({{ $link->id }})" class="icon-btn hover:text-rose-500!" title="Delete">
+                            <button type="button" @click="deleteLink('{{ $link->id }}')" class="icon-btn hover:text-rose-500!" title="{{ __('Delete') }}" aria-label="{{ __('Delete :slug', ['slug' => $link->slug]) }}">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>
                             </button>
                         </div>
@@ -149,55 +152,76 @@
         <div>{{ $links->links() }}</div>
     </div>
     <script nonce="{{ Vite::cspNonce() }}">
+        // Ids are strings throughout (checkbox values are strings), so a deleted link is found again whatever made it.
         function linksManager() {
             return {
                 selectedLinks: [],
                 selectAll: false,
                 deletedLinks: [],
-                linkIds: @json($links->pluck('id')->toArray()),
+                linkIds: @json($links->pluck('id')->map(fn ($id) => (string) $id)->values()->all()),
+                total: {{ (int) $links->total() }},
+                countLabel() {
+                    const n = Math.max(0, this.total - this.deletedLinks.length);
+                    return n === 1 ? @js(__('1 short link')) : @js(__(':count short links')).replace(':count', n.toLocaleString());
+                },
                 toggleSelectAll() {
                     if (this.selectAll) {
-                        this.selectedLinks = this.linkIds.filter(id => !this.deletedLinks.includes(id)).map(String);
+                        this.selectedLinks = this.linkIds.filter(id => !this.deletedLinks.includes(id));
                     } else {
                         this.selectedLinks = [];
                     }
                 },
+                // The server has no row any more: drop it from the list, the selection and the count.
+                forget(id) {
+                    id = String(id);
+                    if (!this.deletedLinks.includes(id)) {
+                        this.deletedLinks.push(id);
+                    }
+                    this.selectedLinks = this.selectedLinks.filter(lid => String(lid) !== id);
+                    if (this.selectedLinks.length === 0) {
+                        this.selectAll = false;
+                    }
+                },
+                async remove(id) {
+                    const response = await fetch(`/links/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '',
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        credentials: 'same-origin'
+                    });
+                    // 404: it was deleted already (another tab, or an earlier attempt that did not answer): gone either way.
+                    return response.ok || response.status === 404;
+                },
                 async deleteLink(id) {
-                    if (!confirm('Delete this link permanently?')) return;
+                    if (!confirm(@js(__('Delete this link permanently?')))) return;
                     try {
-                        const response = await fetch(`/links/${id}`, {
-                            method: 'DELETE',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json'
-                            }
-                        });
-                        if (response.ok) {
-                            this.deletedLinks.push(id);
-                            this.selectedLinks = this.selectedLinks.filter(lid => lid != id);
+                        if (await this.remove(id)) {
+                            this.forget(id);
                         } else {
-                            alert('Failed to delete link');
+                            alert(@js(__('Failed to delete link')));
                         }
                     } catch (e) {
                         console.error('Delete error:', e);
-                        alert('Failed to delete link');
+                        alert(@js(__('Failed to delete link')));
                     }
                 },
                 async bulkDelete() {
-                    if (!confirm(`Delete ${this.selectedLinks.length} links permanently?`)) return;
+                    const ids = this.selectedLinks.map(String).filter(id => !this.deletedLinks.includes(id));
+                    if (ids.length === 0) {
+                        this.selectedLinks = [];
+                        this.selectAll = false;
+                        return;
+                    }
+                    const question = ids.length === 1 ? @js(__('Delete 1 link permanently?')) : @js(__('Delete :count links permanently?')).replace(':count', ids.length);
+                    if (!confirm(question)) return;
                     let failed = 0;
-                    for (const id of this.selectedLinks) {
+                    for (const id of ids) {
                         try {
-                            const response = await fetch(`/links/${id}`, {
-                                method: 'DELETE',
-                                headers: {
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                    'Accept': 'application/json'
-                                }
-                            });
-                            if (response.ok) {
-                                this.deletedLinks.push(parseInt(id));
+                            if (await this.remove(id)) {
+                                this.forget(id);
                             } else {
                                 failed++;
                             }
@@ -207,7 +231,7 @@
                         }
                     }
                     if (failed > 0) {
-                        alert(@js(__('Could not delete :count link(s).')).replace(':count', failed));
+                        alert(failed === 1 ? @js(__('Could not delete 1 link.')) : @js(__('Could not delete :count links.')).replace(':count', failed));
                     }
                     this.selectedLinks = [];
                     this.selectAll = false;
