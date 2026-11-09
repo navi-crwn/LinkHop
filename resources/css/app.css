@@ -511,6 +511,7 @@ header.sticky > .glass { height: 56px; border-radius: 0 !important; border-width
 /* Controls on solid cards read as inputs, not glass. */
 .input { background-color: var(--hop-surface); box-shadow: 0 1px 1px rgb(0 0 0 / 0.03); }
 .btn-outline, .btn-soft, .btn-danger-outline { background-color: var(--hop-surface); box-shadow: 0 1px 1px rgb(0 0 0 / 0.04); }
+.btn-soft { border-color: var(--hop-line); }
 .btn-outline:hover, .btn-soft:hover { background-color: rgb(var(--muted) / 0.1); }
 .btn, .btn-primary, .btn-outline, .btn-soft, .btn-ghost, .btn-danger, .btn-danger-outline, .btn-link { font-weight: 500; }
 /* Family footer strip: logo + "Hop Easy Link". */
