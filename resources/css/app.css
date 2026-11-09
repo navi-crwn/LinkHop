@@ -517,3 +517,5 @@ header.sticky > .glass { height: 56px; border-radius: 0 !important; border-width
 .coss-footer-brand { display: flex; align-items: center; gap: 10px; max-width: 1180px; margin: 24px auto 0; padding: 16px 0 0; font-size: 14px; color: rgb(var(--muted)); border-top: 1px solid rgb(var(--glass-border) / var(--glass-border-alpha)); }
 .coss-footer-brand img { width: 28px; height: 28px; border-radius: 50%; }
 .coss-footer-brand b { color: rgb(var(--ink)); font-weight: 600; }
+/* Small caps labels written as utilities in the markup read as sentence case too. */
+.app-shell .uppercase { text-transform: none; letter-spacing: 0; }
