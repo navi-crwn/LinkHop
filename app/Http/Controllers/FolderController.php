@@ -74,7 +74,8 @@ class FolderController extends Controller
         $folder->delete();
         ActivityLog::log('deleted', 'Folder', $folderId, "Deleted folder: {$folderName}");
 
-        return back()->with('status', 'Folder deleted successfully.');
+        // Not back(): from the folder's own page that would be the address of a folder that no longer exists (a 404).
+        return redirect()->route('folders.index')->with('status', __('Folder deleted successfully.'));
     }
 
     public function manage(Request $request, Folder $folder): View

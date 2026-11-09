@@ -38,12 +38,13 @@
                             @endif
                         </div>
                         @unless ($isDefault)
-                            <form x-show="renaming" x-cloak method="POST" action="{{ route($plural.'.update', $group) }}" class="flex gap-1.5">
+                            {{-- The name takes the whole row; the buttons sit under it, so the input is never squeezed to 90px. --}}
+                            <form x-show="renaming" x-cloak method="POST" action="{{ route($plural.'.update', $group) }}" class="flex flex-wrap gap-1.5">
                                 @csrf
                                 @method('PUT')
-                                <input type="text" name="name" value="{{ $group->name }}" aria-label="{{ $label }} name" class="input py-1! text-sm" required>
-                                <button class="btn-primary btn-sm">Save</button>
-                                <button type="button" class="btn-ghost btn-sm" @click="renaming = false">Cancel</button>
+                                <input type="text" name="name" value="{{ $group->name }}" aria-label="{{ $label }} name" class="input w-full min-w-0 py-1! text-sm" required x-ref="rename" x-effect="if (renaming) $nextTick(() => { $refs.rename.focus(); $refs.rename.select(); })">
+                                <button class="btn-primary btn-sm">{{ __('Save') }}</button>
+                                <button type="button" class="btn-ghost btn-sm" @click="renaming = false">{{ __('Cancel') }}</button>
                             </form>
                         @endunless
                         <p class="text-xs text-muted">{{ number_format($group->links_count) }} {{ Str::plural('link', $group->links_count) }} · {{ number_format((int) $group->links_sum_clicks) }} clicks</p>

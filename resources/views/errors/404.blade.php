@@ -11,16 +11,23 @@
             body {font-family: var(--hop-font-body, system-ui, sans-serif);}
         </style>
     </head>
+    {{-- Any address this app does not know (a deleted folder, a mistyped dashboard path). A missing short link has its
+         own page (errors.link-missing), so this one does not talk about short links. --}}
     <body class="min-h-full bg-linear-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
         <div class="flex min-h-screen flex-col items-center justify-center px-6 text-center">
             <div class="flex flex-col items-center">
                 <img src="{{ route('brand.logo') }}" alt="{{ __('LinkHop logo') }}" class="h-16 w-16 rounded-full shadow-lg">
                 <p class="mt-4 text-sm uppercase tracking-[0.4em] text-white/60">LinkHop</p>
             </div>
-            <h1 class="mt-4 text-4xl font-semibold">{{ __('Link not found') }}</h1>
-            <p class="mt-2 max-w-md text-white/70">{{ __('The short link you opened doesn’t exist anymore, is disabled, or has expired. Double-check the slug or head back home.') }}</p>
-            <div class="mt-6 flex flex-wrap items-center gap-4">
-                <a href="{{ url('/') }}" class="rounded-2xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-lg shadow-blue-500/40">{{ __('Back to homepage') }}</a>
+            <h1 class="mt-4 text-4xl font-semibold">{{ __('Page not found') }}</h1>
+            <p class="mt-2 max-w-md text-white/70">{{ __('This page does not exist or has moved. Check the address, or go back to where you were.') }}</p>
+            <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+                @auth
+                    <a href="{{ route('dashboard') }}" class="rounded-2xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-lg shadow-blue-500/40">{{ __('Go to dashboard') }}</a>
+                    <a href="{{ route('links.index') }}" class="rounded-2xl border border-white/20 px-6 py-3 font-semibold text-white/90 hover:bg-white/10">{{ __('My links') }}</a>
+                @else
+                    <a href="{{ url('/') }}" class="rounded-2xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-lg shadow-blue-500/40">{{ __('Back to homepage') }}</a>
+                @endauth
             </div>
         </div>
     </body>
