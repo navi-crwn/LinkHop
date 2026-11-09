@@ -33,11 +33,23 @@ test('another form with an expired token goes back with its input and a message'
     ]);
 
     $response->assertRedirect('/links/create')
-        ->assertSessionHas('session_expired', 'Sesi habis, silakan coba lagi.')
+        ->assertSessionHas('session_expired', 'Your session expired. Please try again.')
         ->assertSessionHasInput('target_url', 'https://example.com')
         ->assertSessionMissing('_old_input.password');
     $this->assertAuthenticatedAs($user);
-    $this->followRedirects($response)->assertSee('Sesi habis, silakan coba lagi.');
+    $this->followRedirects($response)->assertSee('Your session expired. Please try again.');
+});
+
+test('the expired-token message follows the language of the page, not one fixed language', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->withUnencryptedCookie('hop_lang', 'id')->from('/links/create')->post('/links', [
+        '_token' => 'stale',
+        'target_url' => 'https://example.com',
+    ]);
+
+    $response->assertSessionHas('session_expired', 'Sesi habis, silakan coba lagi.');
+    expect(trans('Your session expired. Please try again.', [], 'de'))->not->toBe('Your session expired. Please try again.');
 });
 
 test('json requests with an expired token still get a 419 json response', function () {
