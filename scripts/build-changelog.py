@@ -4,6 +4,8 @@
 Run from a checkout: python3 scripts/build-changelog.py --repo HEL.ink
 Use --family /path/to/checkouts in the hub to aggregate the five public apps.
 Requires git and authenticated gh with read access. Never reads working files.
+The snapshot is committed, so a release must rebuild it. `--check` rebuilds in memory and
+fails when a merged PR or tag is missing from the committed file (run it before tagging).
 """
 import argparse
 import datetime
@@ -27,6 +29,8 @@ def display_title(title):
 
 
 def history(root, repo):
+    # A stale origin/main silently drops every merge since the last fetch.
+    command(["git", "fetch", "--quiet", "--tags", "origin", "main"], root)
     revision = command(["git", "rev-parse", "origin/main"], root).strip()
     raw = command(["git", "log", "origin/main", "--format=%H%x1f%cI%x1f%s%x1e"], root)
     commits = []
@@ -65,6 +69,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", choices=PUBLIC, required=True)
     parser.add_argument("--family", type=pathlib.Path)
+    parser.add_argument("--check", action="store_true", help="fail when the committed snapshot misses a merged PR or tag")
     args = parser.parse_args()
     root = pathlib.Path(__file__).resolve().parents[1]
     repos = PUBLIC if args.family else {args.repo: PUBLIC[args.repo]}
@@ -75,6 +80,15 @@ def main():
         entries.extend(rows)
     entries.sort(key=lambda e: (datetime.datetime.fromisoformat(e["date"].replace("Z", "+00:00")), e["repo"], e["id"]), reverse=True)
     output = root / ("web/changelog.json" if args.repo in ["PixelHop", "NoteHop"] else "resources/changelog.json")
+    if args.check:
+        have = {(e["repo"], e["kind"], e["id"]) for e in json.loads(output.read_text())["entries"]}
+        missing = [e for e in entries if e["kind"] != "commit" and (e["repo"], e["kind"], e["id"]) not in have]
+        for e in missing:
+            print(f'missing: {e["repo"]} {e["id"]} {e["date"][:10]} {e["title"]}')
+        if missing:
+            raise SystemExit(f"{output.name} is stale ({len(missing)} missing); run: python3 scripts/build-changelog.py --repo {args.repo}")
+        print(f"{output.name}: up to date")
+        return
     output.write_text(json.dumps({"schema": 1, "sources": revisions, "entries": entries}, ensure_ascii=False, indent=2) + "\n")
     print(f"{output}: {len(entries)} entries from {len(revisions)} repositories")
 

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- The `/changelog` page lists every merged pull request and tag again. The snapshot was never rebuilt for a release, and the build script read a stale `origin/main`; it now fetches first, and `scripts/build-changelog.py --check` (run on release branches in CI) fails when a merged PR or tag is missing.
+
 ## [2.1.0] - 2026-11-10
 
 ### FileHop joins the HOP family
