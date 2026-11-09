@@ -448,7 +448,12 @@ button.input { max-width: var(--hop-field-max); }
     .nav-item, .nav-sub { min-height: 44px; }
 }
 
-.coss-footer-brand { display: none; }
+/* Family row: HOP ID mark + "Part of Hop Easy Link", for everyone, in both looks. */
+.hop-family-row { display: flex; align-items: center; gap: 10px; width: fit-content; font-size: 13px; line-height: 20px; color: rgb(var(--muted)); text-decoration: none; }
+.hop-family-row img { width: 20px; height: 20px; border-radius: 4px; flex: none; }
+.hop-family-row b { color: rgb(var(--ink)); font-weight: 500; }
+.hop-family-row:hover b { text-decoration: underline; text-underline-offset: 2px; }
+.hop-family-footer { max-width: 1180px; margin: 24px auto 0; padding: 16px 24px 24px; border-top: 1px solid rgb(var(--muted) / 0.2); }
 /*
 | Optional "Clean" style (coss surfaces), on only under <html data-ui="clean"> (cookie hop_ui=clean), after the control standard: flat neutral app background, solid
 | cards with a 1px low-contrast border and a barely-there shadow, a flat sidebar and top bar divided by a hairline,
@@ -530,10 +535,6 @@ button.input { max-width: var(--hop-field-max); }
 :root[data-ui="clean"] .btn-danger,
 :root[data-ui="clean"] .btn-danger-outline,
 :root[data-ui="clean"] .btn-link { font-weight: 500; }
-/* Family footer strip: logo + "Hop Easy Link". */
-:root[data-ui="clean"] .coss-footer-brand { display: flex; align-items: center; gap: 10px; max-width: 1180px; margin: 24px auto 0; padding: 16px 0 0; font-size: 14px; color: rgb(var(--muted)); border-top: 1px solid rgb(var(--glass-border) / var(--glass-border-alpha)); }
-:root[data-ui="clean"] .coss-footer-brand img { width: 28px; height: 28px; border-radius: 50%; }
-:root[data-ui="clean"] .coss-footer-brand b { color: rgb(var(--ink)); font-weight: 600; }
 /* Small caps labels written as utilities in the markup read as sentence case too. */
 :root[data-ui="clean"] .app-shell .uppercase { text-transform: none; letter-spacing: 0; }
 :root[data-ui="clean"] body.from-slate-950 { background-image: none; background-color: #0a0a0c; }

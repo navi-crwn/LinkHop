@@ -985,7 +985,7 @@
     "This page does not exist or has moved. Check the address, or go back to where you were.": "このページは存在しないか、移動しました。アドレスを確認するか、元のページに戻ってください。",
     "To date": "終了日",
     "Tokens with link:* scopes for ShareX, the CLI and BioHop.": "ShareX、CLI、BioHop 向けの link:* スコープ付きトークン。",
-    "Weekly\/monthly reports": "週次・月次レポート",
+    "Weekly/monthly reports": "週次・月次レポート",
     "What to do": "対応方法",
     "Your LinkHop data; the account itself is your HOP ID at the hub.": "LinkHop のデータ。アカウント自体はハブの HOP ID です。",
     "Your session expired. Please try again.": "セッションの有効期限が切れました。もう一度お試しください。",
@@ -1006,5 +1006,6 @@
     "Nothing else was changed. Try again in a moment.": "ほかに変更はありません。しばらくしてからもう一度お試しください。",
     "The old one stops working at once.": "古いシークレットはすぐに使えなくなります。",
     "The short link stops working and its statistics are removed. This cannot be undone.": "この短縮リンクは使えなくなり、統計も削除されます。元に戻すことはできません。",
-    "The short links stop working and their statistics are removed. This cannot be undone.": "これらの短縮リンクは使えなくなり、統計も削除されます。元に戻すことはできません。"
+    "The short links stop working and their statistics are removed. This cannot be undone.": "これらの短縮リンクは使えなくなり、統計も削除されます。元に戻すことはできません。",
+    "Part of :name": ":name の一員"
 }

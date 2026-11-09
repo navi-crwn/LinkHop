@@ -985,7 +985,7 @@
     "This page does not exist or has moved. Check the address, or go back to where you were.": "Cette page n’existe pas ou a été déplacée. Vérifiez l’adresse ou revenez là où vous étiez.",
     "To date": "Au",
     "Tokens with link:* scopes for ShareX, the CLI and BioHop.": "Jetons avec les portées link:* pour ShareX, la CLI et BioHop.",
-    "Weekly\/monthly reports": "Rapports hebdomadaires\/mensuels",
+    "Weekly/monthly reports": "Rapports hebdomadaires/mensuels",
     "What to do": "Que faire",
     "Your LinkHop data; the account itself is your HOP ID at the hub.": "Vos données LinkHop ; le compte lui-même est votre HOP ID sur le hub.",
     "Your session expired. Please try again.": "Votre session a expiré. Veuillez réessayer.",
@@ -1006,5 +1006,6 @@
     "Nothing else was changed. Try again in a moment.": "Rien d’autre n’a été modifié. Réessayez dans un instant.",
     "The old one stops working at once.": "L’ancien cesse de fonctionner immédiatement.",
     "The short link stops working and its statistics are removed. This cannot be undone.": "Le lien court cesse de fonctionner et ses statistiques sont supprimées. Cette action est irréversible.",
-    "The short links stop working and their statistics are removed. This cannot be undone.": "Les liens courts cessent de fonctionner et leurs statistiques sont supprimées. Cette action est irréversible."
+    "The short links stop working and their statistics are removed. This cannot be undone.": "Les liens courts cessent de fonctionner et leurs statistiques sont supprimées. Cette action est irréversible.",
+    "Part of :name": "Fait partie de :name"
 }

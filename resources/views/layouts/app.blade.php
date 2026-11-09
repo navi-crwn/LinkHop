@@ -145,7 +145,7 @@
                             {{ $slot ?? '' }}
                         @endif
                     </div>
-                    <footer class="coss-footer-brand"><img src="{{ route('brand.logo') }}" alt=""><span><b>LinkHop</b> · Hop Easy Link</span></footer>
+                    <footer class="hop-family-footer">@include('partials.family-row')</footer>
                 </main>
                 <x-command-palette />
             </div>
