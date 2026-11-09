@@ -289,10 +289,19 @@
                     <span>{{ $link->isSensitive() ? __('I understand — Continue') : __('I am 18+ — Continue') }}</span>
                 </button>
 
-                <a href="{{ route('home') }}" class="btn-back">
+                {{-- Back to the page the visitor came from; the home page only when there is none (a link opened directly). --}}
+                <a href="{{ route('home') }}" class="btn-back" id="gate-back">
                     {{ __('Go Back') }}
                 </a>
             </form>
+            <script nonce="{{ Vite::cspNonce() }}">
+                document.getElementById('gate-back').addEventListener('click', function (e) {
+                    if (window.history.length > 1 && document.referrer && document.referrer !== window.location.href) {
+                        e.preventDefault();
+                        window.history.back();
+                    }
+                });
+            </script>
 
             @if($link->isAdult())
             <p class="footer-note">

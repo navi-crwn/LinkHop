@@ -15,6 +15,7 @@
 //   data-reload                      on a button: reload the page
 //   data-fallback="hide"             on an img: hide it when it fails to load
 //   data-fallback-src="url"          on an img: swap to this image when it fails to load
+//   data-back                        on a link: go back in history when there is a page to go back to, else follow href
 
 function handleImageError(img) {
     if (!(img instanceof HTMLImageElement) || img.dataset.fallbackDone) return;
@@ -73,6 +74,13 @@ export default function installInlineActions(root = document) {
         if (confirmEl && !window.confirm(confirmEl.dataset.confirm)) {
             e.preventDefault();
             e.stopImmediatePropagation();
+            return;
+        }
+
+        const back = e.target.closest('a[data-back]');
+        if (back && window.history.length > 1 && document.referrer && document.referrer !== window.location.href) {
+            e.preventDefault();
+            window.history.back();
             return;
         }
 

@@ -24,7 +24,7 @@
 
                     @case('missing')
                         <p class="font-medium">No link found.</p>
-                        <p class="mt-1 text-sm text-white/60">{{ $host }}/{{ $result['slug'] }} doesn't exist, was removed, or has expired.</p>
+                        <p class="mt-1 text-sm text-white/60">{{ $host }}/l/{{ $result['slug'] }} doesn't exist, was removed, or has expired.</p>
                         @break
 
                     @case('bio')
@@ -37,7 +37,7 @@
                     @case('link')
                         @php $link = $result['link']; @endphp
                         <div class="flex flex-wrap items-center gap-2">
-                            <p class="font-mono text-sm text-white/70">{{ $host }}/{{ $link->slug }}</p>
+                            <p class="font-mono text-sm text-white/70">{{ $host }}/l/{{ $link->slug }}</p>
                             @if ($result['state'] === 'active')
                                 <span class="rounded-full bg-emerald-400/15 px-2 py-0.5 text-[11px] font-semibold text-emerald-300">Active</span>
                             @else
