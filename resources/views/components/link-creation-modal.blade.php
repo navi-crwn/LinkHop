@@ -145,7 +145,6 @@
                     <div class="min-w-0 lg:border-r lg:border-slate-200 dark:lg:border-slate-800">
                         <div class="space-y-5 p-4 sm:p-6">
                             @csrf
-                            <x-content-warning-fields :model="true" prefix="modal-warning" />
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                                     Destination URL
@@ -279,6 +278,8 @@
                                     class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:ring-blue-500"
                                 ></textarea>
                             </div>
+                            {{-- After the address and the slug: most links need no warning, so it does not lead the form. --}}
+                            <x-content-warning-fields :model="true" prefix="modal-warning" />
                             <div>
                                 <button 
                                     type="button"
@@ -531,12 +532,12 @@
                     </div>
                 </div>
             </div>
-            <div class="space-y-2 border-t border-slate-200 px-4 py-3 sm:px-6 dark:border-slate-800">
-                <p x-show="error" x-cloak x-text="error" role="alert" class="rounded-xl bg-rose-500/10 px-3 py-2 text-sm text-rose-700 dark:text-rose-300"></p>
+            <div class="flex flex-col gap-2 border-t border-slate-200 px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-end dark:border-slate-800">
+                <p x-show="error" x-cloak x-text="error" role="alert" class="min-w-0 rounded-xl bg-rose-500/10 px-3 py-2 text-sm text-rose-700 lg:mr-auto dark:text-rose-300"></p>
                 <button
                     type="submit"
                     :disabled="isLoading || !formData.target_url"
-                    class="btn-primary w-full py-3 lg:ml-auto lg:w-auto lg:px-8"
+                    class="btn-primary w-full shrink-0 py-3 lg:w-auto lg:px-8"
                 >
                     <span x-show="!isLoading">Create Link</span>
                     <span x-show="isLoading" class="flex items-center justify-center gap-2">
