@@ -909,7 +909,7 @@
     "Background colour": "Цвет фона",
     "Background colour as hex": "Цвет фона в hex",
     "Backup & export": "Резервная копия и экспорт",
-    "Browsers remember a permanent redirect. A warning, password, rule, limit or new destination added later will not reach visitors who already opened the link.": "Браузеры запоминают постоянный редирект. Предупреждение, пароль, правило, лимит или новый адрес, добавленные позже, не дойдут до посетителей, которые уже открывали ссылку.",
+    "Browsers remember a permanent redirect: visitors who already opened the link keep going to the old address if you change it. A link with a warning, a password, a rule, a limit or a start or end time answers with a temporary redirect instead.": "Браузеры запоминают постоянный редирект: посетители, уже открывавшие ссылку, продолжат переходить на старый адрес, даже если вы его измените. Ссылка с предупреждением, паролем, правилом, лимитом или временем начала и окончания отвечает временным редиректом.",
     "Cancel": "Отмена",
     "Change colours": "Изменить цвета",
     "Clear": "Очистить",

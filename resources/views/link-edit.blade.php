@@ -67,7 +67,7 @@
                         <option value="307" @selected($redirect === '307')>307 · temporary, keeps method</option>
                         <option value="308" @selected($redirect === '308')>308 · permanent, keeps method</option>
                     </select>
-                    <p id="redirect-note" x-show="redirect === '301' || redirect === '308'" x-cloak class="mt-1 text-xs text-amber-700 dark:text-amber-300">{{ __('Browsers remember a permanent redirect. A warning, password, rule, limit or new destination added later will not reach visitors who already opened the link.') }}</p>
+                    <p id="redirect-note" x-show="redirect === '301' || redirect === '308'" x-cloak class="mt-1 text-xs text-amber-700 dark:text-amber-300">{{ __('Browsers remember a permanent redirect: visitors who already opened the link keep going to the old address if you change it. A link with a warning, a password, a rule, a limit or a start or end time answers with a temporary redirect instead.') }}</p>
                 </div>
             </div>
         </div>

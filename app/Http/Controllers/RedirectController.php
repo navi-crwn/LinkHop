@@ -146,7 +146,25 @@ class RedirectController extends Controller
                 ->header('X-Robots-Tag', 'noindex');
         }
 
-        return redirect()->away($route['url'], (int) ($link->redirect_type ?? 302));
+        return $this->away($link, $route['url']);
+    }
+
+    /**
+     * Send the visitor to the destination with the link's own redirect type, except when the link can still
+     * change what that visitor meets (see Link::hasDynamicFeatures()). Browsers keep a 301 or a 308 and answer
+     * from their own store, so a warning, password, rule, limit or expiry added after someone's first visit
+     * would never reach them. Such links answer 302 and are not cached; a plain link keeps its permanent type.
+     */
+    protected function away(Link $link, string $url)
+    {
+        $code = (int) ($link->redirect_type ?? 302);
+        $dynamic = $link->hasDynamicFeatures();
+        if ($dynamic && in_array($code, [301, 308], true)) {
+            $code = 302;
+        }
+        $response = redirect()->away($url, $code);
+
+        return $dynamic ? $response->header('Cache-Control', 'no-store') : $response;
     }
 
     protected function logClick(Request $request, Link $link, bool $counted = false, ?int $variant = null): void

@@ -909,7 +909,7 @@
     "Background colour": "背景颜色",
     "Background colour as hex": "背景颜色（十六进制）",
     "Backup & export": "备份与导出",
-    "Browsers remember a permanent redirect. A warning, password, rule, limit or new destination added later will not reach visitors who already opened the link.": "浏览器会记住永久重定向。之后添加的警告、密码、规则、限制或新目标，对已经打开过该链接的访客不再生效。",
+    "Browsers remember a permanent redirect: visitors who already opened the link keep going to the old address if you change it. A link with a warning, a password, a rule, a limit or a start or end time answers with a temporary redirect instead.": "浏览器会记住永久重定向：已经打开过该链接的访客，即使你更改了目标，仍会前往旧地址。带有警告、密码、规则、限制或开始/结束时间的链接会改为返回临时重定向。",
     "Cancel": "取消",
     "Change colours": "更改颜色",
     "Clear": "清除",

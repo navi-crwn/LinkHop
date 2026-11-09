@@ -909,7 +909,7 @@
     "Background colour": "Couleur de fond",
     "Background colour as hex": "Couleur de fond en hexadécimal",
     "Backup & export": "Sauvegarde et export",
-    "Browsers remember a permanent redirect. A warning, password, rule, limit or new destination added later will not reach visitors who already opened the link.": "Les navigateurs mémorisent une redirection permanente. Un avertissement, un mot de passe, une règle, une limite ou une nouvelle destination ajoutés plus tard n’atteindront pas les visiteurs qui ont déjà ouvert le lien.",
+    "Browsers remember a permanent redirect: visitors who already opened the link keep going to the old address if you change it. A link with a warning, a password, a rule, a limit or a start or end time answers with a temporary redirect instead.": "Les navigateurs mémorisent une redirection permanente : les visiteurs qui ont déjà ouvert le lien continuent vers l’ancienne adresse même si vous la changez. Un lien avec un avertissement, un mot de passe, une règle, une limite ou une date de début ou de fin répond par une redirection temporaire.",
     "Cancel": "Annuler",
     "Change colours": "Changer les couleurs",
     "Clear": "Effacer",

@@ -909,7 +909,7 @@
     "Background colour": "背景色",
     "Background colour as hex": "背景色（16進数）",
     "Backup & export": "バックアップとエクスポート",
-    "Browsers remember a permanent redirect. A warning, password, rule, limit or new destination added later will not reach visitors who already opened the link.": "ブラウザーは恒久的なリダイレクトを記憶します。後から追加した警告・パスワード・ルール・上限・新しい宛先は、すでにこのリンクを開いた訪問者には届きません。",
+    "Browsers remember a permanent redirect: visitors who already opened the link keep going to the old address if you change it. A link with a warning, a password, a rule, a limit or a start or end time answers with a temporary redirect instead.": "ブラウザーは恒久的なリダイレクトを記憶します。すでにリンクを開いた訪問者は、宛先を変更しても古いアドレスへ進みます。警告・パスワード・ルール・上限・開始または終了時刻があるリンクは、代わりに一時的なリダイレクトで応答します。",
     "Cancel": "キャンセル",
     "Change colours": "色を変更",
     "Clear": "クリア",

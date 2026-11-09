@@ -909,7 +909,7 @@
     "Background colour": "Warna latar",
     "Background colour as hex": "Warna latar dalam heksadesimal",
     "Backup & export": "Cadangan & ekspor",
-    "Browsers remember a permanent redirect. A warning, password, rule, limit or new destination added later will not reach visitors who already opened the link.": "Browser mengingat pengalihan permanen. Peringatan, kata sandi, aturan, batas, atau tujuan baru yang ditambahkan kemudian tidak akan berlaku bagi pengunjung yang sudah pernah membuka tautan ini.",
+    "Browsers remember a permanent redirect: visitors who already opened the link keep going to the old address if you change it. A link with a warning, a password, a rule, a limit or a start or end time answers with a temporary redirect instead.": "Browser mengingat pengalihan permanen: pengunjung yang sudah membuka tautan tetap menuju alamat lama meski Anda mengubahnya. Tautan dengan peringatan, kata sandi, aturan, batas, atau waktu mulai dan berakhir dijawab dengan pengalihan sementara.",
     "Cancel": "Batal",
     "Change colours": "Ubah warna",
     "Clear": "Bersihkan",
