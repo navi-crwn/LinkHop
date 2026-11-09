@@ -7,6 +7,7 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" href="{{ asset('favicon.ico') }}">
     <x-hop::fonts />
+<script nonce="{{ Vite::cspNonce() }}">if (/(^|; )hop_ui=clean/.test(document.cookie)) document.documentElement.dataset.ui = 'clean';</script>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -16,7 +17,7 @@
             align-items: center;
             justify-content: center;
             padding: 1.5rem 1rem;
-            background: #0a0a0c;
+            background: radial-gradient(circle at 50% 10%, #1e1b4b 0%, #0f172a 45%, #020617 100%);
             color: #f8fafc;
         }
         .container {
@@ -25,10 +26,13 @@
             margin: 0 auto;
         }
         .card {
-            background: #141418;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border-radius: 14px;
             padding: 2rem 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.09);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
             text-align: center;
         }
         .brand-header {
@@ -241,6 +245,8 @@
         .brand-credit a:hover {
             color: #ffffff;
         }
+        html[data-ui="clean"] body {background:#0a0a0c;}
+        html[data-ui="clean"] .card {background:#141418; backdrop-filter:none; -webkit-backdrop-filter:none; border-color:rgba(255,255,255,0.09); box-shadow:none;}
     </style>
 </head>
 <body>

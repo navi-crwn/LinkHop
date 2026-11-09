@@ -12,6 +12,7 @@
         <script nonce="{{ Vite::cspNonce() }}">
             (function () {
                 try {
+                    if (/(^|; )hop_ui=clean/.test(document.cookie)) document.documentElement.dataset.ui = 'clean';
                     var t = localStorage.getItem('helink-theme');
                     if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                         document.documentElement.classList.add('dark');

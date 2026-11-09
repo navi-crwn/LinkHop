@@ -15,12 +15,13 @@
     @if($link->custom_image_url)
         <meta property="og:image" content="{{ $link->custom_image_url }}" />
     @endif
+<script nonce="{{ Vite::cspNonce() }}">if (/(^|; )hop_ui=clean/.test(document.cookie)) document.documentElement.dataset.ui = 'clean';</script>
     <style>
         /* The HOP control standard on a page without the app's stylesheet: 8px controls, 40px for the one action of
            an auth card, a card no wider than 24rem. */
         *, *::before, *::after { box-sizing: border-box; }
-        body {font-family: var(--hop-font-body, system-ui, sans-serif); margin:0; padding:1.5rem 1rem; background:#0a0a0c; color:#f8fafc; display:flex; align-items:center; justify-content:center; min-height:100vh; min-height:100dvh;}
-        .card {background:#141418; padding:2rem 1.5rem; border:1px solid rgba(255,255,255,0.09); border-radius:14px; width:100%; max-width:24rem; }
+        body {font-family: var(--hop-font-body, system-ui, sans-serif); margin:0; padding:1.5rem 1rem; background:#020617; color:#f8fafc; display:flex; align-items:center; justify-content:center; min-height:100vh; min-height:100dvh;}
+        .card {background:rgba(15,23,42,0.85); padding:2rem 1.5rem; border:1px solid rgba(255,255,255,0.1); border-radius:14px; width:100%; max-width:24rem; box-shadow:0 25px 50px -12px rgba(15,23,42,0.6);}
         h1 {margin:0; font-family: var(--hop-font-display, inherit); font-size:1.25rem; font-weight:600; letter-spacing:-0.01em;}
         p {margin:0.5rem 0 0; font-size:0.875rem; line-height:1.5; color:#94a3b8;}
         p span {color:#e2e8f0; overflow-wrap:anywhere;}
@@ -36,6 +37,8 @@
         @media (max-width: 639px) { input[type="password"] {font-size:16px;} }
         @media (pointer: coarse) { input[type="password"], button {min-height:44px;} }
         @media (prefers-reduced-motion: reduce) { input[type="password"], button {transition:none;} button:active {transform:none;} }
+        html[data-ui="clean"] body {background:#0a0a0c;}
+        html[data-ui="clean"] .card {background:#141418; border-color:rgba(255,255,255,0.09); box-shadow:none;}
     </style>
 </head>
 <body>
