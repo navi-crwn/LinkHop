@@ -17,6 +17,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\PublicLinkController;
 use App\Http\Controllers\QrController;
 use App\Http\Controllers\RedirectController;
+use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SitemapController;
@@ -85,6 +86,7 @@ Route::middleware('ip.ban')->group(function () {
         Route::post('links/{link}/comments', [LinkCommentController::class, 'store'])->name('links.comments.store');
         // Profile, password, 2FA and API tokens are the hub's pages now.
         Route::get('/profile', fn () => redirect()->away(hub_url('profile')))->name('profile.edit');
+        Route::post('/reminders/dismiss', [ReminderController::class, 'dismiss'])->middleware('throttle:30,1,reminders')->name('reminders.dismiss');
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
         Route::post('/settings/monitoring', [SettingsController::class, 'updateMonitoring'])->name('settings.monitoring');
         Route::post('/settings/export', [SettingsController::class, 'exportData'])->name('settings.export');

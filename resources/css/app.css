@@ -100,6 +100,10 @@
     }
     .dark :is(.glass, .glass-card, .glass-strong, .btn-soft, .stat) { box-shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 8px 32px -12px rgb(0 0 0 / 0.6); }
     .glass-card { @apply rounded-2xl p-4 sm:p-5; }
+    /* A reminder card (hop-ui) in a narrow column: hop-ui reserves 220px at the right for its Hide button, which
+       would squeeze the content, so the button gets a row of its own above the title. Applies once hop-ui has
+       taken the card (.hop-remind). */
+    .glass-card.remind-stack.hop-remind[data-hop-remind] { padding-right: 1.25rem; padding-top: 3.5rem; }
     .glass-strong { background-color: rgb(var(--glass) / 0.85); }
     .glass-inset {
         background-color: rgb(var(--glass) / 0.45);

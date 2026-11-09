@@ -17,9 +17,10 @@
         <div class="glass rounded-2xl px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">{{ session('status') }}</div>
     @endif
 
-    @if (\App\Support\ShortLinkMove::active())
-        {{-- Short links moved to hel.ink/l/{slug}; the old form redirects until the date below. --}}
-        <div class="glass flex flex-wrap items-center gap-3 rounded-2xl px-4 py-3 text-sm">
+    @if ($showMoveNotice)
+        {{-- Short links moved to hel.ink/l/{slug}; the old form redirects until the date below.
+             A reminder card: hop-ui adds "Hide · Shows again next week"; it is back after a week while the move lasts. --}}
+        <div class="glass flex flex-wrap items-center gap-3 rounded-2xl px-4 py-3 text-sm" data-hop-remind="short-links-move" data-hop-remind-url="{{ route('reminders.dismiss') }}">
             <span class="chip-blue">{{ __('Notice') }}</span>
             <span class="min-w-0 flex-1 text-muted">{!! __('Short links now live at :new The old form (:old) keeps redirecting until :until, then stops.', [
                 'new' => '<strong class="text-ink">'.e(public_host()).'/l/&hellip;</strong>',
@@ -65,7 +66,7 @@
 
     {{-- This week against last, the totals, and what to do next --}}
     <div class="grid gap-3 md:grid-cols-3">
-        <section class="glass-card flex flex-col justify-between gap-4 md:col-span-2" aria-labelledby="week-title">
+        <section class="glass-card flex flex-col justify-between gap-4 {{ $showChecklist ? 'md:col-span-2' : 'md:col-span-3' }}" aria-labelledby="week-title">
             <div class="flex flex-1 flex-wrap items-stretch justify-between gap-x-6 gap-y-3">
                 <div>
                     <p id="week-title" class="stat-label">{{ __('Clicks this week') }}</p>
@@ -103,9 +104,12 @@
             </dl>
         </section>
 
-        <section class="glass-card" data-checklist aria-labelledby="start-title">
+        {{-- A reminder card: not rendered once every step is done, and away for a week after "Hide" (hop-ui adds
+             the button; remind-stack keeps it above the title in this narrow column). --}}
+        @if ($showChecklist)
+        <section class="glass-card remind-stack" data-checklist data-hop-remind="checklist" data-hop-remind-url="{{ route('reminders.dismiss') }}" aria-labelledby="start-title">
             <div class="flex items-center justify-between gap-2">
-                <h2 id="start-title" class="section-title">{{ $checklist['done'] >= count($checklist['items']) ? __('You have tried everything') : __('Get the most out of LinkHop') }}</h2>
+                <h2 id="start-title" class="section-title">{{ __('Get the most out of LinkHop') }}</h2>
                 <span class="text-xs tabular-nums text-muted">{{ __(':done of :total', ['done' => $checklist['done'], 'total' => count($checklist['items'])]) }}</span>
             </div>
             <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700" aria-hidden="true"><div class="h-full rounded-full bg-indigo-500" style="width: {{ round($checklist['done'] / count($checklist['items']) * 100) }}%"></div></div>
@@ -122,6 +126,7 @@
                 @endforeach
             </ul>
         </section>
+        @endif
     </div>
 
     <div class="grid gap-3 lg:grid-cols-3">

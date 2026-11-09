@@ -17,7 +17,9 @@ use App\Support\DeepLinks;
 use App\Support\EncryptedNoteLink;
 use App\Support\LinkRouting;
 use App\Support\QrPng;
+use App\Support\Reminders;
 use App\Support\RemoteUrl;
+use App\Support\ShortLinkMove;
 use GuzzleHttp\Client;
 use Hop\Safety\UrlGuard;
 use Illuminate\Http\Request;
@@ -189,7 +191,10 @@ class LinkController extends Controller
             'highlightTop' => $topLinks->first(),
             'week' => DashboardStats::week($user),
             'sparks' => DashboardStats::sparklines($topLinks->pluck('id')->merge($latestLinks->pluck('id'))->unique()->values()->all()),
-            'checklist' => DashboardStats::checklist($user),
+            'checklist' => $checklist = DashboardStats::checklist($user),
+            // Reminder cards: gone for good once their task is done, away for a week after "Hide" (App\Support\Reminders).
+            'showChecklist' => $checklist['done'] < count($checklist['items']) && ! Reminders::hidden($user, 'checklist'),
+            'showMoveNotice' => ShortLinkMove::active() && ! Reminders::hidden($user, 'short-links-move'),
         ];
 
         return view('dashboard', $data);
