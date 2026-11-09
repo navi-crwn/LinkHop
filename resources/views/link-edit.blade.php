@@ -99,7 +99,7 @@
                     @if (count($tags) === 0)
                         <p class="text-xs text-muted">No tags yet. <a href="{{ route('tags.index') }}" class="underline">Create one</a>.</p>
                     @else
-                        <div class="flex max-h-36 flex-wrap gap-1.5 overflow-y-auto">
+                        <div class="flex max-h-36 flex-wrap gap-1.5 overflow-y-auto" role="group" aria-label="{{ __('Tags') }}">
                             @foreach ($tags as $tag)
                                 <label class="cursor-pointer" x-show="!search || @js(mb_strtolower($tag->name)).includes(search.toLowerCase())">
                                     <input type="checkbox" name="tags[]" value="{{ $tag->id }}" class="peer sr-only" @checked(in_array((int) $tag->id, $selectedTags, true))>
