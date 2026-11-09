@@ -69,7 +69,7 @@
                     </div>
                     <div class="flex flex-col sm:flex-row gap-3 pt-4">
                         <a href="{{ $targetUrl }}" 
-                           class="flex-1 inline-flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
+                           class="btn-primary btn-lg">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                             </svg>
@@ -78,7 +78,7 @@
                         {{-- The family's home page is the hub, as everywhere else: a visitor who came for a link
                              should not land in LinkHop's dashboard or its landing page. --}}
                         <a href="{{ hub_url() }}" 
-                           class="flex-1 inline-flex items-center justify-center px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-medium rounded-lg transition-colors">
+                           class="btn-outline btn-lg">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                             </svg>

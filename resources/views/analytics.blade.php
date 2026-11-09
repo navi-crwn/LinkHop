@@ -10,7 +10,7 @@
         }
         arsort($domainBreakdown);
         $rows = fn ($data, $flagKey = null) => collect($data)->map(fn ($v, $k) => ['label' => $k, 'value' => (int) $v])->values();
-        $tabBtn = 'rounded-lg px-2 py-1 text-xs font-medium transition';
+        $tabBtn = 'tab';
         $tabOn = 'bg-slate-900/5 text-ink dark:bg-white/10';
         $tabOff = 'text-muted hover:text-ink';
     @endphp
@@ -34,16 +34,16 @@
                     pick(id) { this.$refs.hiddenInput.value = id; this.$refs.form.submit(); }
                 }" @click.outside="open = false">
                 <input type="hidden" name="link_id" x-ref="hiddenInput" :value="selected">
-                <button type="button" @click="open = !open" class="input flex items-center justify-between text-left">
+                <button type="button" @click="open = !open" data-ctl="select" class="input flex items-center justify-between gap-2 text-left">
                     <span class="truncate" x-text="selectedText"></span>
                     <svg class="ml-2 h-4 w-4 shrink-0 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="m6 9 6 6 6-6"/></svg>
                 </button>
                 <div x-show="open" x-transition x-cloak class="glass-strong absolute z-50 mt-1 w-full min-w-[240px] rounded-xl p-1.5">
                     <input type="text" x-model="search" placeholder="Search links…" class="input mb-1" @click.stop>
                     <div class="max-h-64 overflow-y-auto">
-                        <button type="button" @click="pick('all')" class="w-full rounded-lg px-3 py-2 text-left text-sm text-ink hover:bg-slate-900/5 dark:hover:bg-white/10">All links</button>
+                        <button type="button" @click="pick('all')" data-ctl="option" class="option text-ink">All links</button>
                         <template x-for="link in filteredLinks" :key="link.id">
-                            <button type="button" @click="pick(link.id)" class="w-full rounded-lg px-3 py-2 text-left hover:bg-slate-900/5 dark:hover:bg-white/10" :class="selected == link.id && 'bg-indigo-500/10'">
+                            <button type="button" @click="pick(link.id)" data-ctl="option" class="option" :class="selected == link.id && 'bg-indigo-500/10'">
                                 <div class="text-sm font-medium text-ink" x-text="'/' + link.slug"></div>
                                 <div class="truncate text-xs text-muted" x-text="link.url"></div>
                             </button>
@@ -69,7 +69,7 @@
                     <option value="{{ strtolower($device) }}" @selected(strtolower($device) === $deviceFilter)>{{ $device }}</option>
                 @endforeach
             </select>
-            <a href="{{ route('analytics') }}" class="btn-ghost justify-center">Reset</a>
+            <a href="{{ route('analytics') }}" class="btn-ghost">Reset</a>
         </form>
 
         {{-- Key metrics --}}
@@ -156,7 +156,7 @@
                     <h2 class="section-title">Locations</h2>
                     <div class="flex gap-0.5">
                         @foreach (['countries' => 'Countries', 'cities' => 'Cities', 'regions' => 'Regions'] as $key => $label)
-                            <button type="button" @click="tab = '{{ $key }}'" class="{{ $tabBtn }}" :class="tab === '{{ $key }}' ? '{{ $tabOn }}' : '{{ $tabOff }}'">{{ $label }}</button>
+                            <button type="button" @click="tab = '{{ $key }}'" data-ctl="tab" class="{{ $tabBtn }}" :class="tab === '{{ $key }}' ? '{{ $tabOn }}' : '{{ $tabOff }}'">{{ $label }}</button>
                         @endforeach
                     </div>
                 </div>
@@ -178,9 +178,9 @@
                 <div class="mb-3 flex items-center justify-between gap-2">
                     <h2 class="section-title">Top links</h2>
                     <div class="flex gap-0.5">
-                        <button type="button" @click="tab = 'links'" class="{{ $tabBtn }}" :class="tab === 'links' ? '{{ $tabOn }}' : '{{ $tabOff }}'">Links</button>
-                        <button type="button" @click="tab = 'dest'" class="{{ $tabBtn }}" :class="tab === 'dest' ? '{{ $tabOn }}' : '{{ $tabOff }}'">Destinations</button>
-                        <button type="button" @click="tab = 'ended'" class="{{ $tabBtn }}" :class="tab === 'ended' ? '{{ $tabOn }}' : '{{ $tabOff }}'">Expired</button>
+                        <button type="button" @click="tab = 'links'" data-ctl="tab" class="{{ $tabBtn }}" :class="tab === 'links' ? '{{ $tabOn }}' : '{{ $tabOff }}'">Links</button>
+                        <button type="button" @click="tab = 'dest'" data-ctl="tab" class="{{ $tabBtn }}" :class="tab === 'dest' ? '{{ $tabOn }}' : '{{ $tabOff }}'">Destinations</button>
+                        <button type="button" @click="tab = 'ended'" data-ctl="tab" class="{{ $tabBtn }}" :class="tab === 'ended' ? '{{ $tabOn }}' : '{{ $tabOff }}'">Expired</button>
                     </div>
                 </div>
                 <div x-show="tab === 'links'">
@@ -199,8 +199,8 @@
                 <div class="mb-3 flex items-center justify-between gap-2">
                     <h2 class="section-title">Sources</h2>
                     <div class="flex gap-0.5">
-                        <button type="button" @click="tab = 'domains'" class="{{ $tabBtn }}" :class="tab === 'domains' ? '{{ $tabOn }}' : '{{ $tabOff }}'">Domains</button>
-                        <button type="button" @click="tab = 'urls'" class="{{ $tabBtn }}" :class="tab === 'urls' ? '{{ $tabOn }}' : '{{ $tabOff }}'">URLs</button>
+                        <button type="button" @click="tab = 'domains'" data-ctl="tab" class="{{ $tabBtn }}" :class="tab === 'domains' ? '{{ $tabOn }}' : '{{ $tabOff }}'">Domains</button>
+                        <button type="button" @click="tab = 'urls'" data-ctl="tab" class="{{ $tabBtn }}" :class="tab === 'urls' ? '{{ $tabOn }}' : '{{ $tabOff }}'">URLs</button>
                     </div>
                 </div>
                 <div x-show="tab === 'domains'">
@@ -216,7 +216,7 @@
                     <h2 class="section-title">Technology</h2>
                     <div class="flex flex-wrap gap-0.5">
                         @foreach (['devices' => 'Devices', 'browsers' => 'Browsers', 'os' => 'OS', 'inapp' => __('In-app browsers')] as $key => $label)
-                            <button type="button" @click="tab = '{{ $key }}'" class="{{ $tabBtn }}" :class="tab === '{{ $key }}' ? '{{ $tabOn }}' : '{{ $tabOff }}'">{{ $label }}</button>
+                            <button type="button" @click="tab = '{{ $key }}'" data-ctl="tab" class="{{ $tabBtn }}" :class="tab === '{{ $key }}' ? '{{ $tabOn }}' : '{{ $tabOff }}'">{{ $label }}</button>
                         @endforeach
                     </div>
                 </div>

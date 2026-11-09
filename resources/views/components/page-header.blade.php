@@ -13,7 +13,7 @@
         @endif
     </div>
     @isset($actions)
-        <div class="flex flex-wrap items-center gap-2 [&_a]:rounded-xl! [&_button]:rounded-xl!">
+        <div class="flex flex-wrap items-center gap-2">
             {{ $actions }}
         </div>
     @endisset

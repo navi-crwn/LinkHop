@@ -74,7 +74,7 @@
                 <input type="hidden" name="token" value="{{ $preview['token'] }}">
                 @if ($dupes > 0)
                     <label class="flex items-center gap-2 text-sm text-ink">
-                        <input type="checkbox" name="allow_duplicates" value="1" x-model="dupes" class="rounded-sm border-slate-400/50 text-indigo-600 focus:ring-indigo-500">
+                        <input type="checkbox" name="allow_duplicates" value="1" x-model="dupes" class="border-slate-400/50 text-indigo-600 focus:ring-indigo-500">
                         {{ __('Also create the :count duplicate rows', ['count' => $dupes]) }}
                     </label>
                 @endif

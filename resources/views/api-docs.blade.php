@@ -214,7 +214,7 @@ const ok = Math.abs(Date.now() / 1000 - Number(req.get('X-LinkHop-Timestamp'))) 
                 </ol>
                 <form method="POST" action="{{ route('api.sharex-config') }}">
                     @csrf
-                    <button type="submit" class="btn-primary btn-sm w-full justify-center">Download ShareX config (.sxcu)</button>
+                    <button type="submit" class="btn-primary btn-sm">Download ShareX config (.sxcu)</button>
                 </form>
             </section>
 
@@ -238,8 +238,8 @@ const ok = Math.abs(Date.now() / 1000 - Number(req.get('X-LinkHop-Timestamp'))) 
             </section>
 
             <section class="glass-card flex gap-2">
-                <a href="mailto:support@hel.ink" class="btn-soft btn-sm flex-1 justify-center">Email support</a>
-                <a href="https://github.com/navi-crwn/hel.ink/issues" target="_blank" rel="noopener" class="btn-ghost btn-sm flex-1 justify-center">Report an issue</a>
+                <a href="mailto:support@hel.ink" class="btn-soft btn-sm">Email support</a>
+                <a href="https://github.com/navi-crwn/hel.ink/issues" target="_blank" rel="noopener" class="btn-ghost btn-sm">Report an issue</a>
             </section>
         </aside>
     </div>

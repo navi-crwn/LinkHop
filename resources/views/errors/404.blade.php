@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-slate-950 text-white">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full dark bg-slate-950 text-white">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,10 +23,10 @@
             <p class="mt-2 max-w-md text-white/70">{{ __('This page does not exist or has moved. Check the address, or go back to where you were.') }}</p>
             <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
                 @auth
-                    <a href="{{ route('dashboard') }}" class="rounded-2xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-lg shadow-blue-500/40">{{ __('Go to dashboard') }}</a>
-                    <a href="{{ route('links.index') }}" class="rounded-2xl border border-white/20 px-6 py-3 font-semibold text-white/90 hover:bg-white/10">{{ __('My links') }}</a>
+                    <a href="{{ route('dashboard') }}" class="btn-primary btn-lg">{{ __('Go to dashboard') }}</a>
+                    <a href="{{ route('links.index') }}" class="btn-outline btn-lg">{{ __('My links') }}</a>
                 @else
-                    <a href="{{ url('/') }}" class="rounded-2xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-lg shadow-blue-500/40">{{ __('Back to homepage') }}</a>
+                    <a href="{{ url('/') }}" class="btn-primary btn-lg">{{ __('Back to homepage') }}</a>
                 @endauth
             </div>
         </div>

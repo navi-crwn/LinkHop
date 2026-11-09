@@ -15,6 +15,8 @@
     --font-sans: var(--hop-font-body, ui-sans-serif, system-ui, sans-serif), 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-display: var(--hop-font-display, ui-sans-serif, system-ui, sans-serif);
     --font-mono: var(--hop-font-mono, ui-monospace, monospace);
+    /* Cards and panels (rounded-2xl in the markup) take the family's card radius, 14px. */
+    --radius-2xl: 14px;
 }
 
 /*
@@ -53,6 +55,37 @@
         --accent: 99 102 241;         /* indigo-500 */
         --accent-2: 139 92 246;       /* violet-500 */
         --shadow: 15 23 42;
+
+        /* HOP control standard (hop-ops docs/15-standar-kontrol-ui): one shape and one height for every input,
+           select, textarea, search field and button, the same names in every HOP app. */
+        --hop-ctl-radius: 8px;
+        --hop-ctl-radius-sm: 6px;
+        --hop-card-radius: 14px;
+        --hop-ctl-h: 36px;
+        --hop-ctl-h-sm: 32px;
+        --hop-ctl-h-lg: 40px;
+        --hop-ctl-px: 12px;
+        --hop-ctl-font: 14px;
+        --hop-ring: 3px;
+        --hop-field-max: 28rem;
+        --hop-field-max-narrow: 24rem;
+        --hop-field-max-short: 11rem;
+        --hop-field-max-xs: 6rem;
+        --hop-field-max-wide: 40rem;   /* a long URL or a textarea in a full-width editor row */
+        --hop-field-max-datetime: 14rem; /* a date with its time does not fit the 11rem of a date */
+        --hop-search-max: 20rem;
+        /* The standard's colour names, mapped to this app's tokens (light here, dark below). */
+        --hop-accent: rgb(var(--accent));
+        --hop-accent-fill: rgb(79 70 229);       /* indigo-600: white text on it passes 4.5:1, indigo-500 does not */
+        --hop-accent-fill-hover: rgb(67 56 202);
+        --hop-line: rgb(var(--muted) / 0.3);
+        --hop-surface: rgb(var(--glass) / 0.7);
+        --hop-fill: rgb(var(--muted) / 0.14);
+        --hop-fill-hover: rgb(var(--muted) / 0.22);
+        --hop-text: rgb(var(--ink));
+        --hop-danger: rgb(225 29 72);
+        /* The family dialogs (hop-ui.css) take the same two radii. */
+        --hop-ui-radius: var(--hop-card-radius);
     }
     .dark {
         --bg: 8 11 24;
@@ -99,12 +132,12 @@
         backdrop-filter: blur(18px) saturate(160%);
     }
     .dark :is(.glass, .glass-card, .glass-strong, .btn-soft, .stat) { box-shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 8px 32px -12px rgb(0 0 0 / 0.6); }
-    .glass-card { @apply rounded-2xl p-4 sm:p-5; }
+    .glass-card { @apply p-4 sm:p-5; border-radius: var(--hop-card-radius); }
     .glass-strong { background-color: rgb(var(--glass) / 0.85); }
     .glass-inset {
         background-color: rgb(var(--glass) / 0.45);
         border: 1px solid rgb(var(--glass-border) / calc(var(--glass-border-alpha) * 0.8));
-        @apply rounded-xl;
+        border-radius: calc(var(--hop-card-radius) - 4px);
     }
 
     /* Typography helpers */
@@ -112,59 +145,122 @@
     .page-title { @apply text-xl font-semibold tracking-tight sm:text-2xl; color: rgb(var(--ink)); }
     .section-title { @apply text-sm font-semibold; color: rgb(var(--ink)); }
 
-    /* Buttons */
-    .btn {
-        @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold
-               transition duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-indigo-400/60
-               disabled:cursor-not-allowed disabled:opacity-50;
+    /* Buttons: as wide as their text, one height (36px; 32px dense, 40px for the main action of a form),
+       one radius. .btn-sm is kept for the markup that carries it and is the default size: it never made a variant
+       smaller. Variants: primary (accent), soft = secondary, outline, ghost, danger, danger-outline, link. */
+    .btn, .btn-primary, .btn-ghost, .btn-soft, .btn-outline, .btn-danger, .btn-danger-outline {
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px; flex-shrink: 0; width: auto;
+        height: var(--hop-ctl-h); padding: 0 14px; border: 1px solid transparent; border-radius: var(--hop-ctl-radius);
+        font-size: var(--hop-ctl-font); font-weight: 600; line-height: 1; white-space: nowrap; cursor: pointer;
+        transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease, transform .12s ease;
     }
-    .btn-sm { @apply rounded-lg px-3 py-1.5 text-xs; }
-    /* The variants below include .btn after .btn-sm, as applying .btn did with Tailwind 3,
-       so .btn-sm does not shrink them. */
-    .btn-primary, .btn-ghost, .btn-soft, .btn-danger {
-        @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold
-               transition duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-indigo-400/60
-               disabled:cursor-not-allowed disabled:opacity-50;
+    :is(.btn, .btn-primary, .btn-ghost, .btn-soft, .btn-outline, .btn-danger, .btn-danger-outline):active { transform: scale(.97); }
+    :is(.btn, .btn-primary, .btn-ghost, .btn-soft, .btn-outline, .btn-danger, .btn-danger-outline, .icon-btn):focus-visible {
+        outline: none; box-shadow: 0 0 0 var(--hop-ring) color-mix(in srgb, var(--hop-accent) 35%, transparent);
     }
-    /* Neutral solid primary (ink on light, white on dark); the accent is kept for links/active states. */
-    .btn-primary {
-        @apply bg-slate-900 text-white shadow-xs hover:bg-slate-800 active:scale-[0.98]
-               dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100;
-    }
-    .btn-ghost { @apply hover:bg-slate-900/5 dark:hover:bg-white/10; color: rgb(var(--ink)); }
-    .btn-soft { color: rgb(var(--ink)); }
-    .btn-soft:hover { background-color: rgb(var(--glass) / 0.9); }
-    .btn-danger { @apply bg-rose-500/90 text-white hover:bg-rose-500; }
+    :is(.btn, .btn-primary, .btn-ghost, .btn-soft, .btn-outline, .btn-danger, .btn-danger-outline):is(:disabled, [aria-disabled='true']) { opacity: .64; cursor: not-allowed; }
+    .btn-primary { background-color: var(--hop-accent-fill); color: #fff; }
+    .btn-primary:hover { background-color: var(--hop-accent-fill-hover); }
+    .btn-soft { background-color: var(--hop-fill); color: var(--hop-text); }
+    .btn-soft:hover { background-color: var(--hop-fill-hover); }
+    .btn-outline { background-color: var(--hop-surface); border-color: var(--hop-line); color: var(--hop-text); }
+    .btn-outline:hover { background-color: var(--hop-fill); }
+    .btn-ghost { background-color: transparent; color: var(--hop-text); }
+    .btn-ghost:hover { background-color: var(--hop-fill); }
+    .btn-danger { background-color: var(--hop-danger); color: #fff; }
+    .btn-danger:hover { background-color: rgb(190 18 60); }
+    .btn-danger-outline { background-color: var(--hop-surface); border-color: rgb(225 29 72 / .4); color: var(--hop-danger); }
+    .btn-danger-outline:hover { background-color: rgb(225 29 72 / .08); }
+    .dark :is(.btn-danger-outline) { color: rgb(251 113 133); }
+    .btn-link { @apply inline-flex items-center gap-1 text-[13px] font-medium underline-offset-2 hover:underline; color: var(--hop-accent); cursor: pointer; }
+    .dark .btn-link { color: rgb(165 180 252); }
+    /* Sizes, after the variants so they win. */
+    .btn-dense { height: var(--hop-ctl-h-sm); padding: 0 12px; font-size: 13px; }
+    .btn-lg { height: var(--hop-ctl-h-lg); padding: 0 16px; }
     .icon-btn {
-        @apply inline-flex h-9 w-9 items-center justify-center rounded-xl transition hover:bg-slate-900/5 dark:hover:bg-white/10;
-        color: rgb(var(--muted));
+        display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+        width: var(--hop-ctl-h); height: var(--hop-ctl-h); border-radius: var(--hop-ctl-radius);
+        color: rgb(var(--muted)); transition: background-color .15s ease, color .15s ease;
     }
-    .icon-btn:hover { color: rgb(var(--ink)); }
+    .icon-btn:hover { color: rgb(var(--ink)); background-color: var(--hop-fill); }
+    .icon-btn-dense { width: var(--hop-ctl-h-sm); height: var(--hop-ctl-h-sm); }
 
-    /* Form controls */
+    /* Form controls: 36px high, 8px radius, 1px border; the ring on focus is the accent at 28%. */
     .input {
-        @apply block w-full rounded-xl border px-3.5 py-2.5 text-sm shadow-none outline-hidden transition
-               placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-400/40;
-        color: rgb(var(--ink));
-        background-color: rgb(var(--glass) / 0.6);
-        border-color: rgb(var(--muted) / 0.25);
+        display: block; box-sizing: border-box; width: 100%; min-width: 0; height: var(--hop-ctl-h);
+        padding: 0 var(--hop-ctl-px); border: 1px solid var(--hop-line); border-radius: var(--hop-ctl-radius);
+        background-color: var(--hop-surface); color: var(--hop-text);
+        font-size: var(--hop-ctl-font); line-height: 1.25; box-shadow: none; outline: none;
+        transition: border-color .15s ease, box-shadow .15s ease;
     }
-    .input:focus { border-color: rgb(var(--accent) / 0.6); }
+    .input::placeholder { color: rgb(148 163 184); }
+    .input:focus, .input:focus-visible {
+        outline: none; border-color: var(--hop-accent);
+        box-shadow: 0 0 0 var(--hop-ring) color-mix(in srgb, var(--hop-accent) 28%, transparent);
+        --tw-ring-shadow: 0 0 #0000;
+    }
+    .input[aria-invalid='true'] { border-color: var(--hop-danger); box-shadow: 0 0 0 var(--hop-ring) rgb(225 29 72 / .16); }
+    .input:disabled { opacity: .64; cursor: not-allowed; }
+    textarea.input { height: auto; min-height: 88px; padding: 8px var(--hop-ctl-px); line-height: 1.5; }
     /* Keep room for the select chevron that @tailwindcss/forms draws. */
-    select.input { padding-right: 2.25rem; }
-    .label { @apply mb-1.5 block text-xs font-medium; color: rgb(var(--muted)); }
+    select.input { padding-right: 2.25rem; background-position: right 0.5rem center; }
+    .input-dense { height: var(--hop-ctl-h-sm); font-size: 13px; }
+    .input-lg { height: var(--hop-ctl-h-lg); }
+    /* A field never spans the page: each kind has its largest width, whatever the column it sits in.
+       .field* on a wrapper (or on the control) sets the same caps by hand. */
+    .input:where([type='text'], [type='tel'], :not([type])), select.input { max-width: var(--hop-field-max); }
+    .input:where([type='password'], [type='email']) { max-width: var(--hop-field-max-narrow); }
+    .input:where([type='date'], [type='time'], [type='number']) { max-width: var(--hop-field-max-short); }
+    .input:where([type='datetime-local']) { max-width: var(--hop-field-max-datetime); }
+    .input:where([type='url']), textarea.input { max-width: var(--hop-field-max-wide); }
+    .field { display: block; width: 100%; max-width: var(--hop-field-max); }
+    .field-narrow { display: block; width: 100%; max-width: var(--hop-field-max-narrow); }
+    .field-short { display: block; width: 100%; max-width: var(--hop-field-max-short); }
+    .field-xs { display: block; width: 100%; max-width: var(--hop-field-max-xs); }
+    .field-wide { display: block; width: 100%; max-width: var(--hop-field-max-wide); }
+    .field-datetime { display: block; width: 100%; max-width: var(--hop-field-max-datetime); }
+    /* Search: the same input with a 16px icon in front, 20rem wide from 640px up. */
+    .search { position: relative; width: 100%; }
+    .search > .input { padding-left: 34px; max-width: none; }
+    .search > svg { position: absolute; left: 11px; top: 50%; width: 16px; height: 16px; transform: translateY(-50%); pointer-events: none; color: rgb(var(--muted)); }
+    @media (min-width: 640px) { .search { max-width: var(--hop-search-max); } }
+    /* A row of form buttons: to the right, the main one last; stacked (main one on top) and full width on a phone. */
+    .form-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; }
+    /* Label 13px medium, 6px above its field; help and errors 13px under it. */
+    .label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; line-height: 1.3; color: rgb(var(--muted)); }
+    .help { margin-top: 6px; font-size: 13px; line-height: 1.4; color: rgb(var(--muted)); }
+    /* Tabs and the rows of a pick list: one row each, the dense height. */
+    .tab { display: inline-flex; align-items: center; justify-content: center; min-width: 0; height: var(--hop-ctl-h-sm); padding: 0 12px; border-radius: var(--hop-ctl-radius); font-size: 13px; font-weight: 500; white-space: nowrap; transition: background-color .15s ease, color .15s ease; }
+    .option { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: var(--hop-ctl-h); padding: 0 var(--hop-ctl-px); border-radius: var(--hop-ctl-radius-sm); font-size: var(--hop-ctl-font); text-align: left; cursor: pointer; }
+    .option:hover { background-color: var(--hop-fill); }
 
-    /* Chips / badges */
-    .chip, .chip-green, .chip-gray, .chip-red, .chip-blue, .chip-amber { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold; }
+    /* Chips / badges: the only pills, 22px high, never buttons. */
+    .chip, .chip-green, .chip-gray, .chip-red, .chip-blue, .chip-amber { @apply inline-flex items-center gap-1 rounded-full text-[11px] font-semibold; height: 22px; padding: 0 8px; white-space: nowrap; }
     .chip-green { @apply bg-emerald-500/15 text-emerald-700 dark:text-emerald-300; }
     .chip-gray { @apply bg-slate-500/15 text-slate-600 dark:text-slate-300; }
     .chip-red { @apply bg-rose-500/15 text-rose-700 dark:text-rose-300; }
     .chip-blue { @apply bg-indigo-500/15 text-indigo-700 dark:text-indigo-300; }
     .chip-amber { @apply bg-amber-500/15 text-amber-700 dark:text-amber-300; }
 
+    /* Phones: 16px text in fields (no zoom on iOS). Touch: every control is at least 44px to hit. */
+    @media (max-width: 639px) {
+        .input, .input-dense { font-size: 16px; }
+        .form-actions { flex-direction: column-reverse; align-items: stretch; }
+        .form-actions > :is(.btn, .btn-primary, .btn-ghost, .btn-soft, .btn-outline, .btn-danger, .btn-danger-outline) { width: 100%; }
+    }
+    @media (pointer: coarse) {
+        .input:not(textarea), .btn, .btn-primary, .btn-ghost, .btn-soft, .btn-outline, .btn-danger, .btn-danger-outline, .tab, .option, .nav-item { min-height: 44px; }
+        .icon-btn { min-width: 44px; min-height: 44px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .input, .btn, .btn-primary, .btn-ghost, .btn-soft, .btn-outline, .btn-danger, .btn-danger-outline, .icon-btn, .tab { transition: none; }
+        :is(.btn, .btn-primary, .btn-ghost, .btn-soft, .btn-outline, .btn-danger, .btn-danger-outline):active { transform: none; }
+    }
+
     /* Navigation */
     .nav-item {
-        @apply flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition;
+        @apply flex items-center gap-3 px-3 text-sm font-medium transition;
+        min-height: var(--hop-ctl-h); border-radius: var(--hop-ctl-radius); white-space: nowrap;
         color: rgb(var(--muted));
     }
     .nav-item:hover { color: rgb(var(--ink)); background-color: rgb(var(--glass) / 0.6); }
@@ -174,12 +270,12 @@
         box-shadow: 0 4px 14px -8px rgb(var(--shadow) / 0.35), inset 0 0 0 1px rgb(var(--glass-border) / var(--glass-border-alpha));
     }
     .nav-item-active svg { color: rgb(var(--accent)); }
-    .nav-sub { @apply block rounded-lg px-3 py-1.5 text-[13px] transition; color: rgb(var(--muted)); }
+    .nav-sub { @apply flex items-center px-3 text-[13px] transition; min-height: var(--hop-ctl-h-sm); border-radius: var(--hop-ctl-radius); color: rgb(var(--muted)); }
     .nav-sub:hover, .nav-sub-active { color: rgb(var(--ink)); }
     .nav-sub-active { @apply font-semibold; }
 
     /* Compact metric tiles */
-    .stat { @apply rounded-2xl px-4 py-3; }
+    .stat { @apply px-4 py-3; border-radius: var(--hop-card-radius); }
     .stat-label { @apply text-[11px] font-medium uppercase tracking-wider; color: rgb(var(--muted)); }
     .stat-value { @apply mt-0.5 text-xl font-semibold tabular-nums tracking-tight sm:text-2xl; color: rgb(var(--ink)); }
 
@@ -333,3 +429,21 @@ a.hop-family-link:hover { border-color: rgb(255 255 255 / 0.3); background: rgb(
 | Applies once hop-ui has taken the card (.hop-remind), so nothing moves while that script is absent.
 */
 .glass-card.remind-stack.hop-remind[data-hop-remind] { padding-right: 1.25rem; padding-top: 3.5rem; }
+
+/*
+| Controls that are not one of the classes above. Checkboxes take the small radius. The language and account
+| buttons of hop/ui draw their own 12px squares in a <style> of their own (not layered), so they are matched here,
+| outside every layer and one step more specific.
+*/
+input[type='checkbox'] { border-radius: var(--hop-ctl-radius-sm); }
+html .hop-switcher > summary { width: var(--hop-ctl-h); height: var(--hop-ctl-h); border-radius: var(--hop-ctl-radius); white-space: nowrap; }
+html .hop-switcher-panel > a, html .hop-account-panel form button { min-height: var(--hop-ctl-h); padding-block: 0; border-radius: var(--hop-ctl-radius); }
+html .hop-account-panel form button { height: var(--hop-ctl-h); }
+/* A pick-list trigger is a button dressed as a field: the same largest width as a select. */
+button.input { max-width: var(--hop-field-max); }
+@media (pointer: coarse) {
+    html .hop-switcher > summary { min-width: 44px; min-height: 44px; }
+    html .hop-switcher-panel > a, html .hop-account-panel form button { min-height: 44px; height: auto; }
+    /* After the navigation rules of the components layer, which set the 36px these rows have with a mouse. */
+    .nav-item, .nav-sub { min-height: 44px; }
+}

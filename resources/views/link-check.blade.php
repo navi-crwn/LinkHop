@@ -10,8 +10,8 @@
         <form method="GET" action="{{ route('link.check') }}" class="{{ $card }} mt-8 flex flex-col gap-2 p-2 sm:flex-row">
             <label for="url" class="sr-only">Short link</label>
             <input id="url" name="url" value="{{ $input }}" required autofocus placeholder="{{ $host }}/abc123"
-                class="min-w-0 flex-1 rounded-2xl border-0 bg-white/6 px-4 py-3.5 text-[15px] text-white placeholder-white/35 focus:outline-hidden focus:ring-2 focus:ring-indigo-400/50">
-            <button class="rounded-2xl bg-white px-6 py-3.5 font-semibold text-slate-900 transition hover:bg-white/90 active:scale-[0.98]">Check</button>
+                data-ctl-max="640" class="input input-lg min-w-0 flex-1 max-w-none!">
+            <button class="btn-primary btn-lg">Check</button>
         </form>
 
         @if ($result)
@@ -84,7 +84,7 @@
                             @endif
 
                             <div class="mt-5 flex flex-wrap gap-2" x-data="{ copied: false }">
-                                <button type="button" class="rounded-xl border border-white/15 px-4 py-2 text-sm text-white/85 hover:bg-white/10"
+                                <button type="button" class="btn-outline"
                                     @click="navigator.clipboard.writeText(@js($link->target_url)); copied = true; setTimeout(() => copied = false, 2000)">
                                     <span x-text="copied ? 'Copied' : 'Copy destination'">Copy destination</span>
                                 </button>

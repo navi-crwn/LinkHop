@@ -24,9 +24,10 @@
 
         {{-- Filters --}}
         <form method="GET" class="glass flex flex-col gap-2 rounded-2xl p-2 sm:flex-row sm:items-center" x-data="{ more: {{ ($filters['folder'] || $filters['tag'] || $filters['sort'] !== 'created_desc') ? 'true' : 'false' }} }">
-            <div class="relative flex-1">
-                <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="m20 20-3.5-3.5"/></svg>
-                <input type="search" name="q" value="{{ $filters['q'] }}" placeholder="Search links…" class="input border-transparent! bg-transparent! pl-9">
+            {{-- The search field is 20rem wide from 640px up; the filters keep to the right of it. --}}
+            <div class="search sm:mr-auto">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="m20 20-3.5-3.5"/></svg>
+                <input type="search" name="q" value="{{ $filters['q'] }}" placeholder="{{ __('Search links…') }}" aria-label="{{ __('Search links…') }}" class="input">
             </div>
             <div class="flex flex-wrap gap-2 sm:flex-nowrap" :class="more ? '' : 'hidden sm:flex'">
                 <select name="folder" class="input sm:w-36" aria-label="Filter by folder">
@@ -52,7 +53,7 @@
             </div>
             <div class="flex gap-2">
                 <button type="button" class="btn-ghost btn-sm sm:hidden" @click="more = !more">Filters</button>
-                <button class="btn-soft btn-sm flex-1 sm:flex-none">Apply</button>
+                <button class="btn-soft btn-sm max-sm:flex-1">Apply</button>
             </div>
         </form>
 
@@ -66,7 +67,7 @@
         <section class="glass overflow-hidden rounded-2xl">
             @if ($links->count())
                 <div class="hidden items-center gap-3 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted md:flex">
-                    <input type="checkbox" aria-label="Select all links" x-model="selectAll" @change="toggleSelectAll()" class="rounded-sm border-slate-400/50 bg-transparent text-indigo-500">
+                    <input type="checkbox" aria-label="Select all links" x-model="selectAll" @change="toggleSelectAll()" class="border-slate-400/50 bg-transparent text-indigo-500">
                     <span class="flex-1">Link</span>
                     <span class="w-20 text-right">Clicks</span>
                     <span class="w-24 text-right">Created</span>
@@ -76,7 +77,7 @@
             <div class="divide-glass">
                 @forelse ($links as $link)
                     <div class="list-row flex-wrap md:flex-nowrap" x-show="!deletedLinks.includes('{{ $link->id }}')">
-                        <input type="checkbox" aria-label="{{ __('Select :slug', ['slug' => $link->slug]) }}" value="{{ $link->id }}" x-model="selectedLinks" class="rounded-sm border-slate-400/50 bg-transparent text-indigo-500">
+                        <input type="checkbox" aria-label="{{ __('Select :slug', ['slug' => $link->slug]) }}" value="{{ $link->id }}" x-model="selectedLinks" class="border-slate-400/50 bg-transparent text-indigo-500">
                         <div class="min-w-0 flex-1">
                             <div class="flex flex-wrap items-center gap-1.5">
                                 <a href="{{ route('links.show', $link) }}" class="truncate text-sm font-semibold text-ink hover:text-indigo-600 dark:hover:text-indigo-300">/l/{{ $link->slug }}</a>

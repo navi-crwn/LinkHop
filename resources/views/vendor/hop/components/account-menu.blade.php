@@ -23,7 +23,7 @@
         @if ($logoutUrl)
             <form method="POST" action="{{ $logoutUrl }}">
                 @csrf
-                <button type="submit">{{ __('Sign out') }}</button>
+                <button type="submit" data-ctl="option">{{ __('Sign out') }}</button>
             </form>
         @endif
     </nav>

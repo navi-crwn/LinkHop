@@ -78,11 +78,11 @@
                         <span class="label">{{ __('Code colour') }}</span>
                         <div class="mt-1 flex flex-wrap items-center gap-2">
                             @foreach ($qrPresets as $preset)
-                                <button type="button" @click="fg = '{{ $preset }}'" :class="fg === '{{ $preset }}' ? 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-slate-900' : ''" class="h-11 w-11 rounded-lg border border-slate-500/20" style="background-color: {{ $preset }}" aria-label="{{ __('Code colour :color', ['color' => $preset]) }}"></button>
+                                <button type="button" @click="fg = '{{ $preset }}'" :class="fg === '{{ $preset }}' ? 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-slate-900' : ''" class="h-9 w-9 shrink-0 rounded-lg border border-slate-500/20 pointer-coarse:h-11 pointer-coarse:w-11" style="background-color: {{ $preset }}" aria-label="{{ __('Code colour :color', ['color' => $preset]) }}"></button>
                             @endforeach
                             <label class="flex items-center gap-2 text-xs text-muted">
-                                <input type="color" x-model="fg" class="h-11 w-14 cursor-pointer rounded-lg border border-slate-500/20 bg-transparent" aria-label="{{ __('Custom code colour') }}">
-                                <input type="text" name="qr_fg_color" x-model="fg" pattern="#[0-9a-fA-F]{6}" class="input w-28! py-1.5! font-mono text-xs" aria-label="{{ __('Code colour as hex') }}">
+                                <input type="color" x-model="fg" class="h-9 w-14 shrink-0 cursor-pointer rounded-lg border border-slate-500/20 bg-transparent" aria-label="{{ __('Custom code colour') }}">
+                                <input type="text" name="qr_fg_color" x-model="fg" pattern="#[0-9a-fA-F]{6}" class="input w-24! font-mono" aria-label="{{ __('Code colour as hex') }}">
                             </label>
                         </div>
                         <x-input-error :messages="$errors->get('qr_fg_color')" class="mt-1" />
@@ -90,8 +90,8 @@
                     <div>
                         <span class="label">{{ __('Background colour') }}</span>
                         <div class="mt-1 flex flex-wrap items-center gap-2">
-                            <input type="color" x-model="bg" class="h-11 w-14 cursor-pointer rounded-lg border border-slate-500/20 bg-transparent" aria-label="{{ __('Background colour') }}">
-                            <input type="text" name="qr_bg_color" x-model="bg" pattern="#[0-9a-fA-F]{6}" class="input w-28! py-1.5! font-mono text-xs" aria-label="{{ __('Background colour as hex') }}">
+                            <input type="color" x-model="bg" class="h-9 w-14 shrink-0 cursor-pointer rounded-lg border border-slate-500/20 bg-transparent" aria-label="{{ __('Background colour') }}">
+                            <input type="text" name="qr_bg_color" x-model="bg" pattern="#[0-9a-fA-F]{6}" class="input w-24! font-mono" aria-label="{{ __('Background colour as hex') }}">
                         </div>
                         <x-input-error :messages="$errors->get('qr_bg_color')" class="mt-1" />
                     </div>
@@ -145,13 +145,13 @@
                 <p class="text-xs text-muted">Latest {{ $recentClicks->count() }} clicks</p>
             </div>
             <div class="flex flex-wrap gap-2">
-                <input x-model="searchQuery" @input="filterClicks" type="search" placeholder="Country, device, referrer" aria-label="Search clicks" class="input w-52! py-1.5! text-xs">
-                <select aria-label="Filter by device" x-model="deviceFilter" @change="filterClicks" class="input w-auto! py-1.5! text-xs">
+                <input x-model="searchQuery" @input="filterClicks" type="search" placeholder="Country, device, referrer" aria-label="Search clicks" class="input w-52!">
+                <select aria-label="Filter by device" x-model="deviceFilter" @change="filterClicks" class="input w-auto!">
                     <option value="">All devices</option>
                     <option value="Mobile">Mobile</option>
                     <option value="Desktop">Desktop</option>
                 </select>
-                <select aria-label="Filter by connection type" x-model="proxyFilter" @change="filterClicks" class="input w-auto! py-1.5! text-xs">
+                <select aria-label="Filter by connection type" x-model="proxyFilter" @change="filterClicks" class="input w-auto!">
                     <option value="">All traffic</option>
                     <option value="clean">Clean IPs</option>
                     <option value="proxy">Proxy / VPN</option>

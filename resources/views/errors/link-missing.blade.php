@@ -56,11 +56,11 @@
                     </ul>
                 </div>
                 <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-                    <a href="{{ url('/') }}" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/40 transition hover:bg-blue-500 active:scale-[0.97]">
+                    <a href="{{ url('/') }}" class="btn-primary btn-lg">
                         {{ __('Go to homepage') }}
                     </a>
                     @auth
-                    <a href="{{ route('dashboard') }}" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-white/20 px-6 py-3 text-sm font-semibold text-white/90 transition hover:bg-white/10 active:scale-[0.97]">
+                    <a href="{{ route('dashboard') }}" class="btn-outline btn-lg">
                         {{ __('Go to dashboard') }}
                     </a>
                     @endauth

@@ -29,7 +29,7 @@
     }" @tab-changed.window="tab = $event.detail" @hashchange.window="if (@js(array_keys($settingsTabs)).includes(window.location.hash.substring(1))) tab = window.location.hash.substring(1)">
         <nav x-ref="tabs" class="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1 lg:sticky lg:top-24 lg:mx-0 lg:flex-col lg:self-start lg:overflow-visible lg:px-0" aria-label="{{ __('Settings sections') }}">
             @foreach ($settingsTabs as $key => [$label, $icon])
-                <button type="button" @click="tab = '{{ $key }}'" class="nav-item shrink-0 whitespace-nowrap" :class="tab === '{{ $key }}' && 'nav-item-active'" :aria-current="tab === '{{ $key }}' ? 'page' : null">
+                <button type="button" @click="tab = '{{ $key }}'" data-ctl="tab" class="nav-item shrink-0" :class="tab === '{{ $key }}' && 'nav-item-active'" :aria-current="tab === '{{ $key }}' ? 'page' : null">
                     <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $icon }}"/></svg>
                     {{ $label }}
                 </button>
@@ -71,7 +71,7 @@
                                     {{ __('Export links with complete analytics and statistics') }}
                                 </p>
                             </div>
-                            <button type="button" @click="showFilters = !showFilters" class="text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-300">
+                            <button type="button" @click="showFilters = !showFilters" class="btn-link" data-ctl="link">
                                 <span x-text="showFilters ? @js(__('Hide filters')) : @js(__('Show filters'))">{{ __('Show filters') }}</span>
                             </button>
                         </div>
@@ -150,7 +150,7 @@
                     <form method="POST" action="{{ route('settings.monitoring') }}" class="glass-inset rounded-xl p-4">
                         @csrf
                         <label class="flex items-start gap-3">
-                            <input type="checkbox" name="monitor_destinations" value="1" class="mt-1 h-4 w-4 shrink-0 rounded border-slate-300" @checked(auth()->user()->monitor_destinations)>
+                            <input type="checkbox" name="monitor_destinations" value="1" class="mt-1 h-4 w-4 shrink-0 border-slate-300" @checked(auth()->user()->monitor_destinations)>
                             <span class="min-w-0">
                                 <span class="block font-medium text-ink">{{ __('Check where my links point') }}</span>
                                 <span class="mt-1 block text-sm text-muted">{{ __('Once a day LinkHop asks the address behind each of your live links whether it still answers. If one stops, you see a note on the link and get one email until it works again.') }}</span>

@@ -38,7 +38,7 @@
         @php $active = $is($item['active']); @endphp
         @if (! empty($item['children']))
             <li x-data="{ open: {{ $active ? 'true' : 'false' }} }">
-                <button type="button" @click="open = !open" class="nav-item w-full {{ $active ? 'nav-item-active' : '' }}">
+                <button type="button" @click="open = !open" data-ctl="tab" class="nav-item w-full {{ $active ? 'nav-item-active' : '' }}">
                     <svg class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ $icons[$item['icon']] }}"/></svg>
                     <span class="flex-1 text-left">{{ $item['label'] }}</span>
                     <svg class="h-4 w-4 transition-transform" :class="open && 'rotate-90'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m9 5 7 7-7 7"/></svg>
