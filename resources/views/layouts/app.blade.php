@@ -65,7 +65,8 @@
                             </button>
                         </div>
                         <div class="px-3 pb-2">
-                            <button type="button" @click="$dispatch('open-palette')" class="nav-item w-full" aria-haspopup="dialog">
+                            {{-- Closes the drawer first, so the palette's input can take the focus. --}}
+                            <button type="button" @click="nav = false; $dispatch('open-palette')" class="nav-item w-full" aria-haspopup="dialog">
                                 <svg class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="m20 20-3.5-3.5"/></svg>
                                 <span class="flex-1 text-left">{{ __('Search') }}</span>
                                 <kbd class="font-mono text-[11px] text-muted" x-text="/Mac|iPhone|iPad/.test(navigator.platform) ? '⌘K' : 'Ctrl K'">Ctrl K</kbd>
@@ -116,7 +117,7 @@
                                 <svg class="h-[18px] w-[18px] dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></svg>
                                 <svg class="hidden h-[18px] w-[18px] dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path stroke-linecap="round" d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
                             </button>
-                            <x-hop::account-menu :user="$user" :settings-url="route('settings')" :account-url="hub_url('profile')" :logout-url="route('logout')" />
+                            <x-hop::account-menu :user="$user" :settings-url="route('settings')" :account-url="hub_url('settings').'#account'" :logout-url="route('logout')" />
                         </div>
                     </div>
                 </header>
@@ -136,13 +137,18 @@
                 <x-command-palette />
             </div>
         @else
+            {{-- A signed-out reader (the short-links notice from an email): the page body with room around it, no sidebar. --}}
             <div class="min-h-screen">
-                <main>
-                    @hasSection('content')
-                        @yield('content')
-                    @else
-                        {{ $slot ?? '' }}
-                    @endif
+                <main class="app-shell px-3 pb-10 pt-4 sm:px-5 sm:pt-6">
+                    <div class="mx-auto w-full max-w-3xl space-y-5">
+                        <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-sm text-muted hover:text-ink"><x-wordmark class="h-9 w-auto" /></a>
+                        @hasSection('content')
+                            @yield('content')
+                        @else
+                            {{ $slot ?? '' }}
+                        @endif
+                        <p class="text-xs text-muted"><a href="{{ route('login') }}" class="underline">{{ __('Sign in') }}</a> · <a href="{{ route('home') }}" class="underline">LinkHop</a></p>
+                    </div>
                 </main>
             </div>
         @endauth

@@ -44,7 +44,9 @@ export const registerCommandPalette = (Alpine) => {
             this.active = 0;
             document.documentElement.classList.add('overflow-hidden');
             this.fetchLinks();
+            // Once now, and once more after the opener (a closing drawer, a fading menu) has let go of the focus.
             this.$nextTick(() => this.$refs.input.focus());
+            setTimeout(() => { if (this.open && document.activeElement !== this.$refs.input) this.$refs.input.focus(); }, 120);
         },
         close() {
             this.open = false;

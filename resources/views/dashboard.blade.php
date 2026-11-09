@@ -20,9 +20,13 @@
     @if (\App\Support\ShortLinkMove::active())
         {{-- Short links moved to hel.ink/l/{slug}; the old form redirects until the date below. --}}
         <div class="glass flex flex-wrap items-center gap-3 rounded-2xl px-4 py-3 text-sm">
-            <span class="chip-blue">Notice</span>
-            <span class="min-w-0 flex-1 text-muted">Short links now live at <strong class="text-ink">{{ public_host() }}/l/&hellip;</strong> The old form ({{ public_host() }}/&hellip;) keeps redirecting until <strong class="text-ink">{{ \App\Support\ShortLinkMove::untilLabel() }}</strong>, then stops.</span>
-            <a href="{{ route('announcements.short-links') }}" class="font-medium text-indigo-600 hover:underline dark:text-indigo-300">What to do &rarr;</a>
+            <span class="chip-blue">{{ __('Notice') }}</span>
+            <span class="min-w-0 flex-1 text-muted">{!! __('Short links now live at :new The old form (:old) keeps redirecting until :until, then stops.', [
+                'new' => '<strong class="text-ink">'.e(public_host()).'/l/&hellip;</strong>',
+                'old' => e(public_host()).'/&hellip;',
+                'until' => '<strong class="text-ink">'.e(\App\Support\ShortLinkMove::untilLabel()).'</strong>',
+            ]) !!}</span>
+            <a href="{{ route('announcements.short-links') }}" class="font-medium text-indigo-600 hover:underline dark:text-indigo-300">{{ __('What to do') }} &rarr;</a>
         </div>
     @endif
 
@@ -73,7 +77,8 @@
                     @endif
                     <p class="mt-0.5 text-xs text-muted">{{ __(':count unique visitors', ['count' => number_format($week['unique'])]) }}</p>
                 </div>
-                <div class="flex min-h-24 min-w-0 flex-1 items-stretch gap-1.5 sm:max-w-md" role="img" aria-label="{{ __('Clicks per day, last seven days') }}">
+                {{-- Its own row on a narrow screen (basis-full), so seven day labels never share 100px next to the total. --}}
+                <div class="flex min-h-24 min-w-0 basis-full items-stretch gap-1.5 sm:flex-1 sm:basis-auto sm:max-w-md" role="img" aria-label="{{ __('Clicks per day, last seven days') }}">
                     @foreach ($week['week'] as $i => $n)
                         @php $d = now()->subDays(6 - $i); @endphp
                         <div class="flex min-w-0 flex-1 flex-col items-center gap-1">

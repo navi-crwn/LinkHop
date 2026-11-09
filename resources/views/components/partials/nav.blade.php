@@ -19,17 +19,17 @@
         ? [['label' => config('hop.control_name'), 'icon' => 'shield', 'href' => config('hop.control_url'), 'active' => 'admin.control', 'badge' => $abuseCount]]
         : [];
     $groups = array_filter([
-        ['label' => 'Dashboard', 'icon' => 'home', 'route' => 'dashboard', 'active' => 'dashboard'],
-        ['label' => 'Analytics', 'icon' => 'chart', 'route' => 'analytics', 'active' => 'analytics'],
-        ['label' => 'Links', 'icon' => 'link', 'active' => ['links*', 'folders*', 'tags*'], 'children' => [
-            ['label' => 'My links', 'route' => 'links.index', 'active' => ['links.index', 'links.create', 'links.show', 'links.edit']],
+        ['label' => __('Dashboard'), 'icon' => 'home', 'route' => 'dashboard', 'active' => 'dashboard'],
+        ['label' => __('Analytics'), 'icon' => 'chart', 'route' => 'analytics', 'active' => 'analytics'],
+        ['label' => __('Links'), 'icon' => 'link', 'active' => ['links*', 'folders*', 'tags*'], 'children' => [
+            ['label' => __('My links'), 'route' => 'links.index', 'active' => ['links.index', 'links.create', 'links.show', 'links.edit']],
             ['label' => __('Import CSV'), 'route' => 'links.import', 'active' => 'links.import*'],
-            ['label' => 'Folders', 'route' => 'folders.index', 'active' => 'folders*'],
-            ['label' => 'Tags', 'route' => 'tags.index', 'active' => 'tags*'],
+            ['label' => __('Folders'), 'route' => 'folders.index', 'active' => 'folders*'],
+            ['label' => __('Tags'), 'route' => 'tags.index', 'active' => 'tags*'],
         ]],
-        bio_enabled() ? ['label' => 'Link in Bio', 'icon' => 'bio', 'route' => 'bio.index', 'active' => 'bio*'] : null,
+        bio_enabled() ? ['label' => __('Link in Bio'), 'icon' => 'bio', 'route' => 'bio.index', 'active' => 'bio*'] : null,
         ...$control,
-        ['label' => 'Settings', 'icon' => 'settings', 'route' => 'settings', 'active' => 'settings'],
+        ['label' => __('Settings'), 'icon' => 'settings', 'route' => 'settings', 'active' => 'settings'],
     ]);
     $is = fn ($patterns) => request()->routeIs(...(array) $patterns);
 @endphp
