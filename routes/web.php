@@ -61,9 +61,10 @@ Route::middleware('ip.ban')->group(function () {
     Route::get('/register', fn () => redirect()->away(hub_url('register')))->name('register');
     Route::match(['get', 'post'], '/logout', [SessionController::class, 'logout'])->name('logout');
     Route::get('/api/qr-generate', QrController::class)->name('api.qr.generate')->middleware('throttle:60,1,qr');
+    // The notice about the move to /l/ is linked from emails and the dashboard: readable without signing in.
+    Route::view('/changes/short-links', 'announcements.short-links')->name('announcements.short-links');
     Route::middleware(['hop.auth'])->group(function () {
         Route::get('/dashboard', [LinkController::class, 'index'])->name('dashboard');
-        Route::view('/changes/short-links', 'announcements.short-links')->name('announcements.short-links');
         Route::get('/links', [LinkController::class, 'myLinks'])->name('links.index');
         Route::get('/analytics', AnalyticsController::class)->name('analytics');
         Route::get('links/create', [LinkController::class, 'create'])->name('links.create');
@@ -79,6 +80,7 @@ Route::middleware('ip.ban')->group(function () {
             ->where('format', 'png|svg|jpg')
             ->name('links.qr.download');
         Route::post('links/{link}/qr/save', [LinkController::class, 'saveCustomQr'])->name('links.qr.save');
+        Route::post('links/{link}/qr', [LinkController::class, 'updateQr'])->name('links.qr.update');
         Route::resource('links', LinkController::class)->except(['index']);
         Route::post('links/{link}/comments', [LinkCommentController::class, 'store'])->name('links.comments.store');
         // Profile, password, 2FA and API tokens are the hub's pages now.

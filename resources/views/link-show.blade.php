@@ -17,25 +17,32 @@
                 <p class="mt-0.5 break-all text-base font-semibold text-ink">{{ $link->short_url }}</p>
                 <p class="mt-0.5 truncate text-sm text-muted" title="{{ $link->target_url }}">→ {{ $link->target_url }}</p>
                 <div class="mt-2 flex flex-wrap gap-1.5">
+                    {{-- The state a visitor meets, not only the on/off switch: an exhausted or expired link is not "Active". --}}
                     @if ($link->isExpired())
-                        <span class="chip-red">Expired</span>
+                        <span class="chip-red">{{ __('Expired') }}</span>
+                    @elseif ($link->status !== 'active')
+                        <span class="chip-gray">{{ __('Inactive') }}</span>
+                    @elseif ($link->isLimitReached())
+                        <span class="chip-red">{{ __('Limit reached') }}</span>
+                    @elseif ($link->isNotStarted())
+                        <span class="chip-gray" title="{{ $link->starts_at }} UTC">{{ __('Starts in :when', ['when' => $link->starts_at->diffForHumans(null, \Carbon\CarbonInterface::DIFF_ABSOLUTE, true)]) }}</span>
                     @else
-                        <span class="{{ $link->status === 'active' ? 'chip-green' : 'chip-gray' }}">{{ ucfirst($link->status) }}</span>
+                        <span class="chip-green">{{ __('Active') }}</span>
+                    @endif
+                    @if ($link->max_clicks && ! $link->isLimitReached())
+                        <span class="chip-gray tabular-nums">{{ number_format($link->clicks) }}/{{ number_format($link->max_clicks) }}</span>
                     @endif
                     @if ($link->requiresPassword())
-                        <span class="chip-blue">Password</span>
+                        <span class="chip-blue">{{ __('Password') }}</span>
                     @endif
                     @if ($link->expires_at && ! $link->isExpired())
-                        <span class="chip-amber">Expires {{ $link->expires_at->diffForHumans() }}</span>
+                        <span class="chip-amber" title="{{ $link->expires_at }} UTC">{{ __('Expires :when', ['when' => $link->expires_at->diffForHumans()]) }}</span>
                     @endif
                     @if ($link->isBroken())
                         <span class="chip-amber" title="{{ __('Since :date', ['date' => $link->broken_since->toDateString()]) }}{{ $link->last_status ? ' · HTTP '.$link->last_status : '' }}">{{ __('Destination not responding') }}</span>
                     @endif
                 </div>
             </div>
-            @if ($link->qr_code_path)
-                <img src="{{ Storage::disk('public')->url($link->qr_code_path) }}" alt="QR code" class="hidden h-20 w-20 shrink-0 rounded-xl bg-white p-1 sm:block">
-            @endif
         </section>
         <div class="stat">
             <p class="stat-label">Total clicks</p>
@@ -44,6 +51,59 @@
             <p class="mt-1 text-xs text-muted">{{ __(':count unique visitors', ['count' => number_format($insights['unique'])]) }}</p>
         </div>
     </div>
+
+    {{-- The link's QR code: see it, download it, change its colours. Before, it only existed in the creation dialog. --}}
+    @php
+        $qrFg = $link->qr_fg_color ?: '#000000';
+        $qrBg = $link->qr_bg_color ?: '#ffffff';
+        $qrPresets = ['#000000', '#1e40af', '#dc2626', '#059669', '#7c3aed', '#db2777'];
+    @endphp
+    <section class="glass-card" x-data="{ qrOpen: {{ $errors->has('qr_fg_color') || $errors->has('qr_bg_color') ? 'true' : 'false' }} }" aria-labelledby="qr-title">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
+            <div class="flex h-28 w-28 shrink-0 items-center justify-center rounded-xl border border-slate-500/15 p-1" style="background-color: {{ $qrBg }}">
+                <img src="{{ route('links.qr.download', [$link, 'png']) }}?v={{ md5($qrFg.$qrBg.$link->slug.(string) $link->updated_at) }}" alt="{{ __('QR code for :url', ['url' => $link->short_url]) }}" width="104" height="104" class="h-full w-full object-contain" loading="lazy">
+            </div>
+            <div class="min-w-0 flex-1">
+                <h2 id="qr-title" class="section-title">{{ __('QR code') }}</h2>
+                <p class="mt-1 text-xs text-muted">{{ __('Opens :url. Scans are counted apart from direct clicks.', ['url' => $link->short_url]) }}</p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                    <a href="{{ route('links.qr.download', [$link, 'png']) }}" download class="btn-soft btn-sm">PNG</a>
+                    <a href="{{ route('links.qr.download', [$link, 'jpg']) }}" download class="btn-soft btn-sm">JPG</a>
+                    <a href="{{ route('links.qr.download', [$link, 'svg']) }}" download class="btn-soft btn-sm">SVG</a>
+                    <button type="button" class="btn-ghost btn-sm" @click="qrOpen = !qrOpen" :aria-expanded="qrOpen ? 'true' : 'false'" aria-controls="qr-colours">{{ __('Change colours') }}</button>
+                </div>
+                <form id="qr-colours" x-show="qrOpen" x-cloak x-collapse method="POST" action="{{ route('links.qr.update', $link) }}" class="mt-4 space-y-3 border-t border-slate-500/10 pt-4" x-data="{ fg: @js(old('qr_fg_color', $qrFg)), bg: @js(old('qr_bg_color', $qrBg)) }">
+                    @csrf
+                    <div>
+                        <span class="label">{{ __('Code colour') }}</span>
+                        <div class="mt-1 flex flex-wrap items-center gap-2">
+                            @foreach ($qrPresets as $preset)
+                                <button type="button" @click="fg = '{{ $preset }}'" :class="fg === '{{ $preset }}' ? 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-slate-900' : ''" class="h-11 w-11 rounded-lg border border-slate-500/20" style="background-color: {{ $preset }}" aria-label="{{ __('Code colour :color', ['color' => $preset]) }}"></button>
+                            @endforeach
+                            <label class="flex items-center gap-2 text-xs text-muted">
+                                <input type="color" x-model="fg" class="h-11 w-14 cursor-pointer rounded-lg border border-slate-500/20 bg-transparent" aria-label="{{ __('Custom code colour') }}">
+                                <input type="text" name="qr_fg_color" x-model="fg" pattern="#[0-9a-fA-F]{6}" class="input w-28! py-1.5! font-mono text-xs" aria-label="{{ __('Code colour as hex') }}">
+                            </label>
+                        </div>
+                        <x-input-error :messages="$errors->get('qr_fg_color')" class="mt-1" />
+                    </div>
+                    <div>
+                        <span class="label">{{ __('Background colour') }}</span>
+                        <div class="mt-1 flex flex-wrap items-center gap-2">
+                            <input type="color" x-model="bg" class="h-11 w-14 cursor-pointer rounded-lg border border-slate-500/20 bg-transparent" aria-label="{{ __('Background colour') }}">
+                            <input type="text" name="qr_bg_color" x-model="bg" pattern="#[0-9a-fA-F]{6}" class="input w-28! py-1.5! font-mono text-xs" aria-label="{{ __('Background colour as hex') }}">
+                        </div>
+                        <x-input-error :messages="$errors->get('qr_bg_color')" class="mt-1" />
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button type="submit" class="btn-primary btn-sm">{{ __('Save colours') }}</button>
+                        <button type="button" class="btn-ghost btn-sm" @click="qrOpen = false">{{ __('Cancel') }}</button>
+                        <p class="text-xs text-muted">{{ __('Codes already printed keep working; only new downloads change.') }}</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
 
     <x-ab-results :link="$link" :card="true" />
 

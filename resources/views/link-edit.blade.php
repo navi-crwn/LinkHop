@@ -1,6 +1,10 @@
 <x-app-layout>
     <x-slot name="pageTitle">{{ __('Edit') }} /{{ $link->slug }}</x-slot>
-    <x-page-header title="Edit link" subtitle="{{ $link->short_url }}">
+    @php
+        // The state a visitor meets, next to the address: an exhausted or expired link is not simply "active".
+        $state = $link->isExpired() ? __('Expired') : ($link->status !== 'active' ? __('Inactive') : ($link->isLimitReached() ? __('Limit reached') : ($link->isNotStarted() ? __('Not started yet') : __('Active'))));
+    @endphp
+    <x-page-header title="Edit link" subtitle="{{ $link->short_url }} · {{ $state }}">
         <x-slot name="actions">
             <a href="{{ route('links.show', $link) }}" class="btn-ghost btn-sm">Analytics</a>
             <a href="{{ route('links.index') }}" class="btn-soft btn-sm">My links</a>
@@ -55,14 +59,15 @@
                         </select>
                     </div>
                 </div>
-                <div>
+                <div x-data="{ redirect: @js($redirect) }">
                     <label class="label" for="redirect_type">Redirect type</label>
-                    <select id="redirect_type" name="redirect_type" class="input sm:w-60!">
+                    <select id="redirect_type" name="redirect_type" class="input sm:w-60!" x-model="redirect" aria-describedby="redirect-note">
                         <option value="302" @selected($redirect === '302')>302 · temporary</option>
                         <option value="301" @selected($redirect === '301')>301 · permanent</option>
                         <option value="307" @selected($redirect === '307')>307 · temporary, keeps method</option>
                         <option value="308" @selected($redirect === '308')>308 · permanent, keeps method</option>
                     </select>
+                    <p id="redirect-note" x-show="redirect === '301' || redirect === '308'" x-cloak class="mt-1 text-xs text-amber-700 dark:text-amber-300">{{ __('Browsers remember a permanent redirect. A warning, password, rule, limit or new destination added later will not reach visitors who already opened the link.') }}</p>
                 </div>
             </div>
         </div>
@@ -124,7 +129,7 @@
                     @endif
                 </div>
                 <div>
-                    <label for="flinked-2" class="label">Expires at</label>
+                    <label for="flinked-2" class="label">{{ __('Expires at') }} <span class="font-normal text-muted">(UTC)</span></label>
                     <input id="flinked-2" type="datetime-local" name="expires_at" value="{{ old('expires_at', optional($link->expires_at)->format('Y-m-d\TH:i')) }}" class="input">
                     <x-input-error :messages="$errors->get('expires_at')" class="mt-1" />
                 </div>
