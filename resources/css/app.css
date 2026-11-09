@@ -447,3 +447,73 @@ button.input { max-width: var(--hop-field-max); }
     /* After the navigation rules of the components layer, which set the 36px these rows have with a mouse. */
     .nav-item, .nav-sub { min-height: 44px; }
 }
+
+/*
+| coss surfaces (owner-approved direction, 2026-11-10), after the control standard: flat neutral app background, solid
+| cards with a 1px low-contrast border and a barely-there shadow, a flat sidebar and top bar divided by a hairline,
+| quiet tabs and tables. Same values as the hub pilot; the accent (indigo) and the family type stay. Unlayered, so it
+| wins over the glass component layer without touching markup.
+*/
+:root {
+    --bg: 247 247 248;
+    --glass: 255 255 255;
+    --glass-border: 0 0 0;
+    --glass-border-alpha: 0.09;
+    --muted: 96 104 118;
+    --shadow: 0 0 0;
+    --coss-card-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+    --coss-frame: rgb(0 0 0 / 0.035);
+    --hop-surface: #fff;
+    --hop-line: rgb(0 0 0 / 0.14);
+}
+.dark {
+    --bg: 10 10 12;
+    --glass: 20 20 24;
+    --glass-border: 255 255 255;
+    --glass-border-alpha: 0.09;
+    --muted: 154 162 176;
+    --coss-card-shadow: none;
+    --coss-frame: rgb(255 255 255 / 0.03);
+    --hop-surface: rgb(255 255 255 / 0.04);
+    --hop-line: rgb(255 255 255 / 0.16);
+}
+.app-bg, .dark .app-bg { background-image: none; background-color: rgb(var(--bg)); }
+.glass, .glass-card, .glass-strong, .stat {
+    background-color: rgb(var(--glass)) !important;
+    border: 1px solid rgb(var(--glass-border) / var(--glass-border-alpha)) !important;
+    box-shadow: var(--coss-card-shadow) !important;
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+.glass-inset { background-color: var(--coss-frame); border-color: rgb(var(--glass-border) / var(--glass-border-alpha)); border-radius: 10px; }
+.app-shell :is(.rounded-xl, .rounded-2xl, .rounded-3xl):not(button, input, select, textarea, .rounded-full, .no-skin) { border-radius: var(--hop-card-radius); }
+/* Sidebar and top bar: flat, divided by a hairline, no glass. */
+aside > .glass { border-radius: 0 !important; border-width: 0 1px 0 0 !important; background-color: rgb(var(--bg)) !important; box-shadow: none !important; }
+aside:has(> .glass) { padding: 0; }
+header.sticky:has(> .glass) { padding: 0; }
+header.sticky > .glass { height: 56px; border-radius: 0 !important; border-width: 0 0 1px 0 !important; background-color: rgb(var(--bg) / 0.86) !important; box-shadow: none !important; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); padding-inline: 16px; }
+.nav-item:hover { background-color: rgb(var(--muted) / 0.1); }
+.nav-item-active { background-color: rgb(var(--muted) / 0.14); box-shadow: none; }
+.nav-item-active svg { color: rgb(var(--accent)); }
+/* Type: sentence case, one quiet secondary colour, numbers that line up. */
+.eyebrow, .stat-label, .table-glass thead th { text-transform: none; letter-spacing: 0; font-size: 12px; font-weight: 500; color: rgb(var(--muted)); }
+.page-title { font-weight: 600; letter-spacing: -0.02em; }
+.stat-value, .table-glass td, .list-row { font-variant-numeric: tabular-nums; }
+/* Badges: 6px radius, real status only. */
+.chip, .chip-green, .chip-gray, .chip-red, .chip-blue, .chip-amber { border-radius: 6px; height: 20px; padding: 0 7px; font-size: 12px; font-weight: 500; }
+/* Tables: muted head row, row hover. */
+.table-glass thead tr { background-color: var(--coss-frame); }
+.table-glass thead th { padding-block: 9px; }
+.table-glass tbody tr:hover, .list-row:hover { background-color: var(--coss-frame); }
+.divide-glass > * + * { border-top-color: rgb(var(--glass-border) / calc(var(--glass-border-alpha) * 0.8)); }
+/* Tabs: quiet, the active one a soft grey chip. */
+.tab:hover { background-color: rgb(var(--muted) / 0.1); }
+.tab[aria-selected='true'], .tab[aria-current='page'], .tab.tab-active { background-color: rgb(var(--muted) / 0.14); color: rgb(var(--ink)); }
+/* Controls on solid cards read as inputs, not glass. */
+.input { background-color: var(--hop-surface); box-shadow: 0 1px 1px rgb(0 0 0 / 0.03); }
+.btn-outline, .btn-soft, .btn-danger-outline { background-color: var(--hop-surface); box-shadow: 0 1px 1px rgb(0 0 0 / 0.04); }
+.btn-outline:hover, .btn-soft:hover { background-color: rgb(var(--muted) / 0.1); }
+.btn, .btn-primary, .btn-outline, .btn-soft, .btn-ghost, .btn-danger, .btn-danger-outline, .btn-link { font-weight: 500; }
+/* Family footer strip: logo + "Hop Easy Link". */
+.coss-footer-brand { display: flex; align-items: center; gap: 10px; max-width: 1180px; margin: 24px auto 0; padding: 16px 0 0; font-size: 14px; color: rgb(var(--muted)); border-top: 1px solid rgb(var(--glass-border) / var(--glass-border-alpha)); }
+.coss-footer-brand img { width: 28px; height: 28px; border-radius: 50%; }
+.coss-footer-brand b { color: rgb(var(--ink)); font-weight: 600; }
