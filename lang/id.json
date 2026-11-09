@@ -993,5 +993,18 @@
     "e.g., 10": "mis. 10",
     "Created": "Dibuat",
     "Updated": "Diperbarui",
-    "Deleted": "Dihapus"
+    "Deleted": "Dihapus",
+    "A folder that still holds links cannot be deleted: move them out first.": "Folder yang masih berisi tautan tidak bisa dihapus: pindahkan dulu tautannya.",
+    "Could not create the folder": "Folder tidak bisa dibuat",
+    "Could not create the tag": "Tag tidak bisa dibuat",
+    "Delete this folder?": "Hapus folder ini?",
+    "Delete this tag?": "Hapus tag ini?",
+    "Deliveries to this address stop. This cannot be undone.": "Pengiriman ke alamat ini berhenti. Tindakan ini tidak bisa dibatalkan.",
+    "Links keep working but lose this tag.": "Tautan tetap berfungsi tetapi kehilangan tag ini.",
+    "Make a new secret?": "Buat secret baru?",
+    "Network error. Check your connection and try again.": "Galat jaringan. Periksa koneksi Anda lalu coba lagi.",
+    "Nothing else was changed. Try again in a moment.": "Tidak ada hal lain yang berubah. Coba lagi sebentar lagi.",
+    "The old one stops working at once.": "Secret lama langsung berhenti berfungsi.",
+    "The short link stops working and its statistics are removed. This cannot be undone.": "Tautan pendek ini berhenti berfungsi dan statistiknya dihapus. Tindakan ini tidak bisa dibatalkan.",
+    "The short links stop working and their statistics are removed. This cannot be undone.": "Tautan-tautan pendek ini berhenti berfungsi dan statistiknya dihapus. Tindakan ini tidak bisa dibatalkan."
 }

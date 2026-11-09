@@ -993,5 +993,18 @@
     "e.g., 10": "напр., 10",
     "Created": "Создано",
     "Updated": "Обновлено",
-    "Deleted": "Удалено"
+    "Deleted": "Удалено",
+    "A folder that still holds links cannot be deleted: move them out first.": "Папку, в которой ещё есть ссылки, удалить нельзя: сначала перенесите их.",
+    "Could not create the folder": "Не удалось создать папку",
+    "Could not create the tag": "Не удалось создать тег",
+    "Delete this folder?": "Удалить эту папку?",
+    "Delete this tag?": "Удалить этот тег?",
+    "Deliveries to this address stop. This cannot be undone.": "Доставка на этот адрес прекратится. Отменить это нельзя.",
+    "Links keep working but lose this tag.": "Ссылки продолжат работать, но потеряют этот тег.",
+    "Make a new secret?": "Создать новый секрет?",
+    "Network error. Check your connection and try again.": "Ошибка сети. Проверьте соединение и попробуйте ещё раз.",
+    "Nothing else was changed. Try again in a moment.": "Больше ничего не изменилось. Попробуйте ещё раз чуть позже.",
+    "The old one stops working at once.": "Старый сразу перестанет работать.",
+    "The short link stops working and its statistics are removed. This cannot be undone.": "Короткая ссылка перестанет работать, а её статистика будет удалена. Отменить это нельзя.",
+    "The short links stop working and their statistics are removed. This cannot be undone.": "Короткие ссылки перестанут работать, а их статистика будет удалена. Отменить это нельзя."
 }

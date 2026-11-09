@@ -20,6 +20,17 @@
             })();
         </script>
         <x-hop::fonts />
+        {{-- The family's dialogs and reminder buttons (hop-assets hop-ui, v5 on): loaded once the hub's manifest lists
+             them, and only with their SRI hashes. Until then the dashboard asks with the browser's dialogs (resources/js/dialogs.js)
+             and the reminder cards have no Hide button. --}}
+        @php
+            $hopUiCss = \Hop\Ui\Assets::asset('ui_css');
+            $hopUiJs = \Hop\Ui\Assets::asset('ui_js');
+        @endphp
+        @if (! empty($hopUiCss['url']) && ! empty($hopUiCss['integrity']) && ! empty($hopUiJs['url']) && ! empty($hopUiJs['integrity']))
+            <link rel="stylesheet" href="{{ $hopUiCss['url'] }}" integrity="{{ $hopUiCss['integrity'] }}" crossorigin="anonymous">
+            <script nonce="{{ Vite::cspNonce() }}" src="{{ $hopUiJs['url'] }}" integrity="{{ $hopUiJs['integrity'] }}" crossorigin="anonymous" defer></script>
+        @endif
         {{-- Self-hosted copies (public/vendor, see its README): no script, style or image from a third-party host. --}}
         @php
             $vendor = fn (string $path) => asset('vendor/'.$path).'?v='.substr((string) @md5_file(public_path('vendor/'.$path)), 0, 8);

@@ -986,6 +986,10 @@ function linkCreationModal() {
                 this.resetForm();
             }, 300);
         },
+        // A message in the family dialog (hop-ui) when the page has it, in the browser's own otherwise.
+        say(title, message) {
+            return window.hopDialog.alert({ title, message });
+        },
         // JSON POST with the page's CSRF token. A 419 (the session token changed, e.g. another tab signed in
         // through the hub) fetches a fresh token and sends the same request once more.
         async postJson(url, payload, retried = false) {
@@ -1188,7 +1192,7 @@ function linkCreationModal() {
                 if (!response.ok) {
                     const errorMsg = result.message || result.error || `Server error: ${response.status}`;
                     console.error('Folder creation failed:', result);
-                    alert(errorMsg);
+                    this.say(@js(__('Could not create the folder')), errorMsg);
                     return;
                 }
                 if (result.success && result.folder) {
@@ -1207,11 +1211,11 @@ function linkCreationModal() {
                     this.folderSuccess = true;
                     setTimeout(() => { this.folderSuccess = false; }, 3000);
                 } else {
-                    alert(result.error || result.message || 'Failed to create folder');
+                    this.say(@js(__('Could not create the folder')), result.error || result.message || '');
                 }
             } catch (error) {
                 console.error('Error creating folder:', error);
-                alert('Network error: ' + error.message);
+                this.say(@js(__('Could not create the folder')), @js(__('Network error. Check your connection and try again.')));
             }
         },
         async createTag() {
@@ -1221,7 +1225,7 @@ function linkCreationModal() {
                 if (!response.ok) {
                     const errorMsg = result.message || result.error || `Server error: ${response.status}`;
                     console.error('Tag creation failed:', result);
-                    alert(errorMsg);
+                    this.say(@js(__('Could not create the tag')), errorMsg);
                     return;
                 }
                 if (result.success && result.tag) {
@@ -1242,11 +1246,11 @@ function linkCreationModal() {
                     this.tagSuccess = true;
                     setTimeout(() => { this.tagSuccess = false; }, 3000);
                 } else {
-                    alert(result.error || result.message || 'Failed to create tag');
+                    this.say(@js(__('Could not create the tag')), result.error || result.message || '');
                 }
             } catch (error) {
                 console.error('Error creating tag:', error);
-                alert('Network error: ' + error.message);
+                this.say(@js(__('Could not create the tag')), @js(__('Network error. Check your connection and try again.')));
             }
         },
         generateQrUrl() {

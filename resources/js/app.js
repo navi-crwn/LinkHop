@@ -3,6 +3,7 @@ import Alpine from 'alpinejs';
 import collapse from '@alpinejs/collapse';
 import Sortable from 'sortablejs';
 import modal from './modal';
+import './dialogs';
 import installInlineActions from './inline-actions';
 import { registerEditorComponents } from './editor-tools';
 import { registerCommandPalette } from './command-palette';

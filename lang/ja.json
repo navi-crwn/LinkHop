@@ -993,5 +993,18 @@
     "e.g., 10": "例: 10",
     "Created": "作成",
     "Updated": "更新",
-    "Deleted": "削除"
+    "Deleted": "削除",
+    "A folder that still holds links cannot be deleted: move them out first.": "リンクが残っているフォルダーは削除できません。先にリンクを移動してください。",
+    "Could not create the folder": "フォルダーを作成できませんでした",
+    "Could not create the tag": "タグを作成できませんでした",
+    "Delete this folder?": "このフォルダーを削除しますか？",
+    "Delete this tag?": "このタグを削除しますか？",
+    "Deliveries to this address stop. This cannot be undone.": "このアドレスへの配信は停止します。元に戻すことはできません。",
+    "Links keep working but lose this tag.": "リンクは引き続き使えますが、このタグは外れます。",
+    "Make a new secret?": "新しいシークレットを作成しますか？",
+    "Network error. Check your connection and try again.": "ネットワークエラーです。接続を確認してもう一度お試しください。",
+    "Nothing else was changed. Try again in a moment.": "ほかに変更はありません。しばらくしてからもう一度お試しください。",
+    "The old one stops working at once.": "古いシークレットはすぐに使えなくなります。",
+    "The short link stops working and its statistics are removed. This cannot be undone.": "この短縮リンクは使えなくなり、統計も削除されます。元に戻すことはできません。",
+    "The short links stop working and their statistics are removed. This cannot be undone.": "これらの短縮リンクは使えなくなり、統計も削除されます。元に戻すことはできません。"
 }

@@ -59,7 +59,7 @@
         {{-- Bulk actions --}}
         <div x-show="selectedLinks.length > 0" x-cloak x-transition class="glass sticky top-20 z-20 flex items-center gap-3 rounded-2xl px-4 py-2.5">
             <span class="text-sm font-medium tabular-nums text-ink" x-text="@js(__(':count selected')).replace(':count', selectedLinks.length)"></span>
-            <button type="button" @click="bulkDelete()" class="btn-danger btn-sm ml-auto">{{ __('Delete') }}</button>
+            <button type="button" @click="bulkDelete($el)" class="btn-danger btn-sm ml-auto">{{ __('Delete') }}</button>
             <button type="button" @click="selectedLinks = []; selectAll = false" class="btn-ghost btn-sm">{{ __('Clear') }}</button>
         </div>
 
@@ -136,7 +136,7 @@
                             <a href="{{ route('links.edit', $link) }}" class="icon-btn" title="Edit">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m15 5 4 4L8 20H4v-4L15 5Z"/></svg>
                             </a>
-                            <button type="button" @click="deleteLink('{{ $link->id }}')" class="icon-btn hover:text-rose-500!" title="{{ __('Delete') }}" aria-label="{{ __('Delete :slug', ['slug' => $link->slug]) }}">
+                            <button type="button" @click="deleteLink('{{ $link->id }}', @js('/l/'.$link->slug), $el)" class="icon-btn hover:text-rose-500!" title="{{ __('Delete') }}" aria-label="{{ __('Delete :slug', ['slug' => $link->slug]) }}">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>
                             </button>
                         </div>
@@ -195,20 +195,31 @@
                     // 404: it was deleted already (another tab, or an earlier attempt that did not answer): gone either way.
                     return response.ok || response.status === 404;
                 },
-                async deleteLink(id) {
-                    if (!confirm(@js(__('Delete this link permanently?')))) return;
+                // The family dialog (hop-ui) when the page has it, the browser's own otherwise: see resources/js/dialogs.js.
+                failed(title) {
+                    return window.hopDialog.alert({ title, message: @js(__('Nothing else was changed. Try again in a moment.')) });
+                },
+                async deleteLink(id, name, button) {
+                    const yes = await window.hopDialog.confirm({
+                        title: @js(__('Delete this link permanently?')),
+                        message: @js(__('The short link stops working and its statistics are removed. This cannot be undone.')),
+                        danger: true,
+                        subject: name,
+                        anchor: button,
+                    });
+                    if (!yes) return;
                     try {
                         if (await this.remove(id)) {
                             this.forget(id);
                         } else {
-                            alert(@js(__('Failed to delete link')));
+                            this.failed(@js(__('Failed to delete link')));
                         }
                     } catch (e) {
                         console.error('Delete error:', e);
-                        alert(@js(__('Failed to delete link')));
+                        this.failed(@js(__('Failed to delete link')));
                     }
                 },
-                async bulkDelete() {
+                async bulkDelete(button) {
                     const ids = this.selectedLinks.map(String).filter(id => !this.deletedLinks.includes(id));
                     if (ids.length === 0) {
                         this.selectedLinks = [];
@@ -216,7 +227,15 @@
                         return;
                     }
                     const question = ids.length === 1 ? @js(__('Delete 1 link permanently?')) : @js(__('Delete :count links permanently?')).replace(':count', ids.length);
-                    if (!confirm(question)) return;
+                    const yes = await window.hopDialog.confirm({
+                        title: question,
+                        message: ids.length === 1
+                            ? @js(__('The short link stops working and its statistics are removed. This cannot be undone.'))
+                            : @js(__('The short links stop working and their statistics are removed. This cannot be undone.')),
+                        danger: true,
+                        anchor: button,
+                    });
+                    if (!yes) return;
                     let failed = 0;
                     for (const id of ids) {
                         try {
@@ -231,7 +250,7 @@
                         }
                     }
                     if (failed > 0) {
-                        alert(failed === 1 ? @js(__('Could not delete 1 link.')) : @js(__('Could not delete :count links.')).replace(':count', failed));
+                        this.failed(failed === 1 ? @js(__('Could not delete 1 link.')) : @js(__('Could not delete :count links.')).replace(':count', failed));
                     }
                     this.selectedLinks = [];
                     this.selectAll = false;

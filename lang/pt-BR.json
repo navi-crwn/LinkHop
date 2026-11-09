@@ -993,5 +993,18 @@
     "e.g., 10": "ex.: 10",
     "Created": "Criado",
     "Updated": "Atualizado",
-    "Deleted": "Excluído"
+    "Deleted": "Excluído",
+    "A folder that still holds links cannot be deleted: move them out first.": "Uma pasta que ainda tem links não pode ser excluída: mova-os antes.",
+    "Could not create the folder": "Não foi possível criar a pasta",
+    "Could not create the tag": "Não foi possível criar a tag",
+    "Delete this folder?": "Excluir esta pasta?",
+    "Delete this tag?": "Excluir esta tag?",
+    "Deliveries to this address stop. This cannot be undone.": "As entregas para este endereço param. Isso não pode ser desfeito.",
+    "Links keep working but lose this tag.": "Os links continuam funcionando, mas perdem esta tag.",
+    "Make a new secret?": "Gerar um novo segredo?",
+    "Network error. Check your connection and try again.": "Erro de rede. Verifique sua conexão e tente novamente.",
+    "Nothing else was changed. Try again in a moment.": "Nada mais foi alterado. Tente novamente em instantes.",
+    "The old one stops working at once.": "O antigo deixa de funcionar na hora.",
+    "The short link stops working and its statistics are removed. This cannot be undone.": "O link curto deixa de funcionar e suas estatísticas são removidas. Isso não pode ser desfeito.",
+    "The short links stop working and their statistics are removed. This cannot be undone.": "Os links curtos deixam de funcionar e suas estatísticas são removidas. Isso não pode ser desfeito."
 }

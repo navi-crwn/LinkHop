@@ -993,5 +993,18 @@
     "e.g., 10": "p. ex. 10",
     "Created": "Créé",
     "Updated": "Mis à jour",
-    "Deleted": "Supprimé"
+    "Deleted": "Supprimé",
+    "A folder that still holds links cannot be deleted: move them out first.": "Un dossier qui contient encore des liens ne peut pas être supprimé : déplacez-les d’abord.",
+    "Could not create the folder": "Impossible de créer le dossier",
+    "Could not create the tag": "Impossible de créer l’étiquette",
+    "Delete this folder?": "Supprimer ce dossier ?",
+    "Delete this tag?": "Supprimer cette étiquette ?",
+    "Deliveries to this address stop. This cannot be undone.": "Les envois vers cette adresse s’arrêtent. Cette action est irréversible.",
+    "Links keep working but lose this tag.": "Les liens continuent de fonctionner mais perdent cette étiquette.",
+    "Make a new secret?": "Créer un nouveau secret ?",
+    "Network error. Check your connection and try again.": "Erreur réseau. Vérifiez votre connexion et réessayez.",
+    "Nothing else was changed. Try again in a moment.": "Rien d’autre n’a été modifié. Réessayez dans un instant.",
+    "The old one stops working at once.": "L’ancien cesse de fonctionner immédiatement.",
+    "The short link stops working and its statistics are removed. This cannot be undone.": "Le lien court cesse de fonctionner et ses statistiques sont supprimées. Cette action est irréversible.",
+    "The short links stop working and their statistics are removed. This cannot be undone.": "Les liens courts cessent de fonctionner et leurs statistiques sont supprimées. Cette action est irréversible."
 }

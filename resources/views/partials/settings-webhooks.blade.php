@@ -65,8 +65,8 @@
             <div class="flex flex-wrap gap-2">
                 <form method="POST" action="{{ route('webhooks.test', $hook) }}">@csrf<button type="submit" class="btn-soft btn-sm">{{ __('Send test') }}</button></form>
                 <form method="POST" action="{{ route('webhooks.update', $hook) }}">@csrf @method('PATCH')<input type="hidden" name="is_active" value="{{ $hook->is_active ? 0 : 1 }}"><button type="submit" class="btn-soft btn-sm">{{ $hook->is_active ? __('Switch off') : __('Switch on') }}</button></form>
-                <form method="POST" action="{{ route('webhooks.rotate', $hook) }}" x-data @submit="if (!confirm(@js(__('Make a new secret? The old one stops working at once.')))) $event.preventDefault()">@csrf<button type="submit" class="btn-soft btn-sm">{{ __('New secret') }}</button></form>
-                <form method="POST" action="{{ route('webhooks.destroy', $hook) }}" x-data @submit="if (!confirm(@js(__('Delete this webhook and its log?')))) $event.preventDefault()">@csrf @method('DELETE')<button type="submit" class="btn-ghost btn-sm text-rose-600 dark:text-rose-300">{{ __('Delete') }}</button></form>
+                <form method="POST" action="{{ route('webhooks.rotate', $hook) }}" data-confirm="{{ __('Make a new secret?') }}" data-confirm-message="{{ __('The old one stops working at once.') }}">@csrf<button type="submit" class="btn-soft btn-sm">{{ __('New secret') }}</button></form>
+                <form method="POST" action="{{ route('webhooks.destroy', $hook) }}" data-confirm="{{ __('Delete this webhook and its log?') }}" data-confirm-message="{{ __('Deliveries to this address stop. This cannot be undone.') }}" data-confirm-danger data-confirm-subject="{{ parse_url($hook->url, PHP_URL_HOST) }}">@csrf @method('DELETE')<button type="submit" class="btn-ghost btn-sm text-rose-600 dark:text-rose-300">{{ __('Delete') }}</button></form>
             </div>
             <details class="text-sm">
                 <summary class="cursor-pointer text-muted">{{ __('Log of the last deliveries') }} ({{ $hook->deliveries->count() }})</summary>

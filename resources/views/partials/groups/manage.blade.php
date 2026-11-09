@@ -32,7 +32,7 @@
                 </form>
             @endif
         </section>
-        <form method="POST" action="{{ route($plural.'.destroy', $group) }}" data-confirm="Delete the {{ $kind }} {{ $group->name }}?" class="glass-card space-y-2">
+        <form method="POST" action="{{ route($plural.'.destroy', $group) }}" data-confirm="{{ $kind === 'folder' ? __('Delete this folder?') : __('Delete this tag?') }}" data-confirm-message="{{ $kind === 'folder' ? __('A folder that still holds links cannot be deleted: move them out first.') : __('Links keep working but lose this tag.') }}" data-confirm-danger data-confirm-subject="{{ $group->name }}" class="glass-card space-y-2">
             @csrf
             @method('DELETE')
             <h2 class="section-title">Delete {{ $kind }}</h2>
@@ -84,7 +84,7 @@
                                     <a href="{{ route('links.edit', $link) }}" class="icon-btn h-8! w-8!" title="Edit" aria-label="Edit {{ $link->slug }}">
                                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                     </a>
-                                    <form method="POST" action="{{ route('links.destroy', $link) }}" data-confirm="Delete /{{ $link->slug }}?">
+                                    <form method="POST" action="{{ route('links.destroy', $link) }}" data-confirm="{{ __('Delete this link permanently?') }}" data-confirm-message="{{ __('The short link stops working and its statistics are removed. This cannot be undone.') }}" data-confirm-danger data-confirm-subject="/l/{{ $link->slug }}">
                                         @csrf
                                         @method('DELETE')
                                         <button class="icon-btn h-8! w-8! hover:text-rose-500!" title="Delete" aria-label="Delete {{ $link->slug }}">

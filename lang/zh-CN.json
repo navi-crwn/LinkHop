@@ -993,5 +993,18 @@
     "e.g., 10": "例如 10",
     "Created": "已创建",
     "Updated": "已更新",
-    "Deleted": "已删除"
+    "Deleted": "已删除",
+    "A folder that still holds links cannot be deleted: move them out first.": "仍包含链接的文件夹无法删除：请先把链接移出。",
+    "Could not create the folder": "无法创建文件夹",
+    "Could not create the tag": "无法创建标签",
+    "Delete this folder?": "删除此文件夹？",
+    "Delete this tag?": "删除此标签？",
+    "Deliveries to this address stop. This cannot be undone.": "将停止向此地址投递。此操作无法撤销。",
+    "Links keep working but lose this tag.": "链接继续有效，但会失去此标签。",
+    "Make a new secret?": "生成新的密钥？",
+    "Network error. Check your connection and try again.": "网络错误。请检查连接后重试。",
+    "Nothing else was changed. Try again in a moment.": "其他内容没有变动。请稍后重试。",
+    "The old one stops working at once.": "旧密钥会立即失效。",
+    "The short link stops working and its statistics are removed. This cannot be undone.": "该短链接将停止工作，其统计数据也会被删除。此操作无法撤销。",
+    "The short links stop working and their statistics are removed. This cannot be undone.": "这些短链接将停止工作，其统计数据也会被删除。此操作无法撤销。"
 }

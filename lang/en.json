@@ -993,5 +993,18 @@
     "e.g., 10": "e.g., 10",
     "Created": "Created",
     "Updated": "Updated",
-    "Deleted": "Deleted"
+    "Deleted": "Deleted",
+    "A folder that still holds links cannot be deleted: move them out first.": "A folder that still holds links cannot be deleted: move them out first.",
+    "Could not create the folder": "Could not create the folder",
+    "Could not create the tag": "Could not create the tag",
+    "Delete this folder?": "Delete this folder?",
+    "Delete this tag?": "Delete this tag?",
+    "Deliveries to this address stop. This cannot be undone.": "Deliveries to this address stop. This cannot be undone.",
+    "Links keep working but lose this tag.": "Links keep working but lose this tag.",
+    "Make a new secret?": "Make a new secret?",
+    "Network error. Check your connection and try again.": "Network error. Check your connection and try again.",
+    "Nothing else was changed. Try again in a moment.": "Nothing else was changed. Try again in a moment.",
+    "The old one stops working at once.": "The old one stops working at once.",
+    "The short link stops working and its statistics are removed. This cannot be undone.": "The short link stops working and its statistics are removed. This cannot be undone.",
+    "The short links stop working and their statistics are removed. This cannot be undone.": "The short links stop working and their statistics are removed. This cannot be undone."
 }
