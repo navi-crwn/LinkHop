@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-11-10
+
 ### FileHop joins the HOP family
 - FileHop (file.hel.ink, file conversion in the browser) is named wherever LinkHop lists its sibling apps: the FAQ, the features page and the home page, in all nine languages, and the HOP family table in the README. `filehop` and `filehop-` are reserved usernames.
 - The home page's HOP family row keeps an app's flat mark when the 3D engine has no block map for it, instead of drawing the NoteHop logo for it.
