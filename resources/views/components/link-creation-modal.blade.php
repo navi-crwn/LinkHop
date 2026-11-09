@@ -11,7 +11,8 @@
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
     class="fixed inset-0 z-[60] flex items-center justify-center p-4"
-    @keydown.escape.window="if (!showOgEditor && !showFolderModal && !showTagModal && !showQrEditor) { panel = false; }"
+    {{-- Escape closes the innermost layer only: a sub-dialog, then an open folder/tag list, then the modal itself. --}}
+    @keydown.escape.window="if (showOgEditor) { showOgEditor = false; } else if (showQrEditor) { showQrEditor = false; } else if (showFolderModal) { showFolderModal = false; } else if (showTagModal) { showTagModal = false; } else if (activeDropdown) { activeDropdown = null; tagSearch = ''; folderSearch = ''; } else if (panel) { closePanel(); }"
 >
     <div @click="if (!showOgEditor && !showFolderModal && !showTagModal && !showQrEditor) { closePanel(); }" class="absolute inset-0 bg-slate-950/60 backdrop-blur-xs"></div>
     <div
@@ -28,7 +29,7 @@
         aria-label="Create short link"
     >
         <div x-show="createdLink" class="flex flex-col h-full">
-            <div class="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-slate-800">
+            <div class="flex items-center justify-between border-b border-slate-200 px-4 py-4 sm:px-6 dark:border-slate-800">
                 <div>
                     <h3 class="text-lg font-semibold text-emerald-600 dark:text-emerald-400">Link created</h3>
                     <p class="text-sm text-slate-500 dark:text-slate-400">Your short link is ready to use</p>
@@ -39,32 +40,36 @@
                     </svg>
                 </button>
             </div>
-            <div class="flex-1 overflow-y-auto p-6">
+            <div class="flex-1 overflow-y-auto p-4 sm:p-6">
                 <div class="max-w-2xl mx-auto space-y-4">
-                    <div class="rounded-xl border-2 border-emerald-300 bg-emerald-50 p-5 dark:border-emerald-800 dark:bg-emerald-900/20">
+                    <div class="rounded-xl border-2 border-emerald-300 bg-emerald-50 p-4 sm:p-5 dark:border-emerald-800 dark:bg-emerald-900/20">
                         <label for="flinkcr-1" class="block text-sm font-medium text-emerald-800 dark:text-emerald-300 mb-2">Your short URL</label>
-                        <div class="flex items-center gap-3">
-                            <input id="flinkcr-1" 
-                                type="text" 
-                                :value="createdLink?.short_url" 
-                                readonly 
-                                class="flex-1 rounded-lg border-0 bg-white px-4 py-3 font-mono text-lg font-semibold text-emerald-700 dark:bg-slate-800 dark:text-emerald-400"
+                        {{-- One column on a phone: the input keeps its full width and the Copy button stays on screen. --}}
+                        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+                            <input id="flinkcr-1"
+                                type="text"
+                                :value="createdLink?.short_url"
+                                readonly
+                                class="w-full min-w-0 flex-1 rounded-lg border-0 bg-white px-4 py-3 font-mono text-base font-semibold text-emerald-700 sm:text-lg dark:bg-slate-800 dark:text-emerald-400"
                             >
-                            <button 
-                                @click="copyToClipboard(createdLink?.short_url, $el)"
-                                class="rounded-lg bg-emerald-600 px-6 py-3 font-semibold text-white hover:bg-emerald-500 transition-colors whitespace-nowrap"
+                            <button
+                                type="button"
+                                data-copied="{{ __('Copied') }}"
+                                data-failed="{{ __('Copy failed') }}"
+                                @click="hopCopy(createdLink?.short_url || '', $el)"
+                                class="shrink-0 rounded-lg bg-emerald-600 px-6 py-3 font-semibold text-white hover:bg-emerald-500 transition-colors whitespace-nowrap"
                             >
-                                📋 Copy
+                                📋 {{ __('Copy') }}
                             </button>
                         </div>
                     </div>
                     <div class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900" x-show="createdLink?.qr_code_url">
                         <h4 class="text-sm font-semibold text-slate-900 dark:text-white mb-3">QR Code</h4>
-                        <div class="flex items-start gap-4">
+                        <div class="flex flex-col items-start gap-4 sm:flex-row">
                             <div class="shrink-0">
                                 <img :src="createdLink?.qr_code_url" alt="QR Code" class="w-[150px] h-[150px] object-contain rounded-lg border border-slate-200 dark:border-slate-700 bg-white">
                             </div>
-                            <div class="flex-1 space-y-4">
+                            <div class="min-w-0 flex-1 space-y-4">
                                 <p class="text-xs text-slate-500 dark:text-slate-400">Download your custom QR code as PNG, JPG, or SVG</p>
                                 <div class="flex flex-wrap gap-2">
                                     <a 
@@ -102,15 +107,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex gap-3">
-                        <button 
+                    <div class="flex flex-col gap-2 sm:flex-row sm:gap-3">
+                        <button
+                            type="button"
                             @click="resetForm()"
                             class="flex-1 rounded-lg border border-slate-300 px-4 py-3 font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800"
                         >
                             Create another link
                         </button>
-                        <button 
-                            @click="closePanel(); location.reload()"
+                        <button
+                            type="button"
+                            @click="closePanel()"
                             class="flex-1 rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-500"
                         >
                             View dashboard
@@ -119,8 +126,10 @@
                 </div>
             </div>
         </div>
-        <div x-show="!createdLink" class="flex min-h-0 flex-col overflow-hidden">
-            <div class="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-slate-800">
+        {{-- The form wraps both columns, so on a phone the folder, QR and preview come before the Create button
+             (one column below lg) instead of after it. --}}
+        <form x-show="!createdLink" @submit.prevent="submitForm()" class="flex min-h-0 flex-col overflow-hidden">
+            <div class="flex items-center justify-between border-b border-slate-200 px-4 py-4 sm:px-6 dark:border-slate-800">
                 <div>
                     <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Create new link</h3>
                     <p class="text-sm text-slate-500 dark:text-slate-400">Shorten and customize your URL</p>
@@ -131,11 +140,10 @@
                     </svg>
                 </button>
             </div>
-            <div class="min-h-0 flex-1 overflow-y-auto">
+            <div class="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
                 <div class="grid lg:grid-cols-2">
-                    <div class="border-r border-slate-200 dark:border-slate-800">
-                        <div class="p-6">
-                            <form @submit.prevent="submitForm()" class="space-y-5">
+                    <div class="min-w-0 lg:border-r lg:border-slate-200 dark:lg:border-slate-800">
+                        <div class="space-y-5 p-4 sm:p-6">
                             @csrf
                             <x-content-warning-fields :model="true" prefix="modal-warning" />
                             <div>
@@ -167,14 +175,14 @@
                                     Short Link
                                 </label>
                                 <div class="flex gap-2">
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         x-model="formData.slug"
                                         @input="generateQrPreview()"
                                         @input.debounce.350ms="slugCheck.run(formData.slug)"
                                         placeholder="custom-slug"
                                         pattern="[a-zA-Z0-9_\-]+"
-                                        class="flex-1 rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:ring-blue-500"
+                                        class="min-w-0 flex-1 rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:ring-blue-500"
                                     >
                                     <button 
                                         type="button"
@@ -204,8 +212,9 @@
                                         + New tag
                                     </button>
                                 </div>
-                                <div class="relative" @click.outside="if (activeDropdown === 'tags') { activeDropdown = null; tagSearch = ''; }">
-                                    <button 
+                                {{-- Escape here closes only this list (see the window handler above). --}}
+                                <div class="relative" @click.outside="if (activeDropdown === 'tags') { activeDropdown = null; tagSearch = ''; }" @keydown.escape.stop="activeDropdown = null; tagSearch = ''">
+                                    <button
                                         type="button"
                                         @click="activeDropdown = activeDropdown === 'tags' ? null : 'tags'; tagSearch = ''"
                                         class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:ring-blue-500 px-3 py-2 text-left flex items-center justify-between border"
@@ -226,8 +235,10 @@
                                                 x-model="tagSearch"
                                                 autocomplete="new-password"
                                                 placeholder="Search tags..."
+                                                aria-label="{{ __('Search tags') }}"
                                                 class="w-full px-3 py-1.5 text-sm rounded-sm border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white focus:border-blue-500 focus:ring-blue-500"
                                                 @click.stop
+                                                @keydown.enter.prevent
                                             >
                                         </div>
                                         <div class="overflow-y-auto" style="max-height: 160px;">
@@ -237,9 +248,10 @@
                                             <template x-for="tag in tags.filter(t => !tagSearch || t.name.toLowerCase().includes(tagSearch.toLowerCase()))" :key="tag.id">
                                                 <label class="flex items-center justify-between px-3 py-2.5 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer border-b border-slate-100 dark:border-slate-700 last:border-b-0">
                                                     <span class="text-sm text-slate-700 dark:text-slate-300" x-text="tag.name"></span>
-                                                    <input 
-                                                        type="checkbox" 
+                                                    <input
+                                                        type="checkbox"
                                                         :value="tag.id"
+                                                        :aria-label="tag.name"
                                                         :checked="formData.tags.includes(tag.id)"
                                                         @change="
                                                             if ($event.target.checked) {
@@ -282,10 +294,10 @@
                             <div x-show="showAdvanced" x-collapse class="space-y-4 pt-2">
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                                        Expiration Date
+                                        {{ __('Expires at') }} <span class="font-normal text-slate-400">(UTC)</span>
                                     </label>
-                                    <input 
-                                        type="datetime-local" 
+                                    <input
+                                        type="datetime-local"
                                         x-model="formData.expires_at"
                                         class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:ring-blue-500"
                                     >
@@ -331,30 +343,13 @@
                                         <option value="307">307 (Temporary, Keep Method)</option>
                                         <option value="308">308 (Permanent, Keep Method)</option>
                                     </select>
+                                    <p x-show="formData.redirect_type === '301' || formData.redirect_type === '308'" x-cloak class="mt-1 text-xs text-amber-700 dark:text-amber-300">{{ __('Browsers remember a permanent redirect. A warning, password, rule, limit or new destination added later will not reach visitors who already opened the link.') }}</p>
                                 </div>
                             </div>
-                            <div class="pt-4 space-y-2">
-                                <p x-show="error" x-cloak x-text="error" role="alert" class="rounded-xl bg-rose-500/10 px-3 py-2 text-sm text-rose-700 dark:text-rose-300"></p>
-                                <button 
-                                    type="submit"
-                                    :disabled="isLoading || !formData.target_url"
-                                    class="btn-primary w-full py-3"
-                                >
-                                    <span x-show="!isLoading">Create Link</span>
-                                    <span x-show="isLoading" class="flex items-center justify-center gap-2">
-                                        <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        Creating...
-                                    </span>
-                                </button>
-                            </div>
-                        </form>
                         </div>
                     </div>
-                    <div class="h-full overflow-y-auto bg-white dark:bg-slate-800">
-                        <div class="p-6 space-y-6">
+                    <div class="min-w-0 bg-white dark:bg-slate-800">
+                        <div class="space-y-6 p-4 sm:p-6">
                             <div>
                                 <div class="flex items-center justify-between mb-2">
                                     <div class="flex items-center gap-2">
@@ -371,8 +366,8 @@
                                         + New folder
                                     </button>
                                 </div>
-                                <div class="relative" @click.outside="if (activeDropdown === 'folders') { activeDropdown = null; folderSearch = ''; }">
-                                    <button 
+                                <div class="relative" @click.outside="if (activeDropdown === 'folders') { activeDropdown = null; folderSearch = ''; }" @keydown.escape.stop="activeDropdown = null; folderSearch = ''">
+                                    <button
                                         type="button"
                                         @click="activeDropdown = activeDropdown === 'folders' ? null : 'folders'; folderSearch = ''"
                                         class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 focus:ring-blue-500 px-3 py-2 text-left flex items-center justify-between border"
@@ -393,8 +388,10 @@
                                                 x-model="folderSearch"
                                                 autocomplete="new-password"
                                                 placeholder="Search folders..."
+                                                aria-label="{{ __('Search folders') }}"
                                                 class="w-full px-3 py-1.5 text-sm rounded-sm border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white focus:border-blue-500 focus:ring-blue-500"
                                                 @click.stop
+                                                @keydown.enter.prevent
                                             >
                                         </div>
                                         <div class="overflow-y-auto" style="max-height: 160px;">
@@ -453,7 +450,9 @@
                                 <div class="rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 p-4 text-center bg-white dark:bg-slate-800" :style="'background-color: ' + qrSettings.bgColor" x-show="qrSettings.generateQr">
                                     <div x-show="formData.slug" class="space-y-2">
                                         <div class="relative inline-block">
-                                            <img :src="qrPreviewUrl" alt="QR Preview" class="w-32 h-32 mx-auto rounded-lg border border-slate-200 dark:border-slate-700">
+                                            {{-- The code is drawn on the server (about a second): say so instead of showing an empty box. --}}
+                                            <img :src="qrPreviewUrl" alt="QR Preview" loading="eager" @load="qrPreviewLoading = false" x-on:error="qrPreviewLoading = false" class="w-32 h-32 mx-auto rounded-lg border border-slate-200 dark:border-slate-700">
+                                            <div x-show="qrPreviewLoading" x-cloak class="absolute inset-0 flex items-center justify-center rounded-lg bg-slate-100/90 text-xs text-slate-500 dark:bg-slate-800/90 dark:text-slate-300" role="status">{{ __('Generating…') }}</div>
                                             <div x-show="qrSettings.showLogo && qrSettings.logo" class="absolute inset-0 flex items-center justify-center pointer-events-none">
                                                 <div class="w-11 h-11 rounded-lg bg-white dark:bg-slate-900 p-1 shadow-lg border border-slate-200 dark:border-slate-700">
                                                     <img :src="qrSettings.logo" alt="Logo" class="w-full h-full object-contain rounded-sm">
@@ -486,39 +485,19 @@
                                         Custom Preview
                                     </button>
                                 </div>
-                                <div class="flex gap-1 mb-3 p-1 bg-slate-100 dark:bg-slate-700 rounded-lg">
-                                    <button 
-                                        type="button"
-                                        @click="previewPlatform = 'default'"
-                                        :class="previewPlatform === 'default' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'"
-                                        class="flex-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors"
-                                    >
-                                        🌐 Default
-                                    </button>
-                                    <button 
-                                        type="button"
-                                        @click="previewPlatform = 'twitter'"
-                                        :class="previewPlatform === 'twitter' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'"
-                                        class="flex-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors"
-                                    >
-                                        𝕏 Twitter
-                                    </button>
-                                    <button 
-                                        type="button"
-                                        @click="previewPlatform = 'linkedin'"
-                                        :class="previewPlatform === 'linkedin' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'"
-                                        class="flex-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors"
-                                    >
-                                        💼 LinkedIn
-                                    </button>
-                                    <button 
-                                        type="button"
-                                        @click="previewPlatform = 'facebook'"
-                                        :class="previewPlatform === 'facebook' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'"
-                                        class="flex-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors"
-                                    >
-                                        📘 Facebook
-                                    </button>
+                                <div class="mb-3 grid grid-cols-2 gap-1 rounded-lg bg-slate-100 p-1 sm:grid-cols-4 dark:bg-slate-700" role="tablist" aria-label="{{ __('Preview platform') }}">
+                                    @foreach (['default' => '🌐 Default', 'twitter' => '𝕏 Twitter', 'linkedin' => '💼 LinkedIn', 'facebook' => '📘 Facebook'] as $platform => $platformLabel)
+                                        <button
+                                            type="button"
+                                            role="tab"
+                                            @click="previewPlatform = '{{ $platform }}'"
+                                            :aria-selected="previewPlatform === '{{ $platform }}' ? 'true' : 'false'"
+                                            :class="previewPlatform === '{{ $platform }}' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'"
+                                            class="min-w-0 truncate rounded-md px-3 py-1.5 text-xs font-medium transition-colors"
+                                        >
+                                            {{ $platformLabel }}
+                                        </button>
+                                    @endforeach
                                 </div>
                                 <div class="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-white dark:bg-slate-800">
                                     <div x-show="ogLoading && !ogData.title" class="p-8 text-center">
@@ -532,8 +511,10 @@
                                         <div class="px-3 py-2 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
                                             <p class="text-xs text-slate-600 dark:text-slate-400" x-text="getPreviewSize(previewPlatform).label"></p>
                                         </div>
-                                        <div x-show="ogData.image" class="bg-slate-100 dark:bg-slate-900 flex items-center justify-center" :style="`width: 400px; height: ${400 * getPreviewSize(previewPlatform).height / getPreviewSize(previewPlatform).width}px; margin: 0 auto; overflow: hidden;`">
-                                            <img :src="ogData.image" :alt="ogData.title" class="max-w-full max-h-full object-contain">
+                                        {{-- Sized by aspect ratio, never wider than the column (a fixed 400px made the modal scroll sideways on a phone).
+                                             An image that fails to load hides itself instead of showing the browser's broken-image icon. --}}
+                                        <div x-show="ogData.image" class="mx-auto flex w-full max-w-[400px] items-center justify-center overflow-hidden bg-slate-100 dark:bg-slate-900" :style="`aspect-ratio: ${getPreviewSize(previewPlatform).width} / ${getPreviewSize(previewPlatform).height}`">
+                                            <img :src="ogData.image" :alt="ogData.title" x-on:error="$el.style.visibility = 'hidden'" @load="$el.style.visibility = ''" class="max-w-full max-h-full object-contain">
                                         </div>
                                         <div class="p-4">
                                             <p class="text-sm font-semibold text-slate-900 dark:text-white line-clamp-2" x-text="ogData.title || 'Link Title'"></p>
@@ -550,7 +531,24 @@
                     </div>
                 </div>
             </div>
-        </div>
+            <div class="space-y-2 border-t border-slate-200 px-4 py-3 sm:px-6 dark:border-slate-800">
+                <p x-show="error" x-cloak x-text="error" role="alert" class="rounded-xl bg-rose-500/10 px-3 py-2 text-sm text-rose-700 dark:text-rose-300"></p>
+                <button
+                    type="submit"
+                    :disabled="isLoading || !formData.target_url"
+                    class="btn-primary w-full py-3 lg:ml-auto lg:w-auto lg:px-8"
+                >
+                    <span x-show="!isLoading">Create Link</span>
+                    <span x-show="isLoading" class="flex items-center justify-center gap-2">
+                        <svg class="motion-safe:animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Creating...
+                    </span>
+                </button>
+            </div>
+        </form>
     </div>
     <div
         x-show="showOgEditor"
@@ -572,8 +570,9 @@
                     </svg>
                 </button>
             </div>
-            <div class="grid grid-cols-2 gap-6 p-6 max-h-[calc(85vh-80px)] overflow-y-auto">
-                <div class="space-y-4">
+            {{-- One column below sm: two narrow columns hid the Save button behind the preview card on a phone. --}}
+            <div class="grid max-h-[calc(85vh-80px)] gap-6 overflow-y-auto p-4 sm:grid-cols-2 sm:p-6">
+                <div class="min-w-0 space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                             Image URL
@@ -626,17 +625,18 @@
                         </button>
                     </div>
                 </div>
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between">
+                <div class="min-w-0 space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                         <p class="text-sm font-medium text-slate-700 dark:text-slate-300">Live Preview</p>
                         <p class="text-xs text-slate-500 dark:text-slate-400" x-text="getPreviewSize(previewPlatform).label"></p>
                     </div>
                     <div class="rounded-xl border-2 border-slate-200 dark:border-slate-700 overflow-hidden bg-white dark:bg-slate-900">
-                        <div class="bg-slate-100 dark:bg-slate-900 flex items-center justify-center" :style="`width: 100%; height: ${450 * getPreviewSize(previewPlatform).height / getPreviewSize(previewPlatform).width}px; max-width: 450px; margin: 0 auto;`">
-                            <img 
-                                x-show="ogData.image" 
-                                :src="ogData.image" 
-                                alt="Preview" 
+                        <div class="mx-auto flex w-full max-w-[450px] items-center justify-center bg-slate-100 dark:bg-slate-900" :style="`aspect-ratio: ${getPreviewSize(previewPlatform).width} / ${getPreviewSize(previewPlatform).height}`">
+                            <img
+                                x-show="ogData.image"
+                                :src="ogData.image"
+                                alt="Preview"
+                                x-on:error="$el.style.visibility = 'hidden'" @load="$el.style.visibility = ''"
                                 class="max-w-full max-h-full object-contain"
                             >
                             <div x-show="!ogData.image" class="text-slate-400 dark:text-slate-600 text-sm">
@@ -761,13 +761,16 @@
                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Preview</label>
                     <div class="relative inline-block">
                         <div class="w-32 h-32 mx-auto rounded-xl border-2 border-slate-200 dark:border-slate-700 p-2" :style="'background-color: ' + qrSettings.bgColor">
-                            <div class="relative w-full h-full flex items-center justify-center">
-                                <img 
-                                    :src="generateQrUrl()" 
-                                    alt="QR Preview" 
+                            <div class="relative w-full h-full flex items-center justify-center" x-effect="generateQrUrl(); qrEditorLoading = !!formData.slug">
+                                <img
+                                    :src="generateQrUrl()"
+                                    alt="QR Preview"
+                                    loading="eager"
+                                    @load="qrEditorLoading = false" x-on:error="qrEditorLoading = false"
                                     class="w-full h-full object-contain"
                                     x-show="formData.slug"
                                 >
+                                <div x-show="qrEditorLoading && formData.slug" x-cloak class="absolute inset-0 flex items-center justify-center rounded-lg bg-white/80 text-xs text-slate-500 dark:bg-slate-900/80 dark:text-slate-300" role="status">{{ __('Generating…') }}</div>
                                 <div x-show="!formData.slug" class="text-slate-500 dark:text-slate-400 text-sm">
                                     Enter slug first
                                 </div>
@@ -903,11 +906,14 @@ function linkCreationModal() {
         showFolderModal: false,
         showTagModal: false,
         createdLink: null,
+        created: 0, // links made since the modal opened: the page behind it reloads when it closes
         isLoading: false,
         ogLoading: false,
         error: '',
         previewPlatform: 'default',
         qrPreviewUrl: null,
+        qrPreviewLoading: false,
+        qrEditorLoading: false,
         newFolderName: '',
         newTagName: '',
         ogFetchTimeout: null,
@@ -971,9 +977,37 @@ function linkCreationModal() {
         },
         closePanel() {
             this.panel = false;
+            // The list and the "N short links" count behind the modal are server-rendered: show the new link(s).
+            if (this.created > 0) {
+                window.location.reload();
+                return;
+            }
             setTimeout(() => {
                 this.resetForm();
             }, 300);
+        },
+        // JSON POST with the page's CSRF token. A 419 (the session token changed, e.g. another tab signed in
+        // through the hub) fetches a fresh token and sends the same request once more.
+        async postJson(url, payload, retried = false) {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify(payload)
+            });
+            if (response.status === 419 && !retried && typeof window.hopFreshCsrf === 'function' && await window.hopFreshCsrf()) {
+                return this.postJson(url, payload, true);
+            }
+            // Read the body once: some errors (quota, CSRF) are plain text, not JSON.
+            const text = await response.text();
+            let data = {};
+            try { data = JSON.parse(text); } catch (e) { data = { message: text }; }
+            return { response, data };
         },
         resetForm() {
             this.createdLink = null;
@@ -1047,27 +1081,15 @@ function linkCreationModal() {
                 generate_qr: this.qrSettings.generateQr
             };
             try {
-                const response = await fetch('{{ route('links.store') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify(payload)
-                });
-                // Read the body once: some errors (quota, CSRF) are plain text, not JSON.
-                const text = await response.text();
-                let data = {};
-                try { data = JSON.parse(text); } catch (e) { data = { message: text }; }
+                const { response, data } = await this.postJson('{{ route('links.store') }}', payload);
                 if (response.ok && data.success) {
                     this.createdLink = data.link;
+                    this.created++;
                     return;
                 }
                 const fieldErrors = data.errors ? Object.values(data.errors).flat() : [];
-                this.error = fieldErrors[0] || data.error || data.message
-                    || (response.status === 419 ? 'Session expired. Reload the page and try again.' : `Could not create link (${response.status}).`);
+                this.error = (response.status === 419 ? @js(__('Your session expired. Reload the page and try again.')) : '')
+                    || fieldErrors[0] || data.error || data.message || `Could not create link (${response.status}).`;
             } catch (e) {
                 this.error = 'Network error. Check your connection and try again.';
             } finally {
@@ -1146,9 +1168,14 @@ function linkCreationModal() {
                 const shortUrl = `{{ public_url('l') }}/${this.formData.slug}?src=qr`;
                 const fgColor = this.qrSettings.fgColor.replace('#', '');
                 const bgColor = this.qrSettings.bgColor.replace('#', '');
-                this.qrPreviewUrl = `{{ route('api.qr.generate') }}?size=200&data=${encodeURIComponent(shortUrl)}&color=${fgColor}&bgcolor=${bgColor}`;
+                const url = `{{ route('api.qr.generate') }}?size=200&data=${encodeURIComponent(shortUrl)}&color=${fgColor}&bgcolor=${bgColor}`;
+                if (url !== this.qrPreviewUrl) {
+                    this.qrPreviewLoading = true;
+                    this.qrPreviewUrl = url;
+                }
             } else {
                 this.qrPreviewUrl = null;
+                this.qrPreviewLoading = false;
             }
         },
         resetOgData() {
@@ -1157,24 +1184,13 @@ function linkCreationModal() {
         async createFolder() {
             if (!this.newFolderName) return;
             try {
-                const response = await fetch('{{ route('folders.store') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({ name: this.newFolderName })
-                });
+                const { response, data: result } = await this.postJson('{{ route('folders.store') }}', { name: this.newFolderName });
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    const errorMsg = errorData.message || errorData.error || `Server error: ${response.status}`;
-                    console.error('Folder creation failed:', errorData);
+                    const errorMsg = result.message || result.error || `Server error: ${response.status}`;
+                    console.error('Folder creation failed:', result);
                     alert(errorMsg);
                     return;
                 }
-                const result = await response.json();
                 if (result.success && result.folder) {
                     // Ensure folders array exists
                     if (!Array.isArray(this.folders)) {
@@ -1201,24 +1217,13 @@ function linkCreationModal() {
         async createTag() {
             if (!this.newTagName) return;
             try {
-                const response = await fetch('{{ route('tags.store') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({ name: this.newTagName })
-                });
+                const { response, data: result } = await this.postJson('{{ route('tags.store') }}', { name: this.newTagName });
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    const errorMsg = errorData.message || errorData.error || `Server error: ${response.status}`;
-                    console.error('Tag creation failed:', errorData);
+                    const errorMsg = result.message || result.error || `Server error: ${response.status}`;
+                    console.error('Tag creation failed:', result);
                     alert(errorMsg);
                     return;
                 }
-                const result = await response.json();
                 if (result.success && result.tag) {
                     // Ensure tags array exists
                     if (!Array.isArray(this.tags)) {
@@ -1226,8 +1231,10 @@ function linkCreationModal() {
                     }
                     // Add new tag to list dynamically
                     this.tags.push(result.tag);
-                    // Set as selected
-                    this.formData.tag_id = result.tag.id;
+                    // A tag made from here is meant for this link: tick it.
+                    if (!this.formData.tags.includes(result.tag.id)) {
+                        this.formData.tags.push(result.tag.id);
+                    }
                     // Close modal
                     this.showTagModal = false;
                     this.newTagName = '';
@@ -1241,14 +1248,6 @@ function linkCreationModal() {
                 console.error('Error creating tag:', error);
                 alert('Network error: ' + error.message);
             }
-        },
-        copyToClipboard(text, button) {
-            navigator.clipboard.writeText(text);
-            const original = button.innerHTML;
-            button.innerHTML = '✓ Copied!';
-            setTimeout(() => {
-                button.innerHTML = original;
-            }, 2000);
         },
         generateQrUrl() {
             if (!this.formData.slug) return '';
