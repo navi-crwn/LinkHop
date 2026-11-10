@@ -352,7 +352,6 @@ function faq() {
 }
 
 function family() {
-    gsap.from($$('[data-lk-family] .lx-fam'), { y: 20, opacity: 0, scale: .96, duration: .55, stagger: .08, ease: 'back.out(1.5)', scrollTrigger: once('[data-lk-family]', 'top 90%') });
 }
 
 if (document.querySelector('.hop-home')) {

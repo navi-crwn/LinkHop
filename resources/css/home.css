@@ -212,7 +212,6 @@
 .hop-home .lx-ab-bar .a { background: linear-gradient(90deg, #22d3ee, #6366f1); } .hop-home .lx-ab-bar .b { background: linear-gradient(90deg, #6366f1, #c026d3); }
 
 /* 08 protect */
-.hop-home .lx-gates { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 .hop-home .lx-gate { position: relative; padding: 22px; border: 1px solid var(--home-line); border-radius: 24px; background: var(--home-panel); overflow: hidden; }
 .hop-home .lx-gate h3 { margin: 18px 0 6px; font-size: 19px; }
 .hop-home .lx-gate p { margin: 0; color: var(--home-muted); font-size: 14px; line-height: 1.55; }
@@ -246,7 +245,6 @@
 .hop-home .lx-q h3 { font-size: 17px; margin-bottom: 8px; }
 
 /* 12 family */
-.hop-home .lx-family { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
 .hop-home .lx-fam { display: grid; justify-items: center; gap: 4px; padding: 22px 18px 20px; border: 1px solid var(--home-line); border-radius: 22px; background: var(--home-panel); text-align: center; min-width: 0; }
 .hop-home .lx-fam .h-art { max-width: 190px; margin: 0 0 10px; }
 .hop-home .lx-fam b { font-size: 17px; letter-spacing: -.01em; }
@@ -267,8 +265,6 @@
     .hop-home .lx-story { min-height: 0; }
     .hop-home .lx-story-body { min-height: 0; }
     .hop-home .lx-chip { display: none; }
-    .hop-home .lx-gates { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .hop-home .lx-family { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .hop-home .lx-nums { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .hop-home .lx-nums > div:nth-child(2) { border-inline-end: 0; }
     .hop-home .lx-nums > div:nth-child(-n + 2) { border-bottom: 1px solid var(--home-line); }
@@ -281,7 +277,7 @@
     .hop-home .link-world-canvas { height: 380px; }
 }
 @media (max-width: 640px) {
-    .hop-home .lx-faq, .hop-home .lx-gates { grid-template-columns: minmax(0, 1fr); }
+    .hop-home .lx-faq { grid-template-columns: minmax(0, 1fr); }
     .hop-home .lx-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .hop-home .lx-kpis > :last-child { display: none; }
     .hop-home .lx-split { grid-template-columns: minmax(0, 1fr); }
@@ -299,3 +295,4 @@
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-stopped { overflow: hidden; }
+

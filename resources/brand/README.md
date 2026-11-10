@@ -4,8 +4,8 @@ Every logo, mark and favicon the site uses lives here, and only here.
 
 | File | What it is | Used for |
 | --- | --- | --- |
-| `linkhop-wordmark.svg` | "LinkHop" with the bunny-head **o** and the arrow, gradient | Site and app headers, auth pages, footer (`<x-wordmark>`) |
-| `linkhop-wordmark-white.svg` | Same, white | Dark/colour backgrounds |
+| `linkhop-mark.svg` | The pixel head, gradient, no text | Site and app headers, auth pages, footer (`<x-wordmark>` adds the name as real text in Pixelify Sans) |
+| `linkhop-mark-white.svg` | Same, white | Dark/colour backgrounds |
 | `linkhop-mark.svg` | Bunny head in the gradient tile | Source of the favicon and app icon |
 | `linkhop-mark-gradient.svg` | Bunny head, gradient, no tile | Home page fallback picture |
 | `linkhop-mark-white.svg` | Bunny head, white, no tile | Source of `logo.png` |
@@ -18,7 +18,7 @@ Every logo, mark and favicon the site uses lives here, and only here.
 ## Using them
 
 ```blade
-<img src="{{ route('brand.asset', 'linkhop-wordmark.svg') }}">
+<img src="{{ route('brand.asset', 'linkhop-mark.svg') }}">
 <link rel="icon" href="{{ route('brand.favicon') }}">   {{-- shortcuts: brand.logo, brand.logo.dark, brand.favicon --}}
 ```
 

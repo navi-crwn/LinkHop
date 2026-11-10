@@ -43,7 +43,7 @@
         <div class="mt-6 grid grid-cols-2 gap-8 lg:grid-cols-5">
             <div class="col-span-2 lg:col-span-1">
                 <div class="flex items-center gap-2.5">
-                    <x-wordmark class="h-10 w-auto" />
+                    <x-wordmark class="h-10 w-auto text-slate-900 dark:text-white" />
                 </div>
                 <p class="mt-3 text-[13px] leading-relaxed">{{ __('Short links with analytics and QR codes. Part of the HOP family. Free and open source.') }}</p>
             </div>

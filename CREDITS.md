@@ -226,3 +226,7 @@ If you notice any missing attributions or license issues, please contact us:
 **Last Updated**: December 12, 2025
 
 **Total Dependencies**: 45+ core libraries and services powering HEL.ink
+
+## Typefaces for the app names
+
+- **Pixelify Sans** (LinkHop) and **Space Grotesk** (BioHop), subset to the letters of the app names, SIL Open Font License 1.1. Licenses: `public/hop-brand/fonts/LICENSE-*.txt`.
