@@ -253,7 +253,6 @@
 
 /* 13 */
 .hop-home .lx-final { text-align: center; }
-.hop-home .lx-final .h-label { justify-content: center; }
 .hop-home .lx-final .h-sub.h-sub { margin-inline: auto; }
 .hop-home .lx-final .h-cta { justify-content: center; }
 .hop-home .lx-final h2 { font-size: clamp(40px, 6vw, 76px); }

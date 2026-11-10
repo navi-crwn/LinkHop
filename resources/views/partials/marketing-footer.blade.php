@@ -32,7 +32,7 @@
             'title' => 'HOP family',
             'items' => collect(\Hop\Ui\Assets::family('linkhop'))
                 ->reject(fn ($app) => $app['current'])
-                ->map(fn ($app) => ['label' => $app['name'], 'route' => $app['url'], 'external' => true])
+                ->map(fn ($app) => ['label' => $app['name'], 'route' => $app['url'], 'external' => true, 'icon' => $app['icons']['mark']['url'] ?? null])
                 ->values()->all(),
         ],
     ];
@@ -52,7 +52,7 @@
                     <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-white/60">{{ __($block['title']) }}</p>
                     <ul class="mt-3 space-y-2 text-[13px]">
                         @foreach ($block['items'] as $item)
-                            <li><a href="{{ $item['route'] }}" @if (! empty($item['external'])) target="_blank" rel="noopener" @endif class="transition hover:text-slate-900 dark:hover:text-white">{{ __($item['label']) }}</a></li>
+                            <li><a href="{{ $item['route'] }}" @if (! empty($item['external'])) target="_blank" rel="noopener" @endif class="transition hover:text-slate-900 dark:hover:text-white @if (! empty($item['icon'])) inline-flex items-center gap-2 @endif">@if (! empty($item['icon']))<img src="{{ $item['icon'] }}" alt="" width="16" height="16" loading="lazy" class="h-4 w-4 shrink-0 rounded">@endif{{ __($item['label']) }}</a></li>
                         @endforeach
                     </ul>
                 </div>
