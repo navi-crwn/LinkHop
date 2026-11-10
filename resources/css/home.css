@@ -296,3 +296,8 @@ html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-stopped { overflow: hidden; }
 
+/* Box media stays small (v8 rule): the family art 160-200 px on desktop, 130 px on a phone; the gate scenes 140 px. */
+.hop-home .lx-fam .h-art { max-width: clamp(160px, 14vw, 200px); }
+.hop-home .lx-gate-page, .hop-home .lx-gate-box { height: 140px; }
+.hop-home .lx-scan-box { max-height: 140px; }
+@media (max-width: 640px) { .hop-home .lx-fam .h-art { max-width: 130px; } }
