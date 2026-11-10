@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Link;
 use App\Models\User;
 use Hop\Bio\Models\BioPage;
 use Hop\Ui\Locales;
@@ -118,7 +119,7 @@ it('has every new error-page text in all nine languages, different from English 
 });
 
 it('dresses the 404, 429, link-missing and link-ended pages in the family shell with the standard buttons, no uppercase eyebrow', function () {
-    $link = new App\Models\Link(['slug' => 'ended1']);
+    $link = new Link(['slug' => 'ended1']);
     $link->expires_at = now()->subDay();
     $pages = [
         $this->get('/no/such/deep/page')->assertNotFound()->getContent(),
