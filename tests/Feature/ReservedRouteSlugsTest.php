@@ -5,6 +5,7 @@ use App\Models\Link;
 use App\Models\User;
 use App\Support\ReservedSlugs;
 use Hop\Auth\Models\ApiToken;
+use Hop\Ui\Assets;
 use Illuminate\Support\Facades\Validator;
 
 test('the HOP path prefixes and the configured words are reserved, app route segments are not', function () {
@@ -70,7 +71,7 @@ test('the words the other HOP apps and tools use are reserved for new slugs, and
 });
 
 test('every app in the family manifest, and PayHop by name, is a reserved username and a reserved slug', function () {
-    $apps = collect(\Hop\Ui\Assets::manifest()['apps'])->pluck('slug');
+    $apps = collect(Assets::manifest()['apps'])->pluck('slug');
     expect($apps)->toContain('payhop');
 
     foreach ($apps->push('pay') as $slug) {
