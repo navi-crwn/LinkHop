@@ -221,8 +221,8 @@
 {{-- 12 family: every other app as its own 3D mark; the flat mark stays without WebGL --}}
 <section id="family" class="lx" aria-labelledby="family-title">
     <div class="lx-wrap">
-        <div class="lx-head"><p class="h-label"><span class="n">12</span> · <span>HOP</span></p><h2 id="family-title"><span><em>{{ __('HOP family') }}</em></span></h2><p class="h-sub"><span>{{ __('One free HOP ID signs you in to every app.') }}</span></p></div>
-        <div class="lx-family" data-lk-family>@foreach (collect(\Hop\Ui\Assets::family('linkhop'))->reject(fn ($app) => $app['current']) as $app)<article class="lx-fam"><figure class="h-art"><img src="{{ $app['icons']['mark']['url'] }}" alt="" width="120" height="120" loading="lazy"><canvas data-hop-hero="{{ $app['slug'] }}" tabindex="0" aria-label="{{ __('Drag or use arrow keys to rotate') }}"></canvas></figure><b>{{ $app['name'] }}</b><a href="{{ $app['url'] }}">{{ parse_url($app['url'], PHP_URL_HOST) }} ↗</a></article>@endforeach</div>
+        <div class="lx-head"><h2 id="family-title"><span><em>{{ __('HOP family') }}</em></span></h2><p class="h-sub"><span>{{ __('One free HOP ID signs you in to every app.') }}</span></p></div>
+        <div class="lx-family" data-lk-family>@foreach (collect(\Hop\Ui\Assets::family('linkhop'))->reject(fn ($app) => $app['current']) as $app)<article class="lx-fam"><figure class="h-art"><picture><source srcset="{{ asset('hop-home/home/'.$app['slug'].'-dark.webp') }}" media="(prefers-color-scheme: dark)"><img src="{{ asset('hop-home/home/'.$app['slug'].'-light.webp') }}" alt="" width="120" height="120" loading="lazy"></picture><canvas data-hop-hero="{{ $app['slug'] }}" tabindex="0" aria-label="{{ __('Drag or use arrow keys to rotate') }}"></canvas></figure><b>{{ $app['name'] }}</b><a href="{{ $app['url'] }}">{{ parse_url($app['url'], PHP_URL_HOST) }} ↗</a></article>@endforeach</div>
     </div>
 </section>
 

@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- The "Part of the HOP family" section on the home page uses the hop-assets v6 3D engine (byte-identical copy, so the LinkHop and BioHop marks are the new ones) and the v6 WebP fallbacks for every app, FileHop included; the section number and eyebrow are gone. The tiles are five across on wide screens, a 3 + 2 bento on tablets and two columns with the last tile spanning both on phones, so no tile sits alone on the last row. The three content-warning gates on the LinkHop home page do the same at tablet width.
+
+### Changed
 - Every app shows the family row as the first row inside its footer, for everyone and in both looks: the HOP ID mark and "Part of Hop Easy Link" (linking to hel.ink). "Part of" is translated in all nine languages; the name stays in English. It replaces the strip that only the Clean style showed.
 - The footer no longer has a language row; the language menu in the top bar is the one place to switch. The copyright line is right-aligned on desktop and centred on phones.
 - Signing out sends the person to the hub with `return=<this app's home>`, so the hub's chained logout can bring them back here instead of to the hub's home.

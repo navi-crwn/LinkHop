@@ -246,7 +246,7 @@
 .hop-home .lx-q h3 { font-size: 17px; margin-bottom: 8px; }
 
 /* 12 family */
-.hop-home .lx-family { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.hop-home .lx-family { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; align-items: stretch; }
 .hop-home .lx-fam { display: grid; justify-items: center; gap: 4px; padding: 22px 18px 20px; border: 1px solid var(--home-line); border-radius: 22px; background: var(--home-panel); text-align: center; min-width: 0; }
 .hop-home .lx-fam .h-art { max-width: 190px; margin: 0 0 10px; }
 .hop-home .lx-fam b { font-size: 17px; letter-spacing: -.01em; }
@@ -299,3 +299,16 @@
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-stopped { overflow: hidden; }
+
+/* Family tiles: five across; a 6-column bento (3 + 2) on tablets; two columns with the last tile spanning both on phones. No lonely last tile. */
+@media (max-width: 1099px) {
+    .hop-home .lx-family { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .hop-home .lx-fam { grid-column: span 2; }
+    .hop-home .lx-fam:nth-child(n + 4) { grid-column: span 3; }
+}
+@media (max-width: 640px) {
+    .hop-home .lx-family { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .hop-home .lx-fam, .hop-home .lx-fam:nth-child(n + 4) { grid-column: auto; }
+    .hop-home .lx-fam:last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+@media (min-width: 641px) and (max-width: 980px) { .hop-home .lx-gates > :last-child:nth-child(odd) { grid-column: 1 / -1; } }
