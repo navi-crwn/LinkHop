@@ -30,17 +30,21 @@ jobs:
       - run: npm ci && npm run build
       - run: npx playwright install --with-deps chromium
       - name: Serve the app with Cloudflare's test keys
+        # Process environment variables win over .env (a duplicate key appended to .env would be ignored),
+        # and APP_ENV must not be production: its CSP upgrades http assets to https, which this local server cannot serve.
+        env:
+          APP_ENV: local
+          APP_DEBUG: 'false'
+          APP_URL: http://127.0.0.1:8000
+          DB_CONNECTION: sqlite
+          DB_DATABASE: /tmp/ts.sqlite
+          CACHE_STORE: array
+          SESSION_DRIVER: array
+          QUEUE_CONNECTION: sync
+          TURNSTILE_SITE_KEY: 1x00000000000000000000AA
+          TURNSTILE_SECRET_KEY: 1x0000000000000000000000000000000AA
         run: |
           cp .env.example .env && php artisan key:generate
-          {
-            echo 'APP_URL=http://127.0.0.1:8000'
-            echo 'DB_CONNECTION=sqlite'
-            echo 'DB_DATABASE=/tmp/ts.sqlite'
-            echo 'CACHE_STORE=array'
-            echo 'SESSION_DRIVER=array'
-            echo 'TURNSTILE_SITE_KEY=1x00000000000000000000AA'
-            echo 'TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA'
-          } >> .env
           touch /tmp/ts.sqlite
           php artisan migrate --force
           nohup php artisan serve --port=8000 > /tmp/serve.log 2>&1 &
