@@ -1,9 +1,72 @@
 {
   "schema": 1,
   "sources": {
-    "LinkHop": "7b8716e8d79dbd9b3b910602a8ee5612831fb06a"
+    "LinkHop": "3e2eb8aacef820f661cfab2dafb4d04606690f3e"
   },
   "entries": [
+    {
+      "kind": "pr",
+      "date": "2026-11-10T14:50:47Z",
+      "title": "Family look for the error pages, reserved words, translated move notice and dependency pins",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/122",
+      "id": "#122",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T21:50:46+07:00",
+      "title": "Merge pull request #122: Family look for the error pages, reserved words, translated move notice and dependency pins",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3e2eb8aacef820f661cfab2dafb4d04606690f3e",
+      "id": "3e2eb8aa",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T15:11:59+01:00",
+      "title": "Update the lookup tests to the Safe Browsing v5 request and answer shapes",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/9b7c94bca87be0c3df50720b6fb980e23e58d95f",
+      "id": "9b7c94bc",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T15:07:44+01:00",
+      "title": "Fix code style in the error pages test",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/8061cb348e9f94930693bbfb24848ff9ac2a2854",
+      "id": "8061cb34",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T14:58:43+01:00",
+      "title": "Render the 429 countdown script inside the layout; test it; keep the sync guard reminder; cover the old /slug form",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/aa242ee24e8bb05ea918661e54ab2a9a5da0c5f7",
+      "id": "aa242ee2",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T14:46:25+01:00",
+      "title": "Rebuild the changelog snapshot",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/aaa8ce3abd275db1f9adeade35910e1e327e034a",
+      "id": "aaa8ce3a",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T14:46:05+01:00",
+      "title": "Family look for the error pages, reserved words, translated move notice, pins and cleanup",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/5c87cdfedb59dea04d4b4b77ca50dc4e930bce99",
+      "id": "5c87cdfe",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
     {
       "kind": "commit",
       "date": "2026-11-10T15:22:28+07:00",
