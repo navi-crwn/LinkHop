@@ -1,9 +1,180 @@
 {
   "schema": 1,
   "sources": {
-    "LinkHop": "86fb14a860b8b147af7350e200c79d03d59c1be2"
+    "LinkHop": "e8ee6bef43615a744755e7d91ed6e5a93c3c20ec"
   },
   "entries": [
+    {
+      "kind": "commit",
+      "date": "2026-11-10T14:15:17+07:00",
+      "title": "Merge pull request #120: Proportional home boxes on hop-assets v8",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/e8ee6bef43615a744755e7d91ed6e5a93c3c20ec",
+      "id": "e8ee6bef",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-10T07:15:17Z",
+      "title": "Proportional home boxes on hop-assets v8",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/120",
+      "id": "#120",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T14:15:14+07:00",
+      "title": "Merge pull request #118: Guest form: tidy layout, room for the Turnstile check, and tests for the widget",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/7301092e8360628ae03d41725614656e344ced60",
+      "id": "7301092e",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-10T07:15:14Z",
+      "title": "Guest form: tidy layout, room for the Turnstile check, and tests for the widget",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/118",
+      "id": "#118",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T07:53:22+01:00",
+      "title": "Turnstile check: run the CI server with process env, not duplicate .env keys",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/dc15eab6010fc70362bc52cec6ac1755ed931295",
+      "id": "dc15eab6",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T07:45:10+01:00",
+      "title": "Use the v8 BioHop WebP fallbacks",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/36bd640335f72c16088c745c85d8e9765355f3e6",
+      "id": "36bd6403",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T07:44:16+01:00",
+      "title": "Proportional home boxes on hop-assets v8; capped media; new BioHop mark",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/e865b6da322a18ad78734c5902fdfd2105013ef0",
+      "id": "e865b6da",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T07:24:48+01:00",
+      "title": "Guest form: tidy layout with a row for the Turnstile check, tests and a browser check for the widget",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f4c731c93d7db3041e08e85bf0ff78b3e73a2793",
+      "id": "f4c731c9",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-10T05:53:31Z",
+      "title": "Family section on the v6 engine, and grids without a lonely last item",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/117",
+      "id": "#117",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T12:53:30+07:00",
+      "title": "Merge pull request #117: Family section on the v6 engine, and grids without a lonely last item",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c65119dea1092321a4d5d4dffb1254d619c0ebc8",
+      "id": "c65119de",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T06:38:46+01:00",
+      "title": "Logo without text, and the app name as real text in its own typeface",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/24d27b966261a2ecb31b176e465a1ae40d073617",
+      "id": "24d27b96",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T06:29:59+01:00",
+      "title": "Home boxes on the shared hop-bento grid (hop-assets v7) with reveal, spotlight and scenes",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/bec5256aa0ead3a70d71d58561ff7080aaa55d70",
+      "id": "bec5256a",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T05:45:19+01:00",
+      "title": "Family section: v6 engine and fallbacks, no section number, grids without a lonely last item",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/5684fea578b1fbcae3682354e090fd584b5e60ad",
+      "id": "5684fea5",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T11:05:15+07:00",
+      "title": "Merge pull request #116: Post-release fixes: changelog snapshot, footer family row, sign-out return",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/df356f16b2a6a0ec7e30ce1a3b58f2d724a1ea42",
+      "id": "df356f16",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-10T04:05:15Z",
+      "title": "Post-release fixes: changelog snapshot, footer family row, sign-out return",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/116",
+      "id": "#116",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T04:46:56+01:00",
+      "title": "Use the new LinkHop and BioHop marks from hop-assets v6",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/6bd2926e5f0575da8894a1a6be0dd5bf80198728",
+      "id": "6bd2926e",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T22:38:28+01:00",
+      "title": "Show the family row in the footer and drop the footer language row",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/0e2e8d0ba038ea94c8d577f4891d71dd92e490d0",
+      "id": "0e2e8d0b",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T22:38:28+01:00",
+      "title": "Ask the hub to return to this app after sign-out",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/05c26f67f38fe7a1e0c1234b44c5f1c1dbc82c26",
+      "id": "05c26f67",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T22:26:49+01:00",
+      "title": "Rebuild the changelog snapshot and fail release branches when it is stale",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/efc985a4e2fccc81085e00e11078fd3d2cf558eb",
+      "id": "efc985a4",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
     {
       "kind": "tag",
       "date": "2026-11-10T04:23:05+07:00",
