@@ -34,6 +34,7 @@ Alles, was LinkHop braucht, liegt in öffentlichen Repositorys: kein privates Re
 - **Mindest-Einstellungen**: `APP_URL`, `PUBLIC_URL`, `HOP_APP=linkhop`, `HOP_HUB_URL`, `HOP_SSO_SECRET` (wie im Hub), `DB_*` (die Datenbank des Hubs), `HOP_TRUSTED_HOSTS` (deine Hostnamen); mit Imperium: `HOP_CONTROL_URL`.
 - **Allein oder in der Familie**: LinkHop läuft nicht ohne Hub. In der Familie teilt es Datenbank und `HOP_SSO_SECRET` mit dem Hub.
 - **Ohne Imperium**: `/admin` zeigt einen Hinweis. Konten verwaltest du in den Admin-Seiten des Hubs, dazu gibt es die signierte `/api/hop/*`-API und die artisan-Befehle.
+- **Weitere Apps der Familie**: BioHop (Link-in-Bio), PixelHop (Bilder), NoteHop (verschlüsselte Notizen) und FileHop (Dateien im Browser umwandeln) laufen am selben Konto; siehe die englische [README](README.md).
 <!-- self-hosting:end -->
 
 ## Mehr erfahren

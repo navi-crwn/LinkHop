@@ -1,9 +1,90 @@
 {
   "schema": 1,
   "sources": {
-    "LinkHop": "e8ee6bef43615a744755e7d91ed6e5a93c3c20ec"
+    "LinkHop": "7b8716e8d79dbd9b3b910602a8ee5612831fb06a"
   },
   "entries": [
+    {
+      "kind": "commit",
+      "date": "2026-11-10T15:22:28+07:00",
+      "title": "Merge pull request #121: Footer logos in the HOP family list; drop numbered section eyebrows",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/7b8716e8d79dbd9b3b910602a8ee5612831fb06a",
+      "id": "7b8716e8",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-10T08:22:28Z",
+      "title": "Footer logos in the HOP family list; drop numbered section eyebrows",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/121",
+      "id": "#121",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T09:17:27+01:00",
+      "title": "Version the home asset URLs so a changed hop-bento/home file is not served from cache",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/5ff10d4e295c113fc0a04bf21e86f4b120bf5a93",
+      "id": "5ff10d4e",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T09:12:51+01:00",
+      "title": "Footer logos in the HOP family list; drop numbered section eyebrows on the home",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/7b75f094397d2722df0a9feea58334eb3a8fae45",
+      "id": "7b75f094",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-10T07:39:56Z",
+      "title": "Sync repository with what is live (2026-11-10)",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/119",
+      "id": "#119",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T14:39:55+07:00",
+      "title": "Merge pull request #119: Sync repository with what is live (2026-11-10)",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/ef00cddeb9e0111e3f183cbce88cce90f938d72d",
+      "id": "ef00cdde",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T08:29:34+01:00",
+      "title": "README screenshots: retake from current main",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/77ed3ee78d2ed052ab72a47c382aa857681209e4",
+      "id": "77ed3ee7",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T08:25:58+01:00",
+      "title": "Changelog snapshot: rebuild from fresh main",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/a72225b0cf919d1c7ccdba470ac6cd76e717ed3a",
+      "id": "a72225b0",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T08:25:52+01:00",
+      "title": "README: drop the features picture (that section is gone from the home page)",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/2ce9fe8eb15d00f038b124e09b645fba723fdcca",
+      "id": "2ce9fe8e",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
     {
       "kind": "commit",
       "date": "2026-11-10T14:15:17+07:00",

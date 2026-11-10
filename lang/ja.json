@@ -1007,5 +1007,19 @@
     "The old one stops working at once.": "古いシークレットはすぐに使えなくなります。",
     "The short link stops working and its statistics are removed. This cannot be undone.": "この短縮リンクは使えなくなり、統計も削除されます。元に戻すことはできません。",
     "The short links stop working and their statistics are removed. This cannot be undone.": "これらの短縮リンクは使えなくなり、統計も削除されます。元に戻すことはできません。",
-    "Part of :name": ":name の一員"
+    "Part of :name": ":name の一員",
+    "Short links moved to :host/l/…": "短縮リンクは :host/l/… に移りました",
+    "hel.ink is becoming the home of several HOP apps. Short links get their own path.": "hel.ink は複数の HOP アプリの拠点になります。短縮リンクには専用のパスが割り当てられます。",
+    "What changed": "変更点",
+    "Every short link is now reached at :new instead of :old. Nothing was deleted: your links, their slugs, clicks and statistics are the same. The dashboard, QR codes and the API already show the new form.": "すべての短縮リンクは、:old ではなく :new でアクセスします。何も削除されていません。リンク、スラッグ、クリック数、統計はそのままです。ダッシュボード、QR コード、API はすでに新しい形式を表示しています。",
+    "Until :date": ":date まで",
+    "The old form keeps working: :old redirects to :new, and those visits count as clicks like any other.": "旧形式はそのまま使えます。:old は :new にリダイレクトされ、その訪問は通常のクリックと同じように数えられます。",
+    "From :date": ":date 以降",
+    "The old form stops. :old no longer opens your link; only :new does.": "旧形式は終了します。:old ではリンクが開かなくなり、:new だけが開きます。",
+    "Replace the links you have published elsewhere (posts, bios, printed material) with the /l/ form. :mylinks shows every link in its new form, ready to copy.": "ほかの場所（投稿、プロフィール、印刷物など）に掲載したリンクを /l/ 形式に置き換えてください。:mylinks では、すべてのリンクが新形式でコピーできる状態で表示されます。",
+    "Print or download QR codes again where they were made before this change; a QR code made from now on already points at the new form.": "この変更前に作成した QR コードは、印刷またはダウンロードし直してください。今後作成する QR コードはすでに新形式を指しています。",
+    "Bio pages are not affected: they stay at :bio.": "ビオページは影響を受けません。:bio のままです。",
+    "API clients get the new form in :field; nothing to change on your side unless you built the address yourself.": "API クライアントは :field で新形式を受け取ります。アドレスを自分で組み立てている場合を除き、変更は不要です。",
+    "We also emailed this notice to every account that owns links, and will send a reminder a week before :date. See the :terms, section 11A.": "この通知は、リンクを持つすべてのアカウントにメールでもお送りしました。:date の 1 週間前にもリマインダーをお送りします。:terms の第 11A 条をご覧ください。",
+    "Terms of Service": "利用規約"
 }

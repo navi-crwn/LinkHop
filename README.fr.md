@@ -112,6 +112,7 @@ LinkHop fait partie de la famille d'applications web ouvertes HOP.
 | **BioHop** | `bio.hel.ink` · `hel.ink/b/…` | [navi-crwn/BioHop](https://github.com/navi-crwn/BioHop) | Pages de liens bio et thèmes |
 | **PixelHop** | `pixel.hel.ink` · `p.hel.ink/…` | [navi-crwn/PixelHop](https://github.com/navi-crwn/PixelHop) | Hébergement d'images et médias |
 | **NoteHop** | `note.hel.ink` · `n.hel.ink/…` | [navi-crwn/NoteHop](https://github.com/navi-crwn/NoteHop) | Notes privées chiffrées côté client |
+| **FileHop** | `file.hel.ink` | [navi-crwn/FileHop](https://github.com/navi-crwn/FileHop) | Conversion de fichiers dans le navigateur ; rien n'est envoyé |
 
 <a id="security"></a>
 

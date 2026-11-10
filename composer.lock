@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b349ebefcb8d5b6b9192dcc9858a6a9e",
+    "content-hash": "1289d617fb37c2ea5eca4306d1eb5e13",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1297,16 +1297,16 @@
         },
         {
             "name": "hop/auth",
-            "version": "v0.1.4",
+            "version": "v0.1.5",
             "source": {
                 "type": "git",
-                "url": "https://github.com/navi-crwn/hop-auth.git",
-                "reference": "83753e32d9073a9b1f16302d931f27725276a924"
+                "url": "git@github.com:navi-crwn/hop-auth.git",
+                "reference": "df506c4f2c558cd015f0b6132cf60caf5256a398"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-auth/zipball/83753e32d9073a9b1f16302d931f27725276a924",
-                "reference": "83753e32d9073a9b1f16302d931f27725276a924",
+                "url": "https://api.github.com/repos/navi-crwn/hop-auth/zipball/df506c4f2c558cd015f0b6132cf60caf5256a398",
+                "reference": "df506c4f2c558cd015f0b6132cf60caf5256a398",
                 "shasum": ""
             },
             "require": {
@@ -1330,11 +1330,7 @@
                 "MIT"
             ],
             "description": "HOP shared package: auth.",
-            "support": {
-                "source": "https://github.com/navi-crwn/hop-auth/tree/v0.1.4",
-                "issues": "https://github.com/navi-crwn/hop-auth/issues"
-            },
-            "time": "2026-11-08T07:45:34+00:00"
+            "time": "2026-11-10T07:17:26+00:00"
         },
         {
             "name": "hop/bio",
@@ -1372,16 +1368,16 @@
         },
         {
             "name": "hop/safety",
-            "version": "dev-main",
+            "version": "v0.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/navi-crwn/hop-safety.git",
-                "reference": "df5e938b361762660fdfe682171ed9409c64e601"
+                "url": "git@github.com:navi-crwn/hop-safety.git",
+                "reference": "bd5ffd5caffacf6fa11916c3f079ca44b4d6e7c2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-safety/zipball/df5e938b361762660fdfe682171ed9409c64e601",
-                "reference": "df5e938b361762660fdfe682171ed9409c64e601",
+                "url": "https://api.github.com/repos/navi-crwn/hop-safety/zipball/bd5ffd5caffacf6fa11916c3f079ca44b4d6e7c2",
+                "reference": "bd5ffd5caffacf6fa11916c3f079ca44b4d6e7c2",
                 "shasum": ""
             },
             "require": {
@@ -1390,7 +1386,6 @@
                 "php": "^8.3",
                 "symfony/html-sanitizer": "^7.4"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -1408,11 +1403,7 @@
                 "MIT"
             ],
             "description": "HOP shared package: safety.",
-            "support": {
-                "source": "https://github.com/navi-crwn/hop-safety/tree/main",
-                "issues": "https://github.com/navi-crwn/hop-safety/issues"
-            },
-            "time": "2026-11-05T18:10:17+00:00"
+            "time": "2026-11-10T06:04:28+00:00"
         },
         {
             "name": "hop/ui",
@@ -11293,7 +11284,6 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "hop/bio": 20,
-        "hop/safety": 20,
         "hop/ui": 20
     },
     "prefer-stable": true,

@@ -1007,5 +1007,19 @@
     "The old one stops working at once.": "The old one stops working at once.",
     "The short link stops working and its statistics are removed. This cannot be undone.": "The short link stops working and its statistics are removed. This cannot be undone.",
     "The short links stop working and their statistics are removed. This cannot be undone.": "The short links stop working and their statistics are removed. This cannot be undone.",
-    "Part of :name": "Part of :name"
+    "Part of :name": "Part of :name",
+    "Short links moved to :host/l/…": "Short links moved to :host/l/…",
+    "hel.ink is becoming the home of several HOP apps. Short links get their own path.": "hel.ink is becoming the home of several HOP apps. Short links get their own path.",
+    "What changed": "What changed",
+    "Every short link is now reached at :new instead of :old. Nothing was deleted: your links, their slugs, clicks and statistics are the same. The dashboard, QR codes and the API already show the new form.": "Every short link is now reached at :new instead of :old. Nothing was deleted: your links, their slugs, clicks and statistics are the same. The dashboard, QR codes and the API already show the new form.",
+    "Until :date": "Until :date",
+    "The old form keeps working: :old redirects to :new, and those visits count as clicks like any other.": "The old form keeps working: :old redirects to :new, and those visits count as clicks like any other.",
+    "From :date": "From :date",
+    "The old form stops. :old no longer opens your link; only :new does.": "The old form stops. :old no longer opens your link; only :new does.",
+    "Replace the links you have published elsewhere (posts, bios, printed material) with the /l/ form. :mylinks shows every link in its new form, ready to copy.": "Replace the links you have published elsewhere (posts, bios, printed material) with the /l/ form. :mylinks shows every link in its new form, ready to copy.",
+    "Print or download QR codes again where they were made before this change; a QR code made from now on already points at the new form.": "Print or download QR codes again where they were made before this change; a QR code made from now on already points at the new form.",
+    "Bio pages are not affected: they stay at :bio.": "Bio pages are not affected: they stay at :bio.",
+    "API clients get the new form in :field; nothing to change on your side unless you built the address yourself.": "API clients get the new form in :field; nothing to change on your side unless you built the address yourself.",
+    "We also emailed this notice to every account that owns links, and will send a reminder a week before :date. See the :terms, section 11A.": "We also emailed this notice to every account that owns links, and will send a reminder a week before :date. See the :terms, section 11A.",
+    "Terms of Service": "Terms of Service"
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Link;
 use App\Models\User;
 use Hop\Bio\Models\BioPage;
 use Hop\Ui\Locales;
@@ -89,6 +90,7 @@ it('renders the 429, 500 and link-missing pages in every language', function () 
         expect(dtTitle($e429))->toBe(trans('Too many requests', [], $lang).' · LinkHop')
             ->and($e429)->toContain(e(trans('429: Too many requests', [], $lang)))
             ->and($e429)->toContain('<strong data-retry-seconds>30</strong>')
+            ->and($e429)->toContain('setInterval(')->toContain('let left = 30;')
             ->and(dtTitle($e500))->toBe(trans('Something went wrong', [], $lang).' · '.config('app.name'))
             ->and($e500)->toContain('<html lang="'.$lang.'"')->toContain(e(trans('Go to homepage', [], $lang)))
             ->and(dtTitle($missing))->toBe(trans('Link not found', [], $lang).' · '.config('app.name'))
@@ -112,6 +114,34 @@ it('has every new error-page text in all nine languages, different from English 
         }
         foreach ($keys as $key) {
             expect(trans($key, [], $lang))->not->toBe($key, "{$key} in {$lang}");
+        }
+    }
+});
+
+it('dresses the 404, 429, link-missing and link-ended pages in the family shell with the standard buttons, no uppercase eyebrow', function () {
+    $link = new Link(['slug' => 'ended1']);
+    $link->expires_at = now()->subDay();
+    $pages = [
+        $this->get('/no/such/deep/page')->assertNotFound()->getContent(),
+        view('errors.429', ['exception' => new HttpException(429, '', null, ['Retry-After' => 30])])->render(),
+        view('errors.link-missing', ['slug' => 'abc'])->render(),
+        view('errors.link-ended', ['link' => $link, 'reason' => 'expired'])->render(),
+    ];
+    foreach ($pages as $html) {
+        expect($html)->toContain('id="main"')->toContain('btn-primary btn-lg')
+            ->not->toContain('tracking-[0.4em]')->not->toContain('from-slate-950')->not->toContain('brand/logo');
+    }
+});
+
+it('shows the short-links notice in every language, not only English', function () {
+    foreach (Locales::codes() as $lang) {
+        $html = $this->get('/changes/short-links?lang='.$lang)->assertOk()->getContent();
+        expect($html)->toContain(e(trans('What changed', [], $lang)))->toContain(e(trans('What to do', [], $lang)));
+        if ($lang !== 'en') {
+            expect($html)->not->toContain('What changed')->not->toContain('Nothing was deleted');
+            foreach (['What changed', 'What to do', 'Terms of Service'] as $key) {
+                expect(trans($key, [], $lang))->not->toBe($key, "{$key} in {$lang}");
+            }
         }
     }
 });

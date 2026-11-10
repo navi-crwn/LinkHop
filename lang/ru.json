@@ -1007,5 +1007,19 @@
     "The old one stops working at once.": "Старый сразу перестанет работать.",
     "The short link stops working and its statistics are removed. This cannot be undone.": "Короткая ссылка перестанет работать, а её статистика будет удалена. Отменить это нельзя.",
     "The short links stop working and their statistics are removed. This cannot be undone.": "Короткие ссылки перестанут работать, а их статистика будет удалена. Отменить это нельзя.",
-    "Part of :name": "Часть :name"
+    "Part of :name": "Часть :name",
+    "Short links moved to :host/l/…": "Короткие ссылки переехали на :host/l/…",
+    "hel.ink is becoming the home of several HOP apps. Short links get their own path.": "hel.ink становится домом для нескольких приложений HOP. У коротких ссылок теперь свой путь.",
+    "What changed": "Что изменилось",
+    "Every short link is now reached at :new instead of :old. Nothing was deleted: your links, their slugs, clicks and statistics are the same. The dashboard, QR codes and the API already show the new form.": "Теперь каждая короткая ссылка открывается по адресу :new вместо :old. Ничего не удалено: ваши ссылки, их слаги, клики и статистика прежние. Панель, QR-коды и API уже показывают новую форму.",
+    "Until :date": "До :date",
+    "The old form keeps working: :old redirects to :new, and those visits count as clicks like any other.": "Старая форма продолжает работать: :old перенаправляет на :new, и эти переходы считаются кликами, как и любые другие.",
+    "From :date": "С :date",
+    "The old form stops. :old no longer opens your link; only :new does.": "Старая форма перестаёт работать. :old больше не открывает вашу ссылку, открывает только :new.",
+    "Replace the links you have published elsewhere (posts, bios, printed material) with the /l/ form. :mylinks shows every link in its new form, ready to copy.": "Замените ссылки, опубликованные в других местах (посты, био, печатные материалы), на форму /l/. :mylinks показывает каждую ссылку в новой форме, готовую к копированию.",
+    "Print or download QR codes again where they were made before this change; a QR code made from now on already points at the new form.": "Заново распечатайте или скачайте QR-коды, созданные до этого изменения; QR-код, созданный с этого момента, уже указывает на новую форму.",
+    "Bio pages are not affected: they stay at :bio.": "Био-страницы не затронуты: они остаются по адресу :bio.",
+    "API clients get the new form in :field; nothing to change on your side unless you built the address yourself.": "Клиенты API получают новую форму в :field; на вашей стороне ничего менять не нужно, если вы не собирали адрес сами.",
+    "We also emailed this notice to every account that owns links, and will send a reminder a week before :date. See the :terms, section 11A.": "Мы также отправили это уведомление по почте каждому аккаунту, у которого есть ссылки, и пришлём напоминание за неделю до :date. См. :terms, раздел 11A.",
+    "Terms of Service": "Условия использования"
 }

@@ -1007,5 +1007,19 @@
     "The old one stops working at once.": "L’ancien cesse de fonctionner immédiatement.",
     "The short link stops working and its statistics are removed. This cannot be undone.": "Le lien court cesse de fonctionner et ses statistiques sont supprimées. Cette action est irréversible.",
     "The short links stop working and their statistics are removed. This cannot be undone.": "Les liens courts cessent de fonctionner et leurs statistiques sont supprimées. Cette action est irréversible.",
-    "Part of :name": "Fait partie de :name"
+    "Part of :name": "Fait partie de :name",
+    "Short links moved to :host/l/…": "Les liens courts ont déménagé vers :host/l/…",
+    "hel.ink is becoming the home of several HOP apps. Short links get their own path.": "hel.ink devient la maison de plusieurs applications HOP. Les liens courts ont leur propre chemin.",
+    "What changed": "Ce qui change",
+    "Every short link is now reached at :new instead of :old. Nothing was deleted: your links, their slugs, clicks and statistics are the same. The dashboard, QR codes and the API already show the new form.": "Chaque lien court est désormais accessible à :new au lieu de :old. Rien n'a été supprimé : vos liens, leurs slugs, clics et statistiques sont les mêmes. Le tableau de bord, les codes QR et l'API affichent déjà la nouvelle forme.",
+    "Until :date": "Jusqu'au :date",
+    "The old form keeps working: :old redirects to :new, and those visits count as clicks like any other.": "L'ancienne forme continue de fonctionner : :old redirige vers :new, et ces visites comptent comme des clics comme les autres.",
+    "From :date": "À partir du :date",
+    "The old form stops. :old no longer opens your link; only :new does.": "L'ancienne forme s'arrête. :old n'ouvre plus votre lien ; seul :new le fait.",
+    "Replace the links you have published elsewhere (posts, bios, printed material) with the /l/ form. :mylinks shows every link in its new form, ready to copy.": "Remplacez les liens que vous avez publiés ailleurs (publications, bios, supports imprimés) par la forme /l/. :mylinks affiche chaque lien sous sa nouvelle forme, prêt à copier.",
+    "Print or download QR codes again where they were made before this change; a QR code made from now on already points at the new form.": "Imprimez ou téléchargez à nouveau les codes QR créés avant ce changement ; un code QR créé à partir de maintenant pointe déjà vers la nouvelle forme.",
+    "Bio pages are not affected: they stay at :bio.": "Les pages bio ne sont pas concernées : elles restent à :bio.",
+    "API clients get the new form in :field; nothing to change on your side unless you built the address yourself.": "Les clients de l'API reçoivent la nouvelle forme dans :field ; rien à changer de votre côté, sauf si vous avez construit l'adresse vous-même.",
+    "We also emailed this notice to every account that owns links, and will send a reminder a week before :date. See the :terms, section 11A.": "Nous avons aussi envoyé cet avis par e-mail à chaque compte qui possède des liens, et enverrons un rappel une semaine avant le :date. Voir les :terms, section 11A.",
+    "Terms of Service": "Conditions d'utilisation"
 }

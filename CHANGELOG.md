@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- The public error pages (404, 429, link not found or expired, link ended or not live yet) use the family look: the marketing shell with the visitor's light or dark theme, the standard buttons, no uppercase eyebrow and no round logo; the 500 page follows the same look and still renders without the CSS build. Their texts were already in nine languages.
+- `/changes/short-links` is translated in nine languages (it was English only).
+- `qr`, `wifi`, `vcard`, `pay`, `split`, `send`, `secret` and `embargo` are reserved slugs, so the words other HOP apps use cannot become a new short link or bio slug. A link that already has one of them keeps working and can be edited while it keeps its slug; only a new slug or a change of slug is refused.
+- `hop/auth` is pinned to `^0.1.5` and `hop/safety` to the release `^0.1.0` (it followed `dev-main`). `hop/ui` is unchanged.
+- `scripts/sync-hop-assets.sh` copies the hop-assets version the HEL.ink manifest names (and the full v8 file set), not a fixed `v3`. `scripts/build-changelog.py` lists FileHop among the public apps.
+- The translated READMEs mention FileHop in the family list.
+
+### Removed
+- Six README screenshots and two files (`docs/social.jpg`, `docs/assets/tile.svg`) that nothing referenced.
+
 ### Fixed
 - The guest form on the home page: a tidier layout with one height and radius for the link field and Shorten, a row of its own for the Turnstile check that opens only when Cloudflare asks for a click (it no longer overlaps the rows below), Advanced on the left and sign-up on the right of one row, and the expiry note under a hairline. Tests pin the form's Alpine wiring and that a missing or empty token is refused; `scripts/check-turnstile.mjs` (CI workflow `turnstile`) loads the page in a browser and requires the widget to render.
 

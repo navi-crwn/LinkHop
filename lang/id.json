@@ -1007,5 +1007,19 @@
     "The old one stops working at once.": "Secret lama langsung berhenti berfungsi.",
     "The short link stops working and its statistics are removed. This cannot be undone.": "Tautan pendek ini berhenti berfungsi dan statistiknya dihapus. Tindakan ini tidak bisa dibatalkan.",
     "The short links stop working and their statistics are removed. This cannot be undone.": "Tautan-tautan pendek ini berhenti berfungsi dan statistiknya dihapus. Tindakan ini tidak bisa dibatalkan.",
-    "Part of :name": "Bagian dari :name"
+    "Part of :name": "Bagian dari :name",
+    "Short links moved to :host/l/…": "Tautan pendek pindah ke :host/l/…",
+    "hel.ink is becoming the home of several HOP apps. Short links get their own path.": "hel.ink menjadi rumah bagi beberapa aplikasi HOP. Tautan pendek mendapat jalurnya sendiri.",
+    "What changed": "Apa yang berubah",
+    "Every short link is now reached at :new instead of :old. Nothing was deleted: your links, their slugs, clicks and statistics are the same. The dashboard, QR codes and the API already show the new form.": "Setiap tautan pendek kini dibuka di :new, bukan di :old. Tidak ada yang dihapus: tautan, slug, klik, dan statistik Anda tetap sama. Dasbor, kode QR, dan API sudah menampilkan bentuk baru.",
+    "Until :date": "Sampai :date",
+    "The old form keeps working: :old redirects to :new, and those visits count as clicks like any other.": "Bentuk lama tetap berfungsi: :old dialihkan ke :new, dan kunjungan itu dihitung sebagai klik seperti biasa.",
+    "From :date": "Mulai :date",
+    "The old form stops. :old no longer opens your link; only :new does.": "Bentuk lama berhenti. :old tidak lagi membuka tautan Anda; hanya :new yang membukanya.",
+    "Replace the links you have published elsewhere (posts, bios, printed material) with the /l/ form. :mylinks shows every link in its new form, ready to copy.": "Ganti tautan yang Anda terbitkan di tempat lain (unggahan, bio, materi cetak) dengan bentuk /l/. :mylinks menampilkan setiap tautan dalam bentuk barunya, siap disalin.",
+    "Print or download QR codes again where they were made before this change; a QR code made from now on already points at the new form.": "Cetak atau unduh ulang kode QR yang dibuat sebelum perubahan ini; kode QR yang dibuat mulai sekarang sudah mengarah ke bentuk baru.",
+    "Bio pages are not affected: they stay at :bio.": "Halaman bio tidak terpengaruh: tetap di :bio.",
+    "API clients get the new form in :field; nothing to change on your side unless you built the address yourself.": "Klien API menerima bentuk baru di :field; tidak ada yang perlu diubah di sisi Anda kecuali Anda menyusun alamatnya sendiri.",
+    "We also emailed this notice to every account that owns links, and will send a reminder a week before :date. See the :terms, section 11A.": "Kami juga mengirim pemberitahuan ini lewat email ke setiap akun yang memiliki tautan, dan akan mengirim pengingat seminggu sebelum :date. Lihat :terms, bagian 11A.",
+    "Terms of Service": "Ketentuan Layanan"
 }
