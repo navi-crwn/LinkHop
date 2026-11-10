@@ -40,3 +40,15 @@ it('points at the sitemap', function () {
     expect(robotsRules()['sitemap'])->toBe(['https://link.hel.ink/sitemap.xml']);
     $this->get('/sitemap.xml')->assertOk();
 });
+
+it('lists only URLs on the host that serves the sitemap', function () {
+    config(['app.url' => 'https://link.hel.ink', 'shortener.public_url' => 'https://hel.ink']);
+    $xml = $this->get('/sitemap.xml')->assertOk()->getContent();
+    preg_match_all('~<loc>([^<]+)</loc>~', $xml, $m);
+
+    expect($m[1])->toContain('https://link.hel.ink', 'https://link.hel.ink/qr', 'https://link.hel.ink/faq');
+    foreach ($m[1] as $loc) {
+        expect(parse_url($loc, PHP_URL_HOST))->toBe('link.hel.ink');
+    }
+    expect(file_get_contents(public_path('robots.txt')))->not->toContain('Last updated');
+});
