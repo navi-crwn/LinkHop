@@ -1,0 +1,48 @@
+name: turnstile
+
+# The guest form on the home page must initialise (Alpine) and render the Turnstile widget.
+on:
+  pull_request:
+    paths:
+      - 'resources/js/**'
+      - 'resources/views/landing.blade.php'
+      - 'resources/views/components/turnstile.blade.php'
+      - 'scripts/check-turnstile.mjs'
+      - '.github/workflows/turnstile.yml'
+  workflow_dispatch:
+
+jobs:
+  widget:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: gd, sqlite3, pdo_sqlite, intl
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: npm ci && npm run build
+      - run: npx playwright install --with-deps chromium
+      - name: Serve the app with Cloudflare's test keys
+        run: |
+          cp .env.example .env && php artisan key:generate
+          {
+            echo 'APP_URL=http://127.0.0.1:8000'
+            echo 'DB_CONNECTION=sqlite'
+            echo 'DB_DATABASE=/tmp/ts.sqlite'
+            echo 'CACHE_STORE=array'
+            echo 'SESSION_DRIVER=array'
+            echo 'TURNSTILE_SITE_KEY=1x00000000000000000000AA'
+            echo 'TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA'
+          } >> .env
+          touch /tmp/ts.sqlite
+          php artisan migrate --force
+          nohup php artisan serve --port=8000 > /tmp/serve.log 2>&1 &
+          sleep 4
+      - run: node scripts/check-turnstile.mjs http://127.0.0.1:8000

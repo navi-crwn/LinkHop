@@ -25,38 +25,38 @@
                 action="{{ route('shorten.store') }}"
             >
                 @csrf
-                {{-- Row 1: link + Shorten. Row 2: advanced options and sign-up hint; the security check
-                     (normal size) right under Shorten, shown only when Cloudflare asks for a click. --}}
+                {{-- Row 1: the link and Shorten, one height and one radius (control standard). Row 2: the security
+                     check, a row of its own that opens (200 ms) only when Cloudflare asks for a click; 300 px wide,
+                     so it never overlaps the rows below. Row 3: Advanced on the left, sign-up on the right. --}}
                 <div class="flex flex-col gap-2 sm:flex-row">
                     <label for="target_url" class="sr-only">{{ __('Long URL') }}</label>
                     <input id="target_url" type="url" name="target_url" value="{{ old('target_url') }}" required
                         placeholder="{{ __('Paste a long link…') }}"
-                        class="min-w-0 flex-1 rounded-2xl border-0 bg-slate-100 px-4 py-3.5 text-[15px] text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-indigo-400/50 dark:bg-white/6 dark:text-white dark:placeholder-white/35 dark:focus:bg-white/9">
+                        class="h-12 min-w-0 flex-1 rounded-2xl border-0 bg-slate-100 px-4 text-[15px] text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-indigo-400/50 dark:bg-white/6 dark:text-white dark:placeholder-white/35 dark:focus:bg-white/9">
                     <button type="submit"
-                        class="rounded-2xl bg-linear-to-r from-indigo-500 via-sky-500 to-fuchsia-500 px-6 py-3.5 font-semibold text-white shadow-md shadow-indigo-500/25 transition hover:brightness-110 active:scale-[0.98] disabled:opacity-50">
+                        class="h-12 rounded-2xl bg-linear-to-r from-indigo-500 via-sky-500 to-fuchsia-500 px-6 font-semibold text-white shadow-md shadow-indigo-500/25 transition hover:brightness-110 active:scale-[0.97] disabled:opacity-50">
                         <span x-show="!waiting">{{ __('Shorten') }}</span><span x-cloak x-show="waiting">{{ __('Verifying…') }}</span>
                     </button>
                 </div>
-                <div class="flex flex-col-reverse px-2 pb-1 pt-2 sm:flex-row sm:items-start sm:gap-4">
-                    <div class="min-w-0 flex-1">
-                        <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs"
-                            x-bind:class="challenge && 'sm:flex-col sm:items-start sm:pt-2 sm:gap-y-3'">
-                            <a href="{{ route('register') }}" class="font-medium text-indigo-600 hover:underline dark:text-indigo-300">{{ __('Create free account') }} →</a>
-                        </div>
-                        <details id="guest-advanced" class="mt-2" @if(old('slug') || old('content_warning', 'none') !== 'none' || old('warning_reason') || $errors->hasAny(['slug', 'content_warning', 'warning_reason'])) open @endif>
-                            <summary class="cursor-pointer py-2 text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-white/70 dark:hover:text-white">{{ __('Advanced') }}</summary>
-                            <label for="slug" class="label">{{ __('Custom slug (optional)') }}</label>
-                            <div class="flex items-center gap-2">
+                {{-- Kept rendered (Turnstile needs a live container); the row grows from 0 to its height when a challenge or an error shows. --}}
+                <div class="grid px-2 transition-[grid-template-rows] duration-200 ease-out motion-reduce:transition-none"
+                    x-bind:class="challenge || status === 'error' ? 'grid-rows-[1fr] pt-3' : 'grid-rows-[0fr]'">
+                    <div class="min-h-0 overflow-hidden">
+                        <x-turnstile class="w-[300px] max-w-full max-sm:mx-auto" />
+                    </div>
+                </div>
+                <div class="relative grid grid-cols-[1fr_auto] items-start px-2 pt-1">
+                    <details id="guest-advanced" class="group col-span-2 col-start-1 row-start-1 border-b-0! py-0!" @if(old('slug') || old('content_warning', 'none') !== 'none' || old('warning_reason') || $errors->hasAny(['slug', 'content_warning', 'warning_reason'])) open @endif>
+                        <summary class="flex h-10 cursor-pointer items-center text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-white/70 dark:hover:text-white">{{ __('Advanced') }}<svg class="ml-1.5 size-3.5 transition-transform duration-150 ease-out group-open:rotate-90 motion-reduce:transition-none" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3 5 5-5 5"/></svg></summary>
+                        <label for="slug" class="label">{{ __('Custom slug (optional)') }}</label>
+                        <div class="flex items-center gap-2">
                             <span class="text-sm text-slate-400 dark:text-white/45">{{ public_host() }}/l/</span>
                             <input id="slug" type="text" name="slug" value="{{ old('slug') }}" placeholder="my-link" pattern="[A-Za-z0-9\-]+"
-                                class="min-w-0 flex-1 rounded-xl border-0 bg-slate-100 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-400/50 dark:bg-white/6 dark:text-white dark:placeholder-white/30">
-                            </div>
-                            <div class="py-4"><x-content-warning-fields prefix="guest-warning" /></div>
-                        </details>
-                    </div>
-                    {{-- Kept rendered but collapsed (Turnstile needs a live container). --}}
-                    <x-turnstile class="flex-none self-center sm:self-auto"
-                        x-bind:class="challenge || status === 'error' ? 'mb-2 sm:mb-0' : 'h-0 w-0 overflow-hidden'" />
+                                class="h-10 min-w-0 flex-1 rounded-xl border-0 bg-slate-100 px-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-400/50 dark:bg-white/6 dark:text-white dark:placeholder-white/30">
+                        </div>
+                        <div class="py-4"><x-content-warning-fields prefix="guest-warning" /></div>
+                    </details>
+                    <a href="{{ route('register') }}" class="relative z-10 col-start-2 row-start-1 flex h-10 items-center text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-300">{{ __('Create free account') }} →</a>
                 </div>
                 @if (session('link_error') || $errors->any())
                     <div class="m-2 rounded-xl bg-rose-500/10 px-3 py-2 text-sm text-rose-700 dark:bg-rose-500/15 dark:text-rose-100">
@@ -86,7 +86,7 @@
                     </p>
                 </div>
             @else
-                <p class="px-3 pb-2 text-[11px] text-slate-500 dark:text-white/60">
+                <p class="mx-2 mt-1 border-t border-slate-200/80 px-0 pb-2 pt-3 text-xs text-slate-500 dark:border-white/10 dark:text-white/60">
                     {{ __('Guest links expire after :idle days without a click or :max days in total.', ['idle' => $idleDays, 'max' => $maxDays]) }}
                 </p>
             @endif

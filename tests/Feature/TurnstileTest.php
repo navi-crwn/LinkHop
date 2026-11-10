@@ -68,3 +68,23 @@ test('the landing and the abuse form render the turnstile widget container when 
 test('the queue health endpoint is reachable (not swallowed by the short-link catch-all)', function () {
     $this->getJson('/health/queue')->assertOk()->assertJsonStructure(['status', 'last_heartbeat']);
 });
+
+test('a guest link without a token, or with an empty one, is refused and nothing is stored', function () {
+    config(['services.turnstile.secret' => 'test-secret', 'services.turnstile.site_key' => '1x00000000000000000000AA']);
+    Http::fake([SITEVERIFY => Http::response(['success' => true])]);
+
+    $this->post('/shorten', ['target_url' => 'https://example.com/nt'])->assertSessionHasErrors('turnstile');
+    $this->post('/shorten', ['target_url' => 'https://example.com/nt', 'cf-turnstile-response' => ''])->assertSessionHasErrors('turnstile');
+    Http::assertNothingSent();
+    expect(Link::where('target_url', 'https://example.com/nt')->exists())->toBeFalse();
+});
+
+test('the guest form is wired for Alpine: component, container, hidden token field and submit guard', function () {
+    config(['services.turnstile.site_key' => '1x00000000000000000000AA']);
+    $html = $this->get('/')->assertOk()->getContent();
+    preg_match('~<form[^>]*action="[^"]*shorten".*?</form>~s', $html, $form);
+
+    expect($form[0] ?? '')->toContain('x-data="turnstileForm(')->toContain('x-on:submit="handleSubmit($event)"')
+        ->toContain('x-ref="captcha"')->toContain('name="cf-turnstile-response"');
+    expect(file_get_contents(resource_path('js/app.js')))->toContain('window.turnstileForm = ')->toContain('Alpine.start()');
+});
