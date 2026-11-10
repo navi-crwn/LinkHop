@@ -16,6 +16,7 @@ use App\Http\Controllers\LinkImportController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PublicLinkController;
 use App\Http\Controllers\QrController;
+use App\Http\Controllers\QrStudioController;
 use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\SessionController;
@@ -62,6 +63,8 @@ Route::middleware('ip.ban')->group(function () {
     Route::get('/register', fn () => redirect()->away(hub_url('register')))->name('register');
     Route::match(['get', 'post'], '/logout', [SessionController::class, 'logout'])->name('logout');
     Route::get('/api/qr-generate', QrController::class)->name('api.qr.generate')->middleware('throttle:60,1,qr');
+    // The guest QR page: Wi-Fi, contact card, link or text, drawn in the browser. GET only, nothing is sent or logged.
+    Route::get('/qr', QrStudioController::class)->name('qr');
     // The notice about the move to /l/ is linked from emails and the dashboard: readable without signing in.
     Route::view('/changes/short-links', 'announcements.short-links')->name('announcements.short-links');
     Route::middleware(['hop.auth'])->group(function () {

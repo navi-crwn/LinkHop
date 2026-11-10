@@ -23,6 +23,7 @@
         ['label' => __('Analytics'), 'icon' => 'chart', 'route' => 'analytics', 'active' => 'analytics'],
         ['label' => __('Links'), 'icon' => 'link', 'active' => ['links*', 'folders*', 'tags*'], 'children' => [
             ['label' => __('My links'), 'route' => 'links.index', 'active' => ['links.index', 'links.create', 'links.show', 'links.edit']],
+            ['label' => __('QR codes'), 'route' => 'qr', 'active' => 'qr'],
             ['label' => __('Import CSV'), 'route' => 'links.import', 'active' => 'links.import*'],
             ['label' => __('Folders'), 'route' => 'folders.index', 'active' => 'folders*'],
             ['label' => __('Tags'), 'route' => 'tags.index', 'active' => 'tags*'],

@@ -66,6 +66,7 @@
             <div class="min-w-0 flex-1">
                 <h2 id="qr-title" class="section-title">{{ __('QR code') }}</h2>
                 <p class="mt-1 text-xs text-muted">{{ __('Opens :url. Scans are counted apart from direct clicks.', ['url' => $link->short_url]) }}</p>
+                <p class="mt-1 text-xs text-muted">{{ __('The QR code holds the short address. Change the destination any time: the printed code keeps working.') }} <a href="{{ route('qr') }}#dynamic" class="underline">{{ __('How that works') }}</a></p>
                 <div class="mt-3 flex flex-wrap gap-2">
                     <a href="{{ route('links.qr.download', [$link, 'png']) }}" download class="btn-soft btn-sm">PNG</a>
                     <a href="{{ route('links.qr.download', [$link, 'jpg']) }}" download class="btn-soft btn-sm">JPG</a>
