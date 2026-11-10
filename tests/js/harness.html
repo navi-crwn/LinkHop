@@ -3,24 +3,20 @@
 <title>QR decode harness</title>
 <script src="/public/vendor/qr-code-styling/qr-code-styling.js"></script>
 <script type="module">
-  import * as QrPayloads from '/resources/js/qr/payloads.js';
+  import { qrStyleOptions } from '/resources/js/qr/options.js';
   // Renders `data` with the vendored qr-code-styling and returns the PNG as base64.
-  // opts: { size, fg, bg, ecc, dots, corners, cornerDots, logoDataUrl, logoSize, binary }
+  // opts: { size, fg, bg, ecc, dots, corners, cornerDots, logoDataUrl, logoSize, binary: false for the control }
   window.renderPng = async function (data, opts) {
     opts = opts || {};
     var size = opts.size || 512;
-    var qr = new QRCodeStyling({
-      width: size, height: size, type: 'canvas',
-      data: opts.binary ? QrPayloads.binaryString(data) : data,
-      margin: opts.margin == null ? Math.round(size * 0.09) : opts.margin,
-      qrOptions: { errorCorrectionLevel: opts.ecc || 'M' },
-      dotsOptions: { color: opts.fg || '#000000', type: opts.dots || 'square' },
-      backgroundOptions: { color: opts.bg || '#ffffff' },
-      cornersSquareOptions: { color: opts.fg || '#000000', type: opts.corners || 'square' },
-      cornersDotOptions: { color: opts.fg || '#000000', type: opts.cornerDots || 'square' },
-      image: opts.logoDataUrl || undefined,
-      imageOptions: { imageSize: opts.logoSize || 0.25, margin: 2, hideBackgroundDots: true, crossOrigin: 'anonymous' }
-    });
+    // The same option builder as the page (studio.js); only what a case overrides is changed afterwards.
+    var style = { fg: opts.fg || '#000000', bg: opts.bg || '#ffffff', dots: opts.dots || 'square', corners: opts.corners || 'square',
+      logo: opts.logoDataUrl || '', logoSize: Math.round((opts.logoSize || 0.25) * 100) };
+    var o = qrStyleOptions(style, 'canvas', size, data, opts.margin == null ? Math.round(size * 0.09) : opts.margin);
+    if (opts.ecc) o.qrOptions.errorCorrectionLevel = opts.ecc;
+    if (opts.cornerDots) o.cornersDotOptions.type = opts.cornerDots;
+    if (opts.binary === false) o.data = data; // control only: the library fed the raw string
+    var qr = new QRCodeStyling(o);
     var blob = await qr.getRawData('png');
     var modules = qr._qr && qr._qr.getModuleCount ? qr._qr.getModuleCount() : null;
     var b64 = await new Promise(function (res) {

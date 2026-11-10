@@ -3,6 +3,7 @@
  * (already in the visitor's language) as JSON in #qr-i18n. */
 import * as P from './payloads.js';
 import { CARD, LANG_ORDER } from './card-text.js';
+import { qrStyleOptions } from './options.js';
 
 function main() {
   'use strict';
@@ -81,21 +82,7 @@ function main() {
   var mainQr = null, timer = 0, lastModules = 0;
   var SIZE = 576;
 
-  function qrOptions(type, size, payload, margin) {
-    var s = state.style, hasLogo = !!s.logo;
-    return {
-      width: size, height: size, type: type,
-      data: P.binaryString(payload), // the library reads one byte per character: hand it UTF-8 bytes
-      margin: margin,
-      qrOptions: { errorCorrectionLevel: hasLogo ? 'H' : 'M' },
-      dotsOptions: { color: s.fg, type: s.dots },
-      backgroundOptions: { color: s.bg },
-      cornersSquareOptions: { color: s.fg, type: s.corners },
-      cornersDotOptions: { color: s.fg, type: s.corners === 'dot' ? 'dot' : 'square' },
-      image: hasLogo ? s.logo : '',
-      imageOptions: { hideBackgroundDots: true, imageSize: s.logoSize / 100, margin: 2, crossOrigin: 'anonymous' }
-    };
-  }
+  function qrOptions(type, size, payload, margin) { return qrStyleOptions(state.style, type, size, payload, margin); }
   /** Draws with the quiet zone of four squares: needs the module count, which the first pass gives. */
   function drawQr(inst, type, size, payload) {
     var guess = Math.round(size * 0.09);

@@ -22,7 +22,8 @@ const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; ch
 function serve() {
   const server = http.createServer((req, res) => {
     const file = path.join(ROOT, decodeURIComponent(new URL(req.url, 'http://x').pathname));
-    if (!file.startsWith(ROOT) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) { res.writeHead(404).end(); return; }
+    const rel = file.slice(ROOT.length).split(path.sep).join('/');
+    if (!/^\/(public\/vendor|resources\/js\/qr|tests\/js)\//.test(rel) || !file.startsWith(ROOT) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) { res.writeHead(404).end(); return; }
     res.writeHead(200, { 'Content-Type': TYPES[path.extname(file)] || 'application/octet-stream' }).end(fs.readFileSync(file));
   });
   return new Promise((resolve) => server.listen(0, '127.0.0.1', () => resolve(server)));
@@ -129,7 +130,7 @@ test('every payload is drawn by the vendored library and read back by an indepen
     try {
       if (!expectedText) throw new Error('builder returned no payload: ' + built.errors.join(','));
       if (handWritten[c.id]) assertEq(expectedText, handWritten[c.id], 'builder vs hand-written payload');
-      const opts = Object.assign({ binary: true }, c.opts || {});
+      const opts = Object.assign({}, c.opts || {});
       if (opts.logo) opts.logoDataUrl = LOGO;
       const r = await page.evaluate(([t, o]) => window.renderPng(t, o), [expectedText, opts]);
       const buf = Buffer.from(r.b64, 'base64');
@@ -187,6 +188,7 @@ test('every payload is drawn by the vendored library and read back by an indepen
     say('');
     say('Control, library fed the raw string (no UTF-8 byte conversion): ' + (decoded === t ? 'decodes correctly' : 'DOES NOT round-trip -> ' + JSON.stringify(decoded)));
     say('  This is why the page passes QrPayloads.binaryString(payload) to qr-code-styling.');
+    if (decoded === t) failures++; // the control must fail: it proves the byte conversion is what makes the cases above pass
   }
 
   say('');
