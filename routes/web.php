@@ -42,7 +42,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('ip.ban')->group(function () {
-    Route::get('/changelog', ChangelogController::class)->name('changelog');
+    Route::get('/changelog', ChangelogController::class)->middleware('hop.recheck')->name('changelog');
     Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
     // Brand images, all from resources/brand (BrandAssetController). route() links carry a version ({v},
     // see AppServiceProvider) that changes with the files; the plain paths stay for emails and old pages.
@@ -54,7 +54,9 @@ Route::middleware('ip.ban')->group(function () {
     Route::get('/brand/{file}', [BrandAssetController::class, 'legacy'])->where('file', $brandFile);
     // link.hel.ink/: LinkHop's landing (hero animation, guest shortener) for guests, the dashboard once
     // signed in. The HOP family home page is the hub's (hel.ink).
-    Route::get('/', [PublicLinkController::class, 'index'])->name('home');
+    // hop.recheck: these public pages show the signed-in account, so a stale session is confirmed with the hub (silent,
+    // once per hop-auth.recheck.max_age). Never on /l/{slug} or the other redirect hot paths.
+    Route::get('/', [PublicLinkController::class, 'index'])->middleware('hop.recheck')->name('home');
     Route::post('/shorten', [PublicLinkController::class, 'store'])
         ->middleware(['throttle:shorten', 'quota'])
         ->name('shorten.store');
@@ -64,7 +66,7 @@ Route::middleware('ip.ban')->group(function () {
     Route::match(['get', 'post'], '/logout', [SessionController::class, 'logout'])->name('logout');
     Route::get('/api/qr-generate', QrController::class)->name('api.qr.generate')->middleware('throttle:60,1,qr');
     // The guest QR page: Wi-Fi, contact card, link or text, drawn in the browser. GET only, nothing is sent or logged.
-    Route::get('/qr', QrStudioController::class)->name('qr');
+    Route::get('/qr', QrStudioController::class)->middleware('hop.recheck')->name('qr');
     // The notice about the move to /l/ is linked from emails and the dashboard: readable without signing in.
     Route::view('/changes/short-links', 'announcements.short-links')->name('announcements.short-links');
     Route::middleware(['hop.auth'])->group(function () {
@@ -132,9 +134,9 @@ Route::middleware('ip.ban')->group(function () {
         ->middleware('throttle:30,1,csrf-token')->name('csrf.token');
     // Dedicated pages on LinkHop's own domain (U-07); menus link here, not to the hub.
     foreach (PageController::PAGES as $page) {
-        Route::get('/'.$page, [PageController::class, 'show'])->defaults('page', $page)->name('pages.'.$page);
+        Route::get('/'.$page, [PageController::class, 'show'])->defaults('page', $page)->middleware('hop.recheck')->name('pages.'.$page);
     }
-    Route::get('/status', [PageController::class, 'status'])->name('pages.status');
+    Route::get('/status', [PageController::class, 'status'])->middleware('hop.recheck')->name('pages.status');
     Route::get('/check', LinkCheckController::class)->middleware('throttle:30,1,link-check')->name('link.check');
     Route::get('/report-abuse', [AbuseReportController::class, 'create'])->name('report.create');
     Route::post('/report-abuse', [AbuseReportController::class, 'store'])->middleware('throttle:5,10,report-abuse')->name('report.store');

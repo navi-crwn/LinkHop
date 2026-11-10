@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1289d617fb37c2ea5eca4306d1eb5e13",
+    "content-hash": "0f7d08d903c8c4248e5ad8c72f2afed1",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1297,16 +1297,16 @@
         },
         {
             "name": "hop/auth",
-            "version": "v0.1.5",
+            "version": "dev-feat/pay-host-silent-recheck",
             "source": {
                 "type": "git",
-                "url": "git@github.com:navi-crwn/hop-auth.git",
-                "reference": "df506c4f2c558cd015f0b6132cf60caf5256a398"
+                "url": "https://github.com/navi-crwn/hop-auth.git",
+                "reference": "3388415b3355dc41c427833f0573ed8d05285725"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-auth/zipball/df506c4f2c558cd015f0b6132cf60caf5256a398",
-                "reference": "df506c4f2c558cd015f0b6132cf60caf5256a398",
+                "url": "https://api.github.com/repos/navi-crwn/hop-auth/zipball/3388415b3355dc41c427833f0573ed8d05285725",
+                "reference": "3388415b3355dc41c427833f0573ed8d05285725",
                 "shasum": ""
             },
             "require": {
@@ -1330,7 +1330,11 @@
                 "MIT"
             ],
             "description": "HOP shared package: auth.",
-            "time": "2026-11-10T07:17:26+00:00"
+            "support": {
+                "source": "https://github.com/navi-crwn/hop-auth/tree/feat/pay-host-silent-recheck",
+                "issues": "https://github.com/navi-crwn/hop-auth/issues"
+            },
+            "time": "2026-11-10T17:35:26+00:00"
         },
         {
             "name": "hop/bio",
@@ -1407,23 +1411,22 @@
         },
         {
             "name": "hop/ui",
-            "version": "dev-main",
+            "version": "dev-feat/manifest-v9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/navi-crwn/hop-ui.git",
-                "reference": "cf9db5a075a5b9246fab901d22f24edd02a56d9e"
+                "reference": "5f264d122b2a6ec12f4883af4db0d278ea6f9304"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-ui/zipball/cf9db5a075a5b9246fab901d22f24edd02a56d9e",
-                "reference": "cf9db5a075a5b9246fab901d22f24edd02a56d9e",
+                "url": "https://api.github.com/repos/navi-crwn/hop-ui/zipball/5f264d122b2a6ec12f4883af4db0d278ea6f9304",
+                "reference": "5f264d122b2a6ec12f4883af4db0d278ea6f9304",
                 "shasum": ""
             },
             "require": {
                 "illuminate/support": "^12.0",
                 "php": "^8.3"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -1442,10 +1445,10 @@
             ],
             "description": "HOP shared package: ui.",
             "support": {
-                "source": "https://github.com/navi-crwn/hop-ui/tree/main",
+                "source": "https://github.com/navi-crwn/hop-ui/tree/feat/manifest-v9",
                 "issues": "https://github.com/navi-crwn/hop-ui/issues"
             },
-            "time": "2026-11-08T10:07:50+00:00"
+            "time": "2026-11-10T17:26:33+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
@@ -11275,14 +11278,21 @@
     ],
     "aliases": [
         {
+            "package": "hop/auth",
+            "version": "dev-feat/pay-host-silent-recheck",
+            "alias": "0.1.99",
+            "alias_normalized": "0.1.99.0"
+        },
+        {
             "package": "hop/ui",
-            "version": "dev-main",
+            "version": "dev-feat/manifest-v9",
             "alias": "0.2.99",
             "alias_normalized": "0.2.99.0"
         }
     ],
     "minimum-stability": "stable",
     "stability-flags": {
+        "hop/auth": 20,
         "hop/bio": 20,
         "hop/ui": 20
     },
