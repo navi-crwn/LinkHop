@@ -985,7 +985,7 @@
     "This page does not exist or has moved. Check the address, or go back to where you were.": "This page does not exist or has moved. Check the address, or go back to where you were.",
     "To date": "To date",
     "Tokens with link:* scopes for ShareX, the CLI and BioHop.": "Tokens with link:* scopes for ShareX, the CLI and BioHop.",
-    "Weekly\/monthly reports": "Weekly\/monthly reports",
+    "Weekly/monthly reports": "Weekly/monthly reports",
     "What to do": "What to do",
     "Your LinkHop data; the account itself is your HOP ID at the hub.": "Your LinkHop data; the account itself is your HOP ID at the hub.",
     "Your session expired. Please try again.": "Your session expired. Please try again.",
@@ -1006,5 +1006,6 @@
     "Nothing else was changed. Try again in a moment.": "Nothing else was changed. Try again in a moment.",
     "The old one stops working at once.": "The old one stops working at once.",
     "The short link stops working and its statistics are removed. This cannot be undone.": "The short link stops working and its statistics are removed. This cannot be undone.",
-    "The short links stop working and their statistics are removed. This cannot be undone.": "The short links stop working and their statistics are removed. This cannot be undone."
+    "The short links stop working and their statistics are removed. This cannot be undone.": "The short links stop working and their statistics are removed. This cannot be undone.",
+    "Part of :name": "Part of :name"
 }

@@ -81,7 +81,7 @@ test('a suspended account is refused at the callback and signed out on the next 
 test('/logout ends the session here and goes on to the hub; the hub chain uses /auth/sso/logout', function () {
     $user = User::factory()->create();
 
-    $this->actingAs($user)->post('/logout')->assertRedirect('https://hub.example.test/logout');
+    $this->actingAs($user)->post('/logout')->assertRedirect('https://hub.example.test/logout?return='.urlencode(route('home')));
     $this->assertGuest();
 
     $this->actingAs($user)->get('/auth/sso/logout?next=https://hub.example.test/dashboard')->assertRedirect('https://hub.example.test/dashboard');
@@ -98,4 +98,19 @@ test('the dashboard lists the HOP family in the sidebar and links the account pa
         ->assertSee('BioHop')->assertSee('PixelHop')->assertSee('NoteHop');
     $this->actingAs($user)->get('/profile')->assertRedirect('https://hub.example.test/profile');
     $this->actingAs($user)->get('/settings')->assertOk()->assertSee('https://hub.example.test/settings')->assertDontSee('Two-Factor Authentication');
+});
+
+test('sign-out asks the hub to bring the person back to this app, not to the hub home', function () {
+    $user = User::factory()->create();
+
+    $location = $this->actingAs($user)->post('/logout')->headers->get('Location');
+    parse_str((string) parse_url($location, PHP_URL_QUERY), $query);
+    expect($location)->toStartWith('https://hub.example.test/logout?')
+        ->and($query['return'])->toBe(route('home'));
+});
+
+test('the footer opens with the family row and has no language row', function () {
+    preg_match('~<footer.*</footer>~s', $this->get('/about')->assertOk()->getContent(), $m);
+    expect($m[0])->toContain('Hop Easy Link')->toContain('Part of')->toContain('href="https://hel.ink"')
+        ->not->toContain('aria-label="Language"')->not->toContain('?lang=');
 });

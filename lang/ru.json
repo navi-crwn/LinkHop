@@ -985,7 +985,7 @@
     "This page does not exist or has moved. Check the address, or go back to where you were.": "Этой страницы нет или она переехала. Проверьте адрес или вернитесь туда, где были.",
     "To date": "По дату",
     "Tokens with link:* scopes for ShareX, the CLI and BioHop.": "Токены с правами link:* для ShareX, CLI и BioHop.",
-    "Weekly\/monthly reports": "Еженедельные\/ежемесячные отчёты",
+    "Weekly/monthly reports": "Еженедельные/ежемесячные отчёты",
     "What to do": "Что делать",
     "Your LinkHop data; the account itself is your HOP ID at the hub.": "Ваши данные LinkHop; сам аккаунт — это ваш HOP ID в хабе.",
     "Your session expired. Please try again.": "Сессия истекла. Попробуйте ещё раз.",
@@ -1006,5 +1006,6 @@
     "Nothing else was changed. Try again in a moment.": "Больше ничего не изменилось. Попробуйте ещё раз чуть позже.",
     "The old one stops working at once.": "Старый сразу перестанет работать.",
     "The short link stops working and its statistics are removed. This cannot be undone.": "Короткая ссылка перестанет работать, а её статистика будет удалена. Отменить это нельзя.",
-    "The short links stop working and their statistics are removed. This cannot be undone.": "Короткие ссылки перестанут работать, а их статистика будет удалена. Отменить это нельзя."
+    "The short links stop working and their statistics are removed. This cannot be undone.": "Короткие ссылки перестанут работать, а их статистика будет удалена. Отменить это нельзя.",
+    "Part of :name": "Часть :name"
 }

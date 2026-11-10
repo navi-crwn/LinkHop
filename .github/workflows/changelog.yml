@@ -1,0 +1,21 @@
+name: changelog
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  snapshot:
+    # Release branches must carry a snapshot that lists every merged PR and tag.
+    if: startsWith(github.head_ref, 'release/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Changelog snapshot is current
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git fetch --quiet origin main
+          python3 scripts/build-changelog.py --repo LinkHop --check

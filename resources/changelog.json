@@ -1,9 +1,2070 @@
 {
   "schema": 1,
   "sources": {
-    "LinkHop": "65969e71cc0d31dcb70210d77751317a05f81648"
+    "LinkHop": "86fb14a860b8b147af7350e200c79d03d59c1be2"
   },
   "entries": [
+    {
+      "kind": "tag",
+      "date": "2026-11-10T04:23:05+07:00",
+      "title": "v2.1.0",
+      "url": "https://github.com/navi-crwn/LinkHop/releases/tag/v2.1.0",
+      "id": "v2.1.0",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T04:23:05+07:00",
+      "title": "Merge pull request #115: Release 2.1.0",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/86fb14a860b8b147af7350e200c79d03d59c1be2",
+      "id": "86fb14a8",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-09T21:23:05Z",
+      "title": "Release 2.1.0",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/115",
+      "id": "#115",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T22:12:38+01:00",
+      "title": "Release 2.1.0",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/6a4df5d103bc3b764438d03b849374bff0cfbe77",
+      "id": "6a4df5d1",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-09T20:58:13Z",
+      "title": "Let link gates open the link, and let a link have no folder",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/114",
+      "id": "#114",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T03:58:12+07:00",
+      "title": "Merge pull request #114: Let link gates open the link, and let a link have no folder",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/ee25521b438ef6906e48a3a8b8567ad1345dd8d2",
+      "id": "ee25521b",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T03:57:58+07:00",
+      "title": "Merge pull request #113: Use the hop/ui commit with launcher family links and hop-assets v4",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/22b3024a70ecb25df661dc5ffab5587e8c68faba",
+      "id": "22b3024a",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-09T20:57:58Z",
+      "title": "Use the hop/ui commit with launcher family links and hop-assets v4",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/113",
+      "id": "#113",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T21:41:36+01:00",
+      "title": "Changelog for the control standard; name the tag group for assistive technology",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3091714fb60bb97c998df59c366b0670c362505d",
+      "id": "3091714f",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T21:15:40+01:00",
+      "title": "Make the coss surfaces an optional Clean style (data-ui=clean, cookie hop_ui)",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/874af7f606cbe5225025be0e3d396c66a50219d5",
+      "id": "874af7f6",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T20:25:37+01:00",
+      "title": "Give the secondary button a hairline on solid cards",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/642ccce70a4457333e51112b674ec2bca8f62909",
+      "id": "642ccce7",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T20:24:34+01:00",
+      "title": "Sentence case for utility-styled small labels",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f867570fe7d1857d4eb98aa908bf3e4e0fbdbd0d",
+      "id": "f867570f",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T20:19:21+01:00",
+      "title": "Flat coss surfaces: solid cards, hairline sidebar and top bar, quiet tables and tabs, family footer",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c4e0974352feed41cde1a52bf34cfc21faa0dbc1",
+      "id": "c4e09743",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T20:06:33+01:00",
+      "title": "Give every control one shape and one height (HOP control standard)",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/4019146c34d0e4e38d8c3432876740c6afbed036",
+      "id": "4019146c",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T05:26:06+01:00",
+      "title": "Send the preview page's Go Back to the family home, and give a card an image",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/31560636512db1684b3ca12a2209fffd8b9c68ae",
+      "id": "31560636",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T05:23:47+01:00",
+      "title": "Do not let a permanent redirect outlive the link's own settings",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f791db242d82f3af0249eba0b3d153e0a5131164",
+      "id": "f791db24",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T05:11:00+01:00",
+      "title": "Make the reminder card's narrow-column rule win over hop-ui.css",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c7d66343be402f7f6b2808a3522bb1e9a9086776",
+      "id": "c7d66343",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T05:11:00+01:00",
+      "title": "Put the content warning after the address in the create dialog",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/0cddf398ca147df67c8ee727cff55770247226a5",
+      "id": "0cddf398",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T04:54:36+01:00",
+      "title": "Tests for the family dialogs and the reminder cards",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f32ad19513ec3e014222d6e571aa8cc2ea616e8e",
+      "id": "f32ad195",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T04:54:36+01:00",
+      "title": "Let the dashboard's reminder cards be hidden for a week",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/78e62349b9bb0527812312d84cb2361142e7b8ea",
+      "id": "78e62349",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T04:54:35+01:00",
+      "title": "Ask and tell in the family dialogs instead of the browser's",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3ea37520ab26eea24f0626274125e673e39ecccf",
+      "id": "3ea37520",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T04:43:33+01:00",
+      "title": "Tests for the dashboard retest fixes",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f4e20a1fbc9690dea0e198faf8d51ebbf7641c32",
+      "id": "f4e20a1f",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T04:43:33+01:00",
+      "title": "Say that the session expired in the language of the page",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d119977b05de84db00e2d4a4d4a0399a936c037e",
+      "id": "d119977b",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T04:43:33+01:00",
+      "title": "Translate the sidebar, Settings and the notice; open the right hub tabs",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/a2e714ac53dc064d61d1caf140f2683d74974d19",
+      "id": "a2e714ac",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T04:43:33+01:00",
+      "title": "Public pages: go back in history, the /l/ form, the family look, a readable address",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/9425ee34ef7510c9777f9e592af98042af984b42",
+      "id": "9425ee34",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T04:43:33+01:00",
+      "title": "Show a check and the word Copied on the copy icon buttons",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/53db5738542e8297bdd68c4e0f0b5e47e2d1c6d2",
+      "id": "53db5738",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T04:43:33+01:00",
+      "title": "Go back to the list after deleting a folder or tag from its own page",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/30ef64f4f61e519386042ea075acd30fc3a4b032",
+      "id": "30ef64f4",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T04:43:33+01:00",
+      "title": "Log every edit of a link, and give an existing link its QR code",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/1b490cff2299652341207a50839951a277051833",
+      "id": "1b490cff",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T04:43:32+01:00",
+      "title": "Keep the My links count and the selection in step with deletes",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/65e88780fea82d5433d2d62780bff5859fa70674",
+      "id": "65e88780",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-09T04:43:32+01:00",
+      "title": "Make the create-link dialog work on a phone and keep what was typed",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/0a230e021aea99678e8ef885216818d05403ad28",
+      "id": "0a230e02",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T18:51:44+01:00",
+      "title": "Let the create form make a link with no folder",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f5c63feed85101665eec2131006f9e86b97351ec",
+      "id": "f5c63fee",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T18:51:44+01:00",
+      "title": "Open a link with a GET after its gate form is accepted",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/e951d04e05b53b4e937cb555ea2a158353f348f1",
+      "id": "e951d04e",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T14:48:11+01:00",
+      "title": "Let a link have no folder on the edit form",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/216400f2bf0902635d5714c8bb84b842e1c42b16",
+      "id": "216400f2",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T11:21:13+01:00",
+      "title": "Use the hop/ui commit with launcher family links and hop-assets v4",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/69e82ce2dfd181394b224a5268fdbe1ccad06268",
+      "id": "69e82ce2",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T17:09:54+07:00",
+      "title": "Merge pull request #112: Add a Self-hosting section in all nine languages",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b3ea09d15f49faaae4b7ecbf53b89089babacd54",
+      "id": "b3ea09d1",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-08T10:09:54Z",
+      "title": "Add a Self-hosting section in all nine languages",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/112",
+      "id": "#112",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T10:28:37+01:00",
+      "title": "Add a Self-hosting section to every README",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/868e0cc7c551b9afc9d2ac968dc5d254cce6acdf",
+      "id": "868e0cc7",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T15:16:34+07:00",
+      "title": "Merge pull request #111: Use hop/auth 0.1.4 and the hop/ui commit with FileHop",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/abf98b148e9367b48b8875b1036cad3e986dca7a",
+      "id": "abf98b14",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-08T08:16:34Z",
+      "title": "Use hop/auth 0.1.4 and the hop/ui commit with FileHop",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/111",
+      "id": "#111",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T09:12:11+01:00",
+      "title": "Use hop/auth 0.1.4 and the hop/ui commit with FileHop",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/5eefee11039e83f50b712c0d5ba1efa815332130",
+      "id": "5eefee11",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T14:45:39+07:00",
+      "title": "Merge pull request #107: Name FileHop among the HOP apps",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/20d1866ede55c426e314e8ce38ad417de5ceb836",
+      "id": "20d1866e",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-08T07:45:39Z",
+      "title": "Name FileHop among the HOP apps",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/107",
+      "id": "#107",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T14:41:08+07:00",
+      "title": "Merge pull request #108: Start synthetic journeys on /check, and back up during maintenance",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/7880655acb8d21a6b370ab54a14017cdd582089c",
+      "id": "7880655a",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-08T07:41:08Z",
+      "title": "Start synthetic journeys on /check, and back up during maintenance",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/108",
+      "id": "#108",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T14:25:26+07:00",
+      "title": "Synthetic users: wait out a navigation the bio editor replaces",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/7a4b541b27a610b60f00cd36d6abca8fa2a0625e",
+      "id": "7a4b541b",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T14:21:52+07:00",
+      "title": "Move to HOP family assets v3",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d84b71c9371283c617e90d5572fc98b409781c9a",
+      "id": "d84b71c9",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T14:12:00+07:00",
+      "title": "Start synthetic journeys on /check, and back up during maintenance",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/56698b3870ed743218b3c16cbaf010ae38e22f8b",
+      "id": "56698b38",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T13:53:11+07:00",
+      "title": "Name FileHop among the HOP apps",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/4807c6d01d864165fef348b95ebc70f1ad3e9ca2",
+      "id": "4807c6d0",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T13:52:30+07:00",
+      "title": "Home: keep the flat mark for a family app without a 3D block map",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/21e5d1c38ae3a26786c71059e2c53e59df995c25",
+      "id": "21e5d1c3",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T11:46:14+07:00",
+      "title": "Merge pull request #106: List the token owner's links at GET /api/me/links for the HOP pickers",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d50a5fb8fa7bcd09b30f23e8ff98fcd1d6bcedaa",
+      "id": "d50a5fb8",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-08T04:46:14Z",
+      "title": "List the token owner's links at GET /api/me/links for the HOP pickers",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/106",
+      "id": "#106",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T05:42:11+01:00",
+      "title": "List the token owner's links at GET /api/me/links for the HOP pickers",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/8a94bc2a495a4783f79dd44427ec82e3afba4f29",
+      "id": "8a94bc2a",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-08T04:28:48Z",
+      "title": "Widen links.safety_status so guest links stop failing on production",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/105",
+      "id": "#105",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T11:28:47+07:00",
+      "title": "Merge pull request #105: Widen links.safety_status so guest links stop failing on production",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/788668bfd7724173ff2f1d4305bd227f6c97b260",
+      "id": "788668bf",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T05:24:38+01:00",
+      "title": "Widen links.safety_status so guest links stop failing on production",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/2bfe14fae58cb9bd7a38354fab7ce44b082137d0",
+      "id": "2bfe14fa",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T11:07:23+07:00",
+      "title": "Merge pull request #104: Count guest links across days and hold a destination burst",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/9a6161e3d894ea3c8b0f8420b41dd83d564daeb9",
+      "id": "9a6161e3",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-08T04:07:23Z",
+      "title": "Count guest links across days and hold a destination burst",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/104",
+      "id": "#104",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-07T20:47:32+01:00",
+      "title": "Count guest links across days and hold a destination burst",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/a8095526dfad36352f4830cdbc5406f1e0aac38e",
+      "id": "a8095526",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-08T01:32:56+07:00",
+      "title": "Merge pull request #103: Block the evolving Telegram phishing shape",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/028598241a07e5186f16dc27c66393cca548f745",
+      "id": "02859824",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-07T18:32:56Z",
+      "title": "Block the evolving Telegram phishing shape",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/103",
+      "id": "#103",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-07T19:18:03+01:00",
+      "title": "Block the evolving Telegram phishing shape",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/8815c05f62d66acf0d536c9ba45299ea1b305e08",
+      "id": "8815c05f",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-07T11:12:56+07:00",
+      "title": "Merge pull request #102: Make the guest-policy migration idempotent (deploy failed on existing safety_status)",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/99a4b6893b44cec11c597923a4ab2b71a094eef9",
+      "id": "99a4b689",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-07T04:12:56Z",
+      "title": "Make the guest-policy migration idempotent (deploy failed on existing safety_status)",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/102",
+      "id": "#102",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-06T16:56:18+07:00",
+      "title": "Make the guest-policy migration skip columns and indexes that already exist",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/facb2457b84bfaf90916c252811c9252251592ec",
+      "id": "facb2457",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-06T08:58:14Z",
+      "title": "Verify the combined phishing and random-subdomain score",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/101",
+      "id": "#101",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-06T15:58:13+07:00",
+      "title": "Merge pull request #101: Verify the combined phishing and random-subdomain score",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/a02a83a22f26d5e2cdb53ec8399403970c3b9e48",
+      "id": "a02a83a2",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-06T04:36:23+07:00",
+      "title": "Account for bundled random subdomain scoring in guest policy test",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/1329764edab4537250030dbc759cb1ac04aec69b",
+      "id": "1329764e",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-06T04:34:35+07:00",
+      "title": "Merge pull request #100: Guard the empty host in EncryptedNoteLink on PHP 8.5; bio page favicon",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/e6c4475816443c7ccaffa216d0eaabcb078f2280",
+      "id": "e6c44758",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-05T21:34:35Z",
+      "title": "Guard the empty host in EncryptedNoteLink on PHP 8.5; bio page favicon",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/100",
+      "id": "#100",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-06T04:33:52+07:00",
+      "title": "Merge guest link policy and retain all favicon translations",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3585a23cdc2180ff3a89260538709a16ff5631bf",
+      "id": "3585a23c",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-06T04:32:52+07:00",
+      "title": "Merge pull request #98: Sweep phishing-kit links and add a layered policy for guest links",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/99c3b8c720258d9af10e2b7b14520b30c2b80f07",
+      "id": "99c3b8c7",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-05T21:32:52Z",
+      "title": "Sweep phishing-kit links and add a layered policy for guest links",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/98",
+      "id": "#98",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-06T04:32:09+07:00",
+      "title": "Merge branch 'main' into fix/guest-phishing-policy",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/50351051b866226113d665b8953033267d9dd36e",
+      "id": "50351051",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-05T21:31:15Z",
+      "title": "Move hop/safety to df5e938 (bundled blacklist, kit keywords, random_subdomain)",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/99",
+      "id": "#99",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-06T04:31:14+07:00",
+      "title": "Merge pull request #99: Move hop/safety to df5e938 (bundled blacklist, kit keywords, random_subdomain)",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/13988c69aaf1f9eb5cc651db9b66b166189f4c33",
+      "id": "13988c69",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-06T02:59:22+07:00",
+      "title": "Guard the empty host in EncryptedNoteLink on PHP 8.5, and give bio pages a favicon",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/54573865ba3a9e314001e7c7212a3d12d8b01b91",
+      "id": "54573865",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-06T02:39:16+07:00",
+      "title": "Move hop/safety to df5e938: bundled blacklist, kit keywords, random_subdomain signal",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/9803dd02ea0cf642abb06b99cca256db4c736a8c",
+      "id": "9803dd02",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-06T02:33:30+07:00",
+      "title": "Add a guest link policy: warning page for unknown sites, refusals for young domains and kit-shaped addresses, daily cap",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/046e2000184a94b4cfd458fd7bf71f873f42e46b",
+      "id": "046e2000",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-05T18:20:46+07:00",
+      "title": "Merge pull request #97: Update Symfony to 7.4.23 to clear composer audit advisories",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/5b80ec3c7685d3c40020f88fefc88dc22203b65c",
+      "id": "5b80ec3c",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-05T11:20:46Z",
+      "title": "Update Symfony to 7.4.23 to clear composer audit advisories",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/97",
+      "id": "#97",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-05T17:30:02+07:00",
+      "title": "Update Symfony components to 7.4.23 to clear composer audit advisories",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/deced171bc0bfb5a17a0d4482269e6561bdeebd4",
+      "id": "deced171",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-05T05:17:25Z",
+      "title": "Mail one address about a 500, once per kind of error per hour",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/96",
+      "id": "#96",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-05T12:17:24+07:00",
+      "title": "Merge pull request #96: Mail one address about a 500, once per kind of error per hour",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/8c0d4d1ab116caf3d2a386a6a2b8a5e30517753b",
+      "id": "8c0d4d1a",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-05T12:16:53+07:00",
+      "title": "Merge pull request #95: Fix audit findings: note keys, destinations, error pages, language",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/91c3ea4f9032a8e5b55066afd56f161c5878be31",
+      "id": "91c3ea4f",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-05T05:16:53Z",
+      "title": "Fix audit findings: note keys, destinations, error pages, language",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/95",
+      "id": "#95",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-05T03:59:35+01:00",
+      "title": "Mail one address about a 500, once per kind of error per hour",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/1cba94afc7902a25cee1d7796c2d0cb92ed7dc77",
+      "id": "1cba94af",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T18:13:29+01:00",
+      "title": "Let an intranet install accept private destinations",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/e157ccacf1ab571ca02d4e05e752d92e977bf13f",
+      "id": "e157ccac",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T15:24:07+01:00",
+      "title": "Let the note key field test run without the bio package",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/56ccee903255e5f5cb8c46a6119e1391e251f093",
+      "id": "56ccee90",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T15:21:45+01:00",
+      "title": "Show the report form and the password and age pages in the visitor's language",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/a2b7f70eb554eda17dbfc4f284cd72d5ee8a0565",
+      "id": "a2b7f70e",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T15:19:14+01:00",
+      "title": "Seed the cached copy directly in the scrub test",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/9fd3c401230e1274a68a56ba750674053d7a5014",
+      "id": "9fd3c401",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T15:19:14+01:00",
+      "title": "Refuse logins and private addresses in destinations",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3a794933b4521b3753e1a102070cc5965a02f2a0",
+      "id": "3a794933",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T15:14:51+01:00",
+      "title": "Pin hop/ui to the commit on its main history",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f6c299def0a1deff80deee9091a1a09295043193",
+      "id": "f6c299de",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T15:13:39+01:00",
+      "title": "Make the string cast check see request string() calls",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/613eb67e2e94dd5c9396a28540b87670115e1ae1",
+      "id": "613eb67e",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T15:13:39+01:00",
+      "title": "Point robots.txt at the sitemap this host serves",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/21601e8064c1061c3198102877338ce05c0179ed",
+      "id": "21601e80",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T15:13:21+01:00",
+      "title": "Remove the exception handler class that never ran",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/79c89be0d4cdf06dac498ff1520098007b1c5561",
+      "id": "79c89be0",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T15:13:21+01:00",
+      "title": "Do not link a draft bio page to its public address",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/6c57fd29dfa2f294126c22a08f63f7c6ff7a0ec7",
+      "id": "6c57fd29",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T15:13:21+01:00",
+      "title": "Name the icon-only main action of a page",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/13ef458dc9da49718dca8727a05b342c15e39224",
+      "id": "13ef458d",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T15:12:01+01:00",
+      "title": "Stop claiming the team was notified on the 500 page, translate the bio not-found page",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/190139870051dfc2d1b12f1cbab2610ed8a73124",
+      "id": "19013987",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T15:09:09+01:00",
+      "title": "Treat array-valued filters as not given on signed-in pages",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f4739fae4d7e2a44982a500a3ed95b4904daeb8f",
+      "id": "f4739fae",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T15:00:36+01:00",
+      "title": "Stop copying note keys from old rows into the cache and webhooks",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/9bcb752d0c295c868e7a9ac75b2184709281cceb",
+      "id": "9bcb752d",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T14:59:17+01:00",
+      "title": "Scrub note keys from every column a person can write into",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/87b414f3a4be9dea9ef1c3b3a9d972ddd82fba8d",
+      "id": "87b414f3",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T14:56:12+01:00",
+      "title": "Refuse encrypted note keys in every stored field",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/7b77e63488bc13544700f5b973578597091d97dc",
+      "id": "7b77e634",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T08:53:40+07:00",
+      "title": "Merge pull request #94: Sync shared package pins: hop/safety 12d72dd, hop/auth v0.1.3",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/ea88e54596d26abbf422b9a4cd9db4e86e007f2c",
+      "id": "ea88e545",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-04T01:53:40Z",
+      "title": "Sync shared package pins: hop/safety 12d72dd, hop/auth v0.1.3",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/94",
+      "id": "#94",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T08:25:17+07:00",
+      "title": "Pin hop/auth to the v0.1.3 tag instead of a merged branch",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/84474ff201870b54f4d842cd3c62015a101331a3",
+      "id": "84474ff2",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T08:23:29+07:00",
+      "title": "Update hop/safety to 12d72dd (fragment-free outside lookups, EncryptedNoteLink helper)",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/6037253579570c758facc55c648194fef56a7ff8",
+      "id": "60372535",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-04T00:33:22Z",
+      "title": "Pin title/OG lookups, fix the QR logo overlay, refuse non-web schemes",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/93",
+      "id": "#93",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T07:33:21+07:00",
+      "title": "Merge pull request #93: Pin title/OG lookups, fix the QR logo overlay, refuse non-web schemes",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/0a4a23d25d4b37bf1b3693cd41e80e69ff8fec4b",
+      "id": "0a4a23d2",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T07:33:18+07:00",
+      "title": "Merge pull request #92: Refuse encrypted NoteHop links; scrub the ones already stored",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3a126d40af78966e7fcd68b4a82d66a2085b6367",
+      "id": "3a126d40",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-04T00:33:18Z",
+      "title": "Refuse encrypted NoteHop links; scrub the ones already stored",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/92",
+      "id": "#92",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T07:26:48+07:00",
+      "title": "Pin the clock in the dashboard stats tests so they pass between 00:00 and 01:00 UTC",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/daf0106fa92df558490525f06ad53971e1e3e887",
+      "id": "daf0106f",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T07:15:19+07:00",
+      "title": "Freeze the clock in the routing query-count test so it no longer depends on the second changing",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/ae7b0ed1c114c221308df2823acb162857bdb3e5",
+      "id": "ae7b0ed1",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T03:17:48+07:00",
+      "title": "Update the changelog for the titles, error pages, layout and README fixes",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/68378b3ab5bacfda19713c86c992d959787199d5",
+      "id": "68378b3a",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T03:17:48+07:00",
+      "title": "Fix the nested main landmark, the repeated theme button id, 320 px overflow, the bio editor header on phones and keyboard access to code blocks",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/5ab01fe850de67cd1e6c42d92951ea62dc1245fa",
+      "id": "5ab01fe8",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T03:17:48+07:00",
+      "title": "Correct the README: PHP, Node and database requirements, the enforced content security policy and the services it names, and list the newer features",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/24ea3abd2753bdceee42a35338eaf7c1d2267200",
+      "id": "24ea3abd",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T03:17:48+07:00",
+      "title": "Keep the signed-in areas out of robots.txt and stop allowing a page that does not exist",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/2146a899ae9bfda2c122455e3fa92cd469cd5802",
+      "id": "2146a899",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T03:17:37+07:00",
+      "title": "Translate the document titles and the error pages, and build every title as 'Page · LinkHop'",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/834ec4e82286f6d9ebad265c182279f0314e78d3",
+      "id": "834ec4e8",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T03:17:27+07:00",
+      "title": "Give the test run 512 MB: the suite no longer fits in the default 128 MB",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/2e28570a918a87dfe1da42c240cc1a18974f695a",
+      "id": "2e28570a",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T02:59:55+07:00",
+      "title": "Merge the log and error-page key fixes from #92 into this branch",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/027bc0a3ea5eb55d61f8b6f9965c18263f64ba39",
+      "id": "027bc0a3",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T02:59:47+07:00",
+      "title": "Keep an encrypted-note key out of the log and out of debug error pages",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/ae8fde035cb0e711361fe350a8634025c8fe41e1",
+      "id": "ae8fde03",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T02:34:16+07:00",
+      "title": "End the session and the remember cookie when the hub sends session.revoked; drop cached links on account.status",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/15486d8f1bf3e6fc080afdf5e2fbf3d2b6eca65a",
+      "id": "15486d8f",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T01:46:22+07:00",
+      "title": "Read the logo pixel from a truecolor copy in the QR logo tests",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/268221a7515817c454832504ac06b3c53bbfd1cb",
+      "id": "268221a7",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T01:40:33+07:00",
+      "title": "Merge the encrypted-note-link fixes (#92) into this branch",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/43497c09ddf6cf9f8a91f7376b52eeca2f091eaa",
+      "id": "43497c09",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T01:40:00+07:00",
+      "title": "Make the QR logo fetch connect to the address that was checked",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/bf23e098751d3650f81083dfc3d4ff3d8427f798",
+      "id": "bf23e098",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T01:40:00+07:00",
+      "title": "Read a typed destination in the dashboard API the way the web forms do",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/766168efaa5522112ae249ee040c027bc4593508",
+      "id": "766168ef",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T01:40:00+07:00",
+      "title": "Order the imports in bootstrap/app.php",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3b3704e8e35f24a4b2752a5e3b1edce3ec235cfd",
+      "id": "3b3704e8",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T01:40:00+07:00",
+      "title": "Update the changelog for the audit fixes",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/25b4e18a2fa633fc21e797b3ab625814b49d784f",
+      "id": "25b4e18a",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T01:39:59+07:00",
+      "title": "Translate the bulk-delete error into the nine languages",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c496393c0183e84af49ce380e51320b2255d436d",
+      "id": "c496393c",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T01:39:59+07:00",
+      "title": "Do not let the browser keep pages shown to a signed-in person",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/9b5e2832082440ae95441286cb3d78a17e0a138c",
+      "id": "9b5e2832",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T01:39:15+07:00",
+      "title": "Keep the old-input trait next to the requests that use it",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/e69572b3b16d827a1ee939205883bd892903c501",
+      "id": "e69572b3",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T01:35:09+07:00",
+      "title": "Answer array-valued query parameters with a normal response instead of a 500",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/bf7881de551f24ead7d2861c6fa0e8d1d908ff7c",
+      "id": "bf7881de",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T01:35:09+07:00",
+      "title": "Fix the /l redirect host, the /up page, footer language links, settings tabs and bulk delete",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/62125e6eb2b48e8c39368f69ec6e50a5602c0a7f",
+      "id": "62125e6e",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T01:35:09+07:00",
+      "title": "Make QR downloads work as PNG, JPG and SVG without imagick",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/588fe5c29b0ac27ab664cc4eb541605d0160d0ac",
+      "id": "588fe5c2",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T01:35:09+07:00",
+      "title": "Add the tests and check scripts that go with these fixes",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/358aac11199edd4fca93c4b4ef0454e8231f0893",
+      "id": "358aac11",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T01:32:36+07:00",
+      "title": "Require the PHP intl extension",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/df57cddba0417df1dedca1458ec88a807471e5f9",
+      "id": "df57cddb",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T01:32:36+07:00",
+      "title": "Keep a refused note key out of old input, the CSV preview cache and abuse reports",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/a7dae59ef8cf5929b6e6ecd949b4a85aaafa3fdb",
+      "id": "a7dae59e",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T01:32:36+07:00",
+      "title": "Read note addresses the way a browser does before refusing them",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/780eabf264f982d604d1350a13c0021036652387",
+      "id": "780eabf2",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T01:32:36+07:00",
+      "title": "Update the changelog for the note-link fixes",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/43bc2f3ad9ee48efe4ef95f4de861b77b17b4a5d",
+      "id": "43bc2f3a",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T01:32:36+07:00",
+      "title": "Make the destination monitor connect to the addresses it checked",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3e80ae6f83fcb71714f353a7acc51d8ebdc87605",
+      "id": "3e80ae6f",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-04T01:32:36+07:00",
+      "title": "Make links:scrub-note-keys host-aware, wider and transactional",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/09136038b1cedb02f229e560a178d650899de686",
+      "id": "09136038",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-03T18:54:48+07:00",
+      "title": "Refuse addresses with another scheme instead of prefixing https://",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d833842d6b59d694e4e3f5d77e36c00295976a0a",
+      "id": "d833842d",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-03T18:54:48+07:00",
+      "title": "Make the QR logo overlay work, and fetch the logo safely",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/8280635edd31f5b65484c92a4e2bbc28fecdc99e",
+      "id": "8280635e",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-03T18:54:48+07:00",
+      "title": "Pin the title and Open Graph lookups to the addresses that were checked",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/36c44c6c56f273ca8d7c6a1871eb55ca869dd527",
+      "id": "36c44c6c",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-03T14:18:20+07:00",
+      "title": "Refuse encrypted NoteHop links, and scrub the ones already stored",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b4421c53ad0b5afdacc1ba22445dbc33269567f6",
+      "id": "b4421c53",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-03T00:26:21+07:00",
+      "title": "Merge pull request #90: Fix the link monitor for dual-stack hosts: use the hop-safety pin fix",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/0a08dc76083f3b038eefc35574faee501ed8a0b1",
+      "id": "0a08dc76",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-02T17:26:21Z",
+      "title": "Fix the link monitor for dual-stack hosts: use the hop-safety pin fix",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/90",
+      "id": "#90",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-03T00:16:47+07:00",
+      "title": "Use the hop-safety release that pins all checked addresses",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/605c7d9c9f99140c6e20aba0a9a2e50fcfa5aaee",
+      "id": "605c7d9c",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T22:53:47+07:00",
+      "title": "Merge pull request #89: Copy edits: sentence case, plain wording, corrected help text",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b11e9953e783876a1ab1eeabb8ed04c05aebdf3e",
+      "id": "b11e9953",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-02T15:53:47Z",
+      "title": "Copy edits: sentence case, plain wording, corrected help text",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/89",
+      "id": "#89",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T22:50:23+07:00",
+      "title": "Require hop/auth 0.1.2",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/5e5683d82e550a3300d651830ef8f000a175ec45",
+      "id": "5e5683d8",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T22:39:57+07:00",
+      "title": "Copy edits: sentence case, plain wording, corrected help text",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d6f46bed8286df0feb73157269b9dda74e9ba119",
+      "id": "d6f46bed",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-02T15:34:30Z",
+      "title": "Pin the link monitor to the checked addresses",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/88",
+      "id": "#88",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T22:34:29+07:00",
+      "title": "Merge pull request #88: Pin the link monitor to the checked addresses",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/4abcd2979ec05a0157287eb3bb9475e838e04228",
+      "id": "4abcd297",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T20:15:20+07:00",
+      "title": "Pin the link monitor to the addresses that were checked",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/deda349962c376269e70efb04cb5abd7be429c82",
+      "id": "deda3499",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T20:00:35+07:00",
+      "title": "Merge pull request #87: Purge by id, atomic link quota, safer installer and update scripts",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/6ce90ab4e3a1a66addda0526a48425b0458f8092",
+      "id": "6ce90ab4",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-02T13:00:35Z",
+      "title": "Purge by id, atomic link quota, safer installer and update scripts",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/87",
+      "id": "#87",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T16:22:09+07:00",
+      "title": "update.sh: add --no-backup, the explicit opt-out when no database copy can be made",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d1e3b853c8558c7d86a93e7374cb34714d041a1f",
+      "id": "d1e3b853",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T16:17:33+07:00",
+      "title": "Installer scripts: atomic .env writes, private .env, safe update with rollback, real database copies, pinned PHP",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b2207af8836a22a731a1e6758d2034757773d190",
+      "id": "b2207af8",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T16:09:39+07:00",
+      "title": "Purge an account's data by id, count link quota at the insert, fix shorten-web response and IP unban cache key",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/99e7906427159f59032e9f9d81da9de389be647b",
+      "id": "99e79064",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T12:33:27+07:00",
+      "title": "Merge pull request #86: Point composer.lock at the cleaned history of the shared packages",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/4f8a4dd1a861209457d32cbaa04095c18be3cde7",
+      "id": "4f8a4dd1",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-02T05:33:27Z",
+      "title": "Point composer.lock at the cleaned history of the shared packages",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/86",
+      "id": "#86",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T12:29:31+07:00",
+      "title": "Point composer.lock at the rewritten history of hop-ui, hop-auth and hop-safety",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/21b0a5b59cd7efc6212a842fd4db16245f50cb17",
+      "id": "21b0a5b5",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T11:01:42+07:00",
+      "title": "Merge pull request #85: Installers, READMEs and documentation site in the nine languages",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3870552c70835569e183f1cc2d07b9060f8b6815",
+      "id": "3870552c",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-02T04:01:42Z",
+      "title": "Installers, READMEs and documentation site in the nine languages",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/85",
+      "id": "#85",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T11:01:38+07:00",
+      "title": "Merge pull request #84: Nine languages: add de and ru, remove Arabic and RTL",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/0eef4bf46b667d8c1022a910dc3f9b0ff83f76dd",
+      "id": "0eef4bf4",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-02T04:01:38Z",
+      "title": "Nine languages: add de and ru, remove Arabic and RTL",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/84",
+      "id": "#84",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T11:01:23+07:00",
+      "title": "Merge pull request #81: Open in the app: deep links for iOS and Android",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/8be01037198effd672f07008ae9d8783fc8896c0",
+      "id": "8be01037",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-02T04:01:23Z",
+      "title": "Open in the app: deep links for iOS and Android",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/81",
+      "id": "#81",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-02T04:01:19Z",
+      "title": "Add a signed per-account summary endpoint for the hub",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/83",
+      "id": "#83",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T11:01:18+07:00",
+      "title": "Merge pull request #83: Add a signed per-account summary endpoint for the hub",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/235a978211689a424424af2d6487e70f21ac64c1",
+      "id": "235a9782",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-02T04:01:14Z",
+      "title": "No scripts, styles or images from other hosts: libraries, flags and map data are self-hosted",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/82",
+      "id": "#82",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T11:01:13+07:00",
+      "title": "Merge pull request #82: No scripts, styles or images from other hosts: libraries, flags and map data are self-hosted",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/81a2406333ca9a30d2bb7ed3384cf415fad175f9",
+      "id": "81a24063",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T10:59:15+07:00",
+      "title": "Deep-link strings translated in all languages",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/5157d0e6c715a7bac8fc30be70e5a2692d83c15a",
+      "id": "5157d0e6",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T10:38:50+07:00",
+      "title": "Merge feat/deep-links: its new strings in the nine languages (German and Russian written for this merge)",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/aba024c30d1a037cd3bac9ad03861c36784cf7db",
+      "id": "aba024c3",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T10:37:55+07:00",
+      "title": "Merge remote-tracking branch 'origin/fix/no-cdn-no-trackers' into nl",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/72b33b7e8b14433712dc7a940d46c01e99cdd0ae",
+      "id": "72b33b7e",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T10:37:30+07:00",
+      "title": "Merge remote-tracking branch 'origin/feat/hub-summary' into dl",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f7e313c88bd874d431e29c1aec89f1267693ab4c",
+      "id": "f7e313c8",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T10:37:30+07:00",
+      "title": "Merge remote-tracking branch 'origin/fix/no-cdn-no-trackers' into dl",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/7eb105a6b74b5e0ccced1971291bce68a24bb21c",
+      "id": "7eb105a6",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T10:35:03+07:00",
+      "title": "Bio pages in LinkHop: fonts come from our own domain (the three views still asked fonts.bunny.net, which the policy blocks)",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/fed14f829daed6bef36c1b5cf2f385d1701ffacf",
+      "id": "fed14f82",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T09:28:28+07:00",
+      "title": "Documentation site in the nine languages: zh-CN, de, id, ja, pt-BR, es, fr, ru; Arabic removed",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/091d42e0fab490fd8dea8743e01296c65a03cb23",
+      "id": "091d42e0",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T09:25:25+07:00",
+      "title": "README: how the hub and the apps are installed together",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/cceadcc9e05dc8f26262df38ce5e478a6ad8b6ad",
+      "id": "cceadcc9",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T09:23:07+07:00",
+      "title": "Installer: hub-free mode explained; install-family.sh installs the hub and apps together",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d8d05ae59118a970716383622e41f8e25c36ba82",
+      "id": "d8d05ae5",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T09:21:42+07:00",
+      "title": "Nine languages: zh-CN, de, id, ja, pt-BR, es, fr, ru and English; Arabic and right-to-left removed",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/85f975a6c787cc91aac1c03627c3000cfe84ef97",
+      "id": "85f975a6",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T03:47:51+07:00",
+      "title": "One-command installer, update and uninstall scripts; READMEs in the nine languages",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3b70c5abb009971a49c72841a349163e9021c39d",
+      "id": "3b70c5ab",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T02:23:27+07:00",
+      "title": "Add a signed per-account summary endpoint for the hub dashboard",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/33a8d9c197a597b73c35d5b724ba4d55738e2e09",
+      "id": "33a8d9c1",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T02:18:37+07:00",
+      "title": "No CDN scripts or third-party images: libraries, flags and map data are self-hosted",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f61e1c3dc81a6ca6f17976a6d79716eff647d27c",
+      "id": "f61e1c3d",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T02:12:26+07:00",
+      "title": "Open in the app: deep links for iOS and Android with the store as fallback",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/20eeca133b127b99ab1aca1d2294ee4abb1cfbb1",
+      "id": "20eeca13",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T01:57:47+07:00",
+      "title": "Merge pull request #80: File addresses and forms work on pages served from the public host",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/7b9126e9b1be23344e737a803d39b075d876dd29",
+      "id": "7b9126e9",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-01T18:57:47Z",
+      "title": "File addresses and forms work on pages served from the public host",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/80",
+      "id": "#80",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T01:57:41+07:00",
+      "title": "Merge pull request #79: Home v2: pinned story, 3D QR, timing, routing and protect scenes",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/682387d481276c950167bca2f1c85a9c40767304",
+      "id": "682387d4",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-01T18:57:41Z",
+      "title": "Home v2: pinned story, 3D QR, timing, routing and protect scenes",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/79",
+      "id": "#79",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T01:43:54+07:00",
+      "title": "Make file addresses work on pages served from the public host",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/aa23ac814aa131d92a57b5d048bf0631b744d200",
+      "id": "aa23ac81",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T01:27:34+07:00",
+      "title": "Home v2: pinned story, 3D QR, timing, routing and protect scenes, bigger world, marquee and numbers",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/8620f588049b090125b92c83f6d9851ad3ea69d2",
+      "id": "8620f588",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T00:51:19+07:00",
+      "title": "Merge pull request #78: Let the sign-out chain reach every HOP subdomain",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d860d09563ea7286f57b02f55919b735459da894",
+      "id": "d860d095",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-01T17:51:19Z",
+      "title": "Let the sign-out chain reach every HOP subdomain",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/78",
+      "id": "#78",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T00:51:08+07:00",
+      "title": "Merge pull request #77: Link routing, click insights, webhooks and import (batches B, C, D)",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/cce43f7fcac646628dfd41dda85d60b5b111ed2d",
+      "id": "cce43f7f",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-01T17:51:08Z",
+      "title": "Link routing, click insights, webhooks and import (batches B, C, D)",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/77",
+      "id": "#77",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T00:48:38+07:00",
+      "title": "Let the sign-out chain reach every HOP subdomain (form-action)",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/a3566b389607137f81dc5249f4b93a4d06b5a283",
+      "id": "a3566b38",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T00:45:08+07:00",
+      "title": "Merge pull request #76: Link limits: click cap, schedule, fallback address, 308, duplicate warning",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/5a98884150fd00de5a8f329cc08546bbbfa764ce",
+      "id": "5a988841",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-01T17:45:08Z",
+      "title": "Link limits: click cap, schedule, fallback address, 308, duplicate warning",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/76",
+      "id": "#76",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T00:38:41+07:00",
+      "title": "Add the users.monitor_destinations column only once (shared users table)",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/afab68dc8f7559c2254fc5a2551011f95115b1f5",
+      "id": "afab68dc",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T00:37:48+07:00",
+      "title": "Merge branch 'feat/link-core' into feat/link-batches",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/887b8fc84e81224ff38f3b63546a4d51484735cb",
+      "id": "887b8fc8",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T00:37:44+07:00",
+      "title": "e2e: log out through the account menu form (the sidebar button moved)",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b0c37e57e035576fad2bf9496a39534f3c0bfbe2",
+      "id": "b0c37e57",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T00:29:10+07:00",
+      "title": "Keep a typed slug, stop the link page overflowing at 320px, clearer notification note",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/02dbc0112f8a4b24bf3b5d5687066864c38cdca6",
+      "id": "02dbc011",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T00:24:09+07:00",
+      "title": "Merge link integrations",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/bbbdb95e4e44a8c8e97d08b04832b894f9901aaa",
+      "id": "bbbdb95e",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T00:23:26+07:00",
+      "title": "Webhooks, idempotency keys, CSV import, command palette, slug check",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d4d3e4fe8d67c593beb9774cdeb5a478b6a5d189",
+      "id": "d4d3e4fe",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T00:20:35+07:00",
+      "title": "Order imports after merge",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/201bebdc020ea28699e351eb1c18c6b1a3836f43",
+      "id": "201bebdc",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T00:19:54+07:00",
+      "title": "Merge link insights",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/1d686e003766c33578a21874f957007919897fe6",
+      "id": "1d686e00",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T00:19:34+07:00",
+      "title": "Merge link routing",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/8c8ff4110b2c1488ca713bfa0903177c852a34d4",
+      "id": "8c8ff411",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T00:19:08+07:00",
+      "title": "Routing rules, A/B split and a UTM builder for links",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/9a2a3eba529621384beef223b6c4be8e0ed578a6",
+      "id": "9a2a3eba",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-02T00:18:16+07:00",
+      "title": "Link insights: unique visitors, QR scans, in-app browsers, destination monitor",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b2e57790453fb96ccbcb45d02c07b216730142bb",
+      "id": "b2e57790",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-01T23:58:58+07:00",
+      "title": "Link limits: click cap, schedule, fallback address, 308, duplicate warning",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/006cd4d5223f912d74f4e034e1f3d8468cdbbfc5",
+      "id": "006cd4d5",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-01T23:41:22+07:00",
+      "title": "Merge pull request #75: LinkHop home scenes, dashboard home, analytics comparison, one-line top bars",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/58f1911414bd47c720064032230cedd448a610ad",
+      "id": "58f19114",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-01T16:41:22Z",
+      "title": "LinkHop home scenes, dashboard home, analytics comparison, one-line top bars",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/75",
+      "id": "#75",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-01T23:39:07+07:00",
+      "title": "Home scenes, dashboard home, analytics comparison, one-line top bars",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/02e80119a7c67816d32c6f9bfaaf98835bd54c97",
+      "id": "02e80119",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-01T15:34:15Z",
+      "title": "Dashboard chrome: apps in the sidebar, settings in the top bar",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/74",
+      "id": "#74",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-01T22:34:14+07:00",
+      "title": "Merge pull request #74: Dashboard chrome: apps in the sidebar, settings in the top bar",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/11bc7ca1bc40328d275093082a955ed0a9033736",
+      "id": "11bc7ca1",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-01T07:57:22+01:00",
+      "title": "Dashboard chrome: apps in the sidebar, settings in the top bar",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/6818b7bec8ae2d316592da8b603aa34f209d6c81",
+      "id": "6818b7be",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-01T11:50:46+07:00",
+      "title": "Merge pull request #73: Homepage rebuilt as the long page: shortener first, scroll-driven chapters",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/2fe52a182c57489062a3980ab1a4ee0a72eaaa71",
+      "id": "2fe52a18",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-01T04:50:46Z",
+      "title": "Homepage rebuilt as the long page: shortener first, scroll-driven chapters",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/73",
+      "id": "#73",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-01T05:44:29+01:00",
+      "title": "Homepage rebuilt as the long page: the shortener first, chapters follow the scroll",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3dab3d75764f7747511add3b8a288625465bec36",
+      "id": "3dab3d75",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-11-01T03:47:26Z",
+      "title": "Homepage in the shared HOP home frame, full translations, bio upload guard",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/72",
+      "id": "#72",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-01T10:47:25+07:00",
+      "title": "Merge pull request #72: Homepage in the shared HOP home frame, full translations, bio upload guard",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/259567e414c6200cc65ecb753f94f7d9ab04844b",
+      "id": "259567e4",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-01T04:27:33+01:00",
+      "title": "Homepage in the shared HOP home frame, full translations and bio upload storage guard",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/a5c3416900b06b03a38305fe1850c8ed1d09a7a5",
+      "id": "a5c34169",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-10-31T23:16:22+07:00",
+      "title": "Merge pull request #71: feat: restore interactive 3D homepage and hands-on link tour",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/8d546673a68ba440dbd9927fe5f7a45e7f3b2465",
+      "id": "8d546673",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-10-31T16:16:22Z",
+      "title": "feat: restore interactive 3D homepage and hands-on link tour",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/71",
+      "id": "#71",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-10-31T17:07:55+01:00",
+      "title": "feat: restore interactive 3D homepage and hands-on link tour",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b75efc4e5afc9314c8a37d0a08223ccaae55c74b",
+      "id": "b75efc4e",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-10-31T20:08:00+07:00",
+      "title": "Merge pull request #70: feat: complete P5 family experience and product history",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/8fd56fd4a0475d562dbbc45db88e133b55775083",
+      "id": "8fd56fd4",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "pr",
+      "date": "2026-10-31T13:08:00Z",
+      "title": "feat: complete P5 family experience and product history",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/70",
+      "id": "#70",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-10-31T13:53:40+01:00",
+      "title": "feat: refine family experience, typography and product history",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d92b8b896f36f22e8d1258da49c63083e10884d8",
+      "id": "d92b8b89",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
     {
       "kind": "pr",
       "date": "2026-10-31T10:35:56Z",
@@ -17,8 +2078,8 @@
       "kind": "commit",
       "date": "2026-10-31T17:35:55+07:00",
       "title": "Merge pull request #69: feat: 3-level content warning gate on short links, 24h cookie, /check badge, and API (4.0.14)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/65969e71cc0d31dcb70210d77751317a05f81648",
-      "id": "65969e71",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3e0be97188106dea36ec1f309de56e9ab3f0b578",
+      "id": "3e0be971",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -26,8 +2087,8 @@
       "kind": "commit",
       "date": "2026-10-31T17:35:42+07:00",
       "title": "Merge pull request #68: feat: bento features grid, help, contact, and master terms binding (4.0.9-4.0.12)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/5309cea6bab8cc128c8f8646e208f84aa124455e",
-      "id": "5309cea6",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/11f89fa97ad3c4946300e7ca52558047228cf0ba",
+      "id": "11f89fa9",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -44,8 +2105,8 @@
       "kind": "commit",
       "date": "2026-10-31T17:35:27+07:00",
       "title": "Merge pull request #66: docs: standardize 8-language READMEs and upgrade Pages site",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/81a6acc7869f90831a8e78226def3570aa2073b5",
-      "id": "81a6acc7",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/9750453f64ffb34e9ea68c15ae3e861be9b6add3",
+      "id": "9750453f",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -62,8 +2123,8 @@
       "kind": "commit",
       "date": "2026-10-31T17:34:44+07:00",
       "title": "Merge pull request #65: feat(i18n): add 8-language localization for dedicated pages",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/82739c72bf8041ac352b21497fe53c1845b10249",
-      "id": "82739c72",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/16da22ff547327bf0e2462f51418e48421b723a8",
+      "id": "16da22ff",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -89,8 +2150,8 @@
       "kind": "commit",
       "date": "2026-10-31T17:34:29+07:00",
       "title": "Merge pull request #64: fix: fallback 301 redirect for /l and /l/ roots (U-05)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/d8a61310107e65ffd37aad9defcd926433a4bd9f",
-      "id": "d8a61310",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/ac372ef2b97684713b2ee3e392d6e280d91d6374",
+      "id": "ac372ef2",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -98,8 +2159,8 @@
       "kind": "commit",
       "date": "2026-10-31T17:34:15+07:00",
       "title": "Merge pull request #63: perf: split hop-hero and three chunks with dynamic import and manualChunks",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/1d252a16bc63cdf7ba313fe2b28795dcdf0323e7",
-      "id": "1d252a16",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/ef3193baa9b89a5347d5e95ac0d99803a413b86b",
+      "id": "ef3193ba",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -116,17 +2177,8 @@
       "kind": "commit",
       "date": "2026-10-31T08:54:05+01:00",
       "title": "fix: keep link creation form scrollable on small viewports",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/cd718d4f22a20dcfbd0fd5a89958ef850091fe1e",
-      "id": "cd718d4f",
-      "app": "LinkHop",
-      "repo": "LinkHop"
-    },
-    {
-      "kind": "commit",
-      "date": "2026-10-31T08:45:56+01:00",
-      "title": "fix: preserve content classification and expose moderation actions",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/a88466b162eae90cad9f7c15640c5c180dac7c37",
-      "id": "a88466b1",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/7fb2f39d49dd2afa392d2a597d631261f567780b",
+      "id": "7fb2f39d",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -134,8 +2186,17 @@
       "kind": "commit",
       "date": "2026-10-31T08:45:56+01:00",
       "title": "feat: add theme-aware product demos and homepage tour",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/6d1098449ef5dad828767a0b48d4f521a615c5b1",
-      "id": "6d109844",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f387e52ff04b8c688a4cb6ac094a91d0e5dbf2d7",
+      "id": "f387e52f",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-10-31T08:45:56+01:00",
+      "title": "fix: preserve content classification and expose moderation actions",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/052a5565b13b69bf337f1b6a229d3bb03cbb0390",
+      "id": "052a5565",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -143,8 +2204,8 @@
       "kind": "commit",
       "date": "2026-10-31T08:11:58+01:00",
       "title": "feat: add content warning fields blade component",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/05f916d496dbd263c317559e704100e3d00b111a",
-      "id": "05f916d4",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/11dbebc3a8e816c273f9a1c92fcbff38f3a7121b",
+      "id": "11dbebc3",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -152,8 +2213,8 @@
       "kind": "commit",
       "date": "2026-10-31T08:10:11+01:00",
       "title": "style: format content warning migration",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/231ab16be6b4acb8b7887046a9adc4ca1d92cb63",
-      "id": "231ab16b",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/5364980203d0869b176d42c71d67f3ea04328a21",
+      "id": "53649802",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -161,8 +2222,8 @@
       "kind": "commit",
       "date": "2026-10-31T07:57:51+01:00",
       "title": "style: fix pint code styling in ContentWarningGateTest",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/186bd690316f6fd5e0fa3f0ba929c280addc18b9",
-      "id": "186bd690",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/270bb0a2a65213f282fa733b4698ba1f2a10b384",
+      "id": "270bb0a2",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -170,8 +2231,8 @@
       "kind": "commit",
       "date": "2026-10-31T07:26:41+01:00",
       "title": "feat: 3-level content warning gate on short links, 24h cookie, /check badge, and API support",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/5e2be4ac6e3236f225842039eeb4216ec11ccbfe",
-      "id": "5e2be4ac",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/7ccfa1046c1f2b44ccf39b2a16916c4c60512498",
+      "id": "7ccfa104",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -179,17 +2240,8 @@
       "kind": "commit",
       "date": "2026-10-31T07:00:52+01:00",
       "title": "feat(pages): bento features grid, help, contact, and master terms binding",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/021fdfbe683485ef8f76165294d931473140ed14",
-      "id": "021fdfbe",
-      "app": "LinkHop",
-      "repo": "LinkHop"
-    },
-    {
-      "kind": "commit",
-      "date": "2026-10-31T06:57:16+01:00",
-      "title": "Merge remote-tracking branch 'origin/feat/dedicated-pages-i18n' into feat/linkhop-bento-and-footer",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/cbc2188a254b8f165e2709d4de2d6dfced0a53c3",
-      "id": "cbc2188a",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/68f9a8331e0fb2705ff4530de39704b14f992742",
+      "id": "68f9a833",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -197,8 +2249,8 @@
       "kind": "commit",
       "date": "2026-10-31T06:57:16+01:00",
       "title": "Merge remote-tracking branch 'origin/perf/split-hop-hero-bundle' into feat/linkhop-bento-and-footer",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/be35444d32388deb8b0072265990ce00729b882b",
-      "id": "be35444d",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c85865ab25aa8e08613cb648b0cdb91b61b044df",
+      "id": "c85865ab",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -206,8 +2258,17 @@
       "kind": "commit",
       "date": "2026-10-31T06:57:16+01:00",
       "title": "Merge remote-tracking branch 'origin/fix/u05-root-redirect-fallback' into feat/linkhop-bento-and-footer",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/72f5d08bd138578393a4715b41f61d6d61dadd73",
-      "id": "72f5d08b",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/9bffd461050895861d67a2abb935faa3e8efc7d8",
+      "id": "9bffd461",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-10-31T06:57:16+01:00",
+      "title": "Merge remote-tracking branch 'origin/feat/dedicated-pages-i18n' into feat/linkhop-bento-and-footer",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/626d3de47424ffdd0c9e24f632b5969d6506b1bd",
+      "id": "626d3de4",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -215,8 +2276,8 @@
       "kind": "commit",
       "date": "2026-10-31T05:52:58+01:00",
       "title": "docs: standardize 8-language READMEs and upgrade Pages site",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/effdc8826013aab2e14480e25d9f82d172b5008b",
-      "id": "effdc882",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/8c35ef6ff8e839c5121494c26c0da3368b407445",
+      "id": "8c35ef6f",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -224,8 +2285,8 @@
       "kind": "commit",
       "date": "2026-10-31T05:17:59+01:00",
       "title": "feat(i18n): add 8-language localization for dedicated pages",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/6bcc46cd78f22622d727f3ee6aa2689c6b65a54d",
-      "id": "6bcc46cd",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3307116d3fa580ce2c83e9a98ce5a0c9441a00f7",
+      "id": "3307116d",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -233,8 +2294,8 @@
       "kind": "commit",
       "date": "2026-10-31T04:40:22+01:00",
       "title": "fix: fallback 301 redirect for /l and /l/ roots (U-05)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/774b1b8d551751a7c4a58155cbafcacf12f1b548",
-      "id": "774b1b8d",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/7fc68b531fc4e5e73fc14ba21961a52c6024e12e",
+      "id": "7fc68b53",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -242,8 +2303,8 @@
       "kind": "commit",
       "date": "2026-10-31T04:38:08+01:00",
       "title": "perf: split hop-hero and three chunks with dynamic import and manualChunks",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/d138998a8e3d93c7ccd2550ec3cff489cc66bd3e",
-      "id": "d138998a",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/227c33a7ea513f9f24bb71805d696697d07b833a",
+      "id": "227c33a7",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -251,8 +2312,8 @@
       "kind": "commit",
       "date": "2026-10-31T10:12:34+07:00",
       "title": "Merge pull request #62: chore: PixelHop at pixel.hel.ink in the family table",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/2e84ef02671b9532e760c1b8413079150b50f4cf",
-      "id": "2e84ef02",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/e65ef5853dd60b37b7a6f1ee1f41e2c0f0a84b93",
+      "id": "e65ef585",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -269,8 +2330,8 @@
       "kind": "commit",
       "date": "2026-10-31T03:55:13+01:00",
       "title": "chore: PixelHop at pixel.hel.ink in the family table",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/50ec5b6fa0718af46cab1c8bb359eb064c7a10de",
-      "id": "50ec5b6f",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c1d5414270c8bc714f8e7c6942b8f32586ca2326",
+      "id": "c1d54142",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -278,8 +2339,8 @@
       "kind": "commit",
       "date": "2026-10-31T09:40:15+07:00",
       "title": "Merge pull request #61: fix: bump follow-redirects (npm audit); cookie banner above the sidebar",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/1aa388099e4cdae392a8878a46b9b5b4516e6055",
-      "id": "1aa38809",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/82757e8c01f9ec8a5b54699bf3f22735c04d100b",
+      "id": "82757e8c",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -296,8 +2357,8 @@
       "kind": "commit",
       "date": "2026-10-31T03:38:15+01:00",
       "title": "fix: cookie banner starts beside the sidebar instead of above every layer",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/93be7864520fdd563fe87e2dbf5e04ee76713042",
-      "id": "93be7864",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/7ef31cf643e50fe1a58e5f57a83a2f3c78b27612",
+      "id": "7ef31cf6",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -305,8 +2366,8 @@
       "kind": "commit",
       "date": "2026-10-31T03:32:49+01:00",
       "title": "fix: cookie banner above the app sidebar (z-60)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/0ec1fa441f40e1db2103b6b3fd0a484cbf9d833a",
-      "id": "0ec1fa44",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f5e4f1178e6186b7e150ee04d52f7af273cce7c2",
+      "id": "f5e4f117",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -314,8 +2375,8 @@
       "kind": "commit",
       "date": "2026-10-31T03:30:03+01:00",
       "title": "fix: follow-redirects 1.16.2 (npm audit, GHSA-mrwp)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/8034a6e826b775997c12ce7fe6c6f4f8cdab377b",
-      "id": "8034a6e8",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/bbc52bd8138a13cf139b8cd3cbc77e44d9ed6615",
+      "id": "bbc52bd8",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -323,8 +2384,8 @@
       "kind": "commit",
       "date": "2026-10-31T09:09:52+07:00",
       "title": "Merge pull request #59: docs: canonical HOP family table with a CI check",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/441e8fec7fc1dbd3683dd808b7355082a92a3b14",
-      "id": "441e8fec",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/a018cc01eea9f8e0e8fa240fece34b27c08d4f64",
+      "id": "a018cc01",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -350,8 +2411,8 @@
       "kind": "commit",
       "date": "2026-10-31T09:08:58+07:00",
       "title": "Merge pull request #60: feat: dedicated pages on link.hel.ink",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/5b370e711948e47d810a2ccc9e49eb7165680f46",
-      "id": "5b370e71",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/2fe3d5b37c7161a0ec7137efdf32a7575179406b",
+      "id": "2fe3d5b3",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -359,8 +2420,8 @@
       "kind": "commit",
       "date": "2026-10-31T09:08:11+07:00",
       "title": "Merge branch 'main' into feat/dedicated-pages",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/ff3a9b56e95ef3c9bb97c73012e017f96f18245b",
-      "id": "ff3a9b56",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b95285e330e2ab05aa2f6ed30bf153abfe8e568d",
+      "id": "b95285e3",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -377,8 +2438,8 @@
       "kind": "commit",
       "date": "2026-10-31T09:06:25+07:00",
       "title": "Merge pull request #58: feat: HOP family typography and family list from hel.ink",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/1d1ae62de633cdbffcb241de988309de86d646fd",
-      "id": "1d1ae62d",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/9dbe18011069a2fc5f7b5bf0d0a4c0d2548d7ab5",
+      "id": "9dbe1801",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -386,8 +2447,8 @@
       "kind": "commit",
       "date": "2026-10-31T09:06:01+07:00",
       "title": "Merge pull request #55: fix: public pages link the logo to LinkHop and offer a back link",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/24b7bebe54dc1fff616b517271df37a1b614fa1b",
-      "id": "24b7bebe",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d8571836a17faf58b2f3223697c2f2cac6692d85",
+      "id": "d8571836",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -404,8 +2465,8 @@
       "kind": "commit",
       "date": "2026-10-31T09:05:38+07:00",
       "title": "Merge pull request #57: perf: index link_clicks.clicked_at",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/12ac1b8abd90544a23e99485a5d0521bdb3450f4",
-      "id": "12ac1b8a",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c350b12ba8f909111221027a009981355782d422",
+      "id": "c350b12b",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -422,8 +2483,8 @@
       "kind": "commit",
       "date": "2026-10-31T09:05:21+07:00",
       "title": "Merge pull request #56: docs: add SECURITY.md and issue templates",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/84d0514c0fb2c42149f104a5e447f43755e1613a",
-      "id": "84d0514c",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/ffb9d667b346b8b58def73e902e1c80d57e96b3d",
+      "id": "ffb9d667",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -440,8 +2501,8 @@
       "kind": "commit",
       "date": "2026-10-30T18:57:02+01:00",
       "title": "feat: dedicated pages on link.hel.ink (U-07, U-06, U-10)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/006691abc58073593957d893a92d33cc4024cb9a",
-      "id": "006691ab",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/6e3dc983550a323adda4b10abb98452c5f944111",
+      "id": "6e3dc983",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -449,8 +2510,8 @@
       "kind": "commit",
       "date": "2026-10-30T18:52:56+01:00",
       "title": "Merge remote-tracking branch 'origin/fix/u06-public-navigation' into feat/dedicated-pages",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/26f34e85725f22531abd172a2bd14ca5f4620e0b",
-      "id": "26f34e85",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c80cc8daebbd06220140815470f54640070d112b",
+      "id": "c80cc8da",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -458,8 +2519,8 @@
       "kind": "commit",
       "date": "2026-10-30T18:33:51+01:00",
       "title": "docs: canonical HOP family table with a CI check (U-08)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/582dc31e6561e955d1f3fffedabd7135609a7d2a",
-      "id": "582dc31e",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d78089a96a850ead9ac88e2863d5a2e64875d5c0",
+      "id": "d78089a9",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -467,8 +2528,8 @@
       "kind": "commit",
       "date": "2026-10-30T18:14:35+01:00",
       "title": "chore: hop/ui v0.2.1 (fixed section tiles stylesheet)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/190f49128c822c8ab50c381672f6ed9ae095b3ec",
-      "id": "190f4912",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/bfceeef247129fd3351e0d521411957f0de4e914",
+      "id": "bfceeef2",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -476,8 +2537,8 @@
       "kind": "commit",
       "date": "2026-10-30T18:06:41+01:00",
       "title": "feat: HOP family typography and family list from hel.ink",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/cbf6be7b3e7fe7ef9960a1d63ee22200d19aa0d1",
-      "id": "cbf6be7b",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b9d8204d9fb57f14b017e378b2d84e760b03aad6",
+      "id": "b9d8204d",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -485,8 +2546,8 @@
       "kind": "commit",
       "date": "2026-10-30T17:46:17+01:00",
       "title": "perf: index link_clicks.clicked_at",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/e2bd97ddf1b706ddb7ddeb177ac39f2ea596ccb6",
-      "id": "e2bd97dd",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/4643f6f57e90c21febd56a97f6c0be0917b0e6c2",
+      "id": "4643f6f5",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -494,8 +2555,8 @@
       "kind": "commit",
       "date": "2026-10-30T17:42:46+01:00",
       "title": "fix: English back link; keep menu links unchanged until LinkHop pages exist",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/c32b556839c479b562b582264e2bcaeb5290b48e",
-      "id": "c32b5568",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/1bff1483e799dc45e73968570aeea7d826a7b4b1",
+      "id": "1bff1483",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -503,8 +2564,8 @@
       "kind": "commit",
       "date": "2026-10-30T17:40:08+01:00",
       "title": "docs: add SECURITY.md and issue templates",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/c47efb19472dc284789dd34d57c7af851b378f58",
-      "id": "c47efb19",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/04a6b14da8c199792fe80a37151c79798d640165",
+      "id": "04a6b14d",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -512,8 +2573,8 @@
       "kind": "commit",
       "date": "2026-10-30T09:04:48+01:00",
       "title": "U-06: mark temporary HOP hub destinations explicitly in nav, footer and compact public footer",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/5995e5dc5ece25356281ed3020e2d0595740614f",
-      "id": "5995e5dc",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/9e84aed36adf1df404e993df7d754b90296c6e55",
+      "id": "9e84aed3",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -521,8 +2582,8 @@
       "kind": "commit",
       "date": "2026-10-30T08:54:13+01:00",
       "title": "U-06: public layout logo and back link to LinkHop home; interim HOP hub labels in marketing nav and footer",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/f73a38254e967e9e43980d9a40f531b50458d308",
-      "id": "f73a3825",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/97418b111298ec42a0affb1d7d0312f905feb3d4",
+      "id": "97418b11",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -530,8 +2591,8 @@
       "kind": "commit",
       "date": "2026-10-30T11:13:10+07:00",
       "title": "Merge pull request #54: feat: add global analytics endpoint for HOP App Protocol (C-08)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/4b98420b9ced84f4e018b32e4fdd76e5a1ef9297",
-      "id": "4b98420b",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/2fb08586fd95e9ffcc15c65475f4ec9e9ca93aea",
+      "id": "2fb08586",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -557,8 +2618,8 @@
       "kind": "commit",
       "date": "2026-10-30T11:12:56+07:00",
       "title": "Merge pull request #53: docs: update tagline, ecosystem links, and HOP family cross-reference",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/389460eaea4d35f1de999d11a4e542fd751f36e4",
-      "id": "389460ea",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/e22283a592222c401d3156a475a031055263b8f8",
+      "id": "e22283a5",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -575,8 +2636,8 @@
       "kind": "commit",
       "date": "2026-10-30T11:12:40+07:00",
       "title": "Merge pull request #52: feat: dukung rotasi secret sso ganda di middleware verify hub request (F-08)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/35661bd9665dc0bba4ca1ca9d2322776bd929746",
-      "id": "35661bd9",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b77079c1e0712903a34024d29ee8c073158454d3",
+      "id": "b77079c1",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -584,8 +2645,8 @@
       "kind": "commit",
       "date": "2026-10-30T11:12:14+07:00",
       "title": "Merge pull request #51: fix: satukan header csp berbasis nonce dan hapus report-only ganda (F-14)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/edf01339e5efef355cc25a8005b3057d7c80ce81",
-      "id": "edf01339",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/6af7a358fe5481746ff0e7ea6ca5070cd1f00850",
+      "id": "6af7a358",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -602,8 +2663,8 @@
       "kind": "commit",
       "date": "2026-10-29T20:35:39+01:00",
       "title": "feat: add global analytics endpoint for HOP App Protocol (C-08)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/b2f133664186838ff0997062b1017a3ef95ea1fb",
-      "id": "b2f13366",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/de69912013fb609a15099386bd2e70a1a44bbc44",
+      "id": "de699120",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -611,8 +2672,8 @@
       "kind": "commit",
       "date": "2026-10-29T20:27:45+01:00",
       "title": "docs: update tagline, ecosystem links, and HOP family cross-reference",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/2880ac9a166965d1e0338707ec57589e9024ce3b",
-      "id": "2880ac9a",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/fda5da63ea3a12dbeddfee0fb1658c0e0707a3d0",
+      "id": "fda5da63",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -620,8 +2681,8 @@
       "kind": "commit",
       "date": "2026-10-29T19:47:37+01:00",
       "title": "feat: dukung rotasi secret sso ganda di middleware verify hub request (F-08)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/714de8dfd245013e51263482063fb069a4b4e035",
-      "id": "714de8df",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/32cfad77be5ec2009f6417ef99959503851c4966",
+      "id": "32cfad77",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -629,8 +2690,8 @@
       "kind": "commit",
       "date": "2026-10-29T19:32:47+01:00",
       "title": "fix: satukan header csp berbasis nonce dan hapus report-only ganda (F-14)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/b2e26f16d19409c2dc35e8a73f0b0f4ea7e63908",
-      "id": "b2e26f16",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c1c0eb5ef460b3b5a30ad1807734116e287589db",
+      "id": "c1c0eb5e",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -638,8 +2699,8 @@
       "kind": "commit",
       "date": "2026-10-30T00:09:42+07:00",
       "title": "Merge pull request #50: fix: bersihkan file qr saat hapus akun, perbarui hop/auth & symfony/mime, dan hapus PCFSoftShadowMap (F-01, F-05, F-10, F-14)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/1937f6d3700438472cbb6db2442397b710da4930",
-      "id": "1937f6d3",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f49806b47564085a05268f17e15d84486e53ae4e",
+      "id": "f49806b4",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -656,8 +2717,8 @@
       "kind": "commit",
       "date": "2026-10-29T09:09:21+01:00",
       "title": "fix: kecualikan csrf untuk internal/events dan dukung signature hop1 di VerifyHubRequest",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/aea253778fde38439fdf21ce203223c80735424b",
-      "id": "aea25377",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/6fe28943a470d615bc5f1f27c078be6b27994164",
+      "id": "6fe28943",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -665,8 +2726,8 @@
       "kind": "commit",
       "date": "2026-10-29T09:02:04+01:00",
       "title": "fix: bersihkan file qr saat hapus akun, perbarui hop/auth dan symfony/mime, serta hapus PCFSoftShadowMap",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/ea92eb7125b5988372cea118edf56cd1b31d246f",
-      "id": "ea92eb71",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/4ab3138acfdc5cb41104811e911227fc1a1179bb",
+      "id": "4ab3138a",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -674,8 +2735,8 @@
       "kind": "commit",
       "date": "2026-10-29T02:10:39+07:00",
       "title": "Merge pull request #49: Logout no longer stalls; the landing is about LinkHop",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/dda8a21cfab6d5ba2c848237ec954f4fd907b26d",
-      "id": "dda8a21c",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/41a53b8e7e8d01b8c887e164c01f49ac4fe8fde0",
+      "id": "41a53b8e",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -692,8 +2753,8 @@
       "kind": "commit",
       "date": "2026-10-28T19:35:46+01:00",
       "title": "Logout no longer stalls; the landing is about LinkHop",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/b142580954914b0144c8ff51c861aa83e7347fef",
-      "id": "b1425809",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d098ed9de17c4d30256ffb2d64517e81f99c083a",
+      "id": "d098ed9d",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -710,8 +2771,8 @@
       "kind": "commit",
       "date": "2026-10-29T01:20:50+07:00",
       "title": "Merge pull request #48: Bring back LinkHop's landing and the guest shortener on link.hel.ink",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/49195eefea87499efb8b385add96c04e2d041ac5",
-      "id": "49195eef",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b59d859b065b0d2f05b18a32384d6a24d8fd471f",
+      "id": "b59d859b",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -719,8 +2780,8 @@
       "kind": "commit",
       "date": "2026-10-28T19:17:51+01:00",
       "title": "Bring back LinkHop's landing and the guest shortener on link.hel.ink",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/e76463622cef33e74d1fef225303fb71d772a18f",
-      "id": "e7646362",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/8dc9e0f9585f11861dda515e6e50f09780a9a028",
+      "id": "8dc9e0f9",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -737,8 +2798,8 @@
       "kind": "commit",
       "date": "2026-10-28T22:45:32+07:00",
       "title": "Merge pull request #47: CSP: allow the asset host next to 'self'",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/d0904853c0dbba961d97d7db67361192f1daa15d",
-      "id": "d0904853",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/881815dcdf95f92f7c4571ba3f033f9e6fc81c2e",
+      "id": "881815dc",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -746,8 +2807,8 @@
       "kind": "commit",
       "date": "2026-10-28T16:36:00+01:00",
       "title": "CSP: allow the asset host next to 'self'",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/83c8a6b347dfacf8f3b57f6f3e66e237562323d7",
-      "id": "83c8a6b3",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/42ccdf022de70122b702b3148b43dac279ae4868",
+      "id": "42ccdf02",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -755,8 +2816,8 @@
       "kind": "commit",
       "date": "2026-10-28T19:42:51+07:00",
       "title": "Merge pull request #46: Fase C: LinkHop jadi konsumen SSO hub, dashboard ke link.hel.ink",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/2fd6a41817717a293e3493b4d78c366d6faebf8d",
-      "id": "2fd6a418",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3b758e85b6b0bd68721dfcbe3f9ecf3069b2402e",
+      "id": "3b758e85",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -773,8 +2834,8 @@
       "kind": "commit",
       "date": "2026-10-28T12:56:00+01:00",
       "title": "Fase C: LinkHop becomes a HOP ID consumer; dashboard at link.hel.ink, links stay at hel.ink/l",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/9f7cf440120c5a4fff9583317cbd5f24c8967498",
-      "id": "9f7cf440",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/8bc2e2cd5ab643f1741d82733f353b95ddc214d1",
+      "id": "8bc2e2cd",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -782,8 +2843,8 @@
       "kind": "commit",
       "date": "2026-10-28T17:59:32+07:00",
       "title": "Merge pull request #45: Fase A: short link pindah ke hel.ink/l/{slug}, bio menjadi paket hop/bio",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/a371f7237d2ec2caa28ec707d5412cab067be61d",
-      "id": "a371f723",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c2fd8a9af57ecc181a06c04131fb774272b4a9aa",
+      "id": "c2fd8a9a",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -800,8 +2861,8 @@
       "kind": "commit",
       "date": "2026-10-28T11:45:27+01:00",
       "title": "Fix red CI: bio-off tests run only with BIO_ENABLED=false, e2e finds /l/slug on /links",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/0df9b8567f9957ac0f8ab9fb9cbc473791bc8725",
-      "id": "0df9b856",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/87336ad714d9937306d1b8d45e779789e0f70d3b",
+      "id": "87336ad7",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -809,8 +2870,8 @@
       "kind": "commit",
       "date": "2026-10-28T11:28:03+01:00",
       "title": "Fase A: short links move to hel.ink/l/{slug}, bio becomes the hop/bio package",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/1d336149e9bdd13aa525d5291f37522a19fbcb30",
-      "id": "1d336149",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/381a4ee3063d89ddcd646c8ffa59599f84c25a0c",
+      "id": "381a4ee3",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -818,8 +2879,8 @@
       "kind": "commit",
       "date": "2026-10-28T15:17:11+07:00",
       "title": "Merge pull request #44: Floating tiles: Imperium's shield-and-citadel mark replaces the crown",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/8a2db560313897b691960f6722c33ebd2654cc7e",
-      "id": "8a2db560",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b271511f24f8fae71d9b2abb0ecf681761568457",
+      "id": "b271511f",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -836,8 +2897,8 @@
       "kind": "commit",
       "date": "2026-10-28T09:05:00+01:00",
       "title": "Floating tiles: Imperium's shield-and-citadel mark replaces the crown",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/034ff8fdcf2ed5fe0cbbceba35d9eafca9017c73",
-      "id": "034ff8fd",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/096d485347593d55d0246a229ebdfc01b56b7ba7",
+      "id": "096d4853",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -854,8 +2915,8 @@
       "kind": "commit",
       "date": "2026-10-28T14:36:45+07:00",
       "title": "Merge pull request #43: Homepage: security check under the Shorten button at normal size",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/f3332467af6ddfd48405d4a41c3c51e883fe9cc6",
-      "id": "f3332467",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/bcf3737e201741fe6154aa512417b6077c39a56e",
+      "id": "bcf3737e",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -863,8 +2924,8 @@
       "kind": "commit",
       "date": "2026-10-28T07:35:49+00:00",
       "title": "Homepage: centre the security check on mobile",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/b943c8a707c468947c0cad10cff421acaecacf9e",
-      "id": "b943c8a7",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/47862ba8ee466926121a9fe29c650abfa8c2bd1d",
+      "id": "47862ba8",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -872,8 +2933,8 @@
       "kind": "commit",
       "date": "2026-10-28T07:30:37+00:00",
       "title": "Homepage: security check sits under the Shorten button at normal size",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/5a4c0b99515b0976a051922e65d1b7c1e0602ebb",
-      "id": "5a4c0b99",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/82d501cc04e9ad69f8b4a70e338b1f60e7338c98",
+      "id": "82d501cc",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -881,8 +2942,8 @@
       "kind": "commit",
       "date": "2026-10-28T14:15:49+07:00",
       "title": "Merge pull request #42: Brand files in one place with versioned URLs",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/224aaed9315e33d87d835afcba3e1bf940e0d8b7",
-      "id": "224aaed9",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b4e5b112c7acd902d02d98cd907d57ede6a88a64",
+      "id": "b4e5b112",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -899,8 +2960,8 @@
       "kind": "commit",
       "date": "2026-10-28T07:12:38+00:00",
       "title": "Brand files in one place with versioned URLs",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/cc7f0cbf717fed113d621157e430fd3cbdf9d65a",
-      "id": "cc7f0cbf",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c0db4152ec17881dc0946add057c7b8bf2167af8",
+      "id": "c0db4152",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -917,8 +2978,8 @@
       "kind": "commit",
       "date": "2026-10-28T14:05:49+07:00",
       "title": "Merge pull request #41: Home: Turnstile under the shortener, URL inside the sea, clearer story timing",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/72f14965e5f548f35f5da42877a0176fcacfbf3f",
-      "id": "72f14965",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/8b03fa7b54f789c3de4fff2880b4a4d648914c8a",
+      "id": "8b03fa7b",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -926,8 +2987,8 @@
       "kind": "commit",
       "date": "2026-10-28T07:01:11+00:00",
       "title": "Hop scene: long URLs shrink to fit inside the view",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/b22692b984837bbcfd260750a779b15917fad0f3",
-      "id": "b22692b9",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3d81c599962fa4ea26c7dda7c1277ba6cd0b6c12",
+      "id": "3d81c599",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -935,8 +2996,8 @@
       "kind": "commit",
       "date": "2026-10-28T06:58:46+00:00",
       "title": "Home: Turnstile under the shortener, URL inside the sea, clearer story timing",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/b3539f4cbd57dd8793b4adb8ee9e316b1c69191c",
-      "id": "b3539f4c",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/41af49769f844606a39543d2718910aea5408773",
+      "id": "41af4976",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -944,8 +3005,8 @@
       "kind": "commit",
       "date": "2026-10-28T13:40:47+07:00",
       "title": "Merge pull request #40: New LinkHop logo and a \"hop around the world\" home hero",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/5c4250ab4c497015c0ec02d951a023b5e4a691f0",
-      "id": "5c4250ab",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/eede1f903cd9a1919a9e8ffcdaacd4c5102e3be7",
+      "id": "eede1f90",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -962,8 +3023,8 @@
       "kind": "commit",
       "date": "2026-10-28T06:34:23+00:00",
       "title": "Hero miniature: one looping story, a long link with a password",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/834bbc288fbffa424a35d7d5a4f52f95097cd951",
-      "id": "834bbc28",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/22da12d7be2e5a76aa4e7ad0a44c2222a5a7b27f",
+      "id": "22da12d7",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -971,8 +3032,8 @@
       "kind": "commit",
       "date": "2026-10-28T06:22:27+00:00",
       "title": "Home hero: holographic link sea, scenario pills, shortener left + 3D miniature right",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/cf7c3575a1701ea48ce89262934a7a471ae60808",
-      "id": "cf7c3575",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/5e473f064ea3a7989662ae80f8893c2b4010b747",
+      "id": "5e473f06",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -980,8 +3041,8 @@
       "kind": "commit",
       "date": "2026-10-28T04:57:50+00:00",
       "title": "Home hero: bunnies around the world hop to hel.ink, examples rotate",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/7c3376c61df06ae8d4ca7e72e6adf6f76cd8ce96",
-      "id": "7c3376c6",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/ed9af57972005d42bdd7211139d4e82efd35af1f",
+      "id": "ed9af579",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -989,8 +3050,8 @@
       "kind": "commit",
       "date": "2026-10-28T04:45:16+00:00",
       "title": "New LinkHop logo and a \"hop demo\" home hero",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/275ab5355bf9710e58dd499d610fdc384fb4abbf",
-      "id": "275ab535",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d99f122128b1fcdf051c32b5070e6fade2175b9c",
+      "id": "d99f1221",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -998,8 +3059,8 @@
       "kind": "commit",
       "date": "2026-10-28T11:16:24+07:00",
       "title": "Merge pull request #39: Floating tiles: thickness as a rounded edge shadow, not side slabs",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/8a22b3d5f43570b4a44b97aa9f6c27d598ebfcd1",
-      "id": "8a22b3d5",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/e86c3585104ed00fa61801db8c96cbc80c0a0f4b",
+      "id": "e86c3585",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1016,8 +3077,8 @@
       "kind": "commit",
       "date": "2026-10-28T05:10:15+01:00",
       "title": "Floating tiles: thickness as a rounded edge shadow, not side slabs",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/61a8b121a4c002a9c25eccade86c573eeee01b2a",
-      "id": "61a8b121",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/cd5d10db50ad236dfbb6d924ad4669befb2113c7",
+      "id": "cd5d10db",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1034,8 +3095,8 @@
       "kind": "commit",
       "date": "2026-10-28T11:02:44+07:00",
       "title": "Merge pull request #38: Auth pages: floating 3D HOP app tiles, visible Terms checkbox",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/42c528c9325f87b2feaa1e281e14530d27b30dac",
-      "id": "42c528c9",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/4ddf95507051a4c3ef40b74ad39ff4386d5ddb53",
+      "id": "4ddf9550",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1043,8 +3104,8 @@
       "kind": "commit",
       "date": "2026-10-28T04:53:43+01:00",
       "title": "Auth pages: floating 3D HOP app tiles, visible Terms checkbox",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/bdd30ffdd4aa425d6370cf769209db68fd6de78c",
-      "id": "bdd30ffd",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/9d19f12ba1f5535c21dff83debf7959b0795b689",
+      "id": "9d19f12b",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1052,8 +3113,8 @@
       "kind": "commit",
       "date": "2026-10-28T10:31:41+07:00",
       "title": "Merge pull request #37: Retire the built-in admin panel: Imperium takes over",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/65d9ef048cb4064dabc8e964bffcb78199585c12",
-      "id": "65d9ef04",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/e9ca0680547ff26fea0c6f1acf4498edf18ea794",
+      "id": "e9ca0680",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1079,8 +3140,8 @@
       "kind": "commit",
       "date": "2026-10-28T10:31:22+07:00",
       "title": "Merge pull request #36: HOP admin API: content, abuse queue, IP, domains, queue, settings",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/5478c9b7ef9db894bc9ff725bc330208d33773e0",
-      "id": "5478c9b7",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/e387a3b8f624f79003347e7dd1352d5ecbd237e9",
+      "id": "e387a3b8",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1088,8 +3149,8 @@
       "kind": "commit",
       "date": "2026-10-27T21:47:24+01:00",
       "title": "Retire the built-in admin panel: Imperium takes over",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/15ade0225e3306209e74adf8eb9d060ff7219c85",
-      "id": "15ade022",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/72cbe18abc59df915ea3a962153414d981782050",
+      "id": "72cbe18a",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1097,8 +3158,8 @@
       "kind": "commit",
       "date": "2026-10-27T21:31:56+01:00",
       "title": "test: refused actions are not audited",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/9f878711df5340f49e3fc667ead3d36b19ff25c6",
-      "id": "9f878711",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/9b094b01c40901f83fdc4a3b0a8f6816ebb64611",
+      "id": "9b094b01",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1106,8 +3167,8 @@
       "kind": "commit",
       "date": "2026-10-27T21:28:15+01:00",
       "title": "HOP admin API: content (links, bio), abuse queue, IP, domains, queue status, settings",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/d347c3fbbf1b699d743ce06e81f63d537af86add",
-      "id": "d347c3fb",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/2f489b8cb246dc71d6651f39a75ae4af2cc9ef05",
+      "id": "2f489b8c",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1115,8 +3176,8 @@
       "kind": "commit",
       "date": "2026-10-28T03:06:50+07:00",
       "title": "Merge pull request #35: HOP admin API for Imperium: stats, users 360, actions, audit, search, health",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/5716b8833cbb80fa8d403896b1dacbe704646856",
-      "id": "5716b883",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f1b11cefd34303fe8f0cb2bc9b9788f987c773c6",
+      "id": "f1b11cef",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1133,8 +3194,8 @@
       "kind": "commit",
       "date": "2026-10-27T21:04:07+01:00",
       "title": "hop:bootstrap: register Imperium's second door (citadel) as its own hidden app",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/6785b129f96ae2bfb953b9c9a0ffe3c547e504d8",
-      "id": "6785b129",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/bda9b6dda85bed8dd05b02db15a5d10ad14a403d",
+      "id": "bda9b6dd",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1142,8 +3203,8 @@
       "kind": "commit",
       "date": "2026-10-27T21:00:48+01:00",
       "title": "HOP admin API for Imperium: stats, users, actions, audit, search, health",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/470aff3022cd297f58787b0d103cc8a7d7512d19",
-      "id": "470aff30",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/5138da7a6801440dfe4cd6643621f184b4251283",
+      "id": "5138da7a",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1151,8 +3212,8 @@
       "kind": "commit",
       "date": "2026-10-28T02:45:29+07:00",
       "title": "Merge pull request #34: Auth pages and mails in HOP ID style",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/733a040bd3d5dd34d7d6208f06a2abf84c52a6a7",
-      "id": "733a040b",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/e945bd0d2db1909f6d5261d232cebe84bda69c93",
+      "id": "e945bd0d",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1169,8 +3230,8 @@
       "kind": "commit",
       "date": "2026-10-27T20:42:46+01:00",
       "title": "Auth pages and mails in HOP ID style: full-width buttons, flexible Turnstile, links underneath, HOP header in mail",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/b19b5bc60d2e1532ca79a2ce44be0529579560da",
-      "id": "b19b5bc6",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/e6b45fcf7d1ae6a70e7f1d2522f624bea63c8ac2",
+      "id": "e6b45fcf",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1178,8 +3239,8 @@
       "kind": "commit",
       "date": "2026-10-28T02:31:37+07:00",
       "title": "Merge pull request #33: Password reset for HOP ID: branded mail, locked address, sign-out on emailed link",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/b1ad3ed569f44782b770203f1a54ee08afe52a93",
-      "id": "b1ad3ed5",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/0d0455324a57ec2ecf4c6672a06468236fd3b838",
+      "id": "0d045532",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1196,8 +3257,8 @@
       "kind": "commit",
       "date": "2026-10-27T20:15:38+01:00",
       "title": "Password reset for HOP ID: branded mail with logo, locked address on the form, sign out on an emailed link",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/bae0407528fb985b2130fcde49eb740d8186b615",
-      "id": "bae04075",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/6f93538466227eb1bfac44d63a0aecf04f00e731",
+      "id": "6f935384",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1214,8 +3275,8 @@
       "kind": "commit",
       "date": "2026-10-28T01:25:44+07:00",
       "title": "Merge pull request #32: HOP ID: app registry, roles, unified profile, ticket v2, signed HOP API (LinkHop)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/fb2de1d9ce975a319fdc8e6c077b19ccb63acaaa",
-      "id": "fb2de1d9",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b95e7b7c942b67ff9bc0379ad48e5eb97e09096d",
+      "id": "b95e7b7c",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1223,8 +3284,8 @@
       "kind": "commit",
       "date": "2026-10-27T19:18:12+01:00",
       "title": "Settings: inline the username check component so Alpine finds it (fixes the e2e js-error)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/0e74ab47a35a15f64e9ca66d596018c5920a5042",
-      "id": "0e74ab47",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/21e0a2de82319433ee7cb0a982519eb568f99e17",
+      "id": "21e0a2de",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1232,8 +3293,8 @@
       "kind": "commit",
       "date": "2026-10-27T19:08:40+01:00",
       "title": "HOP ID: app registry, roles, profile fields, SSO ticket v2, signed HOP API and account events",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/8579a480872ae2d07567dd0aa5f6b6e7a04131e3",
-      "id": "8579a480",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/5a632558d459c7791724d3766439d960550ec21f",
+      "id": "5a632558",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1241,8 +3302,8 @@
       "kind": "commit",
       "date": "2026-10-27T19:08:40+01:00",
       "title": "LinkHop: HOP ID profile form, login recorder, Login with HOP buttons, tests",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/54f3613ee0c90f694a6ae5117074c4027e06023a",
-      "id": "54f3613e",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/06b594014fa56ec40f38ca5eb7ec1f23e6bbb8c9",
+      "id": "06b59401",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1250,8 +3311,8 @@
       "kind": "commit",
       "date": "2026-10-27T23:33:48+07:00",
       "title": "Merge pull request #30: PixelHop sign-in hardening + faster sign-up",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/44d74db9240e35462ac6104e21efa630979ac54d",
-      "id": "44d74db9",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/a84206c9f7e3bdb8c481372017f9c3bb59b616ae",
+      "id": "a84206c9",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1268,8 +3329,8 @@
       "kind": "commit",
       "date": "2026-10-27T16:19:06+00:00",
       "title": "Brief for the one-login-page work: decisions, current state, steps, draft PixelHop patch",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/a06bc319f1207c67e671c89236879abd7cd1d3d7",
-      "id": "a06bc319",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/bd3d592fb1148f244403112f4b08667a554516c9",
+      "id": "bd3d592f",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1277,8 +3338,8 @@
       "kind": "commit",
       "date": "2026-10-27T23:16:15+07:00",
       "title": "Merge pull request #31: Google sign-in for the apps, and verify Google accounts",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/859b69ac8836241e6c71102c44d400230b89663b",
-      "id": "859b69ac",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/6f13b593b6b208f053ba372d66c5fbf85e055d32",
+      "id": "6f13b593",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1295,8 +3356,8 @@
       "kind": "commit",
       "date": "2026-10-27T17:09:20+01:00",
       "title": "Sign in to the apps with Google, and verify Google accounts",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/74320f644cb74996d60fdc4db76c6ee1030a1873",
-      "id": "74320f64",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3633233c7c4d49276e614f262f717d9c008e6e91",
+      "id": "3633233c",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1304,8 +3365,8 @@
       "kind": "commit",
       "date": "2026-10-27T15:58:50+00:00",
       "title": "PixelHop sign-in: confirmed emails only, per-visitor limits, IP bans; faster sign-up",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/cd7e62df8c1dfa437f4bd1488d458053af3771f3",
-      "id": "cd7e62df",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/72b71f8b8197f4ac87661033d210449495c691ab",
+      "id": "72b71f8b",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1322,8 +3383,8 @@
       "kind": "commit",
       "date": "2026-10-27T22:29:32+07:00",
       "title": "Merge pull request #29: One sign-in for every HEL.ink app: NoteHop joins PixelHop",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/e8eaede519891bec760ab228849e9dbe85cacecd",
-      "id": "e8eaede5",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/7e618f7208c374e8ca05722c0d138ea271694587",
+      "id": "7e618f72",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1331,8 +3392,8 @@
       "kind": "commit",
       "date": "2026-10-27T16:08:36+01:00",
       "title": "Let the sign-in and 2FA forms redirect to the apps (CSP form-action)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/9f1aa52696fa1705e9c7d78717be8c5b6fa54b01",
-      "id": "9f1aa526",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c36f756e552714272c2a170b9633f976d403510b",
+      "id": "c36f756e",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1340,8 +3401,8 @@
       "kind": "commit",
       "date": "2026-10-27T14:46:43+01:00",
       "title": "One sign-in for every HEL.ink app: NoteHop joins PixelHop",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/76a365f751a7c262e307ed5300c4271804977f57",
-      "id": "76a365f7",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/4f26b1a5492cc329c223842b241dc82d6d27936f",
+      "id": "4f26b1a5",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1349,8 +3410,8 @@
       "kind": "commit",
       "date": "2026-10-16T16:53:40+07:00",
       "title": "Fix red CI: Pint style in the PixelHop SSO test, and a flaky leave-editor step",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/85fc92cfcc0d47ad2dfab68346a242ed584ef9c1",
-      "id": "85fc92cf",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/728cd8aa4d3490aead162048133ca412908d3daa",
+      "id": "728cd8aa",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1358,8 +3419,8 @@
       "kind": "commit",
       "date": "2026-10-16T08:51:44+02:00",
       "title": "PixelHop's own sign-in and sign-up forms use HEL.ink accounts",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/b8b07f49443cbc7403ffe8b954bf72d5eda66afd",
-      "id": "b8b07f49",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/6011c644bd3c81b4e0ca1ed1c8809d6d32159e3c",
+      "id": "6011c644",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1367,8 +3428,8 @@
       "kind": "commit",
       "date": "2026-10-16T08:09:45+02:00",
       "title": "Send people who sign up from PixelHop back to PixelHop",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/d2c4261759dbeef8baf73c5aa3536e9c75832909",
-      "id": "d2c42617",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/34e3677e541dee8abc8fac96c5e31d23fdac6f97",
+      "id": "34e3677e",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1385,8 +3446,8 @@
       "kind": "commit",
       "date": "2026-10-16T01:25:55+07:00",
       "title": "Merge pull request #24: Sign out instead of \"419 Page Expired\" when the session token expired",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/6321c2c159053f2ba8f3e035fd5574feafc207c4",
-      "id": "6321c2c1",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c96cc49f5cb654420c9250c4f8db257d5dfa23c6",
+      "id": "c96cc49f",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1394,8 +3455,8 @@
       "kind": "commit",
       "date": "2026-10-15T20:16:08+02:00",
       "title": "Merge main (Tailwind 4) into the session-expiry branch",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/c07008da2eec818c3c0131f3557d26e44e3bbe8c",
-      "id": "c07008da",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/917fb4eb194149823acf6ee93702bec971f6bbfa",
+      "id": "917fb4eb",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1403,8 +3464,8 @@
       "kind": "commit",
       "date": "2026-10-16T01:15:04+07:00",
       "title": "Merge pull request #28: Post-deploy fixes and Tailwind 4 updates",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/bcf0224502d2fbf3ca8ea7bf074709d7bce03dad",
-      "id": "bcf02245",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/61e162b8c26eed61b524cee72ca788f1c7a3e0df",
+      "id": "61e162b8",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1421,8 +3482,8 @@
       "kind": "commit",
       "date": "2026-10-15T18:13:50+00:00",
       "title": "Merge main into the feature branch",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/29d9de64ac4ac28ef00010322fe6be98303f4624",
-      "id": "29d9de64",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/1396a4b023567da48975099fc25b0c216e947db9",
+      "id": "1396a4b0",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1439,8 +3500,8 @@
       "kind": "commit",
       "date": "2026-10-16T01:11:37+07:00",
       "title": "Merge pull request #23: Reserve app route segments as slugs and move the example API link to /documentation",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/eaf4187629307f8b6392000cbb3c7aebf64d6de5",
-      "id": "eaf41876",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/38f358b5297f19dfffebff671e515cbc10a4fbea",
+      "id": "38f358b5",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1457,8 +3518,8 @@
       "kind": "commit",
       "date": "2026-10-16T01:11:15+07:00",
       "title": "Merge pull request #27: Fix the Images menu 403, lost clicks on proxy lookup errors, and red CI",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/6b00c4d88aedf1e9d468a6610f1ca85b8d0c548a",
-      "id": "6b00c4d8",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/a92eb448c25a26d8ab0700d474dc9f4c5d9e6adb",
+      "id": "a92eb448",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1466,8 +3527,8 @@
       "kind": "commit",
       "date": "2026-10-15T19:51:10+02:00",
       "title": "Fix the Images menu 403, lost clicks on proxy lookup errors, and red CI",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/60cccb8df45cbb716b1cb6e156715f7a602d1c6c",
-      "id": "60cccb8d",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d6725799cba892e29da383ba2c893b205e8430a4",
+      "id": "d6725799",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1475,8 +3536,8 @@
       "kind": "commit",
       "date": "2026-10-15T14:13:40+02:00",
       "title": "One HEL.ink account for PixelHop image hosting",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/8886d72440f1dfefab6609318a5373afeffe0661",
-      "id": "8886d724",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/5626d5274000794d3d950f202942b5586917bfb4",
+      "id": "5626d527",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1484,8 +3545,8 @@
       "kind": "commit",
       "date": "2026-10-15T10:35:28+00:00",
       "title": "Keep the bio editor script intact: it already gets the notice from the app layout",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/ae84c6653e3f99b7eff20f59d97b108839d3bd8a",
-      "id": "ae84c665",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d3055d4f2e3133f4ffa3723bf3598ac8a01d762c",
+      "id": "d3055d4f",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1493,8 +3554,8 @@
       "kind": "commit",
       "date": "2026-10-15T10:34:06+00:00",
       "title": "Upgrade Tailwind CSS 3 to 4 and keep the v3 look",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/ea6998c4b0e765839318f7b33d1ee81c804d99ad",
-      "id": "ea6998c4",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/60dc53bfb49b25b4e27272db275da0e53434e636",
+      "id": "60dc53bf",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1502,8 +3563,8 @@
       "kind": "commit",
       "date": "2026-10-15T10:17:06+00:00",
       "title": "Add a screenshot script to compare the UI before and after a styling change",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/c089851896f0656cb65f3e07012e0b93431892be",
-      "id": "c0898518",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/a0b597529bbf717870e32da1db952bc004842099",
+      "id": "a0b59752",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1511,8 +3572,8 @@
       "kind": "commit",
       "date": "2026-10-15T10:11:17+00:00",
       "title": "Run npm audit fix, ignore the disposable domains list, document Cloudflare and CSP",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/ad7f73c97b276486593daa839541efb39740e65f",
-      "id": "ad7f73c9",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/43123d378b65802b57163581f86130fcf61f4d0a",
+      "id": "43123d37",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1520,8 +3581,8 @@
       "kind": "commit",
       "date": "2026-10-15T10:09:03+00:00",
       "title": "Sign out instead of 419 on logout with an expired session token",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/ff8463dca35b3ffc4f5612ec22398d2a841d3b0b",
-      "id": "ff8463dc",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d1c73be84c02f8532616be5369022b14ab500093",
+      "id": "d1c73be8",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1529,8 +3590,8 @@
       "kind": "commit",
       "date": "2026-10-15T10:04:54+00:00",
       "title": "Refuse app route segments as slugs; move the example API link to /documentation",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/cf79c873598de64ca4e9572603e066f6abc49008",
-      "id": "cf79c873",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/01ee3e3849c9b9eb36f5900ad3b0b3ebde9f0983",
+      "id": "01ee3e38",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1547,8 +3608,8 @@
       "kind": "commit",
       "date": "2026-10-15T14:47:17+07:00",
       "title": "Merge pull request #22: Show brand and social icons on the public bio page like the preview",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/ecc6ce83cef3e3c3ab5e6fb09db31aff798a6952",
-      "id": "ecc6ce83",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/e24752e78e3ebc6dc5d25ae5de963fff50f898b6",
+      "id": "e24752e7",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1556,8 +3617,8 @@
       "kind": "commit",
       "date": "2026-10-15T14:46:53+07:00",
       "title": "Merge pull request #21: Label every block on the admin bio page, plus an example bio",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/03e1faf64457298cab5359ecb2d0f571bf85afbf",
-      "id": "03e1faf6",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/01cd617f8ffd4cec0db4c6a7c3110561fd20c440",
+      "id": "01cd617f",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1574,8 +3635,8 @@
       "kind": "commit",
       "date": "2026-10-15T07:44:57+00:00",
       "title": "Let ExampleBioSeeder give the example to an existing account",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/60ac4e44a76c7314aa8a265557e97b5073b76688",
-      "id": "60ac4e44",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/47f00e01845a9e9994d29a73c80290dbd027ecc3",
+      "id": "47f00e01",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1583,8 +3644,8 @@
       "kind": "commit",
       "date": "2026-10-15T07:37:34+00:00",
       "title": "Show the example bio in a scrollable phone frame on the website",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/02f3a6c115feafc8e9b14f7f11e9b1f5e5a0b8a1",
-      "id": "02f3a6c1",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c3a54aaa73da42e5dd8af349acfff89518f24194",
+      "id": "c3a54aaa",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1592,8 +3653,8 @@
       "kind": "commit",
       "date": "2026-10-15T07:31:47+00:00",
       "title": "Add the example bio page and short links to the docs and READMEs",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/de7628bb8491cd8a9fe5a88579e993c515e16493",
-      "id": "de7628bb",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d937611e4f857368e06060343a76877b34314f85",
+      "id": "d937611e",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1601,8 +3662,8 @@
       "kind": "commit",
       "date": "2026-10-15T07:29:28+00:00",
       "title": "Show brand and social icons on the public bio page like the preview",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/de4c7e8eb7c4147527b992b5945673d400fe709f",
-      "id": "de4c7e8e",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/0adfd327ce550255a5ad7ce7d51f1a78189f6617",
+      "id": "0adfd327",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1610,8 +3671,8 @@
       "kind": "commit",
       "date": "2026-10-15T07:25:54+00:00",
       "title": "Label every block type on the admin bio page",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/daff1ffa65969e948ffe0a5bd9a39e7795175cf2",
-      "id": "daff1ffa",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/181d6823d3a840758b622a3d07530607152c9644",
+      "id": "181d6823",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1619,8 +3680,8 @@
       "kind": "commit",
       "date": "2026-10-15T14:05:05+07:00",
       "title": "Merge pull request #20: Revamp API docs, new bio form and remaining Settings tabs",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/e73468a922172dbf36d6aefb8fdfdfe054710493",
-      "id": "e73468a9",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c5ce3c23a8959ff27b51c8befe8dc40c66f53f42",
+      "id": "c5ce3c23",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1637,8 +3698,8 @@
       "kind": "commit",
       "date": "2026-10-15T06:36:44+00:00",
       "title": "Revamp API docs, new bio page form and remaining Settings tabs",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/cff2e747da009e3e0b6ecd2f74641903ea166a28",
-      "id": "cff2e747",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f2fe3590ee2bd9764182939cebadde724cb263d2",
+      "id": "f2fe3590",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1646,8 +3707,8 @@
       "kind": "commit",
       "date": "2026-10-15T13:32:24+07:00",
       "title": "Merge pull request #19: Fix admin dashboard issues and revamp admin + member pages",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/c60dc87e79afacb013069fd9c081db2dec001a5d",
-      "id": "c60dc87e",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f1862fae250a50ba6d99b8c676ed016d49d3cfd1",
+      "id": "f1862fae",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1664,17 +3725,8 @@
       "kind": "commit",
       "date": "2026-10-14T20:47:15+00:00",
       "title": "Name the folder/tag modal heading as the E2E graph expects",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/daf17994723c1810647849a7f8f7f08d999b5852",
-      "id": "daf17994",
-      "app": "LinkHop",
-      "repo": "LinkHop"
-    },
-    {
-      "kind": "commit",
-      "date": "2026-10-14T20:45:25+00:00",
-      "title": "Tidy member pages: folders, tags, link detail/edit/create, bio list and analytics; fix /links/create crash",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/c6fc56e4b5d9a6f05d53436f415fee345e5f6500",
-      "id": "c6fc56e4",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/41f3edd55a57b99d7391681deffff98a03d05c73",
+      "id": "41f3edd5",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1682,8 +3734,17 @@
       "kind": "commit",
       "date": "2026-10-14T20:45:25+00:00",
       "title": "Revamp admin security, SEO, bio and monitor pages; fix admin bio detail crash",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/1812c281c903b50329f8a955f8aa201408f9177c",
-      "id": "1812c281",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b42d7f9f492b6e4db0792f3fda3340d54d72625d",
+      "id": "b42d7f9f",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-10-14T20:45:25+00:00",
+      "title": "Tidy member pages: folders, tags, link detail/edit/create, bio list and analytics; fix /links/create crash",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/5ea6e3ac22d0505a34df9f55ff616b1a142a2084",
+      "id": "5ea6e3ac",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1691,8 +3752,8 @@
       "kind": "commit",
       "date": "2026-10-14T20:33:18+00:00",
       "title": "Revamp global analytics layout; keep select text clear of the chevron",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/b6ffcb54f78bcb66d942852fbea0dc858a3a4536",
-      "id": "b6ffcb54",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/4b91e808658dee2298d88f2082db0d5c76bbaf7c",
+      "id": "4b91e808",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1700,8 +3761,8 @@
       "kind": "commit",
       "date": "2026-10-14T20:31:55+00:00",
       "title": "Revamp admin control panel into a bento overview",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/39a67147f69b374cbddc917eee9ab27067d32abe",
-      "id": "39a67147",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/4351a992d2c4c95b0b7dcb92705acec3dcfb4dd5",
+      "id": "4351a992",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1709,8 +3770,8 @@
       "kind": "commit",
       "date": "2026-10-14T20:29:44+00:00",
       "title": "Revamp admin Users page and Settings/Account layout",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/e9dc95796b597ed3b9171e392dc72be37a4ddc32",
-      "id": "e9dc9579",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/fc4e4a2b3822b9ebd2dae0aea033c5faf2268c2e",
+      "id": "fc4e4a2b",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1718,8 +3779,8 @@
       "kind": "commit",
       "date": "2026-10-14T20:26:00+00:00",
       "title": "Global links: searchable owner filter instead of a dropdown of every user/tag; bio slugs need 5+ characters for members",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/f760b961d6c26e4f0a6b851b76b169256abfbc50",
-      "id": "f760b961",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/29f1adf6cc984c52fe822a71bf89ca5963978a4e",
+      "id": "29f1adf6",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1727,8 +3788,8 @@
       "kind": "commit",
       "date": "2026-10-14T20:23:16+00:00",
       "title": "Abuse findings: flag video embed hosts, match subdomains, show last scan and add Scan now; rank only live links in analytics",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/73e3893ee45663992188aaf785897121d149b9fd",
-      "id": "73e3893e",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/196b12e902d941f0557c9d6a5fa1608cd66ef14b",
+      "id": "196b12e9",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1736,8 +3797,8 @@
       "kind": "commit",
       "date": "2026-10-14T20:20:39+00:00",
       "title": "Fix admin user inspect page crash and paginate its links",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/0211db3e6bf7900a725a7620cf05833d6d678add",
-      "id": "0211db3e",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/a7c7b5246399b727c24083894f2711b85da4673b",
+      "id": "a7c7b524",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1745,8 +3806,8 @@
       "kind": "commit",
       "date": "2026-10-15T02:30:52+07:00",
       "title": "Merge pull request #18: Remove unused files from the repository",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/f54596156598586b1922572ded5a9b503e4f4b2e",
-      "id": "f5459615",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/4c11935f98790573adee4d3e6f3691a13049632b",
+      "id": "4c11935f",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1763,8 +3824,8 @@
       "kind": "commit",
       "date": "2026-10-14T21:18:20+02:00",
       "title": "Remove unused files from the repository",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/c1b6ab3c1c626d08932946d60135a2f2b7061cb9",
-      "id": "c1b6ab3c",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/27b28e5d4a2e71610bd8a5291089899481073983",
+      "id": "27b28e5d",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1772,8 +3833,8 @@
       "kind": "commit",
       "date": "2026-10-15T01:48:34+07:00",
       "title": "Merge pull request #16: Guest links: 14 idle days or day 30 at midnight, blocked old slugs, tidier shorten form",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/0db2ae5e2e7a1834277c611f0ba8fe3a66aeaa24",
-      "id": "0db2ae5e",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/0df417833b06b2239b514576087cac25744384c0",
+      "id": "0df41783",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1790,8 +3851,8 @@
       "kind": "commit",
       "date": "2026-10-14T18:43:20+00:00",
       "title": "Guest links: 14 idle days / day 30 at midnight, blocked old slugs, tidier shorten form",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/4d76084be212acd5a7b116fd95705070033e5765",
-      "id": "4d76084b",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/363722471c3b792f47b7d919144091ac211caeee",
+      "id": "36372247",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1799,8 +3860,8 @@
       "kind": "commit",
       "date": "2026-10-15T01:07:52+07:00",
       "title": "Merge pull request #15: README in the Amnesia style, Indonesian README and a GitHub Pages site",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/29b3b64d57838073b74598f911da72854d207e1e",
-      "id": "29b3b64d",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3e9194d5e32ac571606ba2eafbdcf57a17bb2151",
+      "id": "3e9194d5",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1817,8 +3878,8 @@
       "kind": "commit",
       "date": "2026-10-14T18:00:06+00:00",
       "title": "README in the Amnesia style, Indonesian README and a GitHub Pages site",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/dc8a9ffdea342c8eedcca58f3034d513a0d2116d",
-      "id": "dc8a9ffd",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/105e3db4fddeea2f621991d2d30d544155e8e087",
+      "id": "105e3db4",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1826,8 +3887,8 @@
       "kind": "commit",
       "date": "2026-10-15T00:43:11+07:00",
       "title": "Merge pull request #14: Remaining Link-in-Bio audit findings",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/665b7c4fd62c193a2ff80bd5b2cc7519c01babf3",
-      "id": "665b7c4f",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/94558570f37ba6f18cc355a8638fdd14e8667d8d",
+      "id": "94558570",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1844,8 +3905,8 @@
       "kind": "commit",
       "date": "2026-10-14T17:39:40+00:00",
       "title": "Guest links capped at 30 days; bio trackers wait for visitor consent",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/9436e332ff2bb65facabc8ec7d86e6f8d56e16da",
-      "id": "9436e332",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/a58fccf64d33cda59d7ed4217ed533e1252932e2",
+      "id": "a58fccf6",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1853,8 +3914,8 @@
       "kind": "commit",
       "date": "2026-10-14T13:42:29+00:00",
       "title": "Strict-CSP ready views and lighter public bio page",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/e8f7039e0e93d002f2e2db8b90a980369b0cb00e",
-      "id": "e8f7039e",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/bfe19655221135d62ab6badf03f4dd1f7a59449f",
+      "id": "bfe19655",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1862,8 +3923,8 @@
       "kind": "commit",
       "date": "2026-10-14T13:38:27+00:00",
       "title": "Shared limits and defaults between bio editor and server (L3, L4)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/598e34fd8db56b8ff1c456ad0692140e0ddb1ab4",
-      "id": "598e34fd",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/bfab022e558bd043be0b241050925a792c397515",
+      "id": "bfab022e",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1871,8 +3932,8 @@
       "kind": "commit",
       "date": "2026-10-14T13:36:44+00:00",
       "title": "Bio editor, preview and public page agree: saves, themes, embeds, countdowns",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/eb0b0afcf27faf42e9b6b038d8b90653dab90b71",
-      "id": "eb0b0afc",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/16dc08a5599e200a19f3c3a526976152faf83a3a",
+      "id": "16dc08a5",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1880,8 +3941,8 @@
       "kind": "commit",
       "date": "2026-10-14T10:26:51+00:00",
       "title": "Bio security and data fixes: CSS value validation, column-sized limits, shared slug rules, socials encoding, indexes",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/c6c9746c1a6077c081ad5c402c55c159f7e97b02",
-      "id": "c6c9746c",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/217655e2f1571b52dff61647f506d345f4a50fdc",
+      "id": "217655e2",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1889,8 +3950,8 @@
       "kind": "commit",
       "date": "2026-10-14T10:23:18+00:00",
       "title": "Privacy and backend findings from the bio audit",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/a897ac5dda65e09ea6c7142313f33d545fd72c9e",
-      "id": "a897ac5d",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/091949265a7c43894a0f470934ed868ff76873a5",
+      "id": "09194926",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1898,8 +3959,8 @@
       "kind": "commit",
       "date": "2026-10-14T10:15:46+00:00",
       "title": "Accessibility: dialogs, tabs, keyboard reordering, labels and contrast",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/3c0046bfd5d0555194a2b9ea10ce799679d2db13",
-      "id": "3c0046bf",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/584eeeb0a01a16bfe976069f1a3302ad3735959b",
+      "id": "584eeeb0",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1907,8 +3968,8 @@
       "kind": "commit",
       "date": "2026-10-14T16:48:11+07:00",
       "title": "Merge pull request #13: Fix custom slug validation in the browser",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/cf92832919842b9a5bcd94b375a4a1284f33659d",
-      "id": "cf928329",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/79b7d8f0fd4d27f672977486d01053784935fa9b",
+      "id": "79b7d8f0",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1934,8 +3995,8 @@
       "kind": "commit",
       "date": "2026-10-14T16:46:20+07:00",
       "title": "Merge pull request #8: PR-A: Turnstile runs on page load (one-click login) + fix /health/queue",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/d68fd3c1c7e4e5855b0f70ab64cdc55a75ffb8ff",
-      "id": "d68fd3c1",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/cb800a51cd10d1af715a1195e5f949fe439fe6c1",
+      "id": "cb800a51",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1943,8 +4004,8 @@
       "kind": "commit",
       "date": "2026-10-14T09:44:19+00:00",
       "title": "Report: #12 merged, only #8 and the slug fix left",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/007aa76a2f0ba5765df738a0643936fe50e9e8dc",
-      "id": "007aa76a",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3d01aa3aeef02f49de57b7f998ee9dc721e19398",
+      "id": "3d01aa3a",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1952,8 +4013,8 @@
       "kind": "commit",
       "date": "2026-10-14T09:44:08+00:00",
       "title": "Escape the hyphen in slug patterns so browsers apply them",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/b347b1011a0e65c01b7890001b336deb21f67122",
-      "id": "b347b101",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/a672a1e58d568893ada5cb3a48e7d544ef8d7766",
+      "id": "a672a1e5",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1961,8 +4022,8 @@
       "kind": "commit",
       "date": "2026-10-14T09:42:59+00:00",
       "title": "Merge main into the feature branch",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/723bb667c455865ea4279540ca95409855a5b365",
-      "id": "723bb667",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/8f6f94c3efc1b6e2e62529968283be0d37baed50",
+      "id": "8f6f94c3",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -1979,8 +4040,8 @@
       "kind": "commit",
       "date": "2026-10-14T16:35:00+07:00",
       "title": "Merge pull request #12: PR-E: Synthetic-user E2E suite (replaces #9)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/2c464ab814c317dfbc8d59adadf2cac795c081c0",
-      "id": "2c464ab8",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c9fb13f073d6a40a5c6551faa6a1675aadb8f0cb",
+      "id": "c9fb13f0",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2006,8 +4067,8 @@
       "kind": "commit",
       "date": "2026-10-14T16:33:55+07:00",
       "title": "Merge pull request #11: Keep visitor IPs private: hash click IPs, hide per-visit IP/city/ISP from owners",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/e02b934bc363fadb3c6d372203cec049b057ce88",
-      "id": "e02b934b",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/41932e1206bac7e15af5bfab342f8888368777f2",
+      "id": "41932e12",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2024,8 +4085,8 @@
       "kind": "commit",
       "date": "2026-10-14T16:33:21+07:00",
       "title": "Merge pull request #7: PR-C: Bio audit fixes (preview XSS, file deletion, moderation lock, editor data loss)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/9de65f15ec7409ec72d844c3380fa72cdde54ac0",
-      "id": "9de65f15",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b97ae604f336e1e2233e18e9e7e7ff11aa7a7f8c",
+      "id": "b97ae604",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2033,8 +4094,8 @@
       "kind": "commit",
       "date": "2026-10-14T16:32:56+07:00",
       "title": "Merge pull request #6: PR-B: Unguessable bio click links with the same gates as the page",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/5bb4073c415588f3532fbbc9a7dc5a918d4624b8",
-      "id": "5bb4073c",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/6dc38ae258eca2baab20ac4e1701821c5e173869",
+      "id": "6dc38ae2",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2051,8 +4112,8 @@
       "kind": "commit",
       "date": "2026-10-14T09:26:34+00:00",
       "title": "Report: MySQL fresh-install fix, fetch-og 422 and nightly findings",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/c0f3c8dc0c5dbf0d9165879a07ef0567f43f589b",
-      "id": "c0f3c8dc",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/4ed8bcaeab0d058c3e0e70a76e8cc75a9b840bb2",
+      "id": "4ed8bcae",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2060,8 +4121,8 @@
       "kind": "commit",
       "date": "2026-10-14T09:26:09+00:00",
       "title": "Synthetic users: confirm the editor's discard prompt, remember unlocked bio pages, stay under the login limit",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/0eb554890d2c1c4c783cb49d9462610fd9df107c",
-      "id": "0eb55489",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d54218a9d5adf41d3cec86d37b31debc3b617666",
+      "id": "d54218a9",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2069,8 +4130,8 @@
       "kind": "commit",
       "date": "2026-10-14T09:16:31+00:00",
       "title": "Answer 422, not 500, when a link preview cannot be fetched",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/a7f0c72251592d9f1fe717a1f9ae6834af4a83ba",
-      "id": "a7f0c722",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/8f7963cc887f3eae904914093b126ed3d443da38",
+      "id": "8f7963cc",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2078,8 +4139,8 @@
       "kind": "commit",
       "date": "2026-10-14T09:11:42+00:00",
       "title": "Fix fresh installs on MySQL/MariaDB",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/e875b6bd6595b9a13c7cede68d1ca4cb3b06da4b",
-      "id": "e875b6bd",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b700ac78005f1fcf16016d9d93d35f94f9cada4b",
+      "id": "b700ac78",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2087,8 +4148,8 @@
       "kind": "commit",
       "date": "2026-10-14T09:10:18+00:00",
       "title": "Merge main (homepage direction B) into Turnstile branch",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/68fcb943d739004ab9931953ceb9cc82c7ca92ae",
-      "id": "68fcb943",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/915580840b1840a24cb351e4e4c85c5adca4bd44",
+      "id": "91558084",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2096,17 +4157,8 @@
       "kind": "commit",
       "date": "2026-10-14T09:07:28+00:00",
       "title": "Add CLOUD-REPORT-V2: synthetic-user suite results, findings, load test, deploy steps",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/cc971b01f0a0abf590eb4112701be98fbf8217ea",
-      "id": "cc971b01",
-      "app": "LinkHop",
-      "repo": "LinkHop"
-    },
-    {
-      "kind": "commit",
-      "date": "2026-10-14T09:03:50+00:00",
-      "title": "Keep the cookie banner below dialogs",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/4c8f469af859c23ac012d214d006f06f2a6c9b68",
-      "id": "4c8f469a",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/94cfa284ff0d9657f5871ec42e84dba54878f00a",
+      "id": "94cfa284",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2114,8 +4166,8 @@
       "kind": "commit",
       "date": "2026-10-14T09:03:50+00:00",
       "title": "Give every throttled route its own rate-limit counter",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/3ff8facd0da3128a1061d281ef5b10872c35e668",
-      "id": "3ff8facd",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f5c2d6855ae2f37b180ce98266617340bc3837e1",
+      "id": "f5c2d685",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2123,8 +4175,17 @@
       "kind": "commit",
       "date": "2026-10-14T09:03:50+00:00",
       "title": "Synthetic-user suite: journey generator, per-step checks, shrinking, CI, k6",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/2b6662d4f7981567b546899c174bd44366e5cb5f",
-      "id": "2b6662d4",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/ced1619ca5abc0e9958c1af229c08c0f48e53bc9",
+      "id": "ced1619c",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-10-14T09:03:50+00:00",
+      "title": "Keep the cookie banner below dialogs",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/8ea380770aaa493bdbc023e8bfd30ba6dd3ead61",
+      "id": "8ea38077",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2132,8 +4193,8 @@
       "kind": "commit",
       "date": "2026-10-14T08:53:11+00:00",
       "title": "Bio clicks: friendly 429 page, soft per-IP cap, cookie-based dedup",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/1028e3d31a93f6dbbb2b5636b583fcd972edf239",
-      "id": "1028e3d3",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c037056262c75c1c3651cc05f2e3bca24c9706a9",
+      "id": "c0370562",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2141,8 +4202,8 @@
       "kind": "commit",
       "date": "2026-10-14T15:45:10+07:00",
       "title": "Merge pull request #10: PR-D: Homepage direction B (light with gradient accents, soft dark mode)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/7243807405f85812ef88e17f3b4f6fa1185056de",
-      "id": "72438074",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/21f2bebd1cb3fc51c6b966a6b5b5cf6aa7689f64",
+      "id": "21f2bebd",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2159,8 +4220,8 @@
       "kind": "commit",
       "date": "2026-10-14T08:33:48+00:00",
       "title": "Keep visitor IPs private: hash click IPs, hide per-visit IP/city/ISP from owners",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/961c6bd364ee36f4540e0c2c4e40eb2d256813e0",
-      "id": "961c6bd3",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/57829e54b6e2689985092452db4e2caa602f01ef",
+      "id": "57829e54",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2168,8 +4229,8 @@
       "kind": "commit",
       "date": "2026-10-14T08:30:39+00:00",
       "title": "Homepage direction B: light with gradient accents and a soft dark mode",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/eebdfb877cfecee2e5dd2b0e84b587ceaaf68762",
-      "id": "eebdfb87",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c6a19700625ebcc56d06171e30ef44ffe29eb65c",
+      "id": "c6a19700",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2177,8 +4238,8 @@
       "kind": "commit",
       "date": "2026-10-14T08:15:28+00:00",
       "title": "Fix e2e hooks test assertion (catch-all returns HTML)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/cbb3cd701aade413e48f81d78d951dd8972724f7",
-      "id": "cbb3cd70",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/4dd4ad748cedc4efcc9eeeaa9a53b5d1fe6db9c4",
+      "id": "4dd4ad74",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2186,8 +4247,8 @@
       "kind": "commit",
       "date": "2026-10-14T08:14:52+00:00",
       "title": "WIP: synthetic-user E2E suite scaffolding",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/a3e482953759a1ae11afe71ecdb52dec098c2b84",
-      "id": "a3e48295",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/5dc0b87c5787b0921d61b9fcc0070a6a9be153b5",
+      "id": "5dc0b87c",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2195,8 +4256,8 @@
       "kind": "commit",
       "date": "2026-10-14T08:03:44+00:00",
       "title": "Turnstile runs on page load: one click to log in; fix /health/queue",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/1a3404fe87c0f55a3b38ec62b186eda100f95685",
-      "id": "1a3404fe",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d17661edc7ce13379f48157ccb2efc304d04ec19",
+      "id": "d17661ed",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2204,8 +4265,8 @@
       "kind": "commit",
       "date": "2026-10-14T07:56:26+00:00",
       "title": "Bio audit fixes: preview XSS, cross-user file deletion, moderation lock, editor data loss",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/08abf854cd2520469b023b2e7edd531255409169",
-      "id": "08abf854",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/4241db3e67d79e45793d17d9c590837ca35e8697",
+      "id": "4241db3e",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2213,8 +4274,8 @@
       "kind": "commit",
       "date": "2026-10-14T07:41:51+00:00",
       "title": "Bio click links: unguessable public ids and the same gates as the page",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/a53801068b5ac0eba5769ab6a8ffaa480e1ad325",
-      "id": "a5380106",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/428570b10647301839439556946777641438a095",
+      "id": "428570b1",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2222,8 +4283,8 @@
       "kind": "commit",
       "date": "2026-10-14T13:59:43+07:00",
       "title": "Merge pull request #5: Port production server edits into main",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/278715a275663c364b8f6d0a05502ce1b8c9ee24",
-      "id": "278715a2",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/55826e15015f0647c5d4016fd999fe7dd5ff126c",
+      "id": "55826e15",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2240,8 +4301,8 @@
       "kind": "commit",
       "date": "2026-10-14T06:43:49+00:00",
       "title": "Port remaining production fixes: ToS zero tolerance, CSAM terms, modal fixes",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/6c06bd9c1fe701e24885a6012bc435b4306c7a48",
-      "id": "6c06bd9c",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/0c520a34867f93b071433ce8af17099710b027fc",
+      "id": "0c520a34",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2249,8 +4310,8 @@
       "kind": "commit",
       "date": "2026-10-14T06:11:06+00:00",
       "title": "Let admins edit any user's link; remember-me lasts 30 days",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/4c1253b040e50663ba902b6c4cfa94d6be669798",
-      "id": "4c1253b0",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/1bd7dff6918902d34c0d34ba1c29136965c58ca7",
+      "id": "1bd7dff6",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2258,8 +4319,8 @@
       "kind": "commit",
       "date": "2026-10-14T06:05:41+00:00",
       "title": "Read uploaded images from the public disk they are written to",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/9a8887e76dc1aa8cec2e8c40d720d29fa04039b3",
-      "id": "9a8887e7",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d2c04d4c108c82059fb031ee79028b513d6ad23e",
+      "id": "d2c04d4c",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2267,8 +4328,8 @@
       "kind": "commit",
       "date": "2026-10-14T06:03:19+00:00",
       "title": "Remove debug logs that wrote user emails and Turnstile responses to logs",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/5d060e0132c2a1223edc77c4cb4baedea492d417",
-      "id": "5d060e01",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/a1dea1dd31be2c45a99b9a3fae68f5873cfaa717",
+      "id": "a1dea1dd",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2285,8 +4346,8 @@
       "kind": "commit",
       "date": "2026-10-14T05:23:17+00:00",
       "title": "CSP: per-request script nonces + strict report-only policy",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/edcb955966a1c53ee5045ca5dde9b5d6caf79b87",
-      "id": "edcb9559",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3ff765b7b837073393c3f3277dc5609ab059f4ed",
+      "id": "3ff765b7",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2294,8 +4355,8 @@
       "kind": "commit",
       "date": "2026-10-14T05:21:52+00:00",
       "title": "Fix stored XSS in vCard download button on public bio pages",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/8b564acfe4916c36e0273868b513839c7f41c7f5",
-      "id": "8b564acf",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/ffbf8f7d9dd4975d033ccdc1b35560832af0ed27",
+      "id": "ffbf8f7d",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2303,8 +4364,8 @@
       "kind": "commit",
       "date": "2026-10-14T05:20:12+00:00",
       "title": "Automated backups with spatie/laravel-backup",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/2a7866b7cb4db2fc99298f2ddfa5e655f2545fab",
-      "id": "2a7866b7",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d82880f650fac80e5e8567f0c5ce5a5446b96112",
+      "id": "d82880f6",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2312,8 +4373,8 @@
       "kind": "commit",
       "date": "2026-10-14T05:19:07+00:00",
       "title": "Device detection via matomo/device-detector; local QR previews; ignore bot clicks",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/9a5fa2cfae3712952aa3f1b165f717fe5eafe2df",
-      "id": "9a5fa2cf",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c44eb4cff4f1fffd47185d42a7726c81519b01b2",
+      "id": "c44eb4cf",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2321,8 +4382,8 @@
       "kind": "commit",
       "date": "2026-10-14T05:17:17+00:00",
       "title": "Free threat intel: disposable-email list, URLhaus/OpenPhish feeds, Spamhaus DBL",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/de9f5baef7e4088eb330e7d51aaea88f3eac0a80",
-      "id": "de9f5bae",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/ef563b2eb96784ae432fb9ba74bd666d09410863",
+      "id": "ef563b2e",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2330,8 +4391,8 @@
       "kind": "commit",
       "date": "2026-10-14T05:15:37+00:00",
       "title": "Trust Cloudflare ranges with TRUSTED_PROXIES=cloudflare",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/97c0defbda10baa6e24d387b3a88a20a01f890d4",
-      "id": "97c0defb",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d9b805cabbe81e05f39275ec06589adc81e484f4",
+      "id": "d9b805ca",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2339,8 +4400,8 @@
       "kind": "commit",
       "date": "2026-10-14T05:14:27+00:00",
       "title": "Remove catchphrase password recovery",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/71c7d55029acbb0a8f321e15f99c1688a6c623f3",
-      "id": "71c7d550",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/98f9e8863f626a1e7d7746eeaece4a1bfa93b8dc",
+      "id": "98f9e886",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2348,8 +4409,8 @@
       "kind": "commit",
       "date": "2026-10-14T05:10:33+00:00",
       "title": "Blank Sentry DSN placeholder in .env.example (an invalid DSN crashes artisan)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/6e3a57cd9a73bf06535dca2a5077b2a8287726c4",
-      "id": "6e3a57cd",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3f83fe06e7f0d396589157937c258b8f80500432",
+      "id": "3f83fe06",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2357,8 +4418,8 @@
       "kind": "commit",
       "date": "2026-10-14T05:10:02+00:00",
       "title": "GeoIP: local DB-IP Lite / GeoLite2 lookups first",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/91359351674e9814b823c723fe4dee5d0a7a9f7b",
-      "id": "91359351",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/26e5d5470fbc3465ac55391ed478b30f5648f6ce",
+      "id": "26e5d547",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2366,8 +4427,8 @@
       "kind": "commit",
       "date": "2026-10-14T05:08:16+00:00",
       "title": "Add CI (tests, pint, build, composer audit) and apply pint repo-wide",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/4a9171cac203bf3d454193b0d267b32965a573f5",
-      "id": "4a9171ca",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/84d4407dedd454a57feb9723a855ab255cf758bc",
+      "id": "84d4407d",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2375,8 +4436,8 @@
       "kind": "commit",
       "date": "2026-10-14T05:07:40+00:00",
       "title": "Security audit: auth, sessions, proxies, exports, caching",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/c99084636b9996c4546a1dbd433db004301aaa60",
-      "id": "c9908463",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/ff07b305d3aa8c44c5568750ce696b5ee20c2e43",
+      "id": "ff07b305",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2384,8 +4445,8 @@
       "kind": "commit",
       "date": "2026-10-14T04:59:54+00:00",
       "title": "Neutral legacy primary buttons in the app shell",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/525481fa06e53c9031fc32070b5b1e4ffaa3963d",
-      "id": "525481fa",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/9ce2cd2ade896897555ce721856cdbaf5307d21f",
+      "id": "9ce2cd2a",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2393,8 +4454,8 @@
       "kind": "commit",
       "date": "2026-10-14T04:59:03+00:00",
       "title": "Add public link checker (/check)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/303b5318be61b693d0dd313ee5b6a3869c8e4600",
-      "id": "303b5318",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/fc8b2402aac2558fd6be4982b881de60646d95ca",
+      "id": "fc8b2402",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2402,8 +4463,8 @@
       "kind": "commit",
       "date": "2026-10-14T04:57:17+00:00",
       "title": "Harden link passwords and stabilize link create/edit",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/357e16a63d639a1e1906ff991b80c54ea70f3609",
-      "id": "357e16a6",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/e390891251e82631ab54aee54b0d0ced483ba0a9",
+      "id": "e3908912",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2411,8 +4472,8 @@
       "kind": "commit",
       "date": "2026-10-14T04:52:03+00:00",
       "title": "Glass UI: landing, marketing shell and auth pages",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/47a22fe10378620eab1ebfe6351ff82419584c31",
-      "id": "47a22fe1",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/8317a388b8e772e447a8209a584ce47e1b5a1d21",
+      "id": "8317a388",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2420,8 +4481,8 @@
       "kind": "commit",
       "date": "2026-10-14T04:49:08+00:00",
       "title": "Glass UI: design system, app layout, dashboard, links and analytics",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/d3b8a70de314d86fd50d499396dfcd0c9599ead6",
-      "id": "d3b8a70d",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/9c4ceb427bc0b1c914f674571b5177fff4d3d2b8",
+      "id": "9c4ceb42",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2429,8 +4490,8 @@
       "kind": "commit",
       "date": "2026-10-14T04:35:12+00:00",
       "title": "Require verified email for link/bio creation; expire guest links",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/51aaa1e12ca16154ba78fbe079c4cc17910f6b27",
-      "id": "51aaa1e1",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/86bf9432d433f5e720fce680de763ea67e6774f4",
+      "id": "86bf9432",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2438,8 +4499,8 @@
       "kind": "commit",
       "date": "2026-10-14T04:15:23+00:00",
       "title": "Fix bio editor link input and drag & drop",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/d40ffc09b0c816fd2bc395e36720d858a3202788",
-      "id": "d40ffc09",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/69b98af0b0d5d303fe37db29b0429ba014a5ecda",
+      "id": "69b98af0",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2447,8 +4508,8 @@
       "kind": "commit",
       "date": "2026-10-14T04:00:04+00:00",
       "title": "Harden link creation and add automated abuse scanning",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/ce8ce6fbe0bc5deda51f0017e1e21aa46845f557",
-      "id": "ce8ce6fb",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f3ef501bf53567675f2fb23fd3956f91a9e890d1",
+      "id": "f3ef501b",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2465,8 +4526,8 @@
       "kind": "commit",
       "date": "2026-07-02T22:04:24+07:00",
       "title": "Merge pull request #2: Fix security and correctness issues found in code audit",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/87cbfcf4ad05c7f60ce196c9c04481a173a8d7ef",
-      "id": "87cbfcf4",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d9a1d235e954d31affa0bc84242481741122036d",
+      "id": "d9a1d235",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2474,8 +4535,8 @@
       "kind": "commit",
       "date": "2026-07-02T14:59:56+00:00",
       "title": "Fix security and correctness issues found in audit",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/5c81095167df33a94f3854da97b734cbce23b230",
-      "id": "5c810951",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/ccd97692c46e886668a2d4089f508816f3cb872a",
+      "id": "ccd97692",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2483,8 +4544,8 @@
       "kind": "commit",
       "date": "2025-12-17T23:11:19+01:00",
       "title": "Add PixelHop cross-promotion in landing, footer, and products page",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/b7e6de26b050f6453f4c87c12fe022ca6fb5c825",
-      "id": "b7e6de26",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/12d6cd4c7edaf783171755df3bd8ca1ab61c10de",
+      "id": "12d6cd4c",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2492,8 +4553,8 @@
       "kind": "commit",
       "date": "2025-12-13T08:37:25+07:00",
       "title": "chore: remove AI briefing from repo, keep local only",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/4a5d30aded96243ad7407b04638cf7113c7c606f",
-      "id": "4a5d30ad",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f85003e57371af54b703af20eaeac7c2ab9e76c3",
+      "id": "f85003e5",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2501,8 +4562,8 @@
       "kind": "commit",
       "date": "2025-12-13T08:36:08+07:00",
       "title": "docs: add AI briefing document for project onboarding",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/5044872359bb3913825a641316b117542a443b7f",
-      "id": "50448723",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/6114d0d329f9e8c2928d3927ee1eb72cd848c83d",
+      "id": "6114d0d3",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2510,8 +4571,8 @@
       "kind": "commit",
       "date": "2025-12-12T20:24:18+07:00",
       "title": "fix: replace broken views badge with komarev counter",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/9870fcae55defd96ff558c3b22794de0f13a5446",
-      "id": "9870fcae",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/c4c2765b5889a9c63a56a6acbbc9dd570382c45c",
+      "id": "c4c2765b",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2528,8 +4589,8 @@
       "kind": "commit",
       "date": "2025-12-12T20:21:30+07:00",
       "title": "docs: add badges and view counter to README",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/f823aa9146cf867efa939f166061721b9603c033",
-      "id": "f823aa91",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b65acaacd762882e4bc19faddd7cc7137b1e8c74",
+      "id": "b65acaac",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2537,8 +4598,8 @@
       "kind": "commit",
       "date": "2025-12-12T20:12:34+07:00",
       "title": "docs: consolidate license & credits section in README",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/33819e3238a0adfd1661b7db9c97f0d995b81c44",
-      "id": "33819e32",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/94d51ac9eee6ae93f6d9a5e3f383e7db2f806548",
+      "id": "94d51ac9",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2546,8 +4607,8 @@
       "kind": "commit",
       "date": "2025-12-12T20:04:54+07:00",
       "title": "chore(v2.0): production polish & deep cleaning",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/6da1bbffdfbf27c3afd72724b1ed7f0c18f71b37",
-      "id": "6da1bbff",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/91c6a66e014671be1b4ebed2d18f2ded66a77a9f",
+      "id": "91c6a66e",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2555,8 +4616,8 @@
       "kind": "commit",
       "date": "2025-12-12T19:16:14+07:00",
       "title": "Add missing brand icons: globe, sparkles, rocket, info, question",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/2bd2f07b84e3fc471bccbbdf198699654a9ad3a9",
-      "id": "2bd2f07b",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/9e8d51a8a16706601cd99d9e27df5b71f2a60c0e",
+      "id": "9e8d51a8",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2564,8 +4625,8 @@
       "kind": "commit",
       "date": "2025-12-12T11:11:41+07:00",
       "title": "v2.0: Link in Bio major update - themes, animations, new blocks",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/923ef7ae847fb769db2aa8b1f1cdc4646dd47d1a",
-      "id": "923ef7ae",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/eda17f8cf8f2f3dc061fd238d0e1285af03b4d56",
+      "id": "eda17f8c",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2573,8 +4634,8 @@
       "kind": "commit",
       "date": "2025-12-01T22:06:24+07:00",
       "title": "Update marketing pages with API features and clean up code",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/6cabe86e694ffd601e0e5e54787d827a9dfa0391",
-      "id": "6cabe86e",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/13d97f1e4ea3907f95e726378ae46a96e168fe33",
+      "id": "13d97f1e",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2582,8 +4643,8 @@
       "kind": "commit",
       "date": "2025-12-01T21:42:38+07:00",
       "title": "Update API docs to mention minimum 3-character slug requirement",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/299214a183eb62fc320c8e4054f2cfd4463ac721",
-      "id": "299214a1",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/da272623c960be10280d49f5992e8c5d07321685",
+      "id": "da272623",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2591,8 +4652,8 @@
       "kind": "commit",
       "date": "2025-12-01T21:28:03+07:00",
       "title": "Implement minimum 3-character slug requirement and expand reserved slugs",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/73ea51864f59bfcd6f8e81d68f05f0f37f3c6d37",
-      "id": "73ea5186",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/0f3a2bb4730714b21859b8903b227f211cb2fee9",
+      "id": "0f3a2bb4",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2600,8 +4661,8 @@
       "kind": "commit",
       "date": "2025-12-01T20:42:10+07:00",
       "title": "Update README with API documentation",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/ca51eda7cfc036142b634784ebe1fe9b89d1c8d9",
-      "id": "ca51eda7",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/506d5d7eb560af86b8f13c25252b95fe1ddd2c5d",
+      "id": "506d5d7e",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2609,8 +4670,8 @@
       "kind": "commit",
       "date": "2025-12-01T20:40:44+07:00",
       "title": "Implement ShareX API integration",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/eacb039c5e73a578e5cadf845949604346e1eff1",
-      "id": "eacb039c",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/8dad8f36f66981795e8c4700753023e060542b31",
+      "id": "8dad8f36",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2618,8 +4679,8 @@
       "kind": "commit",
       "date": "2025-12-01T15:58:54+07:00",
       "title": "Polish public pages for consistency and accuracy",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/0620ce1d1ee48074490a5c25792bb383afc3fb8e",
-      "id": "0620ce1d",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/f1a6657368af1492db224c8936d3c0bd1ee47980",
+      "id": "f1a66573",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2627,8 +4688,8 @@
       "kind": "commit",
       "date": "2025-12-01T15:51:52+07:00",
       "title": "Update documentation: Remove demo credentials and fix attributions",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/5b780054cdbb696016beca6f6be39a5ff8987fda",
-      "id": "5b780054",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/d58e72ab07acfc2033faca308c8a589658a5cd08",
+      "id": "d58e72ab",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2636,8 +4697,8 @@
       "kind": "commit",
       "date": "2025-12-01T15:45:47+07:00",
       "title": "Add comprehensive credits, license, and update documentation",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/815b356c5d8dafd24852f83c9273b377d9578790",
-      "id": "815b356c",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/fe9628c0176a61e1a790d98b10881b5bc15a1ece",
+      "id": "fe9628c0",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2645,8 +4706,8 @@
       "kind": "commit",
       "date": "2025-12-01T01:33:46+07:00",
       "title": "Update README.md",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/b608e19f77441f62581b5698645e62d276743943",
-      "id": "b608e19f",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/9c83f3d0bdeda554649e7013520ebe1565a10747",
+      "id": "9c83f3d0",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2654,8 +4715,8 @@
       "kind": "commit",
       "date": "2025-12-01T01:28:55+07:00",
       "title": "Update multiple pages and fix production readiness",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/b495e44800314c48be258da6a40b75a535d7c293",
-      "id": "b495e448",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b1290a93b6a940fc70c8224b55b5d6b4a92e55e5",
+      "id": "b1290a93",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2663,8 +4724,8 @@
       "kind": "commit",
       "date": "2025-12-01T00:00:33+07:00",
       "title": "Add Tailwind config and fallback CSS to error pages",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/ad430944e596924cd55e9f7ed31d7090adedab7d",
-      "id": "ad430944",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/2a5c14c40757f2d55b4ba828829f987201d970a5",
+      "id": "2a5c14c4",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2672,8 +4733,8 @@
       "kind": "commit",
       "date": "2025-11-30T23:57:40+07:00",
       "title": "Fix double Turnstile and improve error pages",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/ec9e9a784909098c0ea4891d0a201abc0f24791b",
-      "id": "ec9e9a78",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/37702dc73ae4f6bb2975334d1c812bb7335fd618",
+      "id": "37702dc7",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2681,8 +4742,8 @@
       "kind": "commit",
       "date": "2025-11-30T23:36:06+07:00",
       "title": "Fix registration form and improve error handling",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/25098ec04a4b81acf09981e914fb9e246e924868",
-      "id": "25098ec0",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/3c44637da931ba7678cf370bf37e1269a3176daa",
+      "id": "3c44637d",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2690,8 +4751,8 @@
       "kind": "commit",
       "date": "2025-11-30T19:18:32+07:00",
       "title": "Update marketing pages with current features and creator info",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/bde7db2a5d0c2647944814798bc90b800d0e1b2c",
-      "id": "bde7db2a",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/ce0625ab3ff1006d94deb2ddd961317286e21e29",
+      "id": "ce0625ab",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2699,8 +4760,8 @@
       "kind": "commit",
       "date": "2025-11-30T01:52:15+07:00",
       "title": "Add welcome email for new users (Google OAuth & regular registration)",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/2b107abbc4683ad4da70b6b43b1f6f949ed52115",
-      "id": "2b107abb",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/1009b5d18e1ae82f2457c4359ce313cac3c3f906",
+      "id": "1009b5d1",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2708,8 +4769,8 @@
       "kind": "commit",
       "date": "2025-11-30T01:46:01+07:00",
       "title": "Update README: use dark logo and fix navigation anchor links",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/9412a8b3d79761f880aece88879a00dfcc62a7da",
-      "id": "9412a8b3",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/a58a7063a0e187107187480def8f29ee4bdb8112",
+      "id": "a58a7063",
       "app": "LinkHop",
       "repo": "LinkHop"
     },
@@ -2717,8 +4778,8 @@
       "kind": "commit",
       "date": "2025-11-30T01:40:55+07:00",
       "title": "Initial commit - Hel.ink URL Shortener v1.0",
-      "url": "https://github.com/navi-crwn/LinkHop/commit/b908912b01a958229c9e2db11b29fcf77d9aec73",
-      "id": "b908912b",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b60d2c44882758bc303093499c09f7e11588a061",
+      "id": "b60d2c44",
       "app": "LinkHop",
       "repo": "LinkHop"
     }

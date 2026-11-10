@@ -35,6 +35,7 @@ class SessionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->away(hub_url('logout'));
+        // The hub's chained logout ends on `return` (when it is a family app), so the person lands back here.
+        return redirect()->away(hub_url('logout').'?'.http_build_query(['return' => route('home')]));
     }
 }

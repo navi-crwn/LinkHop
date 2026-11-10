@@ -985,7 +985,7 @@
     "This page does not exist or has moved. Check the address, or go back to where you were.": "此页面不存在或已移动。请检查地址，或返回之前的页面。",
     "To date": "结束日期",
     "Tokens with link:* scopes for ShareX, the CLI and BioHop.": "供 ShareX、命令行工具和 BioHop 使用、带 link:* 权限范围的令牌。",
-    "Weekly\/monthly reports": "每周\/每月报告",
+    "Weekly/monthly reports": "每周/每月报告",
     "What to do": "该怎么做",
     "Your LinkHop data; the account itself is your HOP ID at the hub.": "你的 LinkHop 数据；账户本身是你在中心站点的 HOP ID。",
     "Your session expired. Please try again.": "会话已过期，请重试。",
@@ -1006,5 +1006,6 @@
     "Nothing else was changed. Try again in a moment.": "其他内容没有变动。请稍后重试。",
     "The old one stops working at once.": "旧密钥会立即失效。",
     "The short link stops working and its statistics are removed. This cannot be undone.": "该短链接将停止工作，其统计数据也会被删除。此操作无法撤销。",
-    "The short links stop working and their statistics are removed. This cannot be undone.": "这些短链接将停止工作，其统计数据也会被删除。此操作无法撤销。"
+    "The short links stop working and their statistics are removed. This cannot be undone.": "这些短链接将停止工作，其统计数据也会被删除。此操作无法撤销。",
+    "Part of :name": "属于 :name"
 }

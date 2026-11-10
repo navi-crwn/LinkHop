@@ -985,7 +985,7 @@
     "This page does not exist or has moved. Check the address, or go back to where you were.": "Halaman ini tidak ada atau sudah pindah. Periksa alamatnya, atau kembali ke tempat Anda tadi.",
     "To date": "Sampai tanggal",
     "Tokens with link:* scopes for ShareX, the CLI and BioHop.": "Token dengan cakupan link:* untuk ShareX, CLI, dan BioHop.",
-    "Weekly\/monthly reports": "Laporan mingguan\/bulanan",
+    "Weekly/monthly reports": "Laporan mingguan/bulanan",
     "What to do": "Yang perlu dilakukan",
     "Your LinkHop data; the account itself is your HOP ID at the hub.": "Data LinkHop Anda; akunnya sendiri adalah HOP ID Anda di hub.",
     "Your session expired. Please try again.": "Sesi habis, silakan coba lagi.",
@@ -1006,5 +1006,6 @@
     "Nothing else was changed. Try again in a moment.": "Tidak ada hal lain yang berubah. Coba lagi sebentar lagi.",
     "The old one stops working at once.": "Secret lama langsung berhenti berfungsi.",
     "The short link stops working and its statistics are removed. This cannot be undone.": "Tautan pendek ini berhenti berfungsi dan statistiknya dihapus. Tindakan ini tidak bisa dibatalkan.",
-    "The short links stop working and their statistics are removed. This cannot be undone.": "Tautan-tautan pendek ini berhenti berfungsi dan statistiknya dihapus. Tindakan ini tidak bisa dibatalkan."
+    "The short links stop working and their statistics are removed. This cannot be undone.": "Tautan-tautan pendek ini berhenti berfungsi dan statistiknya dihapus. Tindakan ini tidak bisa dibatalkan.",
+    "Part of :name": "Bagian dari :name"
 }

@@ -39,7 +39,8 @@
 @endphp
 <footer class="mt-16 px-3 pb-6 sm:px-5">
     <div class="mx-auto max-w-6xl rounded-3xl border border-slate-200/80 bg-white/60 p-6 text-sm text-slate-600 backdrop-blur-xl dark:border-white/10 dark:bg-white/3 dark:text-white/60 sm:p-8">
-        <div class="grid grid-cols-2 gap-8 lg:grid-cols-5">
+        @include('partials.family-row')
+        <div class="mt-6 grid grid-cols-2 gap-8 lg:grid-cols-5">
             <div class="col-span-2 lg:col-span-1">
                 <div class="flex items-center gap-2.5">
                     <x-wordmark class="h-10 w-auto" />
@@ -57,13 +58,8 @@
                 </div>
             @endforeach
         </div>
-        <div class="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-5 text-xs text-slate-500 dark:border-white/10 dark:text-white/60">
+        <div class="mt-8 flex flex-col items-center gap-3 border-t border-slate-200 pt-5 text-center text-xs text-slate-500 sm:flex-row sm:justify-end sm:text-right dark:border-white/10 dark:text-white/60">
             <p>© {{ date('Y') }} navi-crwn · MIT License · <a href="https://db-ip.com" target="_blank" rel="noopener" class="hover:text-slate-900 dark:hover:text-white">IP Geolocation by DB-IP</a></p>
-            <nav aria-label="{{ __('Language') }}" class="flex flex-wrap gap-x-3 gap-y-1">
-                @foreach (\Hop\Ui\Locales::names() as $code => $name)
-                    <a href="{{ request()->fullUrlWithQuery(['lang' => $code]) }}" lang="{{ $code }}" @class(['inline-flex min-h-8 items-center hover:text-slate-900 dark:hover:text-white', 'font-semibold text-slate-800 dark:text-white' => app()->getLocale() === $code])>{{ $name }}</a>
-                @endforeach
-            </nav>
         </div>
     </div>
 </footer>

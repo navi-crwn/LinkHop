@@ -985,7 +985,7 @@
     "This page does not exist or has moved. Check the address, or go back to where you were.": "Esta página no existe o se ha movido. Comprueba la dirección o vuelve a donde estabas.",
     "To date": "Hasta",
     "Tokens with link:* scopes for ShareX, the CLI and BioHop.": "Tokens con permisos link:* para ShareX, la CLI y BioHop.",
-    "Weekly\/monthly reports": "Informes semanales\/mensuales",
+    "Weekly/monthly reports": "Informes semanales/mensuales",
     "What to do": "Qué hacer",
     "Your LinkHop data; the account itself is your HOP ID at the hub.": "Tus datos de LinkHop; la cuenta en sí es tu HOP ID en el hub.",
     "Your session expired. Please try again.": "Tu sesión ha caducado. Inténtalo de nuevo.",
@@ -1006,5 +1006,6 @@
     "Nothing else was changed. Try again in a moment.": "No se ha cambiado nada más. Inténtalo de nuevo en un momento.",
     "The old one stops working at once.": "El anterior deja de funcionar de inmediato.",
     "The short link stops working and its statistics are removed. This cannot be undone.": "El enlace corto deja de funcionar y sus estadísticas se eliminan. No se puede deshacer.",
-    "The short links stop working and their statistics are removed. This cannot be undone.": "Los enlaces cortos dejan de funcionar y sus estadísticas se eliminan. No se puede deshacer."
+    "The short links stop working and their statistics are removed. This cannot be undone.": "Los enlaces cortos dejan de funcionar y sus estadísticas se eliminan. No se puede deshacer.",
+    "Part of :name": "Parte de :name"
 }
