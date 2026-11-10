@@ -4,7 +4,8 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "test:js": "node --test tests/js/*.test.mjs"
     },
     "devDependencies": {
         "@axe-core/playwright": "4.13.0",
@@ -14,7 +15,9 @@
         "alpinejs": "^3.4.2",
         "axios": "^1.11.0",
         "concurrently": "^9.0.1",
+        "jsqr": "^1.4.0",
         "laravel-vite-plugin": "^2.0.0",
+        "pngjs": "^7.0.0",
         "tailwindcss": "^4.3.3",
         "vite": "^7.0.7"
     },

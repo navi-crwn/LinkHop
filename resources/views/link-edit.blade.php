@@ -39,6 +39,7 @@
                         <p x-show="info?.description" class="line-clamp-2 text-xs text-muted" x-text="info?.description"></p>
                     </div>
                 </div>
+                <p class="-mt-1 text-xs text-muted">{{ __('The QR code holds the short address. Change the destination any time: the printed code keeps working.') }}</p>
                 <x-utm-builder target="target_url" />
                 <div class="grid gap-3 sm:grid-cols-3">
                     <div class="sm:col-span-2" x-data="slugField('{{ route('links.slug-check') }}', {{ $link->id }}, @js($link->slug))">
@@ -50,6 +51,7 @@
                         </div>
                         <p id="slug-check" x-show="check.state === 'ok' || check.state === 'bad'" x-cloak x-text="check.message" role="status" aria-live="polite"
                            class="mt-1 text-xs" :class="check.state === 'ok' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-300'"></p>
+                        <p id="slug-qr-note" x-data="{ changed: false }" @input.window="if ($event.target.id === 'slug') changed = $event.target.value !== @js($link->slug)" role="status" class="mt-1 text-xs" :class="changed ? 'font-medium text-amber-700 dark:text-amber-300' : 'text-muted'">{{ __('Changing the slug changes the QR code. The old printed code will stop working.') }}</p>
                     </div>
                     <div>
                         <label class="label" for="status">Status</label>

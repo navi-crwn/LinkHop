@@ -2,6 +2,7 @@
     $marketingLinks = [
         ['label' => 'Features', 'href' => route('pages.features')],
         ['label' => 'Check a link', 'href' => route('link.check')],
+        ['label' => 'QR codes', 'href' => route('qr')],
         ['label' => 'API', 'href' => route('pages.docs')],
         ['label' => 'Help', 'href' => route('pages.help')],
         ['label' => 'FAQ', 'href' => route('pages.faq')],

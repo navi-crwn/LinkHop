@@ -1,0 +1,25 @@
+name: qr-js
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - 'resources/js/qr/**'
+      - 'public/vendor/qr-code-styling/**'
+      - 'tests/js/**'
+      - 'package*.json'
+      - '.github/workflows/qr-js.yml'
+
+jobs:
+  qr-js:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:js
