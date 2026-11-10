@@ -47,7 +47,9 @@
     // the PixelHop mark: the pixel rabbit
     pixelhop: ['.#....#.', '.#....#.', '.##..##.', '.######.', '##.##.##', '########', '########', '.######.'],
     // the FileHop mark (v4): a document with a folded corner and a white arrow down
-    filehop: ['######..', '###ww##.', '###ww###', '###ww###', '#wwwwww#', '##wwww##', '###ww###', '########']
+    filehop: ['######..', '###ww##.', '###ww###', '###ww###', '#wwwwww#', '##wwww##', '###ww###', '########'],
+    // the PayHop mark (v9): a coin with a P cut out of it, 8x8 like the other pixel marks
+    payhop: ['..####..', '.#www##.', '##w##w##', '##w##w##', '##www###', '##w#####', '.#w####.', '..####..']
   };
   // the LinkHop mark (v6, candidate C): two ears over a ring-shaped face, 8x8 like the other pixel marks
   MAPS.linkhop = ['.#....#.', '.#....#.', '.#....#.', '.######.', '##....##', '##....##', '##....##', '.######.'];
@@ -57,7 +59,8 @@
     linkhop: [[.22, .74, 1], [.3, .4, .95], [.55, .36, .97]],
     biohop: [[.85, .27, .94], [.7, .33, .96], [.55, .36, .97]],
     pixelhop: [[.64, .9, .21], [.13, .83, .93], [.55, .36, .97]],
-    filehop: [[.984, .749, .141], [.961, .62, .043], [.545, .361, .965]]
+    filehop: [[.984, .749, .141], [.961, .62, .043], [.545, .361, .965]],
+    payhop: [[.176, .831, .749], [.078, .722, .651], [.545, .361, .965]]
   };
   var WHITE = [.97, .97, 1], PINK = [.957, .447, .714], DARK = [.11, .12, .2];
 

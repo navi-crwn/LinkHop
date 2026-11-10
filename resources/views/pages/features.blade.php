@@ -72,7 +72,7 @@
             </div>
             <h2 id="account" class="text-lg font-bold text-slate-900 dark:text-white">{{ __('One account') }}</h2>
             <x-feature-demo name="account" label="One account" />
-            <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-white/70">{!! __('Sign in with your free <a href="https://hel.ink">HOP ID</a>, the same account as BioHop, PixelHop, NoteHop and FileHop, with two-factor sign-in and a login history.') !!}</p>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-white/70">{!! __('Sign in with your free <a href="https://hel.ink">HOP ID</a>, the same account as BioHop, PixelHop, NoteHop, FileHop and PayHop, with two-factor sign-in and a login history.') !!}</p>
         </div>
     </div>
 

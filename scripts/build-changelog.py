@@ -14,7 +14,7 @@ import pathlib
 import re
 import subprocess
 
-PUBLIC = {"HEL.ink": "HOP ID", "LinkHop": "LinkHop", "BioHop": "BioHop", "PixelHop": "PixelHop", "NoteHop": "NoteHop", "FileHop": "FileHop"}
+PUBLIC = {"HEL.ink": "HOP ID", "LinkHop": "LinkHop", "BioHop": "BioHop", "PixelHop": "PixelHop", "NoteHop": "NoteHop", "FileHop": "FileHop", "PayHop": "PayHop"}
 
 
 def command(args, cwd):

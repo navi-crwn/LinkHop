@@ -68,3 +68,16 @@ test('the words the other HOP apps and tools use are reserved for new slugs, and
     $this->actingAs($user)->put("/links/{$link->id}", ['target_url' => 'https://example.org', 'slug' => 'embargo', 'status' => 'active'])
         ->assertSessionHasErrors('slug');
 });
+
+test('every app in the family manifest, and PayHop by name, is a reserved username and a reserved slug', function () {
+    $apps = collect(\Hop\Ui\Assets::manifest()['apps'])->pluck('slug');
+    expect($apps)->toContain('payhop');
+
+    foreach ($apps->push('pay') as $slug) {
+        expect(in_array($slug, config('hop.reserved_usernames'), true))->toBeTrue("{$slug} is not a reserved username");
+    }
+    foreach (['payhop', 'pay'] as $slug) {
+        expect(ReservedSlugs::isReserved($slug))->toBeTrue("{$slug} is not a reserved slug");
+    }
+    expect(config('hop.reserved_username_prefixes'))->toContain('payhop-');
+});
