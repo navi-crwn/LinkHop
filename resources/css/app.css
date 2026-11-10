@@ -542,4 +542,4 @@ button.input { max-width: var(--hop-field-max); }
 
 /* Features boxes: the icon chip gives one calm nudge when its box scrolls into view (hop-bento sets --scene-play). */
 @keyframes hb-nudge { 0% { transform: scale(.9) rotate(-6deg); } 60% { transform: scale(1.06) rotate(2deg); } 100% { transform: none; } }
-.hop-bento > [data-scene] > div:first-child { animation: hb-nudge .6s cubic-bezier(.23, 1, .32, 1) 1 both; animation-play-state: var(--scene-play, paused); }
+.hop-bento > [data-spot] > [data-scene] { animation: hb-nudge .6s cubic-bezier(.23, 1, .32, 1) 1 both; animation-play-state: var(--scene-play, paused); }

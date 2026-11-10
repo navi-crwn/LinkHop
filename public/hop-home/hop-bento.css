@@ -1,35 +1,60 @@
 /*
- * HOP bento: one grid of boxes for every HOP page (hop-assets v7, immutable once deployed).
+ * HOP bento: one grid of boxes for every HOP page (hop-assets v8, immutable once deployed).
  *
- *   <link rel="stylesheet" href="https://hel.ink/hop-assets/v7/hop-bento.css">
- *   <script src="https://hel.ink/hop-assets/v7/hop-motion.js" defer></script>   (reveal, spotlight, scenes)
+ *   <link rel="stylesheet" href="https://hel.ink/hop-assets/v8/hop-bento.css">
+ *   <script src="https://hel.ink/hop-assets/v8/hop-motion.js" defer></script>   (reveal, spotlight, scenes)
  *
- *   <div class="hop-bento">
+ *   <div class="hop-bento">                 content boxes (text, lists)
+ *   <div class="hop-bento" data-tiles>      small tiles (the five family tiles with 3D art, stats)
  *     <article data-spot>...</article>
  *     <article data-spot data-scene>... a small CSS/SVG scene ...</article>
  *   </div>
  *
- * The grid has 6 columns. A box spans 2 columns unless the pattern for the box count says otherwise, so every
- * count from 2 to 9 fills whole rows: one tidy rectangle, never a box left alone on the last row.
- * Spans by box count (rows separated by "/"), desktop (above 1024 px):
- *   2 boxes: 4+2
- *   3 boxes: 3+3 / 6
- *   4 boxes: 4+2 / 2+4
- *   5 boxes: 3+3 / 2+2+2
- *   6 boxes: 4+2 / 2+2+2 / 6
- *   7 boxes: 3+3 / 2+2+2 / 3+3
- *   8 boxes: 3+3 / 2+2+2 / 2+2+2
- *   9 boxes: 3+3 / 2+2+2 / 2+2+2 / 6
- * One box on its own spans the full row. More than 9 boxes: split them into several grids (a grid of 10 or
- * more falls back to three per row and may leave the last row short).
- * Override: data-span="3|4|6" on a box. When any box has data-span the count patterns switch off; the other
- * boxes span 2 and grid-auto-flow:dense fills the gaps, so pick spans whose rows add up to 6.
- * Tablet (up to 1024 px): 2 columns, and when the count is odd the last box spans both.
- * Phone (up to 640 px): 1 column.
- * Rows share one height (grid stretch). Boxes keep their own display, so a box can be a flex row or a grid.
- * data-bare on the grid: layout only (no panel, border, padding or clipping), for boxes that bring their own card style.
+ * v8: more columns, smaller boxes. The grid has 60 columns on desktop (12 would not divide into 5), so five
+ * tiles share one row. No box is alone on a row and none is wider than half the row (unless it is the only
+ * box, or data-span asks for it). Spans per box count, rows separated by "/"; desktop numbers are sixtieths
+ * of the row, tablet numbers sixths.
  *
- * Tokens (all overridable on .hop-bento or any ancestor; light and dark follow .dark / [data-theme=dark]):
+ * Desktop, 1100 px and up, content boxes:
+ *   2 boxes: 30+30
+ *   3 boxes: 20+20+20
+ *   4 boxes: 30+30 / 30+30
+ *   5 boxes: 20+20+20 / 30+30
+ *   6 boxes: 20+20+20 / 20+20+20
+ *   7 boxes: 15+15+15+15 / 20+20+20
+ *   8 boxes: 18+14+14+14 / 14+14+14+18
+ *   9 boxes: 20+20+20 / 20+20+20 / 20+20+20
+ * Desktop, 1100 px and up, data-tiles (small boxes, few rows):
+ *   2 boxes: 30+30
+ *   3 boxes: 20+20+20
+ *   4 boxes: 15+15+15+15
+ *   5 boxes: 12+12+12+12+12
+ *   6 boxes: 10+10+10+10+10+10
+ *   7 boxes: 15+15+15+15 / 20+20+20
+ *   8 boxes: 15+15+15+15 / 15+15+15+15
+ *   9 boxes: 12+12+12+12+12 / 15+15+15+15
+ * Tablet, 900 to 1099 px (data-tiles from 641 px): 6 columns, both kinds:
+ *   2 boxes: 3+3
+ *   3 boxes: 2+2+2
+ *   4 boxes: 3+3 / 3+3
+ *   5 boxes: 2+2+2 / 3+3
+ *   6 boxes: 2+2+2 / 2+2+2
+ *   7 boxes: 2+2+2 / 3+3 / 3+3
+ *   8 boxes: 3+3 / 2+2+2 / 2+2+2
+ *   9 boxes: 2+2+2 / 2+2+2 / 2+2+2
+ * 641 to 899 px content boxes: 2 columns, and when the count is odd the last box spans both.
+ * Phone, up to 640 px: content boxes in 1 column; data-tiles in 2 columns, an odd last tile spans both.
+ * More than 9 boxes: split them into several grids (a longer grid falls back to 3 per row).
+ * One box alone spans the full row. data-span="2|3|4|6" (sixths) on a box is a deliberate size: the count
+ * patterns switch off for that grid, the other boxes span a third and grid-auto-flow:dense fills the gaps.
+ *
+ * Media inside a box is capped so a box never turns into a poster: [data-media] (3D tile art, an image) is
+ * 160 to 200 px tall on desktop and 120 to 140 px on a phone; [data-scene] never exceeds 140 px.
+ *
+ * Rows share one height (grid stretch). Boxes keep their own display, so a box can be a flex row or a grid.
+ * data-bare on the grid: layout only (no panel, border, padding or clipping), for boxes with their own card style.
+ *
+ * Tokens (overridable on .hop-bento or any ancestor; light and dark follow .dark / [data-theme=dark]):
  *   --hb-accent  spotlight and scene colour, default HOP indigo (apps pass their own, e.g. --hop-accent)
  *   --hb-panel, --hb-line, --hb-text, --hb-muted, --hb-radius, --hb-gap, --hb-shadow
  *
@@ -68,36 +93,96 @@
 /* Layout only: boxes that bring their own card style. */
 .hop-bento[data-bare] > * { padding: 0; overflow: visible; background: none; border: 0; border-radius: 0; box-shadow: none; }
 
-/* A box on its own, and every box when the grid has more than nine. */
+/* A box on its own. */
 .hop-bento:has(> :first-child:last-child) > * { grid-column: 1 / -1; }
 
-/* Spans by count, desktop only; a box has span 2 unless listed. */
-@media (min-width: 1025px) {
-    .hop-bento > [data-span="3"] { grid-column: span 3; }
-    .hop-bento > [data-span="4"] { grid-column: span 4; }
-    .hop-bento > [data-span="6"] { grid-column: span 6; }
-    .hop-bento:not(:has(> [data-span])):has(> :nth-child(2):last-child) > :nth-child(1) { grid-column: span 4; }
-    .hop-bento:not(:has(> [data-span])):has(> :nth-child(3):last-child) > :nth-child(-n+2) { grid-column: span 3; }
-    .hop-bento:not(:has(> [data-span])):has(> :nth-child(3):last-child) > :nth-child(3) { grid-column: span 6; }
-    .hop-bento:not(:has(> [data-span])):has(> :nth-child(4):last-child) > :is(:nth-child(1), :nth-child(4)) { grid-column: span 4; }
-    .hop-bento:not(:has(> [data-span])):has(> :nth-child(5):last-child) > :nth-child(-n+2) { grid-column: span 3; }
-    .hop-bento:not(:has(> [data-span])):has(> :nth-child(6):last-child) > :nth-child(1) { grid-column: span 4; }
-    .hop-bento:not(:has(> [data-span])):has(> :nth-child(6):last-child) > :nth-child(6) { grid-column: span 6; }
-    .hop-bento:not(:has(> [data-span])):has(> :nth-child(7):last-child) > :is(:nth-child(-n+2), :nth-child(n+6)) { grid-column: span 3; }
-    .hop-bento:not(:has(> [data-span])):has(> :nth-child(8):last-child) > :nth-child(-n+2) { grid-column: span 3; }
-    .hop-bento:not(:has(> [data-span])):has(> :nth-child(9):last-child) > :nth-child(-n+2) { grid-column: span 3; }
-    .hop-bento:not(:has(> [data-span])):has(> :nth-child(9):last-child) > :nth-child(9) { grid-column: span 6; }
+/* A deliberate size (sixths), whatever the width: the count patterns step aside for this grid. */
+.hop-bento > [data-span="2"] { grid-column: span 2; }
+.hop-bento > [data-span="3"] { grid-column: span 3; }
+.hop-bento > [data-span="4"] { grid-column: span 4; }
+.hop-bento > [data-span="6"] { grid-column: 1 / -1; }
+
+/* Tablet: 6 columns, from 900 px for content boxes and from 641 px for tiles. */
+@media (min-width: 900px) and (max-width: 1099px) {
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(2):last-child) > :is(:nth-child(1), :nth-child(2)) { grid-column: span 3; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(3):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3)) { grid-column: span 2; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(4):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4)) { grid-column: span 3; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(5):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3)) { grid-column: span 2; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(5):last-child) > :is(:nth-child(4), :nth-child(5)) { grid-column: span 3; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(6):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5), :nth-child(6)) { grid-column: span 2; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(7):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3)) { grid-column: span 2; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(7):last-child) > :is(:nth-child(4), :nth-child(5), :nth-child(6), :nth-child(7)) { grid-column: span 3; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(8):last-child) > :is(:nth-child(3), :nth-child(4), :nth-child(5), :nth-child(6), :nth-child(7), :nth-child(8)) { grid-column: span 2; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(8):last-child) > :is(:nth-child(1), :nth-child(2)) { grid-column: span 3; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(9):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5), :nth-child(6), :nth-child(7), :nth-child(8), :nth-child(9)) { grid-column: span 2; }
+}
+@media (min-width: 641px) and (max-width: 1099px) {
+    .hop-bento[data-tiles] { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .hop-bento[data-tiles] > * { grid-column: span 2; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(2):last-child) > :is(:nth-child(1), :nth-child(2)) { grid-column: span 3; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(3):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3)) { grid-column: span 2; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(4):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4)) { grid-column: span 3; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(5):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3)) { grid-column: span 2; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(5):last-child) > :is(:nth-child(4), :nth-child(5)) { grid-column: span 3; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(6):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5), :nth-child(6)) { grid-column: span 2; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(7):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3)) { grid-column: span 2; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(7):last-child) > :is(:nth-child(4), :nth-child(5), :nth-child(6), :nth-child(7)) { grid-column: span 3; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(8):last-child) > :is(:nth-child(3), :nth-child(4), :nth-child(5), :nth-child(6), :nth-child(7), :nth-child(8)) { grid-column: span 2; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(8):last-child) > :is(:nth-child(1), :nth-child(2)) { grid-column: span 3; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(9):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5), :nth-child(6), :nth-child(7), :nth-child(8), :nth-child(9)) { grid-column: span 2; }
 }
 
-@media (max-width: 1024px) {
-    .hop-bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .hop-bento > *, .hop-bento > [data-span] { grid-column: span 1; }
-    .hop-bento > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+/* Desktop, 1100 px and up: 60 columns. */
+@media (min-width: 1100px) {
+    .hop-bento { grid-template-columns: repeat(60, minmax(0, 1fr)); }
+    .hop-bento > * { grid-column: span 20; }
+    .hop-bento > [data-span="2"] { grid-column: span 20; }
+    .hop-bento > [data-span="3"] { grid-column: span 30; }
+    .hop-bento > [data-span="4"] { grid-column: span 40; }
+    .hop-bento > [data-span="6"] { grid-column: 1 / -1; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(2):last-child) > :is(:nth-child(1), :nth-child(2)) { grid-column: span 30; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(3):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3)) { grid-column: span 20; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(4):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4)) { grid-column: span 30; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(5):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3)) { grid-column: span 20; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(5):last-child) > :is(:nth-child(4), :nth-child(5)) { grid-column: span 30; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(6):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5), :nth-child(6)) { grid-column: span 20; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(7):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4)) { grid-column: span 15; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(7):last-child) > :is(:nth-child(5), :nth-child(6), :nth-child(7)) { grid-column: span 20; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(8):last-child) > :is(:nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5), :nth-child(6), :nth-child(7)) { grid-column: span 14; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(8):last-child) > :is(:nth-child(1), :nth-child(8)) { grid-column: span 18; }
+    .hop-bento:not([data-tiles]):not(:has(> [data-span])):has(> :nth-child(9):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5), :nth-child(6), :nth-child(7), :nth-child(8), :nth-child(9)) { grid-column: span 20; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(2):last-child) > :is(:nth-child(1), :nth-child(2)) { grid-column: span 30; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(3):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3)) { grid-column: span 20; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(4):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4)) { grid-column: span 15; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(5):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5)) { grid-column: span 12; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(6):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5), :nth-child(6)) { grid-column: span 10; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(7):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4)) { grid-column: span 15; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(7):last-child) > :is(:nth-child(5), :nth-child(6), :nth-child(7)) { grid-column: span 20; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(8):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5), :nth-child(6), :nth-child(7), :nth-child(8)) { grid-column: span 15; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(9):last-child) > :is(:nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5)) { grid-column: span 12; }
+    .hop-bento[data-tiles]:not(:has(> [data-span])):has(> :nth-child(9):last-child) > :is(:nth-child(6), :nth-child(7), :nth-child(8), :nth-child(9)) { grid-column: span 15; }
 }
+
+/* 641 to 899 px: 2 columns. */
+@media (max-width: 899px) {
+    .hop-bento:not([data-tiles]) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .hop-bento:not([data-tiles]) > *, .hop-bento:not([data-tiles]) > [data-span] { grid-column: span 1; }
+    .hop-bento:not([data-tiles]) > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+/* Phone: content in one column, tiles in two. */
 @media (max-width: 640px) {
-    .hop-bento { grid-template-columns: minmax(0, 1fr); }
-    .hop-bento > *, .hop-bento > [data-span], .hop-bento > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+    .hop-bento:not([data-tiles]) { grid-template-columns: minmax(0, 1fr); }
+    .hop-bento:not([data-tiles]) > *, .hop-bento:not([data-tiles]) > [data-span], .hop-bento:not([data-tiles]) > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+    .hop-bento[data-tiles] { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .hop-bento[data-tiles] > *, .hop-bento[data-tiles] > [data-span] { grid-column: span 1; }
+    .hop-bento[data-tiles] > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+    .hop-bento > * { padding: 18px; }
 }
+
+/* Media caps. */
+.hop-bento [data-media] { display: block; width: 100%; height: clamp(160px, 14vw, 200px); object-fit: contain; }
+.hop-bento [data-scene] { max-height: 140px; }
+@media (max-width: 640px) { .hop-bento [data-media] { height: clamp(120px, 34vw, 140px); } }
 
 /* Pointer spotlight (hop-motion.js writes --mx / --my). Fine pointers only. */
 [data-spot] { position: relative; isolation: isolate; }

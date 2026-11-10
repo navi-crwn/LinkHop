@@ -42,8 +42,8 @@
   var MAPS = {
     notehop: ['..#..#..', '..#..#..', '.#####..', '.######.', '.#...##.', '.######.', '.#..###.', '.######.'],
     hub: ['.#..#...', '.##.#...', '..####..', '..#####.', '######..', '.#####..', '##..###.', '#....###'],
-    // the BioHop mark: a rounded square with three lines
-    biohop: ['.#######.', '#########', '##wwwww##', '#########', '##wwwww##', '#########', '##www####', '#########', '.#######.'],
+    // the BioHop mark (v8): a page with three lines, stepped corners, 8x8 like the other pixel marks
+    biohop: ['######..', '#######.', '#wwwwww#', '########', '#wwwwww#', '########', '#www####', '.#######'],
     // the PixelHop mark: the pixel rabbit
     pixelhop: ['.#....#.', '.#....#.', '.##..##.', '.######.', '##.##.##', '########', '########', '.######.'],
     // the FileHop mark (v4): a document with a folded corner and a white arrow down
