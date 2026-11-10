@@ -34,7 +34,7 @@
 <section id="link-tour" class="lx lx-story" aria-labelledby="link-tour-title" data-lx-story>
     <div class="lx-wrap lx-story-grid">
         <div class="lx-story-copy">
-            <div class="lx-head"><p class="h-label"><span class="n">01</span> · <span>{{ __('From long to short') }}</span></p><h2 id="link-tour-title"><span>{{ __('Long story.') }} <em>{{ __('Short link.') }}</em></span></h2></div>
+            <div class="lx-head"><h2 id="link-tour-title"><span>{{ __('Long story.') }} <em>{{ __('Short link.') }}</em></span></h2></div>
             <ol class="lx-steps" data-lx-steps>
                 <li><b>{{ __('Paste the long link') }}</b><span>{{ __('Any address, however long. Tracking tags and all.') }}</span></li>
                 <li><b>{{ __('Choose a slug') }}</b><span>{{ __('Something people can remember, or let hel.ink pick one.') }}</span></li>
@@ -63,7 +63,7 @@
 {{-- 02 the journey: the shared 3D scene (resources/js/hop-hero.js), full size --}}
 <section id="journey" class="lx lx-journey link-expanded-world" data-hop-demo aria-labelledby="journey-title">
     <div class="lx-wrap">
-        <div class="lx-head"><p class="h-label"><span class="n">02</span> · <span>{{ __('Link journey') }}</span></p><h2 id="journey-title"><span>{{ __('How a short link') }} <em>{{ __('travels.') }}</em></span></h2><p class="h-sub"><span>{{ __('A bunny takes your link from here to anywhere. Pick a story and watch.') }}</span></p></div>
+        <div class="lx-head"><h2 id="journey-title"><span>{{ __('How a short link') }} <em>{{ __('travels.') }}</em></span></h2><p class="h-sub"><span>{{ __('A bunny takes your link from here to anywhere. Pick a story and watch.') }}</span></p></div>
         <div class="lx-journey-stage" data-hop-scene data-copy="{{ json_encode($sceneCopy) }}" data-rotate-label="{{ __('Rotate scene') }}">
             <div class="lx-journey-bar">
                 <div class="lx-pills" role="group" aria-label="{{ __('Play a scenario') }}">@foreach (['hop' => 'Hop to a link', 'share' => 'Share a link', 'pass-ok' => 'Password: right', 'pass-fail' => 'Password: wrong'] as $key => $label)<button type="button" data-hop-play="{{ $key }}" aria-pressed="false">{{ __($label) }}</button>@endforeach</div>
@@ -77,7 +77,7 @@
 {{-- 03 a link that looks right where it lands --}}
 <section id="share" class="lx" aria-labelledby="share-title" data-lx-share>
     <div class="lx-wrap lx-two">
-        <div class="lx-head"><p class="h-label"><span class="n">03</span> · <span>{{ __('Preview') }}</span></p><h2 id="share-title"><span>{{ __('Looks right') }} <em>{{ __('wherever it lands.') }}</em></span></h2><p class="h-sub"><span>{{ __('Give a link its own title, description and picture, so it looks the way you want in chat apps and feeds.') }}</span></p>
+        <div class="lx-head"><h2 id="share-title"><span>{{ __('Looks right') }} <em>{{ __('wherever it lands.') }}</em></span></h2><p class="h-sub"><span>{{ __('Give a link its own title, description and picture, so it looks the way you want in chat apps and feeds.') }}</span></p>
             <div class="lx-edit">
                 <label class="lx-lab" for="share-title-in">{{ __('Title') }}</label>
                 <input id="share-title-in" type="text" value="{{ __('Spring launch') }}" maxlength="60" class="lx-in" data-lx-title>
@@ -104,7 +104,7 @@
 {{-- 04 QR: the real code, as cubes --}}
 <section id="qr" class="lx" aria-labelledby="qr-title" data-lx-qr>
     <div class="lx-wrap lx-two rev">
-        <div class="lx-head"><p class="h-label"><span class="n">04</span> · <span>QR</span></p><h2 id="qr-title"><span>{{ __('From the screen') }} <em>{{ __('to the real world.') }}</em></span></h2><p class="h-sub"><span>{{ __('Turn a link into a QR code for a table, poster or package.') }}</span></p>
+        <div class="lx-head"><h2 id="qr-title"><span>{{ __('From the screen') }} <em>{{ __('to the real world.') }}</em></span></h2><p class="h-sub"><span>{{ __('Turn a link into a QR code for a table, poster or package.') }}</span></p>
             <ul class="lx-facts"><li><b>PNG · SVG</b> <span>{{ __('Print-ready, any size.') }}</span></li><li><b>{{ __('Your colours') }}</b> <span>{{ __('Match the poster, add your logo in the middle.') }}</span></li><li><b>{{ __('Scans are counted') }}</b> <span>{{ __('A scan is told apart from a click, in the analytics of the link.') }}</span></li></ul>
             <div class="lx-tones lx-qr-tones" role="group" aria-label="{{ __('Your colours') }}" data-lx-qr-tones>@foreach ([['0b1020', 'ffffff'], ['0891b2', 'ecfeff'], ['6366f1', 'eef2ff'], ['c026d3', 'fdf4ff'], ['ffffff', '1e1b4b']] as $i => [$fg, $bg])<button type="button" style="background: linear-gradient(135deg, #{{ $bg }} 50%, #{{ $fg }} 50%)" aria-pressed="{{ $i === 0 ? 'true' : 'false' }}" data-fg="#{{ $fg }}" data-bg="#{{ $bg }}" aria-label="#{{ $fg }}"></button>@endforeach</div>
         </div>
@@ -119,7 +119,7 @@
 {{-- 05 analytics --}}
 <section id="analytics" class="lx" aria-labelledby="analytics-title" data-lx-analytics>
     <div class="lx-wrap lx-two">
-        <div class="lx-head"><p class="h-label"><span class="n">05</span> · <span>{{ __('Understand') }}</span></p><h2 id="analytics-title"><span>{{ __('Every click') }} <em>{{ __('has a story.') }}</em></span></h2><p class="h-sub"><span>{{ __('See countries, devices and referrers. Compare your links and learn what people connect with, without storing their IP addresses.') }}</span></p>
+        <div class="lx-head"><h2 id="analytics-title"><span>{{ __('Every click') }} <em>{{ __('has a story.') }}</em></span></h2><p class="h-sub"><span>{{ __('See countries, devices and referrers. Compare your links and learn what people connect with, without storing their IP addresses.') }}</span></p>
             <ul class="lx-facts"><li><b>{{ __('Unique visitors.') }}</b> <span>{{ __('Counted once a day with a keyed hash. Never the address itself.') }}</span></li><li><b>{{ __('QR scans and in-app browsers.') }}</b> <span>{{ __('See which channel brings people in.') }}</span></li><li><b>{{ __('Bots stay out.') }}</b> <span>{{ __('Link previews and crawlers are not counted.') }}</span></li></ul></div>
         <div class="lx-analytics-vis">
             <div class="lx-iso" data-lx-iso role="img" aria-label="{{ __('Clicks per day, last four weeks') }}"><div class="lx-iso-grid">@foreach ([3,5,4,7,6,9,8, 4,6,5,8,7,10,9, 5,4,7,9,8,12,10, 6,8,7,11,9,14,12] as $n)<i style="--h: {{ round($n / 14, 2) }}"><b class="top"></b><b class="front"></b><b class="side"></b></i>@endforeach</div><p class="lx-iso-label">{{ __('Clicks per day, last four weeks') }}</p></div>
@@ -140,7 +140,7 @@
 {{-- 06 control the moment: schedule, click limit, expiry, fallback --}}
 <section id="control" class="lx" aria-labelledby="control-title" data-lx-control>
     <div class="lx-wrap">
-        <div class="lx-head"><p class="h-label"><span class="n">06</span> · <span>{{ __('Timing') }}</span></p><h2 id="control-title"><span>{{ __('Start on time.') }} <em>{{ __('Stop on count.') }}</em></span></h2><p class="h-sub"><span>{{ __('Schedule when a link goes live, cap how many visits it gets, and say where visitors go when it ends.') }}</span></p></div>
+        <div class="lx-head"><h2 id="control-title"><span>{{ __('Start on time.') }} <em>{{ __('Stop on count.') }}</em></span></h2><p class="h-sub"><span>{{ __('Schedule when a link goes live, cap how many visits it gets, and say where visitors go when it ends.') }}</span></p></div>
         <div class="lx-timeline" aria-hidden="true">
             <ol class="lx-track" data-lx-track>
                 <li data-state="0"><b>{{ __('Scheduled') }}</b><span>{{ __('Starts in 2 days') }}</span></li>
@@ -159,7 +159,7 @@
 {{-- 07 routing and A/B --}}
 <section id="routing" class="lx" aria-labelledby="routing-title" data-lx-routing>
     <div class="lx-wrap lx-two rev">
-        <div class="lx-head"><p class="h-label"><span class="n">07</span> · <span>{{ __('Routing') }}</span></p><h2 id="routing-title"><span>{{ __('One link.') }} <em>{{ __('Many destinations.') }}</em></span></h2><p class="h-sub"><span>{{ __('Send visitors somewhere else by country, language, device or browser, or split them between two pages and see which one wins.') }}</span></p>
+        <div class="lx-head"><h2 id="routing-title"><span>{{ __('One link.') }} <em>{{ __('Many destinations.') }}</em></span></h2><p class="h-sub"><span>{{ __('Send visitors somewhere else by country, language, device or browser, or split them between two pages and see which one wins.') }}</span></p>
             <ul class="lx-facts"><li><b>{{ __('Rules, in order.') }}</b> <span>{{ __('The first rule that fits decides; everyone else goes to the main address.') }}</span></li><li><b>{{ __('A/B tests.') }}</b> <span>{{ __('The same visitor keeps seeing the same page.') }}</span></li></ul></div>
         <div class="lx-net" aria-hidden="true">
             <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet"><g class="links"><path d="M120 60 C170 60 170 150 200 150"/><path d="M120 150 L200 150"/><path d="M120 240 C170 240 170 150 200 150"/><path d="M240 150 C290 150 290 60 330 60"/><path d="M240 150 L330 150"/><path d="M240 150 C290 150 290 240 330 240"/></g><circle class="pkt" r="4"/><circle class="pkt" r="4"/><circle class="pkt" r="4"/></svg>
@@ -174,7 +174,7 @@
 {{-- 08 protect: password, content warning, a check before you go --}}
 <section id="protect" class="lx" aria-labelledby="protect-title" data-lx-gate>
     <div class="lx-wrap">
-        <div class="lx-head"><p class="h-label"><span class="n">08</span> · <span>{{ __('Protect') }}</span></p><h2 id="protect-title"><span>{{ __('Shared on') }} <em>{{ __('your terms.') }}</em></span></h2><p class="h-sub"><span>{{ __('Add a password, set an expiry date, choose a content warning, and check where any link goes before you open it.') }}</span></p></div>
+        <div class="lx-head"><h2 id="protect-title"><span>{{ __('Shared on') }} <em>{{ __('your terms.') }}</em></span></h2><p class="h-sub"><span>{{ __('Add a password, set an expiry date, choose a content warning, and check where any link goes before you open it.') }}</span></p></div>
         <div class="hop-bento lx-gates">
             <article class="lx-gate" data-spot data-gate="pw"><div class="lx-gate-page" aria-hidden="true"><span></span><span></span><span class="s"></span></div><div class="lx-gate-box" aria-hidden="true"><svg class="lock" viewBox="0 0 48 56"><path class="shackle" d="M14 24V16a10 10 0 0 1 20 0v8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><rect x="6" y="24" width="36" height="28" rx="8" fill="currentColor"/></svg><div class="lx-pw"><small>{{ __('Password') }}</small><span class="dots" data-gate-dots>••••••••</span></div><span class="lx-go">{{ __('Enter') }}</span></div><h3>{{ __('Password gate') }}</h3><p>{{ __('Share the password only with the people you choose.') }}</p></article>
             <article class="lx-gate" data-spot data-gate="age"><div class="lx-gate-page" aria-hidden="true"><span></span><span></span><span class="s"></span></div><div class="lx-gate-box" aria-hidden="true"><b class="age">18+</b><div class="lx-pw"><small>{{ __('Content warning') }}</small><span>{{ __('Are you 18 or older?') }}</span></div><span class="lx-go">{{ __('Yes, continue') }}</span></div><h3>{{ __('Content warning') }}</h3><p>{{ __('Visitors confirm before the page opens.') }}</p></article>
@@ -186,7 +186,7 @@
 {{-- 09 build with it: API, idempotency, webhooks --}}
 <section id="api" class="lx" aria-labelledby="api-title" data-lx-build>
     <div class="lx-wrap lx-two">
-        <div class="lx-head"><p class="h-label"><span class="n">09</span> · <span>API</span></p><h2 id="api-title"><span>{{ __('One request.') }} <em>{{ __('One short link.') }}</em></span></h2><p class="h-sub"><span>{{ __('Connect the REST API to your tools and ShareX. Safe to retry with an idempotency key, and signed webhooks tell your own system what happened.') }}</span></p><div class="h-cta"><a class="h-pill dark" href="{{ route('api-docs') }}">{{ __('API') }} ↗</a></div></div>
+        <div class="lx-head"><h2 id="api-title"><span>{{ __('One request.') }} <em>{{ __('One short link.') }}</em></span></h2><p class="h-sub"><span>{{ __('Connect the REST API to your tools and ShareX. Safe to retry with an idempotency key, and signed webhooks tell your own system what happened.') }}</span></p><div class="h-cta"><a class="h-pill dark" href="{{ route('api-docs') }}">{{ __('API') }} ↗</a></div></div>
         <div class="lx-dev">
             <div class="h-shell"><div class="h-shell-bar"><i></i><i></i><i></i><span>curl</span></div><div class="h-term"><code id="api-curl">curl -X POST https://link.hel.ink/api/shorten -H "Authorization: Bearer $LINKHOP_TOKEN" -H "Idempotency-Key: 7f3c-launch" -d "target_url=https://example.com/launch"</code><button type="button" data-copy-text data-copy-from="#api-curl">{{ __('Copy') }}</button></div><pre data-out><span>{"short_url": "https://hel.ink/l/k7x2m",</span>
 <span> "target_url": "https://example.com/launch",</span>
@@ -203,7 +203,7 @@
 {{-- 10 open source --}}
 <section id="open" class="lx" aria-labelledby="open-title" data-lx-install>
     <div class="lx-wrap lx-two rev">
-        <div class="lx-head"><p class="h-label"><span class="n">10</span> · <span>MIT</span></p><h2 id="open-title"><span>{{ __('Free & open source') }} <em>{{ __('and yours to host.') }}</em></span></h2><p class="h-sub"><span>{{ __('Built with Laravel, Tailwind and Alpine.js. Use hel.ink or host it yourself.') }}</span></p><div class="h-badges"><a class="h-badge" href="https://github.com/navi-crwn/LinkHop/blob/main/LICENSE"><span>{{ __('License') }}</span><b>MIT</b></a><span class="h-badge"><span>PHP</span><b>8.3+</b></span><span class="h-badge"><span>Laravel</span><b>12</b></span></div><div class="h-cta"><a class="h-pill dark" href="https://github.com/navi-crwn/LinkHop">GitHub ↗</a></div></div>
+        <div class="lx-head"><h2 id="open-title"><span>{{ __('Free & open source') }} <em>{{ __('and yours to host.') }}</em></span></h2><p class="h-sub"><span>{{ __('Built with Laravel, Tailwind and Alpine.js. Use hel.ink or host it yourself.') }}</span></p><div class="h-badges"><a class="h-badge" href="https://github.com/navi-crwn/LinkHop/blob/main/LICENSE"><span>{{ __('License') }}</span><b>MIT</b></a><span class="h-badge"><span>PHP</span><b>8.3+</b></span><span class="h-badge"><span>Laravel</span><b>12</b></span></div><div class="h-cta"><a class="h-pill dark" href="https://github.com/navi-crwn/LinkHop">GitHub ↗</a></div></div>
         <div class="h-shell lx-term"><div class="h-shell-bar"><i></i><i></i><i></i><span>bash</span></div><div class="h-term"><code id="install-sh">git clone https://github.com/navi-crwn/LinkHop.git && cd LinkHop && composer install && npm install && npm run build</code><button type="button" data-copy-text data-copy-from="#install-sh">{{ __('Copy') }}</button></div><pre data-out><span>cp .env.example .env && php artisan key:generate</span>
 <span>php artisan migrate && php artisan storage:link</span>
 <span class="ok">✓ php artisan serve</span></pre></div>
@@ -213,7 +213,7 @@
 {{-- 11 questions --}}
 <section id="faq" class="lx" aria-labelledby="faq-title">
     <div class="lx-wrap">
-        <div class="lx-head"><p class="h-label"><span class="n">11</span> · <span>{{ __('Good questions') }}</span></p><h2 id="faq-title"><span>{{ __('Questions,') }} <em>{{ __('answered.') }}</em></span></h2><p class="h-sub"><span>{{ __('Small URL.') }} {{ __('Serious possibilities.') }}</span></p></div>
+        <div class="lx-head"><h2 id="faq-title"><span>{{ __('Questions,') }} <em>{{ __('answered.') }}</em></span></h2><p class="h-sub"><span>{{ __('Small URL.') }} {{ __('Serious possibilities.') }}</span></p></div>
         <div class="lx-faq" data-lx-faq>@foreach (['Is it really free?' => 'Yes. There is no paid plan and no locked feature, and the code is MIT licensed.', 'Do I need an account?' => 'Not to shorten a link. A free HOP ID keeps your links, shows their stats, and also signs you in to BioHop, PixelHop, NoteHop and FileHop.', 'What does a click record?' => 'The time, country and city, device, browser and referrer, plus a keyed hash of the IP address for counting unique visitors. Never the IP address itself.', 'How long do guest links last?' => 'Guest links expire after :idle days without a click or :max days in total. Links made with a HOP ID stay until you delete them.', 'Can I change where a link goes?' => 'Yes. Edit the destination any time; the short link and its stats stay the same.', 'Can I report a link?' => 'Yes. Every hel.ink link has a report option, and the check page shows warnings before you open anything.'] as $question => $answer)<article class="lx-cell lx-q"><h3>{{ __($question) }}</h3><p>{{ __($answer, ['idle' => $idleDays, 'max' => $maxDays]) }}</p></article>@endforeach</div>
     </div>
 </section>
@@ -228,5 +228,5 @@
 
 {{-- 13 the last word --}}
 <section class="lx lx-final" aria-labelledby="final-title">
-    <div class="lx-wrap"><p class="h-label"><span class="n">13</span> · <span>{{ __('Your next link') }}</span></p><h2 id="final-title"><span>{{ __('Less link.') }} <em>{{ __('More possibility.') }}</em></span></h2><p class="h-sub"><span>{{ __('Shorten. Share. Understand.') }}</span></p><div class="h-cta"><a class="h-pill dark" href="#target_url">{{ __('Shorten') }} ↑</a><a class="h-pill" href="{{ route('register') }}">{{ __('Create free account') }}</a></div></div>
+    <div class="lx-wrap"><h2 id="final-title"><span>{{ __('Less link.') }} <em>{{ __('More possibility.') }}</em></span></h2><p class="h-sub"><span>{{ __('Shorten. Share. Understand.') }}</span></p><div class="h-cta"><a class="h-pill dark" href="#target_url">{{ __('Shorten') }} ↑</a><a class="h-pill" href="{{ route('register') }}">{{ __('Create free account') }}</a></div></div>
 </section>
