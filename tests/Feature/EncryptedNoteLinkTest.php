@@ -274,13 +274,25 @@ it('sends the lookup services the address without its fragment', function () {
     $result = app(LinkSafety::class)->assess('https://example.com/page#k=notarealkey', '', remote: true);
 
     expect($result['signals'])->toBe([]);
-    Http::assertSent(fn ($r) => str_contains($r->url(), 'safebrowsing')
-        && $r->data()['threatInfo']['threatEntries'] === [['url' => 'https://example.com/page']]);
+    // Safe Browsing v5 (hop/safety 0.1.0) asks by hash prefix: the prefixes are those of the address without its fragment.
+    $b64 = fn (string $raw) => rtrim(strtr(base64_encode($raw), '+/', '-_'), '=');
+    $prefixes = fn (array $expressions) => array_map(fn ($e) => $b64(substr(hash('sha256', $e, true), 0, 4)), $expressions);
+    Http::assertSent(function ($r) use ($prefixes) {
+        if (! str_contains($r->url(), 'safebrowsing')) {
+            return false;
+        }
+        parse_str((string) parse_url($r->url(), PHP_URL_QUERY), $query);
+        $expected = $prefixes(['https://example.com/page', 'example.com', 'example.com/']);
+
+        return array_values($query['hashPrefixes'] ?? []) === $expected
+            && ! in_array($prefixes(['https://example.com/page#k=notarealkey'])[0], $query['hashPrefixes'], true);
+    });
 });
 
 it('still catches a threat in the address through the lookup, and keeps the keyword score', function () {
     config(['safety.providers.safe_browsing_key' => 'fake-key', 'safety.providers.spamhaus_dbl' => false]);
-    Http::fake(['safebrowsing.googleapis.com/*' => Http::response(['matches' => [['threatType' => 'MALWARE']]], 200)]);
+    $full = rtrim(strtr(base64_encode(hash('sha256', 'https://example.com/page', true)), '+/', '-_'), '=');
+    Http::fake(['safebrowsing.googleapis.com/*' => Http::response(['fullHashes' => [['fullHash' => $full, 'fullHashDetails' => [['threatType' => 'MALWARE']]]], 'cacheDuration' => '300s'], 200)]);
 
     $result = app(LinkSafety::class)->assess('https://example.com/page#verify-account', '', remote: true);
 
