@@ -5,7 +5,7 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "test:js": "node --test tests/js"
+        "test:js": "node --test tests/js/*.test.mjs"
     },
     "devDependencies": {
         "@axe-core/playwright": "4.13.0",
