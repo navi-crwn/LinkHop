@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-11-11
+
 ### Added
 - PayHop (pay.hel.ink) joins the family: it is named in the FAQ, the features page, the home page and the sign-in text in nine languages, in the READMEs and on the Pages site, and `payhop`, `pay` and the `payhop-` prefix are reserved usernames (`payhop` also a reserved slug).
 - The silent account re-check of `hop/auth`: the home page, `/qr`, `/changelog` and the public pages that show the account (and every signed-in page) confirm with the hub, at most every five minutes, that the account in this session is still the one signed in there. Switching accounts at the hub no longer leaves the old account here. `HOP_RECHECK=false` turns it off; short link redirects never do it.

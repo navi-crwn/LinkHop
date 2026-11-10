@@ -1414,13 +1414,13 @@
             "version": "dev-feat/manifest-v9",
             "source": {
                 "type": "git",
-                "url": "https://github.com/navi-crwn/hop-ui.git",
-                "reference": "5f264d122b2a6ec12f4883af4db0d278ea6f9304"
+                "url": "git@github.com:navi-crwn/hop-ui.git",
+                "reference": "49d2801cd85011320c927361124444dcdbfe5bfb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-ui/zipball/5f264d122b2a6ec12f4883af4db0d278ea6f9304",
-                "reference": "5f264d122b2a6ec12f4883af4db0d278ea6f9304",
+                "url": "https://api.github.com/repos/navi-crwn/hop-ui/zipball/49d2801cd85011320c927361124444dcdbfe5bfb",
+                "reference": "49d2801cd85011320c927361124444dcdbfe5bfb",
                 "shasum": ""
             },
             "require": {
@@ -1444,11 +1444,7 @@
                 "MIT"
             ],
             "description": "HOP shared package: ui.",
-            "support": {
-                "source": "https://github.com/navi-crwn/hop-ui/tree/feat/manifest-v9",
-                "issues": "https://github.com/navi-crwn/hop-ui/issues"
-            },
-            "time": "2026-11-10T17:26:33+00:00"
+            "time": "2026-11-10T18:50:20+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
