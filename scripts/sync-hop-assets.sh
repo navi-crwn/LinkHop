@@ -18,4 +18,5 @@ for app in hub linkhop biohop pixelhop notehop filehop; do
     cp "$src/home/$app-$look.webp" "public/hop-home/home/$app-$look.webp"
   done
 done
-# hop-hero3d.js here may carry a guard (an app with no block map keeps its flat mark); tests/Feature/*Home* check for it.
+# hop-hero3d.js here used to carry a guard (an app with no block map keeps its flat mark). The copy above replaces it with
+# the hub's file; if tests/Feature/*Home* fail after a sync, re-apply the guard until the hub's copy has it.

@@ -60,6 +60,7 @@ test('the words the other HOP apps and tools use are reserved for new slugs, and
     $user = User::factory()->create();
     $link = Link::create(['user_id' => $user->id, 'slug' => 'secret', 'target_url' => 'https://example.com', 'status' => 'active']);
     $this->get('/l/secret')->assertRedirect('https://example.com');
+    $this->get('/secret')->assertRedirect();
     $this->actingAs($user)->put("/links/{$link->id}", ['target_url' => 'https://example.org', 'slug' => 'secret', 'status' => 'active'])
         ->assertSessionHasNoErrors();
     expect($link->fresh()->target_url)->toBe('https://example.org');
