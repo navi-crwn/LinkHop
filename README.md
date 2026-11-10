@@ -69,8 +69,6 @@ Everything is included for every account. No premium tier, no locked features. A
 - share links on social media and want to see what works,
 - want a link shortener you control, on your own server.
 
-<p align="center"><picture><source media="(prefers-color-scheme: light)" srcset="docs/readme/features-en-light.webp"><img src="docs/readme/features-en-dark.webp" alt="Everything LinkHop can do" width="100%"></picture></p>
-
 Looking for one page for all your links? That is [BioHop](https://github.com/navi-crwn/BioHop), LinkHop's sister app at [bio.hel.ink](https://bio.hel.ink), on the same HOP ID.
 
 📖 **The full tour, the self-host guide and the FAQ:** [navi-crwn.github.io/LinkHop](https://navi-crwn.github.io/LinkHop/)
