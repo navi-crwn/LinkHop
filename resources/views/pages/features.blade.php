@@ -1,8 +1,8 @@
 @push('head')
-<link rel="stylesheet" href="{{ asset('hop-home/hop-bento.css') }}">
+<link rel="stylesheet" href="{{ asset('hop-home/hop-bento.css') }}?v={{ substr(md5_file(public_path('hop-home/hop-bento.css')), 0, 8) }}">
 @endpush
 @push('scripts')
-<script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-motion.js') }}" defer></script>
+<script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-motion.js') }}?v={{ substr(md5_file(public_path('hop-home/hop-motion.js')), 0, 8) }}" defer></script>
 @endpush
 <x-info-page title="Features" lead="Everything is included for every account. No premium tier, no locked features." :wide="true">
     {{-- Bento grid for features --}}

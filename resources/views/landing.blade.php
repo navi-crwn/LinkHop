@@ -1,8 +1,8 @@
 @push('head')
-<link rel="stylesheet" href="{{ asset('hop-home/hop-bento.css') }}">
-<link rel="stylesheet" href="{{ asset('hop-home/hop-home.css') }}">
+<link rel="stylesheet" href="{{ asset('hop-home/hop-bento.css') }}?v={{ substr(md5_file(public_path('hop-home/hop-bento.css')), 0, 8) }}">
+<link rel="stylesheet" href="{{ asset('hop-home/hop-home.css') }}?v={{ substr(md5_file(public_path('hop-home/hop-home.css')), 0, 8) }}">
 <script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-motion.js') }}?v={{ substr(md5_file(public_path('hop-home/hop-motion.js')), 0, 8) }}" defer></script>
-<script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-home.js') }}" defer></script>
+<script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-home.js') }}?v={{ substr(md5_file(public_path('hop-home/hop-home.js')), 0, 8) }}" defer></script>
 <script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-hero3d.js') }}?v={{ substr(md5_file(public_path('hop-home/hop-hero3d.js')), 0, 8) }}" defer></script>
 @vite(['resources/css/home.css', 'resources/js/home.js'])
 @endpush
