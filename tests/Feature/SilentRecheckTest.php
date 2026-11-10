@@ -14,7 +14,7 @@ const RECHECK_SECRET = 'a-shared-sso-secret-that-is-long-enough-1234';
 beforeEach(function () {
     config(['hop-auth.secret' => RECHECK_SECRET, 'hop-auth.app' => 'linkhop', 'hop-auth.hub_url' => 'https://hub.example.test',
         'hop-auth.recheck' => ['enabled' => true, 'max_age' => 300, 'cooldown' => 30, 'retry_after' => 300, 'probe' => true, 'probe_timeout' => 1.5]]);
-    SilentRecheck::$probe = fn () => true;
+    SilentRecheck::$probe = fn () => 200;
 });
 
 afterEach(function () {
@@ -85,4 +85,13 @@ test('login_required from the hub signs the app session out', function () {
 
     $this->get('/auth/sso/callback?error=login_required&state='.$query['state'])->assertRedirect();
     $this->assertGuest();
+});
+
+test('a hub that does not answer its health URL does not log anyone out: the session stays trusted', function () {
+    SilentRecheck::$probe = fn () => 502;
+    Cache::flush();
+    $user = User::factory()->create();
+
+    $this->actingAs($user)->get('/links')->assertOk();
+    $this->get('/faq')->assertOk();
 });

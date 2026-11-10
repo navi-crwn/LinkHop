@@ -70,7 +70,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", choices=PUBLIC, required=True)
     parser.add_argument("--family", type=pathlib.Path)
-    parser.add_argument("--out", type=pathlib.Path, help="write the snapshot here instead of the committed file (the deploy uses storage/app/changelog.json)")
+    parser.add_argument("--out", "--output", dest="out", type=pathlib.Path, help="write the snapshot here instead of the committed file (the deploy uses storage/app/changelog.json)")
     parser.add_argument("--check", action="store_true", help="fail when the committed snapshot misses a merged PR or tag")
     args = parser.parse_args()
     root = pathlib.Path(__file__).resolve().parents[1]

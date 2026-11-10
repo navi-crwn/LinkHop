@@ -1,8 +1,8 @@
 /*
  * HOP bento: one grid of boxes for every HOP page (hop-assets v8, immutable once deployed).
  *
- *   <link rel="stylesheet" href="https://hel.ink/hop-assets/v8/hop-bento.css">
- *   <script src="https://hel.ink/hop-assets/v8/hop-motion.js" defer></script>   (reveal, spotlight, scenes)
+ *   <link rel="stylesheet" href="https://hel.ink/hop-assets/v9/hop-bento.css">
+ *   <script src="https://hel.ink/hop-assets/v9/hop-motion.js" defer></script>   (reveal, spotlight, scenes)
  *
  *   <div class="hop-bento">                 content boxes (text, lists)
  *   <div class="hop-bento" data-tiles>      small tiles (the five family tiles with 3D art, stats)

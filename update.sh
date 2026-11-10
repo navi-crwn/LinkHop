@@ -323,7 +323,8 @@ upd "Linking the storage folder" "$PHP_BIN" artisan storage:link --force
 # python3 and an authenticated gh; without them, or when GitHub is unreachable, the committed snapshot stays in use.
 if [ "$DRY" != 1 ]; then
   if have python3 && have gh; then
-    python3 scripts/build-changelog.py --repo LinkHop --out storage/app/changelog.json >/dev/null 2>&1 && ok "Changelog built from GitHub" || warn "Could not build the changelog; the committed one is shown."
+    # The script's own errors stay visible: a changelog that cannot be built should say why.
+    if python3 scripts/build-changelog.py --repo LinkHop --output storage/app/changelog.json >/dev/null; then ok "Changelog built from GitHub"; else warn "Could not build the changelog (see above); the committed one is shown."; fi
   fi
 fi
 upd "Clearing and warming caches" "$PHP_BIN" artisan optimize:clear

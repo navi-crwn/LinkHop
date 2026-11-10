@@ -1301,12 +1301,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/navi-crwn/hop-auth.git",
-                "reference": "3388415b3355dc41c427833f0573ed8d05285725"
+                "reference": "a34ccd8c47962b303a9c9e173957dd382c5df32c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-auth/zipball/3388415b3355dc41c427833f0573ed8d05285725",
-                "reference": "3388415b3355dc41c427833f0573ed8d05285725",
+                "url": "https://api.github.com/repos/navi-crwn/hop-auth/zipball/a34ccd8c47962b303a9c9e173957dd382c5df32c",
+                "reference": "a34ccd8c47962b303a9c9e173957dd382c5df32c",
                 "shasum": ""
             },
             "require": {
@@ -1334,7 +1334,7 @@
                 "source": "https://github.com/navi-crwn/hop-auth/tree/feat/pay-host-silent-recheck",
                 "issues": "https://github.com/navi-crwn/hop-auth/issues"
             },
-            "time": "2026-11-10T17:35:26+00:00"
+            "time": "2026-11-10T18:30:03+00:00"
         },
         {
             "name": "hop/bio",
