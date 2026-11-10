@@ -95,6 +95,7 @@ O LinkHop faz parte da família HOP de aplicativos web abertos e auto-hospedáve
 | **PixelHop** | `pixel.hel.ink` · `p.hel.ink/…` | [navi-crwn/PixelHop](https://github.com/navi-crwn/PixelHop) | Hospedagem de imagens e mídia |
 | **NoteHop** | `note.hel.ink` · `n.hel.ink/…` | [navi-crwn/NoteHop](https://github.com/navi-crwn/NoteHop) | Notas privadas com criptografia no cliente |
 | **FileHop** | `file.hel.ink` | [navi-crwn/FileHop](https://github.com/navi-crwn/FileHop) | Converta arquivos no navegador; nada é enviado |
+| **PayHop** | `pay.hel.ink` | [navi-crwn/PayHop](https://github.com/navi-crwn/PayHop) | Crie um QR de pagamento e divida a conta; nada sai do seu navegador |
 
 <a id="security"></a>
 

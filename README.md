@@ -40,7 +40,7 @@ From a clone: `./install.sh` · update: `./update.sh` · remove: `./uninstall.sh
 
 ## What is LinkHop?
 
-**LinkHop** is the link shortener of the HOP family ("Hop Easy Link"). The family shares one account, **HOP ID**, kept by the [hub](https://github.com/navi-crwn/HEL.ink) at `hel.ink` / `hub.hel.ink`; LinkHop's dashboard lives at `link.hel.ink`, short links stay at `hel.ink/l/slug`, and the hub's app switcher takes you to [BioHop](https://github.com/navi-crwn/BioHop) (link in bio), [PixelHop](https://github.com/navi-crwn/PixelHop) (image hosting), [NoteHop](https://github.com/navi-crwn/NoteHop) (encrypted notes) and [FileHop](https://github.com/navi-crwn/FileHop) (file conversion in the browser). LinkHop has no sign-in, sign-up or profile pages of its own: the hub signs you in with a short-lived SSO ticket, and the apps share one database.
+**LinkHop** is the link shortener of the HOP family ("Hop Easy Link"). The family shares one account, **HOP ID**, kept by the [hub](https://github.com/navi-crwn/HEL.ink) at `hel.ink` / `hub.hel.ink`; LinkHop's dashboard lives at `link.hel.ink`, short links stay at `hel.ink/l/slug`, and the hub's app switcher takes you to [BioHop](https://github.com/navi-crwn/BioHop) (link in bio), [PixelHop](https://github.com/navi-crwn/PixelHop) (image hosting), [NoteHop](https://github.com/navi-crwn/NoteHop) (encrypted notes), [FileHop](https://github.com/navi-crwn/FileHop) (file conversion in the browser) and [PayHop](https://github.com/navi-crwn/PayHop) (payment QR codes and bill splitting). LinkHop has no sign-in, sign-up or profile pages of its own: the hub signs you in with a short-lived SSO ticket, and the apps share one database.
 
 Long links are hard to share and you never know who clicks them. LinkHop makes them **short** (with your own slug if you like), **counts every click** by country, device and referrer, and protects visitors with automated URL threat detection. Personal landing pages are now powered by [BioHop](https://github.com/navi-crwn/BioHop) at `hel.ink/b/you`.
 
@@ -60,6 +60,7 @@ The homepage has an interactive 3D island-and-rabbit scene. Move your pointer or
 | **PixelHop** | [pixel.hel.ink](https://pixel.hel.ink) · `p.hel.ink/…` | [navi-crwn/PixelHop](https://github.com/navi-crwn/PixelHop) | Image hosting with albums and direct links. |
 | **NoteHop** | [note.hel.ink](https://note.hel.ink) · `n.hel.ink/…` | [navi-crwn/NoteHop](https://github.com/navi-crwn/NoteHop) | Encrypted notes you share with a link. |
 | **FileHop** | [file.hel.ink](https://file.hel.ink) | [navi-crwn/FileHop](https://github.com/navi-crwn/FileHop) | Convert files in your browser; nothing is uploaded. |
+| **PayHop** | [pay.hel.ink](https://pay.hel.ink) | [navi-crwn/PayHop](https://github.com/navi-crwn/PayHop) | Make a payment QR and split a bill; nothing leaves your browser. |
 | **Imperium** | not public-facing: optional, for admins | [navi-crwn/Imperium](https://github.com/navi-crwn/Imperium) | The HOP control panel. |
 <!-- hop-family:end -->
 

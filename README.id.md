@@ -115,6 +115,7 @@ LinkHop adalah bagian dari keluarga aplikasi web open-source HOP yang dapat dipa
 | **PixelHop** | `pixel.hel.ink` · `p.hel.ink/…` | [navi-crwn/PixelHop](https://github.com/navi-crwn/PixelHop) | Hosting gambar dan media |
 | **NoteHop** | `note.hel.ink` · `n.hel.ink/…` | [navi-crwn/NoteHop](https://github.com/navi-crwn/NoteHop) | Catatan privat terenkripsi klien |
 | **FileHop** | `file.hel.ink` | [navi-crwn/FileHop](https://github.com/navi-crwn/FileHop) | Konversi berkas di peramban; tidak ada yang diunggah |
+| **PayHop** | `pay.hel.ink` | [navi-crwn/PayHop](https://github.com/navi-crwn/PayHop) | Buat QR pembayaran dan bagi tagihan; tidak ada yang keluar dari peramban |
 
 <a id="security"></a>
 

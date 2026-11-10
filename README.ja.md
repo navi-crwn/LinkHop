@@ -113,6 +113,7 @@ LinkHop はセルフホスト可能なオープンソース Web ツール群 HOP
 | **PixelHop** | `pixel.hel.ink` · `p.hel.ink/…` | [navi-crwn/PixelHop](https://github.com/navi-crwn/PixelHop) | 画像およびメディア配信 |
 | **NoteHop** | `note.hel.ink` · `n.hel.ink/…` | [navi-crwn/NoteHop](https://github.com/navi-crwn/NoteHop) | クライアント暗号化プライベートノート |
 | **FileHop** | `file.hel.ink` | [navi-crwn/FileHop](https://github.com/navi-crwn/FileHop) | ブラウザー内でファイルを変換。何もアップロードされません |
+| **PayHop** | `pay.hel.ink` | [navi-crwn/PayHop](https://github.com/navi-crwn/PayHop) | 支払い用QRの作成と割り勘。データはブラウザーの外に出ません |
 
 <a id="security"></a>
 
