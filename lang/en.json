@@ -1135,5 +1135,18 @@
     "Could not draw this code. Shorten the text or remove the logo.": "Could not draw this code. Shorten the text or remove the logo.",
     "The QR code holds the short address. Change the destination any time: the printed code keeps working.": "The QR code holds the short address. Change the destination any time: the printed code keeps working.",
     "Changing the slug changes the QR code. The old printed code will stop working.": "Changing the slug changes the QR code. The old printed code will stop working.",
-    "Wi-Fi, contact cards and printable table cards": "Wi-Fi, contact cards and printable table cards"
+    "Wi-Fi, contact cards and printable table cards": "Wi-Fi, contact cards and printable table cards",
+    "Turn a link, a Wi-Fi password or a contact card into a QR code for a table, poster or package.": "Turn a link, a Wi-Fi password or a contact card into a QR code for a table, poster or package.",
+    "Dots, corners, colours and your logo in the middle.": "Dots, corners, colours and your logo in the middle.",
+    "Change it later": "Change it later",
+    "A dynamic code keeps its picture while the destination changes.": "A dynamic code keeps its picture while the destination changes.",
+    "Open the QR studio": "Open the QR studio",
+    "Link": "Link",
+    "Network": "Network",
+    "Scan to join": "Scan to join",
+    "Guest Wi-Fi": "Guest Wi-Fi",
+    "Scan to save the contact": "Scan to save the contact",
+    "Same code": "Same code",
+    "The printed code never changes": "The printed code never changes",
+    "Four QR codes in turn: a link, a Wi-Fi table card, a contact card and a code whose destination changes.": "Four QR codes in turn: a link, a Wi-Fi table card, a contact card and a code whose destination changes."
 }

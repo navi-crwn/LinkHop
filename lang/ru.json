@@ -1135,5 +1135,18 @@
     "Could not draw this code. Shorten the text or remove the logo.": "Не удалось нарисовать этот код. Сократите текст или уберите логотип.",
     "The QR code holds the short address. Change the destination any time: the printed code keeps working.": "QR-код содержит короткий адрес. Меняйте назначение когда угодно: напечатанный код продолжит работать.",
     "Changing the slug changes the QR code. The old printed code will stop working.": "Смена slug меняет QR-код. Старый напечатанный код перестанет работать.",
-    "Wi-Fi, contact cards and printable table cards": "Wi-Fi, визитки и печатные карточки на стол"
+    "Wi-Fi, contact cards and printable table cards": "Wi-Fi, визитки и печатные карточки на стол",
+    "Turn a link, a Wi-Fi password or a contact card into a QR code for a table, poster or package.": "Превратите ссылку, пароль от Wi-Fi или визитку в QR-код для стола, плаката или упаковки.",
+    "Dots, corners, colours and your logo in the middle.": "Точки, углы, цвета и ваш логотип в центре.",
+    "Change it later": "Изменить позже",
+    "A dynamic code keeps its picture while the destination changes.": "Динамический код сохраняет рисунок, пока меняется адрес назначения.",
+    "Open the QR studio": "Открыть QR-студию",
+    "Link": "Ссылка",
+    "Network": "Сеть",
+    "Scan to join": "Сканируйте, чтобы подключиться",
+    "Guest Wi-Fi": "Гостевой Wi-Fi",
+    "Scan to save the contact": "Сканируйте, чтобы сохранить контакт",
+    "Same code": "Тот же код",
+    "The printed code never changes": "Напечатанный код не меняется",
+    "Four QR codes in turn: a link, a Wi-Fi table card, a contact card and a code whose destination changes.": "Четыре QR-кода по очереди: ссылка, настольная карточка с Wi-Fi, визитка и код, у которого меняется адрес назначения."
 }

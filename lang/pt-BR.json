@@ -1135,5 +1135,18 @@
     "Could not draw this code. Shorten the text or remove the logo.": "Não foi possível desenhar este código. Encurte o texto ou remova o logo.",
     "The QR code holds the short address. Change the destination any time: the printed code keeps working.": "O código QR guarda o endereço curto. Mude o destino quando quiser: o código impresso continua funcionando.",
     "Changing the slug changes the QR code. The old printed code will stop working.": "Mudar o slug muda o código QR. O código antigo, já impresso, deixa de funcionar.",
-    "Wi-Fi, contact cards and printable table cards": "Wi-Fi, cartões de contato e cartões de mesa para imprimir"
+    "Wi-Fi, contact cards and printable table cards": "Wi-Fi, cartões de contato e cartões de mesa para imprimir",
+    "Turn a link, a Wi-Fi password or a contact card into a QR code for a table, poster or package.": "Transforme um link, uma senha de Wi-Fi ou um cartão de contato em um QR code para mesa, cartaz ou embalagem.",
+    "Dots, corners, colours and your logo in the middle.": "Pontos, cantos, cores e o seu logo no centro.",
+    "Change it later": "Mude depois",
+    "A dynamic code keeps its picture while the destination changes.": "Um código dinâmico mantém o mesmo desenho enquanto o destino muda.",
+    "Open the QR studio": "Abrir o estúdio de QR",
+    "Link": "Link",
+    "Network": "Rede",
+    "Scan to join": "Escaneie para conectar",
+    "Guest Wi-Fi": "Wi-Fi para visitantes",
+    "Scan to save the contact": "Escaneie para salvar o contato",
+    "Same code": "O mesmo código",
+    "The printed code never changes": "O código impresso nunca muda",
+    "Four QR codes in turn: a link, a Wi-Fi table card, a contact card and a code whose destination changes.": "Quatro QR codes em sequência: um link, um cartão de mesa de Wi-Fi, um cartão de contato e um código cujo destino muda."
 }

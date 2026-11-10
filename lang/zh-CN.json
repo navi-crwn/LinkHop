@@ -1135,5 +1135,18 @@
     "Could not draw this code. Shorten the text or remove the logo.": "无法绘制此二维码。请缩短文字或移除标志。",
     "The QR code holds the short address. Change the destination any time: the printed code keeps working.": "二维码包含的是短地址。你可以随时更改目标：已印刷的码仍然有效。",
     "Changing the slug changes the QR code. The old printed code will stop working.": "更改 slug 会改变二维码，旧的印刷码将失效。",
-    "Wi-Fi, contact cards and printable table cards": "Wi-Fi、名片和可打印桌卡"
+    "Wi-Fi, contact cards and printable table cards": "Wi-Fi、名片和可打印桌卡",
+    "Turn a link, a Wi-Fi password or a contact card into a QR code for a table, poster or package.": "把链接、Wi-Fi 密码或名片变成二维码，贴在桌上、海报或包装上。",
+    "Dots, corners, colours and your logo in the middle.": "点阵、边角、颜色，中间还能放你的标志。",
+    "Change it later": "之后还能改",
+    "A dynamic code keeps its picture while the destination changes.": "动态码图案不变，目标地址随时可改。",
+    "Open the QR studio": "打开二维码工作室",
+    "Link": "链接",
+    "Network": "网络",
+    "Scan to join": "扫码连接",
+    "Guest Wi-Fi": "访客 Wi-Fi",
+    "Scan to save the contact": "扫码保存联系人",
+    "Same code": "同一个码",
+    "The printed code never changes": "印好的码永远不用换",
+    "Four QR codes in turn: a link, a Wi-Fi table card, a contact card and a code whose destination changes.": "四个二维码依次出现：链接、Wi-Fi 桌卡、名片，以及目标地址可变的码。"
 }

@@ -1135,5 +1135,18 @@
     "Could not draw this code. Shorten the text or remove the logo.": "Kode ini tidak bisa digambar. Pendekkan teks atau hapus logo.",
     "The QR code holds the short address. Change the destination any time: the printed code keeps working.": "Kode QR berisi alamat pendeknya. Ubah tujuan kapan saja: kode yang sudah dicetak tetap berfungsi.",
     "Changing the slug changes the QR code. The old printed code will stop working.": "Mengubah slug mengubah kode QR. Kode lama yang sudah dicetak akan berhenti berfungsi.",
-    "Wi-Fi, contact cards and printable table cards": "Wi-Fi, kartu kontak, dan kartu meja cetak"
+    "Wi-Fi, contact cards and printable table cards": "Wi-Fi, kartu kontak, dan kartu meja cetak",
+    "Turn a link, a Wi-Fi password or a contact card into a QR code for a table, poster or package.": "Ubah tautan, kata sandi Wi-Fi, atau kartu kontak menjadi kode QR untuk meja, poster, atau kemasan.",
+    "Dots, corners, colours and your logo in the middle.": "Titik, sudut, warna, dan logo Anda di tengah.",
+    "Change it later": "Ubah nanti",
+    "A dynamic code keeps its picture while the destination changes.": "Kode dinamis tetap bergambar sama saat tujuannya berubah.",
+    "Open the QR studio": "Buka studio QR",
+    "Link": "Tautan",
+    "Network": "Jaringan",
+    "Scan to join": "Pindai untuk terhubung",
+    "Guest Wi-Fi": "Wi-Fi tamu",
+    "Scan to save the contact": "Pindai untuk menyimpan kontak",
+    "Same code": "Kode yang sama",
+    "The printed code never changes": "Kode yang dicetak tidak pernah berubah",
+    "Four QR codes in turn: a link, a Wi-Fi table card, a contact card and a code whose destination changes.": "Empat kode QR bergantian: tautan, kartu meja Wi-Fi, kartu kontak, dan kode dengan tujuan yang berubah."
 }

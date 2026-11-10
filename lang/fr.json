@@ -1135,5 +1135,18 @@
     "Could not draw this code. Shorten the text or remove the logo.": "Impossible de dessiner ce code. Raccourcissez le texte ou retirez le logo.",
     "The QR code holds the short address. Change the destination any time: the printed code keeps working.": "Le code QR contient l’adresse courte. Changez la destination quand vous voulez : le code imprimé continue de fonctionner.",
     "Changing the slug changes the QR code. The old printed code will stop working.": "Changer le slug change le code QR. L’ancien code imprimé ne fonctionnera plus.",
-    "Wi-Fi, contact cards and printable table cards": "Wi-Fi, cartes de contact et chevalets imprimables"
+    "Wi-Fi, contact cards and printable table cards": "Wi-Fi, cartes de contact et chevalets imprimables",
+    "Turn a link, a Wi-Fi password or a contact card into a QR code for a table, poster or package.": "Transformez un lien, un mot de passe Wi-Fi ou une carte de contact en code QR pour une table, une affiche ou un colis.",
+    "Dots, corners, colours and your logo in the middle.": "Points, coins, couleurs et votre logo au centre.",
+    "Change it later": "Modifiez plus tard",
+    "A dynamic code keeps its picture while the destination changes.": "Un code dynamique garde son dessin pendant que la destination change.",
+    "Open the QR studio": "Ouvrir le studio QR",
+    "Link": "Lien",
+    "Network": "Réseau",
+    "Scan to join": "Scannez pour vous connecter",
+    "Guest Wi-Fi": "Wi-Fi invités",
+    "Scan to save the contact": "Scannez pour enregistrer le contact",
+    "Same code": "Le même code",
+    "The printed code never changes": "Le code imprimé ne change jamais",
+    "Four QR codes in turn: a link, a Wi-Fi table card, a contact card and a code whose destination changes.": "Quatre codes QR tour à tour : un lien, une carte de table Wi-Fi, une carte de contact et un code dont la destination change."
 }

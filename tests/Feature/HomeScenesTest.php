@@ -8,30 +8,21 @@ test('the home page has every scene, complete as plain HTML', function () {
     // the long address and the finished short link are both in the markup: without script nothing is hidden
     expect($html)->toContain('data-lx-long')->toContain('data-lx-result')->toContain('hel.ink/l/');
     // the scenes only use features the app really has
-    expect($html)->toContain('/api/qr-generate')->toContain('color=')->toContain('Illustrative analytics');
+    expect($html)->toContain('data-lx-qrdeck')->toContain('Illustrative analytics');
 });
 
-test('the QR scene draws the real code of the demo link as cubes, on the server, so it shows without script', function () {
+test('the QR scene has four codes in turn, the link code drawn on the server, and a way to the QR studio', function () {
     $html = $this->get('/')->assertOk()->getContent();
-    // a version 3 code has 29 x 29 modules; roughly half of them are dark
-    expect(substr_count($html, '<b class="top"></b><b class="front"></b><b class="side"></b></i>'))->toBeGreaterThan(300)
-        ->and($html)->toContain('data-lx-vox')->toContain('lx-qr-flat');
-});
+    preg_match('~<section id="qr".*?</section>~s', $html, $m);
+    $section = $m[0] ?? '';
 
-test('the timing, routing and protect scenes describe features the app really has', function () {
-    $html = $this->get('/')->assertOk()->getContent();
-    foreach (['data-lx-control', 'data-lx-routing', 'data-lx-gate', 'Idempotency-Key', 'X-LinkHop-Signature'] as $needle) {
-        expect($html)->toContain($needle);
-    }
-});
-
-test('the six other apps appear as 3D marks with the flat mark behind them', function () {
-    $html = $this->get('/')->assertOk()->getContent();
-    expect(substr_count($html, 'data-hop-hero="'))->toBe(6)->and($html)->toContain('data-lk-family');
-    foreach (['hub', 'biohop', 'pixelhop', 'notehop', 'filehop', 'payhop'] as $slug) {
-        expect($html)->toContain('data-hop-hero="'.$slug.'"');
-    }
-    expect($html)->not->toContain('data-hop-hero="linkhop"');
+    expect(substr_count($section, 'data-qd-card'))->toBe(4)->and(substr_count($section, 'data-qd-tab'))->toBe(4)
+        ->and($section)->toContain('data-scene')->toContain('href="'.route('qr').'"')->toContain('data-lib=')
+        // a version 3 code has 29 x 29 modules; roughly half of them are dark: the path holds one square per dark module
+        ->and(substr_count($section, 'h1v1h-1z'))->toBeGreaterThan(300)
+        ->and($section)->not->toContain('data-lx-vox');
+    // the hero keeps its small flat code
+    expect($html)->toContain('lx-qr-flat');
 });
 
 test('the home engine files are requested with a content hash, so an edited file is not served from an old cache', function () {
