@@ -1,2 +1,8 @@
-{{-- The LinkHop wordmark: the o is a bunny head, the arrow says "short link". Gradient, readable on light and dark. --}}
-<img src="{{ route('brand.asset', 'linkhop-wordmark.svg') }}" alt="LinkHop" {{ $attributes->merge(['class' => 'h-9 w-auto']) }}>
+{{-- The LinkHop logo (the pixel head, no text) plus the name as real text in the app's own typeface (hop-brand.css). --}}
+@once
+<link rel="stylesheet" href="{{ asset('hop-brand/hop-brand.css') }}">
+@endonce
+<span {{ $attributes->merge(['class' => 'inline-flex items-center gap-2.5']) }}>
+    <img src="{{ route('brand.asset', 'linkhop-mark.svg') }}" alt="" class="aspect-square h-full max-h-11 w-auto">
+    <span class="hop-name hop-name-linkhop text-2xl leading-none">LinkHop</span>
+</span>

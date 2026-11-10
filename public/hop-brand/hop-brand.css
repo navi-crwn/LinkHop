@@ -1,0 +1,20 @@
+/*
+ * The name of each HOP app, as real text next to its logo (owner decision 2026-11-10: the logo has no text;
+ * footers and headers show the mark image plus the name in the app's own typeface). Each font is subset to the letters of its app name
+ * (the names are never translated). Fonts: SIL Open Font License 1.1, see fonts/LICENSE-*.txt.
+ *
+ *   <a class="brand"><img src=".../mark.svg" alt=""><span class="hop-name hop-name-linkhop">LinkHop</span></a>
+ */
+@font-face { font-family: 'HOP Pixelify Sans'; src: url(fonts/brand/linkhop-name.woff2) format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'HOP Space Grotesk'; src: url(fonts/brand/biohop-name.woff2) format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'HOP Silkscreen'; src: url(fonts/brand/pixelhop-name.woff2) format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'HOP Caveat'; src: url(fonts/brand/notehop-name.woff2) format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'HOP Sora'; src: url(fonts/brand/filehop-name.woff2) format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'HOP Syne'; src: url(fonts/syne-latin-wght-normal.woff2) format('woff2'); font-weight: 400 800; font-display: swap; }
+.hop-name { font-weight: 700; font-synthesis: none; white-space: nowrap; }
+.hop-name-hub { font-family: 'HOP Syne', 'Syne', system-ui, sans-serif; font-weight: 800; letter-spacing: -.01em; }
+.hop-name-linkhop { font-family: 'HOP Pixelify Sans', ui-monospace, system-ui, sans-serif; }
+.hop-name-biohop { font-family: 'HOP Space Grotesk', system-ui, sans-serif; }
+.hop-name-pixelhop { font-family: 'HOP Silkscreen', ui-monospace, system-ui, sans-serif; letter-spacing: .04em; }
+.hop-name-notehop { font-family: 'HOP Caveat', 'Segoe Script', cursive; font-size: 1.15em; }
+.hop-name-filehop { font-family: 'HOP Sora', system-ui, sans-serif; }
