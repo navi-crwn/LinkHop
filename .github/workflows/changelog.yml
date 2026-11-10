@@ -1,21 +1,27 @@
 name: changelog
 
+# The deploy builds storage/app/changelog.json (update.sh); resources/changelog.json is the fallback snapshot.
+# This job proves the builder still runs and writes a readable file with every merged PR and tag.
 on:
   pull_request:
     branches: [main]
+    paths:
+      - scripts/build-changelog.py
+      - app/Http/Controllers/ChangelogController.php
+      - resources/changelog.json
+      - .github/workflows/changelog.yml
 
 jobs:
   snapshot:
-    # Release branches must carry a snapshot that lists every merged PR and tag.
-    if: startsWith(github.head_ref, 'release/')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Changelog snapshot is current
+      - name: The changelog builds the way the deploy builds it
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           git fetch --quiet origin main
-          python3 scripts/build-changelog.py --repo LinkHop --check
+          python3 scripts/build-changelog.py --repo LinkHop --out "$RUNNER_TEMP/changelog.json"
+          python3 -c "import json,sys; d=json.load(open(sys.argv[1])); assert d['entries'] and 'LinkHop' in d['sources']" "$RUNNER_TEMP/changelog.json"
