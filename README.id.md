@@ -114,6 +114,7 @@ LinkHop adalah bagian dari keluarga aplikasi web open-source HOP yang dapat dipa
 | **BioHop** | `bio.hel.ink` · `hel.ink/b/…` | [navi-crwn/BioHop](https://github.com/navi-crwn/BioHop) | Halaman link-in-bio dan tema |
 | **PixelHop** | `pixel.hel.ink` · `p.hel.ink/…` | [navi-crwn/PixelHop](https://github.com/navi-crwn/PixelHop) | Hosting gambar dan media |
 | **NoteHop** | `note.hel.ink` · `n.hel.ink/…` | [navi-crwn/NoteHop](https://github.com/navi-crwn/NoteHop) | Catatan privat terenkripsi klien |
+| **FileHop** | `file.hel.ink` | [navi-crwn/FileHop](https://github.com/navi-crwn/FileHop) | Konversi berkas di peramban; tidak ada yang diunggah |
 
 <a id="security"></a>
 

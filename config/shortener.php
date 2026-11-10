@@ -148,6 +148,8 @@ return [
     'reserved_slugs' => [
         // Path prefixes of the HOP family: hel.ink/l/ (short links), /b/ (bio), /api/.
         'l', 'b', 'api',
+        // Words the family's other apps and tools use as a path or product name.
+        'qr', 'wifi', 'vcard', 'pay', 'split', 'send', 'secret', 'embargo',
         // Single characters (reserved for future use)
         'a', 'i', 'x', 'v',
         // Two characters - Common brands & abbreviations

@@ -46,3 +46,24 @@ test('a slug that is also an app route segment opens under /l/ and can be edited
         ->assertSessionHasNoErrors();
     expect($link->fresh()->target_url)->toBe('https://example.org');
 });
+
+test('the words the other HOP apps and tools use are reserved for new slugs, and an existing link that has one is left alone', function () {
+    $words = ['qr', 'wifi', 'vcard', 'pay', 'split', 'send', 'secret', 'embargo'];
+    $rules = (new ManageLinkRequest)->rules();
+    foreach ($words as $word) {
+        expect(ReservedSlugs::isReserved($word))->toBeTrue("{$word} should be reserved")
+            ->and(ReservedSlugs::isReserved(strtoupper($word)))->toBeTrue()
+            ->and(Validator::make(['target_url' => 'https://example.com', 'slug' => $word], ['slug' => $rules['slug']])->fails())->toBeTrue("{$word} was accepted as a new slug");
+    }
+
+    // A link made before the word was reserved keeps opening, and can be edited while it keeps its slug.
+    $user = User::factory()->create();
+    $link = Link::create(['user_id' => $user->id, 'slug' => 'secret', 'target_url' => 'https://example.com', 'status' => 'active']);
+    $this->get('/l/secret')->assertRedirect('https://example.com');
+    $this->actingAs($user)->put("/links/{$link->id}", ['target_url' => 'https://example.org', 'slug' => 'secret', 'status' => 'active'])
+        ->assertSessionHasNoErrors();
+    expect($link->fresh()->target_url)->toBe('https://example.org');
+    // Changing it to another reserved word is refused.
+    $this->actingAs($user)->put("/links/{$link->id}", ['target_url' => 'https://example.org', 'slug' => 'embargo', 'status' => 'active'])
+        ->assertSessionHasErrors('slug');
+});

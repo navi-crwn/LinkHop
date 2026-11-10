@@ -1007,5 +1007,19 @@
     "The old one stops working at once.": "O antigo deixa de funcionar na hora.",
     "The short link stops working and its statistics are removed. This cannot be undone.": "O link curto deixa de funcionar e suas estatísticas são removidas. Isso não pode ser desfeito.",
     "The short links stop working and their statistics are removed. This cannot be undone.": "Os links curtos deixam de funcionar e suas estatísticas são removidas. Isso não pode ser desfeito.",
-    "Part of :name": "Parte do :name"
+    "Part of :name": "Parte do :name",
+    "Short links moved to :host/l/…": "Os links curtos mudaram para :host/l/…",
+    "hel.ink is becoming the home of several HOP apps. Short links get their own path.": "O hel.ink está se tornando a casa de vários apps do HOP. Os links curtos ganham um caminho próprio.",
+    "What changed": "O que mudou",
+    "Every short link is now reached at :new instead of :old. Nothing was deleted: your links, their slugs, clicks and statistics are the same. The dashboard, QR codes and the API already show the new form.": "Cada link curto agora é acessado em :new em vez de :old. Nada foi apagado: seus links, slugs, cliques e estatísticas são os mesmos. O painel, os códigos QR e a API já mostram a nova forma.",
+    "Until :date": "Até :date",
+    "The old form keeps working: :old redirects to :new, and those visits count as clicks like any other.": "A forma antiga continua funcionando: :old redireciona para :new, e essas visitas contam como cliques normais.",
+    "From :date": "A partir de :date",
+    "The old form stops. :old no longer opens your link; only :new does.": "A forma antiga deixa de funcionar. :old não abre mais o seu link; só :new abre.",
+    "Replace the links you have published elsewhere (posts, bios, printed material) with the /l/ form. :mylinks shows every link in its new form, ready to copy.": "Troque os links que você publicou em outros lugares (posts, bios, material impresso) pela forma /l/. :mylinks mostra cada link na nova forma, pronto para copiar.",
+    "Print or download QR codes again where they were made before this change; a QR code made from now on already points at the new form.": "Imprima ou baixe novamente os códigos QR criados antes desta mudança; um código QR criado a partir de agora já aponta para a nova forma.",
+    "Bio pages are not affected: they stay at :bio.": "As páginas de bio não são afetadas: continuam em :bio.",
+    "API clients get the new form in :field; nothing to change on your side unless you built the address yourself.": "Clientes da API recebem a nova forma em :field; nada a mudar do seu lado, a menos que você tenha montado o endereço por conta própria.",
+    "We also emailed this notice to every account that owns links, and will send a reminder a week before :date. See the :terms, section 11A.": "Também enviamos este aviso por e-mail a todas as contas que têm links e enviaremos um lembrete uma semana antes de :date. Veja os :terms, seção 11A.",
+    "Terms of Service": "Termos de Serviço"
 }

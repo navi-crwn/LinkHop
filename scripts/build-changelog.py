@@ -2,7 +2,7 @@
 """Snapshot all main-branch commits, tags and merged PRs; no runtime GitHub calls.
 
 Run from a checkout: python3 scripts/build-changelog.py --repo HEL.ink
-Use --family /path/to/checkouts in the hub to aggregate the five public apps.
+Use --family /path/to/checkouts in the hub to aggregate the public apps.
 Requires git and authenticated gh with read access. Never reads working files.
 The snapshot is committed, so a release must rebuild it. `--check` rebuilds in memory and
 fails when a merged PR or tag is missing from the committed file (run it before tagging).
@@ -14,7 +14,7 @@ import pathlib
 import re
 import subprocess
 
-PUBLIC = {"HEL.ink": "HOP ID", "LinkHop": "LinkHop", "BioHop": "BioHop", "PixelHop": "PixelHop", "NoteHop": "NoteHop"}
+PUBLIC = {"HEL.ink": "HOP ID", "LinkHop": "LinkHop", "BioHop": "BioHop", "PixelHop": "PixelHop", "NoteHop": "NoteHop", "FileHop": "FileHop"}
 
 
 def command(args, cwd):

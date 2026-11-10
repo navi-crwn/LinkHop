@@ -1,35 +1,18 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full dark bg-slate-950 text-white">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ __('Page not found') }} · LinkHop</title>
-        <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png">
-        <x-hop::fonts />
-        <script nonce="{{ Vite::cspNonce() }}">if (/(^|; )hop_ui=clean/.test(document.cookie)) document.documentElement.dataset.ui = 'clean';</script>
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <style>
-            body {font-family: var(--hop-font-body, system-ui, sans-serif);}
-        </style>
-    </head>
-    {{-- Any address this app does not know (a deleted folder, a mistyped dashboard path). A missing short link has its
-         own page (errors.link-missing), so this one does not talk about short links. --}}
-    <body class="min-h-full bg-linear-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
-        <div class="flex min-h-screen flex-col items-center justify-center px-6 text-center">
-            <div class="flex flex-col items-center">
-                <img src="{{ route('brand.logo') }}" alt="{{ __('LinkHop logo') }}" class="h-16 w-16 rounded-full shadow-lg">
-                <p class="mt-4 text-sm uppercase tracking-[0.4em] text-white/60">LinkHop</p>
-            </div>
-            <h1 class="mt-4 text-4xl font-semibold">{{ __('Page not found') }}</h1>
-            <p class="mt-2 max-w-md text-white/70">{{ __('This page does not exist or has moved. Check the address, or go back to where you were.') }}</p>
-            <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
-                @auth
-                    <a href="{{ route('dashboard') }}" class="btn-primary btn-lg">{{ __('Go to dashboard') }}</a>
-                    <a href="{{ route('links.index') }}" class="btn-outline btn-lg">{{ __('My links') }}</a>
-                @else
-                    <a href="{{ url('/') }}" class="btn-primary btn-lg">{{ __('Back to homepage') }}</a>
-                @endauth
-            </div>
+{{-- Any address this app does not know (a deleted folder, a mistyped dashboard path). A missing short link has its
+     own page (errors.link-missing), so this one does not talk about short links. Family look: the marketing shell,
+     the standard buttons, light or dark with the visitor's theme. --}}
+<x-marketing-layout :title="__('Page not found').' · LinkHop'" :themed="true">
+    <div class="mx-auto max-w-xl px-4 py-20 text-center sm:px-6 sm:py-28">
+        <p class="font-mono text-5xl font-semibold text-slate-300 dark:text-white/25" aria-hidden="true">404</p>
+        <h1 class="mt-4 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl dark:text-white">{{ __('Page not found') }}</h1>
+        <p class="mt-4 text-lg text-slate-600 dark:text-white/70">{{ __('This page does not exist or has moved. Check the address, or go back to where you were.') }}</p>
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+            @auth
+                <a href="{{ route('dashboard') }}" class="btn-primary btn-lg">{{ __('Go to dashboard') }}</a>
+                <a href="{{ route('links.index') }}" class="btn-outline btn-lg">{{ __('My links') }}</a>
+            @else
+                <a href="{{ url('/') }}" class="btn-primary btn-lg">{{ __('Back to homepage') }}</a>
+            @endauth
         </div>
-    </body>
-</html>
+    </div>
+</x-marketing-layout>
