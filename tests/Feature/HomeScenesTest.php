@@ -46,8 +46,8 @@ test('GSAP and Lenis come from our own bundle, never from a CDN', function () {
     expect($html)->not->toContain('cdnjs')->not->toContain('unpkg.com/gsap');
 });
 
-test('the engine in the shared home folder animates every canvas in a row', function () {
-    expect(file_get_contents(public_path('hop-home/hop-hero3d.js')))->toContain('.slice(0, 4)');
+test('the engine in the shared home folder animates every canvas in a row (an unsettled scene is never held back by the limit of four)', function () {
+    expect(file_get_contents(public_path('hop-home/hop-hero3d.js')))->toContain('return !s.settled;')->toContain('.slice(0, Math.max(0, 4 - live.length))');
 });
 
 test('a family app the 3D engine has no block map for keeps its flat mark instead of borrowing another logo', function () {

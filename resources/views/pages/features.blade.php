@@ -1,8 +1,14 @@
+@push('head')
+<link rel="stylesheet" href="{{ asset('hop-home/hop-bento.css') }}">
+@endpush
+@push('scripts')
+<script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-motion.js') }}" defer></script>
+@endpush
 <x-info-page title="Features" lead="Everything is included for every account. No premium tier, no locked features." :wide="true">
     {{-- Bento grid for features --}}
-    <div class="not-prose grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 [&>div]:min-w-0 [&>div:first-child]:sm:col-span-2 [&>div:last-child]:lg:col-span-2">
+    <div class="not-prose hop-bento">
         {{-- Card 1: Short links --}}
-        <div class="rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-sm transition hover:shadow-md dark:border-white/10 dark:bg-white/[0.03]">
+        <div data-spot data-scene class="rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-sm transition hover:shadow-md dark:border-white/10 dark:bg-white/[0.03]">
             <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-sky-500/10 text-sky-600 dark:text-sky-400">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
             </div>
@@ -17,7 +23,7 @@
         </div>
 
         {{-- Card 2: Analytics --}}
-        <div class="rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-sm transition hover:shadow-md dark:border-white/10 dark:bg-white/[0.03]">
+        <div data-spot data-scene class="rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-sm transition hover:shadow-md dark:border-white/10 dark:bg-white/[0.03]">
             <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg>
             </div>
@@ -27,7 +33,7 @@
         </div>
 
         {{-- Card 3: Organize --}}
-        <div class="rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-sm transition hover:shadow-md dark:border-white/10 dark:bg-white/[0.03]">
+        <div data-spot data-scene class="rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-sm transition hover:shadow-md dark:border-white/10 dark:bg-white/[0.03]">
             <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
             </div>
@@ -37,7 +43,7 @@
         </div>
 
         {{-- Card 4: Safety --}}
-        <div class="rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-sm transition hover:shadow-md dark:border-white/10 dark:bg-white/[0.03]">
+        <div data-spot data-scene class="rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-sm transition hover:shadow-md dark:border-white/10 dark:bg-white/[0.03]">
             <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             </div>
@@ -50,7 +56,7 @@
         </div>
 
         {{-- Card 5: API --}}
-        <div class="rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-sm transition hover:shadow-md dark:border-white/10 dark:bg-white/[0.03]">
+        <div data-spot data-scene class="rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-sm transition hover:shadow-md dark:border-white/10 dark:bg-white/[0.03]">
             <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
             </div>
@@ -60,7 +66,7 @@
         </div>
 
         {{-- Card 6: One account --}}
-        <div class="rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-sm transition hover:shadow-md dark:border-white/10 dark:bg-white/[0.03]">
+        <div data-spot data-scene class="rounded-3xl border border-slate-200/80 bg-white/80 p-6 shadow-sm transition hover:shadow-md dark:border-white/10 dark:bg-white/[0.03]">
             <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-violet-500/10 text-violet-600 dark:text-violet-400">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
             </div>

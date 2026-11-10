@@ -1,0 +1,122 @@
+/*
+ * HOP bento: one grid of boxes for every HOP page (hop-assets v7, immutable once deployed).
+ *
+ *   <link rel="stylesheet" href="https://hel.ink/hop-assets/v7/hop-bento.css">
+ *   <script src="https://hel.ink/hop-assets/v7/hop-motion.js" defer></script>   (reveal, spotlight, scenes)
+ *
+ *   <div class="hop-bento">
+ *     <article data-spot>...</article>
+ *     <article data-spot data-scene>... a small CSS/SVG scene ...</article>
+ *   </div>
+ *
+ * The grid has 6 columns. A box spans 2 columns unless the pattern for the box count says otherwise, so every
+ * count from 2 to 9 fills whole rows: one tidy rectangle, never a box left alone on the last row.
+ * Spans by box count (rows separated by "/"), desktop (above 1024 px):
+ *   2 boxes: 4+2
+ *   3 boxes: 3+3 / 6
+ *   4 boxes: 4+2 / 2+4
+ *   5 boxes: 3+3 / 2+2+2
+ *   6 boxes: 4+2 / 2+2+2 / 6
+ *   7 boxes: 3+3 / 2+2+2 / 3+3
+ *   8 boxes: 3+3 / 2+2+2 / 2+2+2
+ *   9 boxes: 3+3 / 2+2+2 / 2+2+2 / 6
+ * One box on its own spans the full row. More than 9 boxes: split them into several grids (a grid of 10 or
+ * more falls back to three per row and may leave the last row short).
+ * Override: data-span="3|4|6" on a box. When any box has data-span the count patterns switch off; the other
+ * boxes span 2 and grid-auto-flow:dense fills the gaps, so pick spans whose rows add up to 6.
+ * Tablet (up to 1024 px): 2 columns, and when the count is odd the last box spans both.
+ * Phone (up to 640 px): 1 column.
+ * Rows share one height (grid stretch). Boxes keep their own display, so a box can be a flex row or a grid.
+ * data-bare on the grid: layout only (no panel, border, padding or clipping), for boxes that bring their own card style.
+ *
+ * Tokens (all overridable on .hop-bento or any ancestor; light and dark follow .dark / [data-theme=dark]):
+ *   --hb-accent  spotlight and scene colour, default HOP indigo (apps pass their own, e.g. --hop-accent)
+ *   --hb-panel, --hb-line, --hb-text, --hb-muted, --hb-radius, --hb-gap, --hb-shadow
+ *
+ * Scenes: any element with data-scene gets .is-live from hop-motion.js only while it is on screen. Write the
+ * scene so its resting style is the final frame and use animation-play-state:var(--scene-play):
+ *   .my-scene i { animation: slide 3s ease-in-out infinite both; animation-play-state: var(--scene-play); }
+ * With reduced motion the animations are removed and the resting (final) frame stays.
+ */
+.hop-bento {
+    --hb-accent: var(--hop-accent, #6366f1);
+    --hb-panel: var(--home-panel, #fff);
+    --hb-line: var(--home-line, rgb(148 163 184 / .33));
+    --hb-text: var(--home-text, #162033);
+    --hb-muted: var(--home-muted, #59677c);
+    --hb-radius: 20px;
+    --hb-gap: 14px;
+    --hb-shadow: 0 24px 60px -48px rgb(49 46 129 / .5);
+    display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-flow: dense;
+    gap: var(--hb-gap); padding: 0; list-style: none;
+}
+.dark .hop-bento, [data-theme=dark] .hop-bento {
+    --hb-panel: var(--home-panel, #151c2d);
+    --hb-line: var(--home-line, rgb(148 163 184 / .27));
+    --hb-text: var(--home-text, #f1f5f9);
+    --hb-muted: var(--home-muted, #acb6c8);
+    --hb-shadow: 0 24px 60px -48px rgb(0 0 0 / .8);
+}
+.hop-bento > * {
+    position: relative; isolation: isolate; overflow: hidden; min-width: 0;
+    padding: 22px;
+    grid-column: span 2;
+    color: var(--hb-text); background: var(--hb-panel);
+    border: 1px solid var(--hb-line); border-radius: var(--hb-radius); box-shadow: var(--hb-shadow);
+}
+
+/* Layout only: boxes that bring their own card style. */
+.hop-bento[data-bare] > * { padding: 0; overflow: visible; background: none; border: 0; border-radius: 0; box-shadow: none; }
+
+/* A box on its own, and every box when the grid has more than nine. */
+.hop-bento:has(> :first-child:last-child) > * { grid-column: 1 / -1; }
+
+/* Spans by count, desktop only; a box has span 2 unless listed. */
+@media (min-width: 1025px) {
+    .hop-bento > [data-span="3"] { grid-column: span 3; }
+    .hop-bento > [data-span="4"] { grid-column: span 4; }
+    .hop-bento > [data-span="6"] { grid-column: span 6; }
+    .hop-bento:not(:has(> [data-span])):has(> :nth-child(2):last-child) > :nth-child(1) { grid-column: span 4; }
+    .hop-bento:not(:has(> [data-span])):has(> :nth-child(3):last-child) > :nth-child(-n+2) { grid-column: span 3; }
+    .hop-bento:not(:has(> [data-span])):has(> :nth-child(3):last-child) > :nth-child(3) { grid-column: span 6; }
+    .hop-bento:not(:has(> [data-span])):has(> :nth-child(4):last-child) > :is(:nth-child(1), :nth-child(4)) { grid-column: span 4; }
+    .hop-bento:not(:has(> [data-span])):has(> :nth-child(5):last-child) > :nth-child(-n+2) { grid-column: span 3; }
+    .hop-bento:not(:has(> [data-span])):has(> :nth-child(6):last-child) > :nth-child(1) { grid-column: span 4; }
+    .hop-bento:not(:has(> [data-span])):has(> :nth-child(6):last-child) > :nth-child(6) { grid-column: span 6; }
+    .hop-bento:not(:has(> [data-span])):has(> :nth-child(7):last-child) > :is(:nth-child(-n+2), :nth-child(n+6)) { grid-column: span 3; }
+    .hop-bento:not(:has(> [data-span])):has(> :nth-child(8):last-child) > :nth-child(-n+2) { grid-column: span 3; }
+    .hop-bento:not(:has(> [data-span])):has(> :nth-child(9):last-child) > :nth-child(-n+2) { grid-column: span 3; }
+    .hop-bento:not(:has(> [data-span])):has(> :nth-child(9):last-child) > :nth-child(9) { grid-column: span 6; }
+}
+
+@media (max-width: 1024px) {
+    .hop-bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .hop-bento > *, .hop-bento > [data-span] { grid-column: span 1; }
+    .hop-bento > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+@media (max-width: 640px) {
+    .hop-bento { grid-template-columns: minmax(0, 1fr); }
+    .hop-bento > *, .hop-bento > [data-span], .hop-bento > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+
+/* Pointer spotlight (hop-motion.js writes --mx / --my). Fine pointers only. */
+[data-spot] { position: relative; isolation: isolate; }
+[data-spot]::before {
+    content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity .35s;
+    background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--hb-accent, #6366f1) 16%, transparent), transparent 62%);
+}
+@media (hover: hover) and (pointer: fine) { [data-spot]:hover::before { opacity: 1; } }
+
+/* Reveal: boxes fade and rise once when they scroll into view (hop-motion.js adds .mo to <html> and .in per box). */
+.mo .hop-bento > [data-rv], .mo .hop-home .hop-bento > [data-rv] { opacity: 0; transform: translateY(14px); transition: opacity .36s cubic-bezier(.23, 1, .32, 1), transform .36s cubic-bezier(.23, 1, .32, 1); }
+.mo .hop-bento > [data-rv].in, .mo .hop-home .hop-bento > [data-rv].in { opacity: 1; transform: none; }
+
+/* Scenes run only while the box is on screen; the resting style is the final frame. */
+[data-scene] { --scene-play: paused; }
+[data-scene].is-live { --scene-play: running; }
+
+@media (prefers-reduced-motion: reduce) {
+    .mo .hop-bento > [data-rv], .mo .hop-home .hop-bento > [data-rv] { opacity: 1; transform: none; transition: none; }
+    [data-spot]::before { display: none; }
+    [data-scene], [data-scene] *, [data-scene] *::before, [data-scene] *::after { animation: none !important; transition: none !important; }
+}

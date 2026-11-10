@@ -17,9 +17,11 @@
     if (scheduled || document.hidden || preference.matches || !scenes.some(function (s) { return s.visible && !s.dead; })) return;
     scheduled = requestAnimationFrame(function tick(now) {
       scheduled = 0;
-      // The few most visible scenes animate together (the app marks sit side by side and each must settle);
-      // anything beyond that waits for a slot.
-      var live = scenes.filter(function (s) { return s.visible && !s.dead; }).sort(function (a, b) { return b.ratio - a.ratio; }).slice(0, 4);
+      // Every visible scene that has not settled yet keeps drawing until it has (the app marks sit side by side and
+      // each must finish assembling). The cap of four only applies to settled scenes, which float on for ever.
+      var shown = scenes.filter(function (s) { return s.visible && !s.dead; }).sort(function (a, b) { return b.ratio - a.ratio; });
+      var live = shown.filter(function (s) { return !s.settled; });
+      live = live.concat(shown.filter(function (s) { return s.settled; }).slice(0, Math.max(0, 4 - live.length)));
       scenes.forEach(function (s) { var state = String(live.indexOf(s) !== -1); if (s.canvas.dataset.animating !== state) s.canvas.dataset.animating = state; });
       if (live.length && !document.hidden && !preference.matches) { live.forEach(function (s) { s.draw(now); }); schedule(); }
     });
@@ -328,6 +330,7 @@
     });
     flush(GEM);
     settled = all;
+    if (scene) scene.settled = all;
     if (cv.dataset.settled !== String(settled)) cv.dataset.settled = String(settled);
     if (!cv.classList.contains('on')) cv.classList.add('on');
   }
@@ -358,7 +361,7 @@
     kick();
   });
   // Stop drawing while it is off screen or the tab is hidden.
-  var scene = { canvas: cv, draw: frame, visible: false, ratio: 0, dead: false };
+  var scene = { canvas: cv, draw: frame, visible: false, ratio: 0, dead: false, settled: false };
   scenes.push(scene);
   var observer = new IntersectionObserver(function (es) {
     if (scene.visible && !es[0].isIntersecting && cycle) restartCycle();

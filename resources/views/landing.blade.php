@@ -1,4 +1,5 @@
 @push('head')
+<link rel="stylesheet" href="{{ asset('hop-home/hop-bento.css') }}">
 <link rel="stylesheet" href="{{ asset('hop-home/hop-home.css') }}">
 <script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-motion.js') }}?v={{ substr(md5_file(public_path('hop-home/hop-motion.js')), 0, 8) }}" defer></script>
 <script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-home.js') }}" defer></script>

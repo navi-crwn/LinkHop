@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Boxes on the home page (and the features page) are laid out by the shared `hop-bento` grid from hop-assets v7 (byte-identical copies of `hop-bento.css`, `hop-motion.js`, `hop-hero3d.js`): whole rows for any box count, a calm reveal, a pointer spotlight and scenes that only run while a box is on screen. The family tiles settle in all five slots now that the v7 engine keeps unsettled scenes drawing.
 - The "Part of the HOP family" section on the home page uses the hop-assets v6 3D engine (byte-identical copy, so the LinkHop and BioHop marks are the new ones) and the v6 WebP fallbacks for every app, FileHop included; the section number and eyebrow are gone. The tiles are five across on wide screens, a 3 + 2 bento on tablets and two columns with the last tile spanning both on phones, so no tile sits alone on the last row. The three content-warning gates on the LinkHop home page do the same at tablet width.
 
 ### Changed
