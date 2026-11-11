@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `DynamicQrTest` locks that behaviour; `tests/js` checks the payload builders and reads every payload back from a rendered code with jsQR (a dev dependency only; workflow `qr-js`). `npm run test:js`.
 
 ### Changed
-- hop-assets v9 (PayHop's tile, mark, 3D preset and name font): `public/hop-home/` and `public/hop-brand/` are refreshed from the hub, and `scripts/sync-hop-assets.sh` takes the app list from the manifest instead of a hand-written one. `hop/ui` and `hop/auth` follow their branches until the libraries are tagged.
+- hop-assets v9 (PayHop's tile, mark, 3D preset and name font): `public/hop-home/` and `public/hop-brand/` are refreshed from the hub, and `scripts/sync-hop-assets.sh` takes the app list from the manifest instead of a hand-written one. `hop/ui` `^0.4.0` and `hop/auth` `^0.2.0` are the tagged releases.
 - `/sitemap.xml` lists only pages on the host that serves it (it listed `hel.ink` URLs from `link.hel.ink`), and `robots.txt` no longer carries a "last updated" date.
 - The public error pages (404, 429, link not found or expired, link ended or not live yet) use the family look: the marketing shell with the visitor's light or dark theme, the standard buttons, no uppercase eyebrow and no round logo; the 500 page follows the same look and still renders without the CSS build. Their texts were already in nine languages.
 - `/changes/short-links` is translated in nine languages (it was English only).
