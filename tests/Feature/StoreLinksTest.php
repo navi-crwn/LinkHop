@@ -300,3 +300,85 @@ test('every new string is translated in all nine languages', function () {
         }
     }
 });
+
+// --- paths are anchored whole, no dot segments -------------------------------------------------------------------
+
+test('no store takes a path that walks to another page, however the dots are written', function (string $store, string $url) {
+    expect(StoreLinks::matches($store, $url))->toBeFalse();
+})->with([
+    'play: dot dot after the store path' => ['play', 'https://play.google.com/store/apps/x/../../anything'],
+    'play: dot dot after details' => ['play', 'https://play.google.com/store/apps/details/../../../account?id=com.example.app'],
+    'play: encoded dots' => ['play', 'https://play.google.com/store/apps/%2e%2e/%2e%2e/anything'],
+    'play: encoded slash and dots' => ['play', 'https://play.google.com/store/apps/..%2f..%2fanything'],
+    'play: twice encoded' => ['play', 'https://play.google.com/store/apps/%252e%252e/anything'],
+    'play: trailing text after details' => ['play', 'https://play.google.com/store/apps/details/extra?id=com.example.app'],
+    'play: unknown page under store/apps' => ['play', 'https://play.google.com/store/apps/anything'],
+    'play: a backslash' => ['play', 'https://play.google.com/store/apps/details\..\x?id=com.example.app'],
+    'appstore: dot dot name' => ['appstore', 'https://apps.apple.com/us/app/../id0000000000'],
+    'appstore: encoded dot dot' => ['appstore', 'https://apps.apple.com/us/app/%2e%2e/id0000000000'],
+    'appstore: a dot in front' => ['appstore', 'https://apps.apple.com/./app/id0000000000'],
+    'appstore: more path after the id' => ['appstore', 'https://apps.apple.com/us/app/example/id0000000000/../../x'],
+    'macstore: dot dot' => ['macstore', 'https://apps.apple.com/us/app/example/../../us/app/id0000000000'],
+    'msstore: dot dot' => ['msstore', 'https://apps.microsoft.com/detail/../anything'],
+    'msstore: encoded dot dot' => ['msstore', 'https://apps.microsoft.com/detail/%2E%2E/9abcdef12345'],
+    'msstore: microsoft.com dot dot' => ['msstore', 'https://www.microsoft.com/store/apps/../../windows'],
+    'msstore: microsoft.com encoded slash' => ['msstore', 'https://www.microsoft.com/en-us/p/example%2f..%2fwindows/9abcdef12345'],
+]);
+
+test('the known shapes still pass with the anchored paths', function (string $store, string $url) {
+    expect(StoreLinks::matches($store, $url))->toBeTrue();
+})->with([
+    ['play', 'https://play.google.com/store/apps/details?id=com.example.app'],
+    ['play', 'https://play.google.com/store/apps/details/?id=com.example.app'],
+    ['play', 'https://play.google.com/store/apps/developer?id=Example+Studio'],
+    ['play', 'https://play.google.com/store/apps/collection/topselling_free'],
+    ['play', 'https://play.google.com/store/apps/category/GAME'],
+    ['appstore', 'https://apps.apple.com/us/app/example-app/id0000000000/'],
+    ['appstore', 'https://apps.apple.com/jp/app/%E3%82%A2%E3%83%97%E3%83%AA/id0000000000'],
+    ['msstore', 'https://apps.microsoft.com/detail/9abcdef12345/'],
+    ['msstore', 'https://apps.microsoft.com/en-us/detail/9abcdef12345'],
+    ['msstore', 'https://www.microsoft.com/en-us/p/example-app/9abcdef12345/'],
+]);
+
+// --- the A/B split is still checked with the store form on ---------------------------------------------------------
+
+test('a blocked A/B variant is refused with the store form on, through the dashboard form', function () {
+    $this->mock(LinkSafety::class, function ($m) {
+        $m->shouldReceive('rejectionReason')->withArgs(fn ($url) => str_contains($url, 'blocked.example'))->andReturn('This address is not allowed.');
+        $m->shouldReceive('rejectionReason')->andReturn(null);
+    });
+    $user = User::factory()->create();
+    $this->actingAs($user)->postJson('/links', stForm([
+        'ab_variants' => [['url' => 'https://example.com/a', 'weight' => 1], ['url' => 'https://blocked.example/b', 'weight' => 1]],
+    ]))->assertStatus(422)->assertJsonValidationErrors(['ab_variants.1.url']);
+    expect(Link::count())->toBe(0);
+    // and on edit
+    $link = Link::create(['user_id' => $user->id, 'slug' => 'ed1', 'target_url' => ST_FALLBACK, 'status' => 'active']);
+    $this->actingAs($user)->putJson('/links/'.$link->id, stForm(['slug' => 'ed1', 'ab_variants' => [['url' => 'https://example.com/a'], ['url' => 'https://blocked.example/b']]]))
+        ->assertStatus(422)->assertJsonValidationErrors(['ab_variants.1.url']);
+    expect($link->fresh()->routing_rules)->toBeNull()->and($link->fresh()->ab_variants)->toBeNull();
+});
+
+test('a chained, single or badly weighted A/B variant is refused with the store form on', function (array $variants, string $field) {
+    $this->actingAs(User::factory()->create())->postJson('/links', stForm(['ab_variants' => $variants]))->assertStatus(422)->assertJsonValidationErrors([$field]);
+    expect(Link::count())->toBe(0);
+})->with([
+    'a short link of this site' => [[['url' => 'https://example.com/a', 'weight' => 1], ['url' => 'https://hel.ink/l/abc123', 'weight' => 1]], 'ab_variants.1.url'],
+    'only one variant' => [[['url' => 'https://example.com/a', 'weight' => 1]], 'ab_variants'],
+    'a weight of zero' => [[['url' => 'https://example.com/a', 'weight' => 0], ['url' => 'https://example.com/b', 'weight' => 1]], 'ab_variants.0.weight'],
+]);
+
+test('a blocked A/B variant is refused on the API next to marked store rules', function () {
+    $this->mock(LinkSafety::class, function ($m) {
+        $m->shouldReceive('rejectionReason')->withArgs(fn ($url) => str_contains($url, 'blocked.example'))->andReturn('This address is not allowed.');
+        $m->shouldReceive('rejectionReason')->andReturn(null);
+    });
+    $user = User::factory()->create();
+    $h = ['Authorization' => 'Bearer '.ApiToken::generate($user->id, 'cli', 100, null, ['link:create'])['plain_token']];
+    $this->withHeaders($h)->postJson('/api/shorten', [
+        'url' => ST_FALLBACK,
+        'routing_rules' => [['os' => 'android', 'store' => 'play', 'url' => ST_PLAY]],
+        'ab_variants' => [['url' => 'https://example.com/a'], ['url' => 'https://blocked.example/b']],
+    ])->assertStatus(422);
+    expect(Link::count())->toBe(0);
+});

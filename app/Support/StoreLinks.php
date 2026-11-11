@@ -131,32 +131,64 @@ class StoreLinks
         $host = strtolower($m[1]);
         $path = $m[2] ?? '';
         $query = $m[3] ?? '';
+        if (! self::cleanPath($path)) {
+            return false;
+        }
+        // Every path is anchored whole to the known shapes of its store: nothing can follow, and no name can be a dot segment.
+        $name = '[A-Za-z0-9%._~\-]+';
         switch ($store) {
             case 'play':
-                if ($host !== 'play.google.com' || ! preg_match('#^/store/apps/[a-z]+#', $path)) {
+                if ($host !== 'play.google.com') {
                     return false;
                 }
-                if ($path === '/store/apps/details') {
-                    parse_str(ltrim($query, '?'), $q);
-
-                    return isset($q['id']) && is_string($q['id']) && preg_match('/^[a-z][a-z0-9_]*(\.[a-z0-9_]+)+$/i', $q['id']) === 1;
+                if (preg_match('#^/store/apps/(collection|category|topic)/[A-Za-z0-9_\-]+/?$#', $path)) {
+                    return true;
+                }
+                if (! preg_match('#^/store/apps/(details|dev|developer)/?$#', $path, $p)) {
+                    return false;
+                }
+                parse_str(ltrim($query, '?'), $q);
+                if (! isset($q['id']) || ! is_string($q['id'])) {
+                    return false;
                 }
 
-                return true;
+                return $p[1] === 'details' ? preg_match('/^[a-z][a-z0-9_]*(\.[a-z0-9_]+)+$/i', $q['id']) === 1 : $q['id'] !== '';
             case 'appstore':
             case 'macstore':
                 return in_array($host, ['apps.apple.com', 'itunes.apple.com'], true)
-                    && preg_match('#^(/[a-z]{2})?/app/([^/]+/)?id\d{5,}/?$#i', $path) === 1;
+                    && preg_match('#^(/[a-z]{2})?/app/('.$name.'/)?id\d{5,}/?$#i', $path) === 1;
             case 'msstore':
                 if ($host === 'apps.microsoft.com') {
-                    return preg_match('#^(/store)?/detail/[^/]+(/[A-Za-z0-9]+)?/?$#', $path) === 1;
+                    return preg_match('#^(/[a-z]{2}-[a-z]{2})?(/store)?/detail/'.$name.'(/[A-Za-z0-9]+)?/?$#', $path) === 1;
                 }
 
                 return in_array($host, ['www.microsoft.com', 'microsoft.com'], true)
-                    && preg_match('#^(/[a-z]{2}-[a-z]{2})?/(store/apps/[^/]+|store/productId/[A-Za-z0-9]+|(store/)?p/[^/]+/[A-Za-z0-9]+)/?$#i', $path) === 1;
+                    && preg_match('#^(/[a-z]{2}-[a-z]{2})?/(store/apps/'.$name.'|store/productId/[A-Za-z0-9]+|(store/)?p/'.$name.'/[A-Za-z0-9]+)/?$#i', $path) === 1;
         }
 
         return false;
+    }
+
+    /**
+     * No segment may be "." or "..", written plainly or percent-encoded (also encoded twice), no encoded slash or
+     * backslash, no control character: a browser would walk them to some other page of the host.
+     */
+    private static function cleanPath(string $path): bool
+    {
+        $decoded = $path;
+        for ($i = 0; $i < 3; $i++) {
+            $decoded = rawurldecode($decoded);
+            if (preg_match('#[\x5C\x00-\x1F\x7F]#', $decoded)) {
+                return false;
+            }
+            foreach (explode('/', $decoded) as $segment) {
+                if ($segment === '.' || $segment === '..') {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     /**

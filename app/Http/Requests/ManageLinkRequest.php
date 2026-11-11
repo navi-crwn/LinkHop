@@ -117,8 +117,11 @@ class ManageLinkRequest extends FormRequest
             if (! $validator->errors()->has('fallback_url') && $problem = LinkLimits::fallbackProblem($this->input('fallback_url'))) {
                 $validator->errors()->add('fallback_url', $problem);
             }
+            // With the store form on, the rules are the form's own (checked by StoreLinks), but everything else
+            // LinkRouting::check guards, the A/B variants above all, is checked exactly as without it.
             if (StoreLinks::active($this->all())) {
                 StoreLinks::check($validator, $this->all());
+                LinkRouting::check($validator, ['routing_rules' => []] + $this->all());
             } else {
                 LinkRouting::check($validator, $this->all());
             }
