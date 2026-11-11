@@ -1371,7 +1371,7 @@
             "version": "dev-feat/deep-links",
             "source": {
                 "type": "git",
-                "url": "git@github.com:navi-crwn/hop-safety.git",
+                "url": "https://github.com/navi-crwn/hop-safety.git",
                 "reference": "96c3c4294f0cfc01981c8bd32fa5f790965312c2"
             },
             "dist": {

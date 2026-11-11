@@ -18,3 +18,8 @@ it('pins hop/ui and hop/auth to tagged releases', function () {
         ->and($locked('hop/auth')['source']['url'])->toStartWith('https://github.com/navi-crwn/')
         ->and(array_column($lock['aliases'] ?? [], 'package'))->not->toContain('hop/ui', 'hop/auth');
 });
+
+it('has no ssh git address in composer.lock, so a machine without a GitHub key can install', function () {
+    $lock = (string) file_get_contents(base_path('composer.lock'));
+    expect($lock)->not->toContain('git@');
+});
