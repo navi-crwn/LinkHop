@@ -164,9 +164,17 @@ it('loads hop-ui with its SRI hashes and the nonce once the manifest lists it', 
 });
 
 it('leaves hop-ui out while the manifest does not list it, and still renders the page', function () {
+    // The bundled manifest lists hop-ui since v9, so the page is rendered against one that does not.
+    $manifest = manifestWithUi();
+    unset($manifest['assets']['ui_css'], $manifest['assets']['ui_js']);
+    config(['hop-ui.assets.remote' => true]);
+    Cache::forget('hop-ui:assets');
+    Http::fake(['hel.ink/hop-assets/apps.json' => Http::response($manifest)]);
+
     $html = $this->actingAs(remindUser())->get('/dashboard')->assertOk()->getContent();
 
     expect($html)->not->toContain('hop-ui.js')->not->toContain('hop-ui.css');
+    Cache::forget('hop-ui:assets');
 });
 
 it('allows hel.ink for scripts and styles in the content security policy', function () {

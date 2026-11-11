@@ -1,9 +1,63 @@
 {
   "schema": 1,
   "sources": {
-    "LinkHop": "3e2eb8aacef820f661cfab2dafb4d04606690f3e"
+    "LinkHop": "7264fbb7d183c2a258b858488599543862c2acf3"
   },
   "entries": [
+    {
+      "kind": "pr",
+      "date": "2026-11-10T16:42:43Z",
+      "title": "Add a guest QR page: Wi-Fi, contact card, link or text and a printable table card",
+      "url": "https://github.com/navi-crwn/LinkHop/pull/123",
+      "id": "#123",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T23:42:42+07:00",
+      "title": "Merge pull request #123: Add a guest QR page: Wi-Fi, contact card, link or text and a printable table card",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/7264fbb7d183c2a258b858488599543862c2acf3",
+      "id": "7264fbb7",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T17:28:37+01:00",
+      "title": "Run the QR JS tests by file name so Node 22 finds them",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/99fa6f74ab89b7450b5851f82c353ca74224c308",
+      "id": "99fa6f74",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T17:25:58+01:00",
+      "title": "Rebuild the changelog snapshot",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/11ed4e32a560a9c304c8e7f9aa85c8e5dea751a7",
+      "id": "11ed4e32",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T17:20:35+01:00",
+      "title": "Test the QR page's own option builder and forbid network and storage calls in its scripts",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b4d0a535e0baf1bfdc7bba3415e0acedc6a17e22",
+      "id": "b4d0a535",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
+    {
+      "kind": "commit",
+      "date": "2026-11-10T17:03:52+01:00",
+      "title": "Add the guest QR page (Wi-Fi, contact card, link or text, printable table card)",
+      "url": "https://github.com/navi-crwn/LinkHop/commit/b364968524e4c2e39672e467888dd4ef2804f26b",
+      "id": "b3649685",
+      "app": "LinkHop",
+      "repo": "LinkHop"
+    },
     {
       "kind": "pr",
       "date": "2026-11-10T14:50:47Z",

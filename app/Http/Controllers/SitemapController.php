@@ -9,14 +9,14 @@ class SitemapController extends Controller
 {
     public function index(): Response
     {
-        // The home and marketing pages are the hub's (its own sitemap). This one lists
-        // what the public reaches on PUBLIC_URL through this app: the link checker and bio pages.
-        $staticPages = [
-            ['loc' => public_url('check'), 'priority' => '0.5', 'changefreq' => 'monthly'],
-        ];
+        // A sitemap may only list URLs on the host that serves it. This one is served by the app's own host
+        // (APP_URL, link.hel.ink): its public pages are listed with that host, and the bio pages (PUBLIC_URL/b/{slug})
+        // only when both are one host (a self-hosted install). On hel.ink the bio pages belong to the hub's sitemap.
+        $staticPages = collect(['', 'features', 'faq', 'about', 'help', 'qr', 'check', 'changelog', 'contact', 'terms', 'privacy'])
+            ->map(fn (string $path) => ['loc' => url($path), 'priority' => $path === '' ? '1.0' : '0.5', 'changefreq' => 'monthly']);
 
-        // Public bio pages (hel.ink/b/{slug}); none when the bio package is off.
-        $bioPages = ! bio_enabled() ? collect() : BioPage::query()
+        $sameHost = parse_url(url('/'), PHP_URL_HOST) === parse_url(public_url(), PHP_URL_HOST);
+        $bioPages = (! bio_enabled() || ! $sameHost) ? collect() : BioPage::query()
             ->where('is_published', true)
             ->where('allow_indexing', true)
             ->where('is_adult_content', false)

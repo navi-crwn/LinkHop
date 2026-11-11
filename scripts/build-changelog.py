@@ -4,7 +4,8 @@
 Run from a checkout: python3 scripts/build-changelog.py --repo HEL.ink
 Use --family /path/to/checkouts in the hub to aggregate the public apps.
 Requires git and authenticated gh with read access. Never reads working files.
-The snapshot is committed, so a release must rebuild it. `--check` rebuilds in memory and
+The committed snapshot is the fallback; the deploy builds a fresh one with --out storage/app/changelog.json
+(app/Http/Controllers/ChangelogController.php reads that file first). `--check` rebuilds in memory and
 fails when a merged PR or tag is missing from the committed file (run it before tagging).
 """
 import argparse
@@ -14,7 +15,7 @@ import pathlib
 import re
 import subprocess
 
-PUBLIC = {"HEL.ink": "HOP ID", "LinkHop": "LinkHop", "BioHop": "BioHop", "PixelHop": "PixelHop", "NoteHop": "NoteHop", "FileHop": "FileHop"}
+PUBLIC = {"HEL.ink": "HOP ID", "LinkHop": "LinkHop", "BioHop": "BioHop", "PixelHop": "PixelHop", "NoteHop": "NoteHop", "FileHop": "FileHop", "PayHop": "PayHop"}
 
 
 def command(args, cwd):
@@ -69,6 +70,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", choices=PUBLIC, required=True)
     parser.add_argument("--family", type=pathlib.Path)
+    parser.add_argument("--out", "--output", dest="out", type=pathlib.Path, help="write the snapshot here instead of the committed file (the deploy uses storage/app/changelog.json)")
     parser.add_argument("--check", action="store_true", help="fail when the committed snapshot misses a merged PR or tag")
     args = parser.parse_args()
     root = pathlib.Path(__file__).resolve().parents[1]
@@ -80,6 +82,8 @@ def main():
         entries.extend(rows)
     entries.sort(key=lambda e: (datetime.datetime.fromisoformat(e["date"].replace("Z", "+00:00")), e["repo"], e["id"]), reverse=True)
     output = root / ("web/changelog.json" if args.repo in ["PixelHop", "NoteHop"] else "resources/changelog.json")
+    if args.out:
+        output = args.out if args.out.is_absolute() else root / args.out
     if args.check:
         have = {(e["repo"], e["kind"], e["id"]) for e in json.loads(output.read_text())["entries"]}
         missing = [e for e in entries if e["kind"] != "commit" and (e["repo"], e["kind"], e["id"]) not in have]

@@ -12,7 +12,7 @@ test('homepage follows the saved or system theme and offers a toggle', function 
 test('home page translations cover every rendered string', function (string $locale) {
     $missing = [];
     app('translator')->handleMissingKeysUsing(function ($key) use (&$missing) {
-        if (! in_array($key, ['HOP ID', 'BioHop', 'PixelHop', 'NoteHop', 'FileHop'], true)) {
+        if (! in_array($key, ['HOP ID', 'BioHop', 'PixelHop', 'NoteHop', 'FileHop', 'PayHop'], true)) {
             $missing[] = $key;
         }
 

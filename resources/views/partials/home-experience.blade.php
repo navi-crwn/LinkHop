@@ -101,17 +101,46 @@
     </div>
 </section>
 
-{{-- 04 QR: the real code, as cubes --}}
+{{-- 04 QR: four real codes in turn (resources/js/home-qr.js); the link code is drawn here too, so it shows without script --}}
+@php
+    $qrDeck = [
+        'link' => 'https://hel.ink/l/launch',
+        'dynamic' => 'https://hel.ink/l/menu',
+        'wifi' => ['ssid' => 'HopCafe', 'password' => 'welcome-2026'],
+        'vcard' => ['firstName' => 'Ada', 'lastName' => 'Lovelace', 'org' => 'HOP Studio', 'mobile' => '+14155550123', 'email' => 'ada@example.com'],
+        'logo' => route('brand.asset', 'linkhop-mark.svg'),
+    ];
+    $qrPath = collect($qrDark)->map(fn ($m) => 'M'.$m[0].' '.$m[1].'h1v1h-1z')->implode('');
+@endphp
 <section id="qr" class="lx" aria-labelledby="qr-title" data-lx-qr>
     <div class="lx-wrap lx-two rev">
-        <div class="lx-head"><h2 id="qr-title"><span>{{ __('From the screen') }} <em>{{ __('to the real world.') }}</em></span></h2><p class="h-sub"><span>{{ __('Turn a link into a QR code for a table, poster or package.') }}</span></p>
-            <ul class="lx-facts"><li><b>PNG · SVG</b> <span>{{ __('Print-ready, any size.') }}</span></li><li><b>{{ __('Your colours') }}</b> <span>{{ __('Match the poster, add your logo in the middle.') }}</span></li><li><b>{{ __('Scans are counted') }}</b> <span>{{ __('A scan is told apart from a click, in the analytics of the link.') }}</span></li></ul>
-            <div class="lx-tones lx-qr-tones" role="group" aria-label="{{ __('Your colours') }}" data-lx-qr-tones>@foreach ([['0b1020', 'ffffff'], ['0891b2', 'ecfeff'], ['6366f1', 'eef2ff'], ['c026d3', 'fdf4ff'], ['ffffff', '1e1b4b']] as $i => [$fg, $bg])<button type="button" style="background: linear-gradient(135deg, #{{ $bg }} 50%, #{{ $fg }} 50%)" aria-pressed="{{ $i === 0 ? 'true' : 'false' }}" data-fg="#{{ $fg }}" data-bg="#{{ $bg }}" aria-label="#{{ $fg }}"></button>@endforeach</div>
+        <div class="lx-head"><h2 id="qr-title"><span>{{ __('From the screen') }} <em>{{ __('to the real world.') }}</em></span></h2><p class="h-sub"><span>{{ __('Turn a link, a Wi-Fi password or a contact card into a QR code for a table, poster or package.') }}</span></p>
+            <ul class="lx-facts"><li><b>{{ __('Your style') }}</b> <span>{{ __('Dots, corners, colours and your logo in the middle.') }}</span></li><li><b>{{ __('Change it later') }}</b> <span>{{ __('A dynamic code keeps its picture while the destination changes.') }}</span></li><li><b>{{ __('Scans are counted') }}</b> <span>{{ __('A scan is told apart from a click, in the analytics of the link.') }}</span></li></ul>
+            <a class="lx-qd-cta" href="{{ route('qr') }}">{{ __('Open the QR studio') }} <span aria-hidden="true">→</span></a>
         </div>
-        <div class="lx-qr-stage">
-            <div class="lx-vox" data-lx-vox style="--n: {{ $qrSize }}" role="img" aria-label="{{ __('QR code of the demo link') }}"><div class="lx-vox-grid">@foreach ($qrDark as [$qx, $qy])<i style="grid-column: {{ $qx + 1 }}; grid-row: {{ $qy + 1 }}; --k: {{ 0.55 + (($qx * 7 + $qy * 13) % 5) / 11 }}"><b class="top"></b><b class="front"></b><b class="side"></b></i>@endforeach</div></div>
-            <p class="lx-iso-label" dir="ltr">hel.ink/l/launch</p>
-            <div class="lx-qr-real" x-data="{ i: 0, pairs: [['000000','ffffff'],['0891b2','ecfeff'],['6366f1','eef2ff'],['c026d3','fdf4ff'],['ffffff','1e1b4b']] }" @lx-qr-tone.window="i = $event.detail"><img :src="'{{ route('api.qr.generate') }}?size=120&color=' + pairs[i][0] + '&bgcolor=' + pairs[i][1] + '&data=' + encodeURIComponent('https://hel.ink/l/launch')" src="{{ route('api.qr.generate', ['size' => 120, 'data' => 'https://hel.ink/l/launch']) }}" alt="{{ __('QR code of the demo link') }}" width="84" height="84" loading="lazy"><span>{{ __('Made by hel.ink’s QR generator, the same one your links use.') }}</span></div>
+        <div class="lx-qr-stage lx-qd" data-lx-qrdeck data-scene data-states="{{ json_encode($qrDeck, JSON_UNESCAPED_SLASHES) }}" data-lib="{{ asset('vendor/qr-code-styling/qr-code-styling.js') }}?v={{ substr((string) @md5_file(public_path('vendor/qr-code-styling/qr-code-styling.js')), 0, 8) }}" data-nonce="{{ Vite::cspNonce() }}" role="group" aria-label="{{ __('Four QR codes in turn: a link, a Wi-Fi table card, a contact card and a code whose destination changes.') }}">
+            <div class="lx-qd-tabs">@foreach ([__('Link'), __('Wi-Fi'), __('Contact'), __('Same code')] as $i => $tab)<button type="button" data-qd-tab aria-pressed="{{ $i === 0 ? 'true' : 'false' }}">{{ $tab }}</button>@endforeach</div>
+            <div class="lx-qd-deck">
+                <figure class="lx-qd-card lx-qd-link is-on" data-qd-card aria-label="{{ __('Link') }}">
+                    <div class="lx-qd-paper"><div class="lx-qd-code" data-qd-code><svg viewBox="0 0 {{ $qrSize }} {{ $qrSize }}" shape-rendering="crispEdges" aria-hidden="true"><path d="{{ $qrPath }}"/></svg></div></div>
+                    <figcaption><b dir="ltr">hel.ink/l/launch</b><span>{{ __('Link') }}</span></figcaption>
+                </figure>
+                <figure class="lx-qd-card lx-qd-wifi" data-qd-card aria-label="{{ __('Guest Wi-Fi') }}" aria-hidden="true" inert>
+                    <figcaption class="lx-qd-top"><b>{{ __('Guest Wi-Fi') }}</b><span>{{ __('Scan to join') }}</span></figcaption>
+                    <div class="lx-qd-paper"><div class="lx-qd-code" data-qd-code></div></div>
+                    <dl class="lx-qd-rows"><div><dt>{{ __('Network') }}</dt><dd dir="ltr">HopCafe</dd></div><div><dt>{{ __('Password') }}</dt><dd dir="ltr">welcome-2026</dd></div></dl>
+                </figure>
+                <figure class="lx-qd-card lx-qd-contact" data-qd-card aria-label="{{ __('Contact') }}" aria-hidden="true" inert>
+                    <figcaption class="lx-qd-top"><i aria-hidden="true">AL</i><span><b dir="ltr">Ada Lovelace</b><span dir="ltr">HOP Studio</span></span></figcaption>
+                    <div class="lx-qd-paper"><div class="lx-qd-code" data-qd-code></div></div>
+                    <p class="lx-qd-note">{{ __('Scan to save the contact') }}</p>
+                </figure>
+                <figure class="lx-qd-card lx-qd-dyn" data-qd-card aria-label="{{ __('Same code') }}" aria-hidden="true" inert>
+                    <figcaption class="lx-qd-top"><b>{{ __('Same code') }}</b><span>{{ __('The printed code never changes') }}</span></figcaption>
+                    <div class="lx-qd-paper"><div class="lx-qd-code" data-qd-code></div></div>
+                    <dl class="lx-qd-rows lx-qd-dest"><div><dt>{{ __('Destination') }}</dt><dd><s>{{ __('Lunch menu') }}</s><em>{{ __('Dinner menu') }}</em></dd></div></dl>
+                </figure>
+            </div>
         </div>
     </div>
 </section>
@@ -214,7 +243,7 @@
 <section id="faq" class="lx" aria-labelledby="faq-title">
     <div class="lx-wrap">
         <div class="lx-head"><h2 id="faq-title"><span>{{ __('Questions,') }} <em>{{ __('answered.') }}</em></span></h2><p class="h-sub"><span>{{ __('Small URL.') }} {{ __('Serious possibilities.') }}</span></p></div>
-        <div class="lx-faq" data-lx-faq>@foreach (['Is it really free?' => 'Yes. There is no paid plan and no locked feature, and the code is MIT licensed.', 'Do I need an account?' => 'Not to shorten a link. A free HOP ID keeps your links, shows their stats, and also signs you in to BioHop, PixelHop, NoteHop and FileHop.', 'What does a click record?' => 'The time, country and city, device, browser and referrer, plus a keyed hash of the IP address for counting unique visitors. Never the IP address itself.', 'How long do guest links last?' => 'Guest links expire after :idle days without a click or :max days in total. Links made with a HOP ID stay until you delete them.', 'Can I change where a link goes?' => 'Yes. Edit the destination any time; the short link and its stats stay the same.', 'Can I report a link?' => 'Yes. Every hel.ink link has a report option, and the check page shows warnings before you open anything.'] as $question => $answer)<article class="lx-cell lx-q"><h3>{{ __($question) }}</h3><p>{{ __($answer, ['idle' => $idleDays, 'max' => $maxDays]) }}</p></article>@endforeach</div>
+        <div class="lx-faq" data-lx-faq>@foreach (['Is it really free?' => 'Yes. There is no paid plan and no locked feature, and the code is MIT licensed.', 'Do I need an account?' => 'Not to shorten a link. A free HOP ID keeps your links, shows their stats, and also signs you in to BioHop, PixelHop, NoteHop, FileHop and PayHop.', 'What does a click record?' => 'The time, country and city, device, browser and referrer, plus a keyed hash of the IP address for counting unique visitors. Never the IP address itself.', 'How long do guest links last?' => 'Guest links expire after :idle days without a click or :max days in total. Links made with a HOP ID stay until you delete them.', 'Can I change where a link goes?' => 'Yes. Edit the destination any time; the short link and its stats stay the same.', 'Can I report a link?' => 'Yes. Every hel.ink link has a report option, and the check page shows warnings before you open anything.'] as $question => $answer)<article class="lx-cell lx-q"><h3>{{ __($question) }}</h3><p>{{ __($answer, ['idle' => $idleDays, 'max' => $maxDays]) }}</p></article>@endforeach</div>
     </div>
 </section>
 

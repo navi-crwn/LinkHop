@@ -10,6 +10,7 @@
 @font-face { font-family: 'HOP Silkscreen'; src: url(fonts/brand/pixelhop-name.woff2) format('woff2'); font-weight: 700; font-display: swap; }
 @font-face { font-family: 'HOP Caveat'; src: url(fonts/brand/notehop-name.woff2) format('woff2'); font-weight: 700; font-display: swap; }
 @font-face { font-family: 'HOP Sora'; src: url(fonts/brand/filehop-name.woff2) format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'HOP Unbounded'; src: url(fonts/brand/payhop-name.woff2) format('woff2'); font-weight: 700; font-display: swap; }
 @font-face { font-family: 'HOP Syne'; src: url(fonts/syne-latin-wght-normal.woff2) format('woff2'); font-weight: 400 800; font-display: swap; }
 .hop-name { font-weight: 700; font-synthesis: none; white-space: nowrap; }
 .hop-name-hub { font-family: 'HOP Syne', 'Syne', system-ui, sans-serif; font-weight: 800; letter-spacing: -.01em; }
@@ -18,3 +19,4 @@
 .hop-name-pixelhop { font-family: 'HOP Silkscreen', ui-monospace, system-ui, sans-serif; letter-spacing: .04em; }
 .hop-name-notehop { font-family: 'HOP Caveat', 'Segoe Script', cursive; font-size: 1.15em; }
 .hop-name-filehop { font-family: 'HOP Sora', system-ui, sans-serif; }
+.hop-name-payhop { font-family: 'HOP Unbounded', system-ui, sans-serif; font-size: .92em; }

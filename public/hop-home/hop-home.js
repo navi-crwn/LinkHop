@@ -144,6 +144,14 @@
         output.textContent = JSON.stringify(rows.slice(1, 5).map(function (r) { var o = {}; head.forEach(function (h, i) { o[h] = cell(r[i] || ''); }); return o; }));
       }
       table.addEventListener('input', convert); convert();
+    } else if (kind === 'payhop') {
+      // v9: split a bill in the page, the way PayHop does without sending the amounts anywhere
+      var amount = root.querySelector('input[type=number]'), people = root.querySelector('select');
+      function split() {
+        var total = Math.max(0, Number(amount.value) || 0), n = Math.max(1, Number(people.value) || 1);
+        output.textContent = (Math.round(total / n * 100) / 100).toFixed(2) + ' × ' + n;
+      }
+      amount.addEventListener('input', split); people.addEventListener('change', split); split();
     } else if (kind === 'pixelhop') {
       var image = root.querySelector('img'), drop = root.querySelector('[data-drop]'), button = root.querySelector('button');
        async function compress() {

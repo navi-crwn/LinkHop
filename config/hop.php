@@ -107,7 +107,7 @@ return [
     // Usernames nobody can take: site routes of every app, staff-looking names,
     // and the brands. Lowercase. Prefixes end with "-".
     'reserved_usernames' => [
-        'hop', 'hopid', 'hop-id', 'imperium', 'citadel', 'linkhop', 'pixelhop', 'notehop', 'filehop', 'remotehop', 'biohop',
+        'hop', 'hopid', 'hop-id', 'imperium', 'citadel', 'linkhop', 'pixelhop', 'notehop', 'filehop', 'payhop', 'pay', 'remotehop', 'biohop',
         'helink', 'hel', 'hel-ink', 'hub', 'admin', 'administrator', 'root', 'system', 'moderator', 'mod',
         'staff', 'team', 'official', 'support', 'help', 'abuse', 'report', 'dmca', 'security', 'verify',
         'verified', 'legal', 'billing', 'owner', 'sysadmin', 'webmaster', 'postmaster', 'hostmaster',
@@ -125,5 +125,5 @@ return [
     ],
     'reserved_username_prefixes' => ['hop-', 'hop_', 'admin-', 'admin_', 'official-', 'official_', 'staff-', 'staff_',
         'support-', 'support_', 'team-', 'team_', 'security-', 'security_', 'verify-', 'verified-', 'linkhop-',
-        'pixelhop-', 'notehop-', 'filehop-', 'remotehop-', 'biohop-', 'helink-', 'imperium-'],
+        'pixelhop-', 'notehop-', 'filehop-', 'payhop-', 'remotehop-', 'biohop-', 'helink-', 'imperium-'],
 ];

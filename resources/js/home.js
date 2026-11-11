@@ -1,9 +1,10 @@
 // The LinkHop home: one scroll scene per feature, in the manner of the Amnesia site (GSAP ScrollTrigger + Lenis).
 // GSAP and Lenis ship inside our own bundle (no CDN). Every scene is complete as plain HTML and CSS;
-// this file only adds motion, and with "reduce motion" on it only wires the small demos (preview fields, QR colours).
+// this file only adds motion, and with "reduce motion" on it only wires the small demos (preview fields, the QR scene).
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
+import { initQrDeck } from './home-qr.js';
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -27,21 +28,6 @@ function shareDemo() {
     }));
 }
 
-/** the QR colours: the cubes and the real generator image follow the pair that is picked */
-function qrDemo() {
-    const vox = $('[data-lx-vox]'), buttons = $$('[data-lx-qr-tones] button');
-    if (!vox || !buttons.length) return null;
-    const pick = (i) => {
-        buttons.forEach((b, n) => b.setAttribute('aria-pressed', String(n === i)));
-        vox.style.setProperty('--fg', buttons[i].dataset.fg);
-        vox.style.setProperty('--bg', buttons[i].dataset.bg);
-        window.dispatchEvent(new CustomEvent('lx-qr-tone', { detail: i }));
-    };
-    let touched = false;
-    buttons.forEach((b, i) => b.addEventListener('click', (e) => { if (!e.detail && b.dataset.auto === '1') return; touched = true; pick(i); }));
-    return { pick, touched: () => touched };
-}
-
 function start() {
     gsap.registerPlugin(ScrollTrigger);
     document.documentElement.classList.add('lx-motion');
@@ -59,7 +45,7 @@ function start() {
         lenis.scrollTo(target, { offset: -72 });
     }));
 
-    heads(); marquee(); particles(); story(); share(); qr(); analytics(); control(); routing(); gates(); build(); faq(); family();
+    heads(); marquee(); particles(); story(); share(); analytics(); control(); routing(); gates(); build(); faq(); family();
     addEventListener('load', () => ScrollTrigger.refresh());
     document.fonts?.ready.then(() => ScrollTrigger.refresh());
 }
@@ -193,24 +179,6 @@ function share() {
         gsap.fromTo(b, { rotationY: -44, x: 90, opacity: 0 }, { rotationY: -12, x: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: sec, start: 'top 72%', end: 'top 25%', scrub: .6 } });
     });
     gsap.from($$('.lx-in, .lx-tones, .lx-lab', sec), { y: 18, opacity: 0, duration: .6, stagger: .06, ease: 'power3.out', scrollTrigger: once(sec, 'top 72%') });
-}
-
-/** 04: the cubes of the QR code rise with the scroll; the colours try themselves until a visitor picks one */
-function qr() {
-    const sec = $('[data-lx-qr]');
-    if (!sec) return;
-    const vox = $('[data-lx-vox]', sec);
-    vox.style.setProperty('--p', 0.04);
-    gsap.to(vox, { '--p': 1, ease: 'none', scrollTrigger: { trigger: vox, start: 'top 88%', end: 'top 38%', scrub: .5 } });
-    gsap.from($$('.lx-qr-real', sec), { y: 18, opacity: 0, duration: .6, stagger: .1, ease: 'power3.out', scrollTrigger: once(sec, 'top 72%') });
-    const demo = qrDemo.current;
-    if (!demo) return;
-    ScrollTrigger.create({
-        ...once(vox, 'top 65%'),
-        onEnter: () => {
-            [1, 2, 3, 0].forEach((i, n) => gsap.delayedCall(1.2 + n * 1.4, () => { if (demo.touched()) return; demo.pick(i); }));
-        },
-    });
 }
 
 /** 05: the bars grow, the line draws, the figures count */
@@ -357,7 +325,7 @@ function family() {
 if (document.querySelector('.hop-home')) {
     const boot = () => {
         shareDemo();
-        qrDemo.current = qrDemo();
+        initQrDeck({ reduced });
         if (!reduced) start();
     };
     if (document.readyState === 'loading') addEventListener('DOMContentLoaded', boot);

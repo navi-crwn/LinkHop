@@ -1,5 +1,4 @@
 # HEL.ink Robots.txt
-# Last updated: December 2025
 
 User-agent: *
 Allow: /
@@ -9,6 +8,7 @@ Allow: /docs
 Allow: /status
 Allow: /changelog
 Allow: /check
+Allow: /qr
 Allow: /faq
 Allow: /help
 Allow: /privacy

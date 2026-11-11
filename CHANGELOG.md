@@ -7,12 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-11-11
+
 ### Added
+- PayHop (pay.hel.ink) joins the family: it is named in the FAQ, the features page, the home page and the sign-in text in nine languages, in the READMEs and on the Pages site, and `payhop`, `pay` and the `payhop-` prefix are reserved usernames (`payhop` also a reserved slug).
+- The silent account re-check of `hop/auth`: the home page, `/qr`, `/changelog` and the public pages that show the account (and every signed-in page) confirm with the hub, at most every five minutes, that the account in this session is still the one signed in there. Switching accounts at the hub no longer leaves the old account here. `HOP_RECHECK=false` turns it off; short link redirects never do it.
+- `/changelog` reads `storage/app/changelog.json` when it exists; `update.sh` builds it from GitHub on each update (needs python3 and an authenticated `gh`, otherwise the committed `resources/changelog.json` stays in use). `scripts/build-changelog.py --out` (alias `--output`, as in the hub) writes it anywhere.
 - `/qr`, a guest page that makes QR codes in the browser: Wi-Fi (WPA/WPA2/WPA3, WEP, open, hidden), a contact card (vCard 3.0) and a link or text, with colour, dot and corner shapes, a centre logo, scan advice (contrast, logo size, density, print size), PNG and SVG download, and a printable table card for A6 or A5 in nine languages (the card texts are a first draft for native speakers to review). The page has no form and no POST route; what is typed is never sent to the server or logged. It loads the vendored `qr-code-styling` and no CDN, and hands the library UTF-8 bytes, which the library does not do itself (non-Latin text decoded as garbage otherwise).
 - A "QR codes" link in the public top bar and in the account menu, and texts on the link page and the edit page: the code holds the short address, so a new destination keeps the printed code working, and a new slug does not (a warning shows as soon as the slug is edited).
 - `DynamicQrTest` locks that behaviour; `tests/js` checks the payload builders and reads every payload back from a rendered code with jsQR (a dev dependency only; workflow `qr-js`). `npm run test:js`.
 
 ### Changed
+- hop-assets v9 (PayHop's tile, mark, 3D preset and name font): `public/hop-home/` and `public/hop-brand/` are refreshed from the hub, and `scripts/sync-hop-assets.sh` takes the app list from the manifest instead of a hand-written one. `hop/ui` `^0.4.0` and `hop/auth` `^0.2.0` are the tagged releases.
+- `/sitemap.xml` lists only pages on the host that serves it (it listed `hel.ink` URLs from `link.hel.ink`), and `robots.txt` no longer carries a "last updated" date.
 - The public error pages (404, 429, link not found or expired, link ended or not live yet) use the family look: the marketing shell with the visitor's light or dark theme, the standard buttons, no uppercase eyebrow and no round logo; the 500 page follows the same look and still renders without the CSS build. Their texts were already in nine languages.
 - `/changes/short-links` is translated in nine languages (it was English only).
 - `qr`, `wifi`, `vcard`, `pay`, `split`, `send`, `secret` and `embargo` are reserved slugs, so the words other HOP apps use cannot become a new short link or bio slug. A link that already has one of them keeps working and can be edited while it keeps its slug; only a new slug or a change of slug is refused.
