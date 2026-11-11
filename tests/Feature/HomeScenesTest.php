@@ -1,5 +1,7 @@
 <?php
 
+use Hop\Ui\Assets;
+
 test('the home page has every scene, complete as plain HTML', function () {
     $html = $this->get('/')->assertOk()->getContent();
     foreach (['link-tour', 'journey', 'share', 'qr', 'analytics', 'control', 'routing', 'protect', 'api', 'open', 'faq', 'family'] as $id) {
@@ -23,6 +25,24 @@ test('the QR scene has four codes in turn, the link code drawn on the server, an
         ->and($section)->not->toContain('data-lx-vox');
     // the hero keeps its small flat code
     expect($html)->toContain('lx-qr-flat');
+});
+
+test('the timing, routing and protect scenes describe features the app really has', function () {
+    $html = $this->get('/')->assertOk()->getContent();
+    foreach (['data-lx-control', 'data-lx-routing', 'data-lx-gate', 'Idempotency-Key', 'X-LinkHop-Signature'] as $needle) {
+        expect($html)->toContain($needle);
+    }
+});
+
+test('the other apps of the family appear as 3D marks with the flat mark behind them', function () {
+    $html = $this->get('/')->assertOk()->getContent();
+    $others = collect(Assets::family('linkhop'))->reject(fn ($app) => $app['current'])->pluck('slug');
+    expect($others)->toContain('payhop')->not->toContain('linkhop')
+        ->and(substr_count($html, 'data-hop-hero="'))->toBe($others->count())->and($html)->toContain('data-lk-family');
+    foreach ($others as $slug) {
+        expect($html)->toContain('data-hop-hero="'.$slug.'"');
+    }
+    expect($html)->not->toContain('data-hop-hero="linkhop"');
 });
 
 test('the home engine files are requested with a content hash, so an edited file is not served from an old cache', function () {
