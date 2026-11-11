@@ -12,6 +12,7 @@ use App\Support\DeepLinks;
 use App\Support\EncryptedNoteLink;
 use App\Support\LinkRouting;
 use App\Support\Webhooks;
+use App\Support\WhatsAppRotator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
@@ -127,7 +128,14 @@ class RedirectController extends Controller
             Webhooks::clickCounted($link);
         }
         // Routing rules and the A/B split may pick another address; crawlers and plain links keep the link's own.
-        $route = LinkRouting::resolve($link, $request);
+        // A WhatsApp rotator hands the visit to one of its numbers (a plain link never reaches this: no query, no parse).
+        if ($link->wa_mode !== null && WhatsAppRotator::active($link)) {
+            $bot = app(UserAgentService::class)->parse($request->userAgent())['bot'];
+            $pick = WhatsAppRotator::pick($link, ! $bot);
+            $route = ['url' => $pick['url'], 'variant' => $pick['id']];
+        } else {
+            $route = LinkRouting::resolve($link, $request);
+        }
         $this->logClick($request, $link, $counted, $route['variant']);
         if ($link->enable_preview && $request->query('skip_preview') !== '1') {
             return response()->view('preview', ['targetUrl' => $route['url']]);

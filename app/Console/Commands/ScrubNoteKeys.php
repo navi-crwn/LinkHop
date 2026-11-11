@@ -41,6 +41,7 @@ class ScrubNoteKeys extends Command
         ['links', 'custom_description'],
         ['links', 'custom_image_url'],
         ['links', 'qr_logo_url'],
+        ['links', 'wa_numbers'],
         ['links', 'warning_reason'],
         ['comments', 'body'],
         ['folders', 'name'],

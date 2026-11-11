@@ -7,6 +7,7 @@ use App\Http\Controllers\BrandAssetController;
 use App\Http\Controllers\ChangelogController;
 use App\Http\Controllers\EditorToolsController;
 use App\Http\Controllers\FolderController;
+use App\Http\Controllers\GuestClaimController;
 use App\Http\Controllers\Internal\AccountDataController;
 use App\Http\Controllers\LegacySlugController;
 use App\Http\Controllers\LinkCheckController;
@@ -74,6 +75,8 @@ Route::middleware('ip.ban')->group(function () {
         Route::get('/links', [LinkController::class, 'myLinks'])->name('links.index');
         Route::get('/analytics', AnalyticsController::class)->name('analytics');
         Route::get('links/create', [LinkController::class, 'create'])->name('links.create');
+        // Guest links made in this browser before signing in (hop_claim cookie): one claim, rate limited.
+        Route::post('links/claim', GuestClaimController::class)->middleware('throttle:6,1,link-claim')->name('links.claim');
         Route::post('links/fetch-og', [LinkController::class, 'fetchOgData'])->name('links.fetch-og');
         // CSV import and the editor helpers (slug check, command palette): above the links resource, whose {link} would catch them.
         Route::get('links/import', [LinkImportController::class, 'show'])->name('links.import');

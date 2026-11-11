@@ -169,6 +169,8 @@
 
         <x-link-app-fields :link="$link" :section="true" />
 
+        <x-link-whatsapp-fields :link="$link" :section="true" />
+
         <div class="grid gap-4 p-5 md:grid-cols-3">
             <div>
                 <h2 class="section-title">Social preview</h2>

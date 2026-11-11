@@ -17,6 +17,8 @@
         <div class="glass rounded-2xl px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">{{ session('status') }}</div>
     @endif
 
+    <x-claim-notice />
+
     @if ($showMoveNotice)
         {{-- Short links moved to hel.ink/l/{slug}; the old form redirects until the date below.
              A reminder card: hop-ui adds "Hide · Shows again next week"; it is back after a week while the move lasts. --}}
