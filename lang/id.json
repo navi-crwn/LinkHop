@@ -1183,5 +1183,6 @@
     "You made 1 link before signing in.": "Anda membuat 1 tautan sebelum masuk.",
     "You made :count links before signing in.": "Anda membuat :count tautan sebelum masuk.",
     "Claim them to manage them from your account: they stop expiring.": "Klaim agar bisa dikelola dari akun Anda: tautan itu tidak lagi kedaluwarsa.",
-    "Claim": "Klaim"
+    "Claim": "Klaim",
+    "Not claimed yet: :left (your account is at its limit of :max active links). Remove or switch off some links, then claim again.": "Belum diklaim: :left (akun Anda sudah mencapai batas :max tautan aktif). Hapus atau matikan beberapa tautan, lalu klaim lagi."
 }

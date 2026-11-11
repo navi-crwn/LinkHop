@@ -1183,5 +1183,6 @@
     "You made 1 link before signing in.": "サインイン前に 1 件のリンクを作成しています。",
     "You made :count links before signing in.": "サインイン前に :count 件のリンクを作成しています。",
     "Claim them to manage them from your account: they stop expiring.": "引き継ぐとアカウントから管理でき、期限切れにもなりません。",
-    "Claim": "引き継ぐ"
+    "Claim": "引き継ぐ",
+    "Not claimed yet: :left (your account is at its limit of :max active links). Remove or switch off some links, then claim again.": "未引き継ぎ::left 件(アカウントの有効リンク上限 :max 件に達しています)。いくつかのリンクを削除または無効にしてから、もう一度引き継いでください。"
 }

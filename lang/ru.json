@@ -1183,5 +1183,6 @@
     "You made 1 link before signing in.": "До входа вы создали 1 ссылку.",
     "You made :count links before signing in.": "До входа вы создали ссылок: :count.",
     "Claim them to manage them from your account: they stop expiring.": "Присвойте их, чтобы управлять ими из аккаунта: срок действия больше не истекает.",
-    "Claim": "Присвоить"
+    "Claim": "Присвоить",
+    "Not claimed yet: :left (your account is at its limit of :max active links). Remove or switch off some links, then claim again.": "Ещё не присвоено: :left (в вашем аккаунте достигнут лимит в :max активных ссылок). Удалите или отключите несколько ссылок и повторите."
 }

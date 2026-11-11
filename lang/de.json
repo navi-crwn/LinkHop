@@ -1183,5 +1183,6 @@
     "You made 1 link before signing in.": "Du hast vor der Anmeldung 1 Link erstellt.",
     "You made :count links before signing in.": "Du hast vor der Anmeldung :count Links erstellt.",
     "Claim them to manage them from your account: they stop expiring.": "Übernimm sie, um sie über dein Konto zu verwalten: Sie laufen dann nicht mehr ab.",
-    "Claim": "Übernehmen"
+    "Claim": "Übernehmen",
+    "Not claimed yet: :left (your account is at its limit of :max active links). Remove or switch off some links, then claim again.": "Noch nicht übernommen: :left (dein Konto hat sein Limit von :max aktiven Links erreicht). Entferne oder deaktiviere einige Links und übernimm dann erneut."
 }

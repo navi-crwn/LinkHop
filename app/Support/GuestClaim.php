@@ -4,9 +4,11 @@ namespace App\Support;
 
 use App\Models\AbuseFlag;
 use App\Models\Link;
+use App\Models\User;
 use App\Services\LinkService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Cookie;
 
 /**
@@ -53,15 +55,24 @@ class GuestClaim
         return [$token, self::cookie($token)];
     }
 
+    /**
+     * Secure follows the session configuration (SESSION_SECURE_COOKIE, which defaults to "APP_URL is https"), so the
+     * flow can be tried on local http by setting it to false. Only an explicit false turns it off: unset stays Secure.
+     */
+    public static function secure(): bool
+    {
+        return config('session.secure') !== false;
+    }
+
     public static function cookie(string $token): Cookie
     {
-        return Cookie::create(self::COOKIE, $token, now()->addDays(self::DAYS), '/', null, true, true, false, Cookie::SAMESITE_LAX);
+        return Cookie::create(self::COOKIE, $token, now()->addDays(self::DAYS), '/', null, self::secure(), true, false, Cookie::SAMESITE_LAX);
     }
 
     /** A cookie that clears the token. */
     public static function forgetCookie(): Cookie
     {
-        return Cookie::create(self::COOKIE, '', 1, '/', null, true, true, false, Cookie::SAMESITE_LAX);
+        return Cookie::create(self::COOKIE, '', 1, '/', null, self::secure(), true, false, Cookie::SAMESITE_LAX);
     }
 
     /** Links this token could claim right now. Never queried when the browser has no token. */
@@ -89,20 +100,34 @@ class GuestClaim
         return $token === null ? 0 : self::claimable($token)->count();
     }
 
-    /** Move the claimable links to the user in one statement; returns how many moved. */
-    public static function claim(string $token, int $userId): int
+    /**
+     * Move the claimable links to the user, oldest first, as many as fit under the account's active-link cap
+     * (config limits.user.max_active_links; the daily creation allowance is about creating, not owning, so it does not
+     * apply). The user's row is locked while the room is counted and the links move, like QuotaService::createWithinLimits,
+     * so two claims cannot both take the last slot. Claimed links are active, so each one uses a slot.
+     *
+     * @return array{moved: int, left: int, max: int} left = claimable links that did not fit
+     */
+    public static function claim(string $token, int $userId): array
     {
-        $ids = self::claimable($token)->pluck('id');
-        if ($ids->isEmpty()) {
-            return 0;
-        }
-        $slugs = Link::whereIn('id', $ids)->pluck('slug');
-        // The same conditions again in the UPDATE itself: two requests cannot both move a link.
-        $moved = self::claimable($token)->whereIn('id', $ids)->update(['user_id' => $userId, 'claim_token_hash' => null]);
+        $max = (int) config('limits.user.max_active_links');
+        $slugs = [];
+        $moved = DB::transaction(function () use ($token, $userId, $max, &$slugs) {
+            User::whereKey($userId)->lockForUpdate()->value('id');
+            $room = max(0, $max - Link::where('user_id', $userId)->where('status', Link::STATUS_ACTIVE)->count());
+            $ids = self::claimable($token)->orderBy('id')->limit($room)->pluck('id');
+            if ($ids->isEmpty()) {
+                return 0;
+            }
+            $slugs = Link::whereIn('id', $ids)->pluck('slug')->all();
+
+            // The same conditions again in the UPDATE itself: two requests cannot both move a link.
+            return self::claimable($token)->whereIn('id', $ids)->update(['user_id' => $userId, 'claim_token_hash' => null]);
+        });
         foreach ($slugs as $slug) {
             app(LinkService::class)->forgetCacheBySlug($slug);
         }
 
-        return $moved;
+        return ['moved' => $moved, 'left' => self::claimable($token)->count(), 'max' => $max];
     }
 }

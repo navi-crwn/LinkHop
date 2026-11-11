@@ -33,5 +33,6 @@
     "You made 1 link before signing in.",
     "You made :count links before signing in.",
     "Claim them to manage them from your account: they stop expiring.",
-    "Claim"
+    "Claim",
+    "Not claimed yet: :left (your account is at its limit of :max active links). Remove or switch off some links, then claim again."
 ]

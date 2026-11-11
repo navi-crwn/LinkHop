@@ -1183,5 +1183,6 @@
     "You made 1 link before signing in.": "你在登录前创建了 1 个链接。",
     "You made :count links before signing in.": "你在登录前创建了 :count 个链接。",
     "Claim them to manage them from your account: they stop expiring.": "认领后即可在账户中管理,它们也不会再过期。",
-    "Claim": "认领"
+    "Claim": "认领",
+    "Not claimed yet: :left (your account is at its limit of :max active links). Remove or switch off some links, then claim again.": "尚未认领::left 个(你的账户已达到 :max 个有效链接的上限)。请删除或停用一些链接,然后再次认领。"
 }

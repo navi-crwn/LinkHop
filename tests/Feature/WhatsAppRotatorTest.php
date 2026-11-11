@@ -178,6 +178,7 @@ test('a rotator answers with a temporary redirect that browsers do not keep', fu
 // --- the form --------------------------------------------------------------------------------------------------
 
 test('the form saves a rotator, normalises the numbers, ignores the destination and drops the other routing', function () {
+    $this->travelTo(now()->startOfSecond());
     $user = User::factory()->create();
     $this->actingAs($user)->postJson('/links', [
         'target_url' => 'https://example.com/ignored', 'status' => 'active', 'slug' => 'rota1',
@@ -192,8 +193,8 @@ test('the form saves a rotator, normalises the numbers, ignores the destination 
     $link = Link::where('slug', 'rota1')->first();
     expect($link->wa_mode)->toBe('weighted')
         ->and($link->wa_numbers)->toBe([
-            ['id' => 1, 'number' => '15555550101', 'weight' => 3, 'message' => "Hello\nthere"],
-            ['id' => 2, 'number' => '15555550102', 'weight' => 1, 'message' => ''],
+            ['id' => 1, 'number' => '15555550101', 'weight' => 3, 'message' => "Hello\nthere", 'since' => now()->timestamp],
+            ['id' => 2, 'number' => '15555550102', 'weight' => 1, 'message' => '', 'since' => now()->timestamp],
         ])
         ->and($link->target_url)->toBe('https://wa.me/15555550101')
         ->and($link->ab_variants)->toBeNull();
@@ -205,7 +206,7 @@ test('editing keeps the id of a number that stays, so its count stays with it', 
         'target_url' => $link->target_url, 'status' => 'active', 'slug' => $link->slug, 'wa_mode' => 'round_robin',
         'wa_numbers' => [['number' => '15555550102'], ['number' => '15555550109']],
     ])->assertRedirect();
-    expect(collect($link->fresh()->wa_numbers)->pluck('id', 'number')->all())->toBe(['15555550102' => 2, '15555550109' => 3]);
+    expect(collect($link->fresh()->wa_numbers)->pluck('id', 'number')->all())->toBe(['15555550102' => 2, '15555550109' => 1]);
     // switching it off turns the link into an ordinary one
     $this->actingAs($link->user)->put('/links/'.$link->id, ['target_url' => 'https://example.com/back', 'status' => 'active', 'slug' => $link->slug, 'wa_mode' => ''])->assertRedirect();
     expect($link->fresh()->wa_mode)->toBeNull()->and($link->fresh()->wa_numbers)->toBeNull();
@@ -280,4 +281,82 @@ test('every new string is translated in all nine languages', function () {
             }
         }
     }
+});
+
+// --- ids, and what counts as a number's click ----------------------------------------------------------------
+
+function waEdit(Link $link, array $numbers)
+{
+    return test()->actingAs($link->user)->put('/links/'.$link->id, [
+        'target_url' => $link->target_url, 'status' => 'active', 'slug' => $link->slug, 'wa_mode' => 'round_robin',
+        'wa_numbers' => array_map(fn ($n) => ['number' => $n], $numbers),
+    ])->assertRedirect();
+}
+
+test('number ids stay inside link_clicks.variant (an unsigned tiny integer): the smallest free id is reused', function () {
+    $link = waLink('round_robin', [1]);
+    $all = array_map(fn ($i) => '1555555'.str_pad((string) (2000 + $i), 4, '0', STR_PAD_LEFT), range(1, 10));
+    waEdit($link, $all); // ten numbers: the edge of the list
+    expect(collect($link->fresh()->wa_numbers)->pluck('id')->sort()->values()->all())->toBe(range(1, 10));
+    // replace one number over and over: its id is handed on, ids never climb
+    for ($round = 0; $round < 40; $round++) {
+        $all[4] = '1555556'.str_pad((string) (3000 + $round), 4, '0', STR_PAD_LEFT);
+        waEdit($link, $all);
+    }
+    $ids = collect($link->fresh()->wa_numbers)->pluck('id')->sort()->values()->all();
+    expect($ids)->toBe(range(1, 10))->and(max($ids))->toBeLessThanOrEqual(255);
+    // a number that stays keeps its id when others come and go
+    $stay = $link->fresh()->wa_numbers[7];
+    waEdit($link, [$stay['number'], '15555559999']);
+    $after = collect($link->fresh()->wa_numbers);
+    expect($after->firstWhere('number', $stay['number'])['id'])->toBe($stay['id'])
+        ->and($after->firstWhere('number', '15555559999')['id'])->toBe(1);
+});
+
+test('a click is logged and counted for an id at the edge of the column', function () {
+    $link = waLink('round_robin', [1, 1]);
+    $numbers = $link->wa_numbers;
+    $numbers[1]['id'] = 255;
+    $link->update(['wa_numbers' => $numbers]);
+    foreach (range(1, 2) as $_) {
+        waVisit($link->slug)->assertRedirect();
+    }
+    expect(LinkClick::where('link_id', $link->id)->pluck('variant')->sort()->values()->all())->toBe([1, 255])
+        ->and(WhatsAppRotator::clicks($link->fresh()))->toBe([1 => 1, 255 => 1]);
+});
+
+test('a new number that gets a freed id does not inherit the clicks of the number that had it', function () {
+    $this->travelTo(now()->startOfSecond());
+    $link = waLink('round_robin', [1, 1]);
+    $a = $link->wa_numbers[0];
+    $b = $link->wa_numbers[1];
+    foreach (range(1, 4) as $_) {
+        LinkClick::create(['link_id' => $link->id, 'ip_address' => '203.0.113.5', 'user_agent' => 'x', 'variant' => 1, 'clicked_at' => now()]);
+    }
+    expect(WhatsAppRotator::clicks($link->fresh())[1])->toBe(4);
+    $this->travelTo(now()->addMinute());
+    waEdit($link, ['15555559001', $b['number']]); // the first number is replaced and takes id 1 again
+    $fresh = $link->fresh();
+    expect($fresh->wa_numbers[0]['id'])->toBe(1)->and($fresh->wa_numbers[0]['number'])->toBe('15555559001')
+        ->and(WhatsAppRotator::clicks($fresh)[1])->toBe(0);
+    LinkClick::create(['link_id' => $link->id, 'ip_address' => '203.0.113.5', 'user_agent' => 'x', 'variant' => 1, 'clicked_at' => now()->addSecond()]);
+    expect(WhatsAppRotator::clicks($link->fresh())[1])->toBe(1);
+});
+
+test('clicks of an earlier A/B split are not counted as clicks of the rotator numbers', function () {
+    $this->travelTo(now()->startOfSecond());
+    $user = User::factory()->create();
+    $link = Link::create(['user_id' => $user->id, 'slug' => 'wasab', 'target_url' => 'https://example.com/m', 'status' => 'active',
+        'ab_variants' => [['url' => 'https://example.com/a', 'weight' => 1], ['url' => 'https://example.com/b', 'weight' => 1]]]);
+    foreach ([1, 1, 2, 3] as $variant) {
+        LinkClick::create(['link_id' => $link->id, 'ip_address' => '203.0.113.5', 'user_agent' => 'x', 'variant' => $variant, 'clicked_at' => now()]);
+    }
+    $this->travelTo(now()->addMinute());
+    $this->actingAs($user)->put('/links/'.$link->id, [
+        'target_url' => 'https://example.com/m', 'status' => 'active', 'slug' => 'wasab', 'wa_mode' => 'round_robin',
+        'wa_numbers' => [['number' => '15555550101'], ['number' => '15555550102'], ['number' => '15555550103']],
+    ])->assertRedirect();
+    expect(WhatsAppRotator::clicks($link->fresh()))->toBe([1 => 0, 2 => 0, 3 => 0]);
+    waVisit('wasab')->assertRedirect();
+    expect(WhatsAppRotator::clicks($link->fresh())[1])->toBe(1);
 });

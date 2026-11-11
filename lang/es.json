@@ -1183,5 +1183,6 @@
     "You made 1 link before signing in.": "Creaste 1 enlace antes de iniciar sesión.",
     "You made :count links before signing in.": "Creaste :count enlaces antes de iniciar sesión.",
     "Claim them to manage them from your account: they stop expiring.": "Reclámalos para gestionarlos desde tu cuenta: dejan de caducar.",
-    "Claim": "Reclamar"
+    "Claim": "Reclamar",
+    "Not claimed yet: :left (your account is at its limit of :max active links). Remove or switch off some links, then claim again.": "Aún sin reclamar: :left (tu cuenta ha llegado al límite de :max enlaces activos). Elimina o desactiva algunos enlaces y vuelve a reclamar."
 }

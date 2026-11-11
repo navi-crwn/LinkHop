@@ -183,3 +183,56 @@ test('the per-address guest limits are untouched: the creator hash is still stor
     claimAs(User::factory()->create(), $token);
     expect(Link::whereNotNull('creator_hash')->count())->toBe(2);
 });
+
+test('the cookie is Secure by default and follows the session setting, so it can be tried on local http', function () {
+    config(['session.secure' => true]);
+    expect(claimCookieOf(claimGuestLink())->isSecure())->toBeTrue();
+    config(['session.secure' => null]); // unset stays Secure
+    expect(claimCookieOf(claimGuestLink('https://github.com/navi-crwn/BioHop'))->isSecure())->toBeTrue();
+    config(['session.secure' => false]);
+    $res = claimGuestLink('https://github.com/navi-crwn/PixelHop');
+    $cookie = claimCookieOf($res);
+    expect($cookie->isSecure())->toBeFalse()->and($cookie->isHttpOnly())->toBeTrue()->and($cookie->getSameSite())->toBe('lax');
+    // clearing it uses the same setting
+    $cleared = claimCookieOf(claimAs(User::factory()->create(), claimTokenOf($res)));
+    expect($cleared->isSecure())->toBeFalse();
+});
+
+test('a claim moves only as many links as fit under the active-link limit, says what is left and keeps the cookie', function () {
+    config(['limits.user.max_active_links' => 3]);
+    $token = claimTokenOf(claimGuestLink('https://github.com/navi-crwn/one'));
+    foreach (['two', 'three', 'four'] as $name) {
+        claimGuestLink('https://github.com/navi-crwn/'.$name, $token);
+    }
+    $user = User::factory()->create();
+    Link::create(['user_id' => $user->id, 'slug' => 'mine1', 'target_url' => 'https://example.com/m', 'status' => 'active']);
+
+    $res = claimAs($user, $token)->assertRedirect(route('dashboard'));
+    expect(Link::where('user_id', $user->id)->count())->toBe(3) // one of its own + two of the four
+        ->and(Link::whereNull('user_id')->count())->toBe(2)
+        ->and(claimCookieOf($res))->toBeNull(); // not cleared: the rest can still be claimed
+    $this->followRedirects($res)->assertSee('2 links are now in your account.')->assertSee('Not claimed yet: 2');
+    $this->actingAs($user)->withCookie(GuestClaim::COOKIE, $token)->get('/dashboard')->assertSee('You made 2 links before signing in.');
+
+    // the oldest went first
+    expect(Link::where('user_id', $user->id)->where('slug', '!=', 'mine1')->orderBy('id')->pluck('target_url')->all())
+        ->toBe(['https://github.com/navi-crwn/one', 'https://github.com/navi-crwn/two']);
+
+    // still full: nothing moves, nothing is lost
+    claimAs($user, $token);
+    expect(Link::whereNull('user_id')->count())->toBe(2);
+    // room again: the rest follows and the cookie goes
+    Link::where('user_id', $user->id)->where('slug', 'mine1')->update(['status' => 'inactive']);
+    Link::where('user_id', $user->id)->where('slug', '!=', 'mine1')->first()->update(['status' => 'inactive']);
+    $res = claimAs($user, $token);
+    expect(Link::whereNull('user_id')->count())->toBe(0)->and(claimCookieOf($res))->not->toBeNull();
+});
+
+test('an account without a limit in the way claims everything (the limit is only used when it is reached)', function () {
+    config(['limits.user.max_active_links' => 1000]);
+    $token = claimTokenOf(claimGuestLink());
+    claimGuestLink('https://github.com/navi-crwn/two', $token);
+    $user = User::factory()->create();
+    claimAs($user, $token);
+    expect(Link::where('user_id', $user->id)->count())->toBe(2);
+});

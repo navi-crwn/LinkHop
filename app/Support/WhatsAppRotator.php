@@ -5,6 +5,7 @@ namespace App\Support;
 use App\Models\Link;
 use App\Models\LinkClick;
 use Hop\Safety\LinkSafety;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Validator;
 
@@ -209,16 +210,37 @@ class WhatsAppRotator
         if (! in_array($mode, self::MODES, true) || ! is_array($rows) || $rows === []) {
             return ['wa_mode' => null, 'wa_numbers' => null];
         }
-        $old = collect((array) $link?->wa_numbers);
-        $next = (int) $old->max('id');
-        $numbers = [];
+        $old = collect((array) $link?->wa_numbers)->keyBy('number');
+        $clean = [];
         foreach ($rows as $row) {
-            $number = self::normalize($row['number'] ?? null);
-            if ($number === null) {
-                continue;
+            if (($number = self::normalize($row['number'] ?? null)) !== null) {
+                $clean[] = [$number, $row];
             }
-            $id = $old->firstWhere('number', $number)['id'] ?? ++$next;
-            $numbers[] = ['id' => (int) $id, 'number' => $number, 'weight' => (int) ($row['weight'] ?? 1), 'message' => (string) ($row['message'] ?? '')];
+        }
+        // A number that stays keeps its id and its count. A new number takes the smallest id nobody in the list uses,
+        // so ids never pass the list length (10): they always fit link_clicks.variant (an unsigned tiny integer that the
+        // A/B split shares). A reused id must not inherit the clicks of the number that had it, so every new number
+        // records `since`, and its count only includes clicks from then on (see clicks()).
+        $used = [];
+        foreach ($clean as [$number]) {
+            if ($old->has($number)) {
+                $used[(int) $old[$number]['id']] = true;
+            }
+        }
+        $numbers = [];
+        foreach ($clean as [$number, $row]) {
+            if ($old->has($number)) {
+                $id = (int) $old[$number]['id'];
+                $since = (int) ($old[$number]['since'] ?? 0);
+            } else {
+                $id = 1;
+                while (isset($used[$id])) {
+                    $id++;
+                }
+                $used[$id] = true;
+                $since = now()->timestamp;
+            }
+            $numbers[] = ['id' => $id, 'number' => $number, 'weight' => (int) ($row['weight'] ?? 1), 'message' => (string) ($row['message'] ?? ''), 'since' => $since];
         }
 
         return $numbers === [] ? ['wa_mode' => null, 'wa_numbers' => null] : ['wa_mode' => $mode, 'wa_numbers' => $numbers];
@@ -289,8 +311,16 @@ class WhatsAppRotator
             return [];
         }
 
-        return LinkClick::where('link_id', $link->id)->whereNotNull('variant')
-            ->selectRaw('variant, COUNT(*) as total')->groupBy('variant')->pluck('total', 'variant')
-            ->map(fn ($n) => (int) $n)->all();
+        // One count per number (at most 10, on the statistics page only): clicks from before the number was added (an
+        // old A/B split's variants, a removed number that had the same id) are not its clicks.
+        $out = [];
+        foreach ((array) $link->wa_numbers as $n) {
+            $since = (int) ($n['since'] ?? 0);
+            $out[(int) $n['id']] = LinkClick::where('link_id', $link->id)->where('variant', $n['id'])
+                ->when($since > 0, fn ($q) => $q->where('clicked_at', '>=', Carbon::createFromTimestamp($since, config('app.timezone'))))
+                ->count();
+        }
+
+        return $out;
     }
 }
