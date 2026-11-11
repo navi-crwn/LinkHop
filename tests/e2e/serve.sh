@@ -26,6 +26,9 @@ BASE="$( [ -f .env ] && echo .env || echo .env.example )"
   echo "QUEUE_CONNECTION=${QUEUE_CONNECTION:-sync}"
   echo "MAIL_MAILER=log"
   echo "SPAMHAUS_DBL=false"
+  # No hub in the suite: /_e2e/login signs a persona in without one, so the silent account re-check would send
+  # every page to the real hub.
+  echo "HOP_RECHECK=false"
   # Each synthetic user sends its own X-Forwarded-For, like real visitors behind a proxy.
   echo "TRUSTED_PROXIES=127.0.0.1"
   echo "PHP_CLI_SERVER_WORKERS=${PHP_CLI_SERVER_WORKERS:-8}"
@@ -36,7 +39,7 @@ BASE="$( [ -f .env ] && echo .env || echo .env.example )"
     echo "DB_CONNECTION=mysql"
     for v in DB_HOST DB_PORT DB_DATABASE DB_USERNAME DB_PASSWORD; do echo "$v=${!v:-}"; done
   fi
-  grep -vE '^(APP_ENV|APP_DEBUG|APP_URL|DB_|CACHE_STORE|SESSION_DRIVER|SESSION_SECURE_COOKIE|QUEUE_CONNECTION|MAIL_MAILER|TURNSTILE_|SUPERADMIN_EMAIL|TRUSTED_PROXIES|SPAMHAUS_DBL|PHP_CLI_SERVER_WORKERS|E2E_|HOP_CONTROL_URL)' "$BASE"
+  grep -vE '^(HOP_RECHECK|APP_ENV|APP_DEBUG|APP_URL|DB_|CACHE_STORE|SESSION_DRIVER|SESSION_SECURE_COOKIE|QUEUE_CONNECTION|MAIL_MAILER|TURNSTILE_|SUPERADMIN_EMAIL|TRUSTED_PROXIES|SPAMHAUS_DBL|PHP_CLI_SERVER_WORKERS|E2E_|HOP_CONTROL_URL)' "$BASE"
 } > .env.e2e
 grep -q '^APP_KEY=base64' .env.e2e || echo "APP_KEY=base64:$(head -c 32 /dev/urandom | base64)" >> .env.e2e
 export APP_ENV=e2e
