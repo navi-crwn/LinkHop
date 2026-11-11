@@ -12,7 +12,7 @@ use Illuminate\Validation\Validator;
  *
  * `links.app_links` is null (off) or {mode: auto|custom, ios, android, ios_store, android_store}:
  *  - auto:   the destination is recognised (YouTube, Spotify, WhatsApp, Telegram, Instagram, X, TikTok, Zoom, App Store, Google Play)
- *            and the app address is built from it;
+ *            and the app address is built from it by hop/safety's DeepLinks (https destinations only);
  *  - custom: the owner types the app address for iOS and/or Android (a URL scheme such as `myapp://item/1`, an https
  *            universal link, or an Android `intent://...#Intent;...;end` address) and optional store pages.
  * Crawlers, desktops and visitors on other systems keep the plain redirect.
@@ -204,7 +204,10 @@ class DeepLinks
         if (! in_array($os, ['ios', 'android'], true)) {
             return null;
         }
-        $auto = self::auto($webUrl);
+        // The known apps (YouTube, Spotify, WhatsApp, ...) come from the shared library: https destinations only, every piece
+        // of the app address encoded, the host matched as a whole name. What the library does not know stays a plain redirect.
+        $deep = app(\Hop\Safety\DeepLinks::class)->resolve($webUrl);
+        $auto = $deep ? ['name' => $deep->name, 'ios' => $deep->ios, 'android' => $deep->android] : null;
         $name = $auto['name'] ?? null;
         if (($config['mode'] ?? '') === 'custom') {
             // A rule or a split chose another address than the link's own: the typed app address no longer matches it.
@@ -220,86 +223,10 @@ class DeepLinks
         return ['os' => $os, 'app' => $app, 'fallback' => is_string($store) && $store !== '' ? $store : $webUrl, 'app_name' => $name];
     }
 
-    /**
-     * What the destination is, and the app addresses built from it, when it is one of the places this knows.
-     *
-     * @return array{name: string, ios?: string, android?: string}|null
-     */
-    public static function auto(string $url): ?array
-    {
-        $p = parse_url($url);
-        if (! $p || ! isset($p['host']) || ! in_array(strtolower((string) ($p['scheme'] ?? '')), ['http', 'https'], true)) {
-            return null;
-        }
-        $host = preg_replace('/^(www|m|mobile)\./', '', strtolower($p['host']));
-        $path = $p['path'] ?? '/';
-        $query = $p['query'] ?? '';
-        parse_str($query, $q);
-        $web = $url;
-        $intent = fn (string $hostPath, string $scheme, string $package) => 'intent://'.$hostPath.'#Intent;scheme='.$scheme.';package='.$package.';S.browser_fallback_url='.rawurlencode($web).';end';
-
-        // YouTube
-        if (in_array($host, ['youtube.com', 'youtu.be'], true)) {
-            $rest = ltrim($path, '/').($query !== '' ? '?'.$query : '');
-            $hostPath = $host === 'youtu.be' ? 'youtu.be/'.$rest : 'www.youtube.com/'.$rest;
-
-            return ['name' => 'YouTube', 'ios' => 'youtube://'.$hostPath, 'android' => $intent($hostPath, 'https', 'com.google.android.youtube')];
-        }
-        // Spotify: open.spotify.com/track/ID
-        if ($host === 'open.spotify.com' && preg_match('#^/(?:intl-[a-z]+/)?(track|album|artist|playlist|show|episode)/([A-Za-z0-9]{10,30})#', $path, $m)) {
-            return ['name' => 'Spotify', 'ios' => 'spotify:'.$m[1].':'.$m[2], 'android' => $intent('open.spotify.com/'.$m[1].'/'.$m[2], 'https', 'com.spotify.music')];
-        }
-        // WhatsApp: wa.me/PHONE?text= or api.whatsapp.com/send?phone=
-        if ($host === 'wa.me' || ($host === 'api.whatsapp.com' && rtrim($path, '/') === '/send')) {
-            $phone = $host === 'wa.me' ? ltrim($path, '/') : (string) ($q['phone'] ?? '');
-            if ($phone === '' || preg_match('/^\+?\d{6,16}$/', $phone)) {
-                $args = ($phone !== '' ? 'phone='.ltrim($phone, '+') : '').(isset($q['text']) && is_string($q['text']) ? ($phone !== '' ? '&' : '').'text='.rawurlencode($q['text']) : '');
-
-                return ['name' => 'WhatsApp', 'ios' => 'whatsapp://send'.($args !== '' ? '?'.$args : ''), 'android' => $intent('send'.($args !== '' ? '?'.$args : ''), 'whatsapp', 'com.whatsapp')];
-            }
-        }
-        // Telegram: t.me/NAME
-        if (in_array($host, ['t.me', 'telegram.me'], true) && preg_match('#^/([A-Za-z0-9_]{4,32})/?$#', $path, $m)) {
-            return ['name' => 'Telegram', 'ios' => 'tg://resolve?domain='.$m[1], 'android' => $intent('resolve?domain='.$m[1], 'tg', 'org.telegram.messenger')];
-        }
-        // Instagram: a profile only
-        if ($host === 'instagram.com' && preg_match('#^/([A-Za-z0-9._]{1,30})/?$#', $path, $m) && ! in_array(strtolower($m[1]), ['p', 'reel', 'reels', 'stories', 'explore', 'accounts', 'direct', 'tv'], true)) {
-            return ['name' => 'Instagram', 'ios' => 'instagram://user?username='.$m[1], 'android' => $intent('instagram.com/_u/'.$m[1], 'https', 'com.instagram.android')];
-        }
-        // X (Twitter): a profile or a post
-        if (in_array($host, ['x.com', 'twitter.com'], true)) {
-            if (preg_match('#^/([A-Za-z0-9_]{1,15})/status/(\d{5,25})#', $path, $m)) {
-                return ['name' => 'X', 'ios' => 'twitter://status?id='.$m[2], 'android' => $intent('twitter.com/'.$m[1].'/status/'.$m[2], 'https', 'com.twitter.android')];
-            }
-            if (preg_match('#^/([A-Za-z0-9_]{1,15})/?$#', $path, $m) && ! in_array(strtolower($m[1]), ['home', 'explore', 'search', 'settings', 'i', 'intent', 'share', 'login', 'compose'], true)) {
-                return ['name' => 'X', 'ios' => 'twitter://user?screen_name='.$m[1], 'android' => $intent('twitter.com/'.$m[1], 'https', 'com.twitter.android')];
-            }
-        }
-        // TikTok: a profile (Android only; iOS opens the app from its own universal link)
-        if ($host === 'tiktok.com' && preg_match('#^/(@[A-Za-z0-9._]{2,24})/?$#', $path, $m)) {
-            return ['name' => 'TikTok', 'android' => $intent('www.tiktok.com/'.$m[1], 'https', 'com.zhiliaoapp.musically')];
-        }
-        // Zoom: a meeting
-        if (str_ends_with($host, 'zoom.us') && preg_match('#^/j/(\d{8,12})/?$#', $path, $m)) {
-            $args = 'confno='.$m[1].(isset($q['pwd']) && is_string($q['pwd']) ? '&pwd='.rawurlencode($q['pwd']) : '');
-
-            return ['name' => 'Zoom', 'ios' => 'zoomus://zoom.us/join?'.$args, 'android' => $intent('zoom.us/join?'.$args, 'zoomus', 'us.zoom.videomeetings')];
-        }
-        // App Store and Google Play
-        if ($host === 'apps.apple.com' || $host === 'itunes.apple.com') {
-            return ['name' => 'App Store', 'ios' => 'itms-apps://'.$host.$path.($query !== '' ? '?'.$query : '')];
-        }
-        if ($host === 'play.google.com' && ($path === '/store/apps/details') && isset($q['id']) && is_string($q['id']) && preg_match('/^[a-z][a-z0-9_]*(\.[a-z0-9_]+)+$/i', $q['id'])) {
-            return ['name' => 'Google Play', 'android' => 'market://details?id='.$q['id']];
-        }
-
-        return null;
-    }
-
     /** A short sentence for the form: what the current destination is, or null when it is not recognised. */
     public static function recognised(?string $url): ?string
     {
-        return $url ? (self::auto($url)['name'] ?? null) : null;
+        return $url ? app(\Hop\Safety\DeepLinks::class)->recognise($url) : null;
     }
 
     private static function text(mixed $value): string
