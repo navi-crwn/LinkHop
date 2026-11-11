@@ -62,9 +62,9 @@ export function initQrDeck({ reduced }) {
     }
 
     tabs.forEach((t, n) => {
-        t.addEventListener('click', () => { touched = true; show(n); });
+        t.addEventListener('click', () => { if (!built) return; touched = true; show(n); });
         t.addEventListener('keydown', (e) => {
-            if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+            if (!built || (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft')) return;
             const m = (n + (e.key === 'ArrowRight' ? 1 : 3)) % 4;
             touched = true; show(m); tabs[m].focus(); e.preventDefault();
         });
