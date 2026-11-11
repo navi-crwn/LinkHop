@@ -20,6 +20,7 @@ use App\Support\QrPng;
 use App\Support\Reminders;
 use App\Support\RemoteUrl;
 use App\Support\ShortLinkMove;
+use App\Support\WhatsAppRotator;
 use GuzzleHttp\Client;
 use Hop\Safety\UrlGuard;
 use Illuminate\Http\Request;
@@ -218,7 +219,8 @@ class LinkController extends Controller
             return back()->withErrors(['target_url' => 'Daily link quota reached. Try again tomorrow.']);
         }
         $data = $request->validated();
-        if ($duplicate = $this->duplicateWarning($request, $data['target_url'])) {
+        // A rotator stands for its numbers, not for one address: the duplicate warning is for plain links.
+        if (empty($data['wa_mode']) && $duplicate = $this->duplicateWarning($request, $data['target_url'])) {
             return $request->wantsJson()
                 ? response()->json(['error' => $duplicate['message'], 'duplicate' => ['slug' => $duplicate['slug'], 'short_url' => $duplicate['short_url']]], 409)
                 : back()->withInput()->withErrors(['target_url' => $duplicate['message']]);
@@ -650,10 +652,17 @@ class LinkController extends Controller
             'fallback_url' => blank($data['fallback_url'] ?? null) ? null : $data['fallback_url'],
             ...LinkRouting::columns($data),
             ...DeepLinks::columns($data),
+            ...WhatsAppRotator::columns($data, $link),
             'qr_fg_color' => $data['qr_fg_color'] ?? '#000000',
             'qr_bg_color' => $data['qr_bg_color'] ?? '#ffffff',
             'qr_logo_url' => blank($data['qr_logo_url'] ?? null) ? null : $data['qr_logo_url'],
         ];
+        // A rotator decides the destination by itself: rules, the split and the app opener would never be reached.
+        if ($payload['wa_mode'] !== null) {
+            $payload['routing_rules'] = null;
+            $payload['ab_variants'] = null;
+            $payload['app_links'] = null;
+        }
         $password = $data['password'] ?? null;
         $removePassword = (bool) ($data['remove_password'] ?? false);
         if ($removePassword) {

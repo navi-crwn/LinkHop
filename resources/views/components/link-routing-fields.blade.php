@@ -7,13 +7,15 @@
     $rulesVar = $model ? 'formData.routing_rules' : 'rules';
     $variantsVar = $model ? 'formData.ab_variants' : 'variants';
     $list = fn ($v) => is_array($v) ? implode(', ', $v) : (string) $v;
-    $rules = collect($model ? [] : old('routing_rules', $link?->routing_rules ?? []))->filter(fn ($r) => is_array($r))->map(fn ($r) => [
+    $storeForm = ! $model && \App\Support\StoreLinks::fromRules($link?->routing_rules) !== null && old('routing_rules') === null;
+    $rules = collect($model || $storeForm ? [] : old('routing_rules', $link?->routing_rules ?? []))->filter(fn ($r) => is_array($r))->map(fn ($r) => [
         'country' => $list($r['country'] ?? ''),
         'language' => $list($r['language'] ?? ''),
         'device' => $r['device'] ?? 'any',
         'os' => $r['os'] ?? 'any',
         'browser' => $r['browser'] ?? 'any',
         'url' => (string) ($r['url'] ?? ''),
+        'store' => (string) ($r['store'] ?? ''),
     ])->values()->all();
     $variants = collect($model ? [] : old('ab_variants', $link?->ab_variants ?? []))->filter(fn ($r) => is_array($r))->map(fn ($v) => [
         'url' => (string) ($v['url'] ?? ''),
@@ -59,6 +61,7 @@
                         <button type="button" class="btn-ghost btn-sm" x-on:click="{{ $rulesVar }}.splice(i, 1)">{{ __('Remove') }}</button>
                     </div>
                 </div>
+                <input type="hidden" x-bind:name="'routing_rules[' + i + '][store]'" x-bind:value="rule.store" x-bind:disabled="!rule.store">
                 <div class="grid gap-3 sm:grid-cols-2">
                     <div>
                         <label class="label">{{ __('Countries') }}</label>

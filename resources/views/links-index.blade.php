@@ -9,6 +9,7 @@
         @if (session('status'))
             <div class="glass rounded-2xl px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">{{ session('status') }}</div>
         @endif
+        <x-claim-notice />
         @if (session('shortlink'))
             @php $newLink = session('shortlink'); @endphp
             <div class="glass-card flex flex-col gap-3 sm:flex-row sm:items-center" x-data="{ copied: false }">
@@ -102,6 +103,9 @@
                                 @endif
                                 @if ($link->ab_variants)
                                     <span class="chip-blue whitespace-nowrap" title="{{ __('A/B split') }}">A/B</span>
+                                @endif
+                                @if ($link->wa_mode)
+                                    <span class="chip-blue whitespace-nowrap" title="{{ __('WhatsApp rotator') }}">WhatsApp</span>
                                 @endif
                                 @if ($link->app_links)
                                     <span class="chip-blue whitespace-nowrap" title="{{ __('Open in the app') }}">{{ __('App') }}</span>

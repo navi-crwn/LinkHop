@@ -20,6 +20,7 @@ class Link extends Model
         'target_url',
         'user_id',
         'creator_hash',
+        'claim_token_hash',
         'status',
         'safety_status',
         'content_warning',
@@ -35,6 +36,8 @@ class Link extends Model
         'routing_rules',
         'ab_variants',
         'app_links',
+        'wa_mode',
+        'wa_numbers',
         'redirect_type',
         'custom_title',
         'custom_description',
@@ -45,7 +48,12 @@ class Link extends Model
         'qr_logo_url',
     ];
 
+    // The claim token hash is a secret of the browser that made a guest link: never in a response.
+    protected $hidden = ['claim_token_hash'];
+
     protected $casts = [
+        'wa_numbers' => 'array',
+        'wa_cursor' => 'integer',
         'clicks' => 'integer',
         'last_clicked_at' => 'datetime',
         'expires_at' => 'datetime',
@@ -310,6 +318,7 @@ class Link extends Model
             || filled($this->fallback_url)
             || ! empty($this->routing_rules)
             || ! empty($this->ab_variants)
-            || ! empty($this->app_links);
+            || ! empty($this->app_links)
+            || $this->wa_mode !== null;
     }
 }

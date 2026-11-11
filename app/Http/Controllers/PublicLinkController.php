@@ -8,6 +8,7 @@ use App\Models\Link;
 use App\Services\GuestLinkPolicy;
 use App\Services\LinkService;
 use App\Services\TurnstileService;
+use App\Support\GuestClaim;
 use App\Support\GuestDestination;
 use Illuminate\Support\Facades\Log;
 
@@ -54,7 +55,9 @@ class PublicLinkController extends Controller
                 'reason' => ($watchlistEntry->reason ?? '').' | Used public link creation on '.now()->format('Y-m-d H:i:s'),
             ]);
         }
+        [$claimToken, $claimCookie] = GuestClaim::issue($request);
         $link = Link::create([
+            'claim_token_hash' => GuestClaim::hash($claimToken),
             'target_url' => $data['target_url'],
             'slug' => $this->prepareSlug($data['slug'] ?? null),
             'status' => Link::STATUS_ACTIVE,
@@ -74,6 +77,7 @@ class PublicLinkController extends Controller
 
         return redirect()
             ->route('home')
-            ->with('shortened_link', $link);
+            ->with('shortened_link', $link)
+            ->withCookie($claimCookie);
     }
 }

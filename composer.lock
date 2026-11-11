@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8b7781f0ebc177cfeec8464913b6a8a7",
+    "content-hash": "43b3d427d76ed4f53cda7b88c784910f",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1368,16 +1368,16 @@
         },
         {
             "name": "hop/safety",
-            "version": "v0.1.0",
+            "version": "v0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/navi-crwn/hop-safety.git",
-                "reference": "bd5ffd5caffacf6fa11916c3f079ca44b4d6e7c2"
+                "reference": "b9fb85cefa4672c94e43800e5cf244ce9ad1f446"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/navi-crwn/hop-safety/zipball/bd5ffd5caffacf6fa11916c3f079ca44b4d6e7c2",
-                "reference": "bd5ffd5caffacf6fa11916c3f079ca44b4d6e7c2",
+                "url": "https://api.github.com/repos/navi-crwn/hop-safety/zipball/b9fb85cefa4672c94e43800e5cf244ce9ad1f446",
+                "reference": "b9fb85cefa4672c94e43800e5cf244ce9ad1f446",
                 "shasum": ""
             },
             "require": {
@@ -1403,7 +1403,7 @@
                 "MIT"
             ],
             "description": "HOP shared package: safety.",
-            "time": "2026-11-10T06:04:28+00:00"
+            "time": "2026-11-11T18:47:44+00:00"
         },
         {
             "name": "hop/ui",

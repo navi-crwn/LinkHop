@@ -65,6 +65,13 @@ class ShortenLinkRequest extends FormRequest
                     $validator->errors()->add('target_url', $reason);
                 }
             }
+            // The WhatsApp rotator is for accounts: a guest request that carries one is refused, never quietly dropped.
+            if ($this->hasAny(['store_mode', 'store_links', 'routing_rules'])) {
+                $validator->errors()->add('store_mode', __('Routing and app store links are for accounts. Sign in to use them.'));
+            }
+            if ($this->hasAny(['wa_mode', 'wa_numbers'])) {
+                $validator->errors()->add('wa_mode', __('The WhatsApp rotator is for accounts. Sign in to use it.'));
+            }
             app(EncryptedNoteLink::class)->refuseIn($validator, $this->all(), ['warning_reason']);
         });
     }

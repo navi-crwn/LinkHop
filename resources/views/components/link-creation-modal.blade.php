@@ -145,7 +145,7 @@
                     <div class="min-w-0 lg:border-r lg:border-slate-200 dark:lg:border-slate-800">
                         <div class="space-y-5 p-4 sm:p-6">
                             @csrf
-                            <div>
+                            <div x-show="!formData.wa_mode">
                                 <label class="label">
                                     Destination URL
                                     <span class="text-red-500">*</span>
@@ -157,7 +157,7 @@
                                     @input="error = ''; debouncedFetchOg(); if(!formData.slug) { debouncedGenerateSlug(); }"
                                     @paste="$nextTick(() => { clearTimeout(ogFetchTimeout); fetchOgData(); })"
                                     placeholder="https://example.com"
-                                    required
+                                    x-bind:required="!formData.wa_mode"
                                     class="input"
                                 >
                                 <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Enter the long URL you want to shorten</p>
@@ -168,7 +168,7 @@
                                     <p x-show="ogData.description" class="line-clamp-2 text-xs text-slate-500 dark:text-slate-400" x-text="ogData.description"></p>
                                 </div>
                             </div>
-                            <x-utm-builder target="modal-target-url" />
+                            <div x-show="!formData.wa_mode"><x-utm-builder target="modal-target-url" /></div>
                             <div>
                                 <label class="label">
                                     Short Link
@@ -318,8 +318,10 @@
                                     <input type="url" x-model="formData.fallback_url" placeholder="https://" class="input">
                                     <p class="mt-1 text-xs text-slate-500">{{ __('Used after the expiry date or when the clicks run out. Empty shows a notice.') }}</p>
                                 </div>
+                                <x-link-store-fields :model="true" />
                                 <x-link-routing-fields :model="true" />
                                 <x-link-app-fields :model="true" />
+                                <x-link-whatsapp-fields :model="true" />
                                 <div>
                                     <label class="label">
                                         Password protection
@@ -536,7 +538,7 @@
                 <p x-show="error" x-cloak x-text="error" role="alert" class="min-w-0 rounded-xl bg-rose-500/10 px-3 py-2 text-sm text-rose-700 sm:mr-auto dark:text-rose-300"></p>
                 <button
                     type="submit"
-                    :disabled="isLoading || !formData.target_url"
+                    :disabled="isLoading || (!formData.target_url && !formData.wa_mode)"
                     class="btn-primary btn-lg max-sm:w-full"
                 >
                     <span x-show="!isLoading">Create Link</span>
@@ -951,6 +953,10 @@ function linkCreationModal() {
             fallback_url: '',
             routing_rules: [],
             app_links: { mode: 'off', ios: '', android: '', ios_store: '', android_store: '' },
+            wa_mode: '',
+            wa_numbers: [],
+            store_mode: false,
+            store_links: { play: '', appstore: '', macstore: '', msstore: '' },
             ab_variants: [],
             password: '',
             redirect_type: '302'
@@ -1033,6 +1039,10 @@ function linkCreationModal() {
                 fallback_url: '',
                 routing_rules: [],
                 app_links: { mode: 'off', ios: '', android: '', ios_store: '', android_store: '' },
+                wa_mode: '',
+                wa_numbers: [],
+                store_mode: false,
+                store_links: { play: '', appstore: '', macstore: '', msstore: '' },
                 ab_variants: [],
                 password: '',
                 redirect_type: '302'
@@ -1053,7 +1063,10 @@ function linkCreationModal() {
         async submitForm() {
             if (this.isLoading) return;
             this.error = '';
-            if (!this.formData.target_url.trim()) {
+            if (this.formData.wa_mode) {
+                // A rotator has no destination of its own: the server takes the first number's address.
+                this.formData.target_url = '';
+            } else if (!this.formData.target_url.trim()) {
                 this.error = 'Enter a destination URL.';
                 return;
             }
@@ -1073,6 +1086,10 @@ function linkCreationModal() {
                 fallback_url: this.formData.fallback_url || null,
                 routing_rules: this.formData.routing_rules,
                 app_links: this.formData.app_links,
+                store_mode: !!this.formData.store_mode && !this.formData.wa_mode,
+                store_links: this.formData.store_links,
+                wa_mode: this.formData.wa_mode || null,
+                wa_numbers: this.formData.wa_mode ? this.formData.wa_numbers : [],
                 ab_variants: this.formData.ab_variants,
                 password: this.formData.password || null,
                 redirect_type: this.formData.redirect_type || '302',

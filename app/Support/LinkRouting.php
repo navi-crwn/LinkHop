@@ -37,6 +37,8 @@ class LinkRouting
             'routing_rules.*.device' => ['nullable'],
             'routing_rules.*.os' => ['nullable'],
             'routing_rules.*.browser' => ['nullable'],
+            // The marker the app store form leaves on a rule it wrote (App\Support\StoreLinks); only kept on a rule that still is one.
+            'routing_rules.*.store' => ['nullable'],
             'ab_variants' => ['nullable', 'array', 'max:'.AbSplit::MAX],
             'ab_variants.*' => ['array'],
             'ab_variants.*.url' => ['nullable', 'string', 'max:2000'],
@@ -333,6 +335,9 @@ class LinkRouting
             // A row nobody filled in (the form keeps an empty one around) is not a rule.
             if ($rule['url'] === '' && $rule['country'] === [] && $rule['language'] === [] && $rule['device'] === 'any' && $rule['os'] === 'any' && $rule['browser'] === 'any') {
                 continue;
+            }
+            if (isset($row['store']) && StoreLinks::isStoreRule($rule, $row['store'])) {
+                $rule['store'] = $row['store'];
             }
             $out[] = $rule;
         }

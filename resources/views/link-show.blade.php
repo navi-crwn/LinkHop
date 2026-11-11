@@ -107,6 +107,7 @@
     </section>
 
     <x-ab-results :link="$link" :card="true" />
+    <x-wa-results :link="$link" :card="true" />
 
     <div class="grid grid-cols-1 items-start gap-3 lg:grid-cols-3">
         <section class="glass-card min-w-0 lg:col-span-2">

@@ -22,35 +22,6 @@ function dlVisit(Link $link, string $ua)
     return test()->withHeader('User-Agent', $ua)->get('/l/'.$link->slug);
 }
 
-it('recognises the places it knows and builds the app addresses', function (string $url, string $name, ?string $ios, ?string $androidPackage) {
-    $auto = DeepLinks::auto($url);
-    expect($auto['name'])->toBe($name);
-    expect($auto['ios'] ?? null)->toBe($ios);
-    if ($androidPackage) {
-        expect($auto['android'])->toStartWith('intent://')->toContain('package='.$androidPackage)->toContain('S.browser_fallback_url='.rawurlencode($url));
-    }
-})->with([
-    'youtube watch' => ['https://www.youtube.com/watch?v=abc123', 'YouTube', 'youtube://www.youtube.com/watch?v=abc123', 'com.google.android.youtube'],
-    'youtu.be' => ['https://youtu.be/abc123', 'YouTube', 'youtube://youtu.be/abc123', 'com.google.android.youtube'],
-    'spotify track' => ['https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC', 'Spotify', 'spotify:track:4uLU6hMCjMI75M1A2tKUQC', 'com.spotify.music'],
-    'whatsapp' => ['https://wa.me/628123456789?text=Hello%20there', 'WhatsApp', 'whatsapp://send?phone=628123456789&text=Hello%20there', 'com.whatsapp'],
-    'telegram' => ['https://t.me/hopfamily', 'Telegram', 'tg://resolve?domain=hopfamily', 'org.telegram.messenger'],
-    'instagram profile' => ['https://www.instagram.com/helena.studio/', 'Instagram', 'instagram://user?username=helena.studio', 'com.instagram.android'],
-    'x profile' => ['https://x.com/hopfamily', 'X', 'twitter://user?screen_name=hopfamily', 'com.twitter.android'],
-    'x post' => ['https://twitter.com/hopfamily/status/1234567890123', 'X', 'twitter://status?id=1234567890123', 'com.twitter.android'],
-    'zoom' => ['https://us02web.zoom.us/j/81234567890?pwd=abc', 'Zoom', 'zoomus://zoom.us/join?confno=81234567890&pwd=abc', 'us.zoom.videomeetings'],
-    'app store' => ['https://apps.apple.com/id/app/example/id123456789', 'App Store', 'itms-apps://apps.apple.com/id/app/example/id123456789', null],
-]);
-
-it('knows google play and tiktok for Android only, and refuses what it cannot build', function () {
-    expect(DeepLinks::auto('https://play.google.com/store/apps/details?id=com.example.app'))->toBe(['name' => 'Google Play', 'android' => 'market://details?id=com.example.app']);
-    expect(DeepLinks::auto('https://www.tiktok.com/@helena')['android'])->toContain('package=com.zhiliaoapp.musically')->and(DeepLinks::auto('https://www.tiktok.com/@helena'))->not->toHaveKey('ios');
-    // not a profile, not a known place, not a web address
-    foreach (['https://www.instagram.com/p/abc/', 'https://example.com/page', 'https://x.com/home', 'ftp://youtube.com/watch?v=1', 'https://play.google.com/store/apps/details?id=bad id'] as $url) {
-        expect(DeepLinks::auto($url))->toBeNull();
-    }
-});
-
 it('sends an iPhone to a page that tries the app first, with the store as fallback when there is one', function () {
     $link = dlLink(['app_links' => ['mode' => 'auto', 'ios_store' => 'https://apps.apple.com/app/id544007664']]);
     $res = dlVisit($link, DL_IPHONE)->assertOk()->assertHeader('Cache-Control', 'no-store, private');
@@ -129,4 +100,61 @@ it('is accepted and returned by the API', function () {
     expect(Link::where('slug', 'song')->first()->app_links)->toBe(['mode' => 'auto']);
     $this->withToken($token)->postJson('/api/shorten', ['url' => 'https://example.com/a', 'alias' => 'bad-app2', 'app_links' => ['mode' => 'custom', 'android' => 'tel:123']])->assertStatus(422);
     $this->withToken($token)->getJson('/api/links/song')->assertOk()->assertJsonPath('data.app_links.mode', 'auto');
+});
+
+// The known apps come from hop/safety's DeepLinks (the library has the address-building tests). These show what the
+// people who use "Open in the app" see: the same apps still open, and the few things the library is stricter about
+// are plain redirects (the page opens as before), never errors.
+
+it('still opens the known apps on a phone', function (string $url, string $ua, string $expected) {
+    $link = dlLink(['target_url' => $url]);
+    dlVisit($link, $ua)->assertOk()->assertSee($expected, false);
+})->with([
+    'youtube watch, iPhone' => ['https://www.youtube.com/watch?v=abc123', DL_IPHONE, 'youtube://www.youtube.com/watch?v=abc123'],
+    'youtu.be, iPhone' => ['https://youtu.be/abc123', DL_IPHONE, 'youtube://youtu.be/abc123'],
+    'spotify, iPhone' => ['https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC', DL_IPHONE, 'spotify:track:4uLU6hMCjMI75M1A2tKUQC'],
+    'whatsapp, iPhone' => ['https://wa.me/15555550101?text=Hello%20there', DL_IPHONE, 'whatsapp://send?phone=15555550101&amp;text=Hello%20there'],
+    'telegram, iPhone' => ['https://t.me/hopfamily', DL_IPHONE, 'tg://resolve?domain=hopfamily'],
+    'x profile, iPhone' => ['https://x.com/hopfamily', DL_IPHONE, 'twitter://user?screen_name=hopfamily'],
+    'youtube watch, Android' => ['https://www.youtube.com/watch?v=abc123', DL_ANDROID, 'package=com.google.android.youtube'],
+    'telegram, Android' => ['https://t.me/hopfamily', DL_ANDROID, 'package=org.telegram.messenger'],
+    'google play, Android' => ['https://play.google.com/store/apps/details?id=com.example.app', DL_ANDROID, 'market://details?id=com.example.app'],
+]);
+
+it('keeps these as plain redirects: http, lookalike hosts, pages the library does not list, injected intent pieces', function (string $url) {
+    $link = dlLink(['target_url' => $url]);
+    foreach ([DL_IPHONE, DL_ANDROID] as $ua) {
+        dlVisit($link, $ua)->assertRedirect($url);
+    }
+})->with([
+    'an http destination' => ['http://www.youtube.com/watch?v=abc123'],
+    'a lookalike host' => ['https://evilzoom.us/j/81234567890'],
+    'a youtube channel page' => ['https://www.youtube.com/@somechannel'],
+    'an instagram post' => ['https://www.instagram.com/p/abc123/'],
+    'a host with a port' => ['https://www.youtube.com:8443/watch?v=abc123'],
+    'a host with user info' => ['https://user@www.youtube.com/watch?v=abc123'],
+]);
+
+it('never lets a piece of the destination into the intent address unencoded', function () {
+    $link = dlLink(['target_url' => 'https://www.youtube.com/watch?v=a;package=evil;end']);
+    $page = dlVisit($link, DL_ANDROID)->assertOk()->getContent();
+    expect(preg_match('~intent://[^"<\\s\\\\]*;end~', $page, $m))->toBe(1);
+    $intent = $m[0];
+    // the semicolons and the equals signs of the typed address are encoded; the only ones left are the Intent's own four
+    expect($intent)->toContain('v=a%3Bpackage%3Devil%3Bend')
+        ->and(substr_count($intent, ';'))->toBe(4)
+        ->and($intent)->toContain(';package=com.google.android.youtube;');
+});
+
+it('tells the owner on the edit page when the destination is, or is no longer, recognised', function () {
+    $https = dlLink(['target_url' => 'https://www.youtube.com/watch?v=abc123']);
+    $http = dlLink(['target_url' => 'http://www.youtube.com/watch?v=abc123']);
+    $this->actingAs($https->user)->get('/links/'.$https->id.'/edit')->assertOk()->assertSee('This destination is recognised as YouTube.');
+    $this->actingAs($http->user)->get('/links/'.$http->id.'/edit')->assertOk()->assertSee('This destination is not recognised');
+});
+
+it('keeps the custom mode as the owner typed it', function () {
+    $link = dlLink(['target_url' => 'https://example.com/item/42', 'app_links' => ['mode' => 'custom', 'ios' => 'myapp://item/42', 'android' => 'myapp://item/42']]);
+    dlVisit($link, DL_IPHONE)->assertOk()->assertSee('myapp://item/42', false);
+    dlVisit($link, DL_DESKTOP)->assertRedirect('https://example.com/item/42');
 });
