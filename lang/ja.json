@@ -1184,5 +1184,19 @@
     "You made :count links before signing in.": "サインイン前に :count 件のリンクを作成しています。",
     "Claim them to manage them from your account: they stop expiring.": "引き継ぐとアカウントから管理でき、期限切れにもなりません。",
     "Claim": "引き継ぐ",
-    "Not claimed yet: :left (your account is at its limit of :max active links). Remove or switch off some links, then claim again.": "未引き継ぎ::left 件(アカウントの有効リンク上限 :max 件に達しています)。いくつかのリンクを削除または無効にしてから、もう一度引き継いでください。"
+    "Not claimed yet: :left (your account is at its limit of :max active links). Remove or switch off some links, then claim again.": "未引き継ぎ::left 件(アカウントの有効リンク上限 :max 件に達しています)。いくつかのリンクを削除または無効にしてから、もう一度引き継いでください。",
+    "Add at least one app store address.": "アプリストアのアドレスを 1 つ以上追加してください。",
+    "The :store address must be a page of your app in :store, for example :example.": ":store のアドレスは :store 内のアプリのページにしてください。例::example",
+    ":store: :problem": ":store::problem",
+    "Pick either the WhatsApp rotator or the app store link, not both.": "WhatsApp ローテーターかアプリストアリンクのどちらか一方を選んでください。",
+    "Routing and app store links are for accounts. Sign in to use them.": "ルーティングとアプリストアリンクはアカウント専用です。サインインしてご利用ください。",
+    "App store link": "アプリストアリンク",
+    "One link for every system: each visitor goes to the app store of their own system.": "ひとつのリンクですべてのシステムに対応:訪問者は自分のシステムのアプリストアに移動します。",
+    "Send each system to its app store": "各システムをそれぞれのアプリストアに送る",
+    "Your routing rules are replaced by the store addresses when you save.": "保存すると、ルーティングルールはストアのアドレスに置き換わります。",
+    "Google Play (Android)": "Google Play(Android)",
+    "App Store (iPhone and iPad)": "App Store(iPhone と iPad)",
+    "Mac App Store (macOS)": "Mac App Store(macOS)",
+    "Microsoft Store (Windows)": "Microsoft Store(Windows)",
+    "Each address is optional, but add at least one. Everyone else (Linux, ChromeOS, crawlers and any other system) goes to the destination above.": "各アドレスは任意ですが、1 つ以上は追加してください。それ以外(Linux、ChromeOS、クローラー、その他のシステム)は上の宛先に移動します。"
 }

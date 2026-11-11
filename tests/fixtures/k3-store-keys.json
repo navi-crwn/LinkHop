@@ -1,0 +1,16 @@
+[
+    "Add at least one app store address.",
+    "The :store address must be a page of your app in :store, for example :example.",
+    ":store: :problem",
+    "Pick either the WhatsApp rotator or the app store link, not both.",
+    "Routing and app store links are for accounts. Sign in to use them.",
+    "App store link",
+    "One link for every system: each visitor goes to the app store of their own system.",
+    "Send each system to its app store",
+    "Your routing rules are replaced by the store addresses when you save.",
+    "Google Play (Android)",
+    "App Store (iPhone and iPad)",
+    "Mac App Store (macOS)",
+    "Microsoft Store (Windows)",
+    "Each address is optional, but add at least one. Everyone else (Linux, ChromeOS, crawlers and any other system) goes to the destination above."
+]

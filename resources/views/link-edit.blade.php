@@ -165,6 +165,8 @@
             </div>
         </div>
 
+        <x-link-store-fields :link="$link" :section="true" />
+
         <x-link-routing-fields :link="$link" :section="true" />
 
         <x-link-app-fields :link="$link" :section="true" />

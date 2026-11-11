@@ -1184,5 +1184,19 @@
     "You made :count links before signing in.": "你在登录前创建了 :count 个链接。",
     "Claim them to manage them from your account: they stop expiring.": "认领后即可在账户中管理,它们也不会再过期。",
     "Claim": "认领",
-    "Not claimed yet: :left (your account is at its limit of :max active links). Remove or switch off some links, then claim again.": "尚未认领::left 个(你的账户已达到 :max 个有效链接的上限)。请删除或停用一些链接,然后再次认领。"
+    "Not claimed yet: :left (your account is at its limit of :max active links). Remove or switch off some links, then claim again.": "尚未认领::left 个(你的账户已达到 :max 个有效链接的上限)。请删除或停用一些链接,然后再次认领。",
+    "Add at least one app store address.": "请至少添加一个应用商店地址。",
+    "The :store address must be a page of your app in :store, for example :example.": ":store 的地址必须是你的应用在 :store 中的页面,例如 :example。",
+    ":store: :problem": ":store::problem",
+    "Pick either the WhatsApp rotator or the app store link, not both.": "请在 WhatsApp 轮换和应用商店链接中二选一,不能同时使用。",
+    "Routing and app store links are for accounts. Sign in to use them.": "路由和应用商店链接仅限账户使用。请登录后使用。",
+    "App store link": "应用商店链接",
+    "One link for every system: each visitor goes to the app store of their own system.": "一个链接适配所有系统:每位访问者都会前往自己系统的应用商店。",
+    "Send each system to its app store": "将每个系统发送到对应的应用商店",
+    "Your routing rules are replaced by the store addresses when you save.": "保存时,你的路由规则将被商店地址取代。",
+    "Google Play (Android)": "Google Play(Android)",
+    "App Store (iPhone and iPad)": "App Store(iPhone 和 iPad)",
+    "Mac App Store (macOS)": "Mac App Store(macOS)",
+    "Microsoft Store (Windows)": "Microsoft Store(Windows)",
+    "Each address is optional, but add at least one. Everyone else (Linux, ChromeOS, crawlers and any other system) goes to the destination above.": "每个地址都是可选的,但至少添加一个。其他所有访问者(Linux、ChromeOS、爬虫及任何其他系统)将前往上方的目标地址。"
 }

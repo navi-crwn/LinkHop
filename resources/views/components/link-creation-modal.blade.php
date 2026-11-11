@@ -318,6 +318,7 @@
                                     <input type="url" x-model="formData.fallback_url" placeholder="https://" class="input">
                                     <p class="mt-1 text-xs text-slate-500">{{ __('Used after the expiry date or when the clicks run out. Empty shows a notice.') }}</p>
                                 </div>
+                                <x-link-store-fields :model="true" />
                                 <x-link-routing-fields :model="true" />
                                 <x-link-app-fields :model="true" />
                                 <x-link-whatsapp-fields :model="true" />
@@ -954,6 +955,8 @@ function linkCreationModal() {
             app_links: { mode: 'off', ios: '', android: '', ios_store: '', android_store: '' },
             wa_mode: '',
             wa_numbers: [],
+            store_mode: false,
+            store_links: { play: '', appstore: '', macstore: '', msstore: '' },
             ab_variants: [],
             password: '',
             redirect_type: '302'
@@ -1038,6 +1041,8 @@ function linkCreationModal() {
                 app_links: { mode: 'off', ios: '', android: '', ios_store: '', android_store: '' },
                 wa_mode: '',
                 wa_numbers: [],
+                store_mode: false,
+                store_links: { play: '', appstore: '', macstore: '', msstore: '' },
                 ab_variants: [],
                 password: '',
                 redirect_type: '302'
@@ -1081,6 +1086,8 @@ function linkCreationModal() {
                 fallback_url: this.formData.fallback_url || null,
                 routing_rules: this.formData.routing_rules,
                 app_links: this.formData.app_links,
+                store_mode: !!this.formData.store_mode && !this.formData.wa_mode,
+                store_links: this.formData.store_links,
                 wa_mode: this.formData.wa_mode || null,
                 wa_numbers: this.formData.wa_mode ? this.formData.wa_numbers : [],
                 ab_variants: this.formData.ab_variants,

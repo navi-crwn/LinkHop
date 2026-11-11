@@ -10,6 +10,7 @@ use App\Support\EncryptedNoteLink;
 use App\Support\LinkLimits;
 use App\Support\LinkRouting;
 use App\Support\ReservedSlugs;
+use App\Support\StoreLinks;
 use App\Support\WhatsAppRotator;
 use Hop\Safety\LinkSafety;
 use Illuminate\Foundation\Http\FormRequest;
@@ -54,6 +55,7 @@ class ManageLinkRequest extends FormRequest
             'redirect_type' => ['nullable', Rule::in(['301', '302', '307', '308'])],
             ...LinkLimits::rules(),
             ...LinkRouting::rules(),
+            ...StoreLinks::rules(),
             ...WhatsAppRotator::rules(),
             ...DeepLinks::rules(),
             'content_warning' => ['nullable', Rule::in(['none', 'sensitive', 'adult'])],
@@ -91,6 +93,8 @@ class ManageLinkRequest extends FormRequest
                 'target_url' => LinkRouting::address($url),
             ]);
         }
+        // The app store form writes the routing rules itself (and replaces any that were sent).
+        $this->merge(StoreLinks::tidy($this->all()));
         $this->merge(LinkRouting::tidy($this->all()));
         $this->merge(DeepLinks::tidy($this->all()));
     }
@@ -113,7 +117,11 @@ class ManageLinkRequest extends FormRequest
             if (! $validator->errors()->has('fallback_url') && $problem = LinkLimits::fallbackProblem($this->input('fallback_url'))) {
                 $validator->errors()->add('fallback_url', $problem);
             }
-            LinkRouting::check($validator, $this->all());
+            if (StoreLinks::active($this->all())) {
+                StoreLinks::check($validator, $this->all());
+            } else {
+                LinkRouting::check($validator, $this->all());
+            }
             WhatsAppRotator::check($validator, $this->all());
             DeepLinks::check($validator, $this->all());
             if ($problem = LinkLimits::orderProblem($this->input('starts_at'), $this->input('expires_at'))) {

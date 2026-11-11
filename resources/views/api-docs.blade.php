@@ -67,6 +67,17 @@ Content-Type: application/json</code></pre>
   ],
   "app_links": { "mode": "auto", "ios_store": "https://apps.apple.com/app/id123" }
 }</code></pre>
+                    <p class="eyebrow mb-1.5 mt-3">App store link: one link, each system to its own store</p>
+                    <p class="mb-1.5 text-xs text-muted">The same <code>routing_rules</code> field, one rule per system and nothing else in the rule. Add <code>"store"</code> (<code>play</code> for Android, <code>appstore</code> for iOS, <code>macstore</code> for macOS, <code>msstore</code> for Windows) and the dashboard shows the rules in its app store form; without it they are ordinary rules. Everyone else, and every crawler, goes to <code>url</code>. A <code>store</code> marker is only kept on a rule whose address is a page of that store (Google Play, App Store, Microsoft Store).</p>
+                    <pre tabindex="0" role="region" aria-label="{{ __('Code example') }}" class="{{ $code }}"><code>{
+  "url": "https://example.com/get-the-app",
+  "routing_rules": [
+    { "os": "android", "store": "play", "url": "https://play.google.com/store/apps/details?id=com.example.app" },
+    { "os": "ios", "store": "appstore", "url": "https://apps.apple.com/app/id0000000000" },
+    { "os": "macos", "store": "macstore", "url": "https://apps.apple.com/app/id0000000000" },
+    { "os": "windows", "store": "msstore", "url": "https://apps.microsoft.com/detail/9abcdef12345" }
+  ]
+}</code></pre>
                 </div>
                 <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                     <div class="min-w-0">

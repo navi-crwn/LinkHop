@@ -1184,5 +1184,19 @@
     "You made :count links before signing in.": "Du hast vor der Anmeldung :count Links erstellt.",
     "Claim them to manage them from your account: they stop expiring.": "Übernimm sie, um sie über dein Konto zu verwalten: Sie laufen dann nicht mehr ab.",
     "Claim": "Übernehmen",
-    "Not claimed yet: :left (your account is at its limit of :max active links). Remove or switch off some links, then claim again.": "Noch nicht übernommen: :left (dein Konto hat sein Limit von :max aktiven Links erreicht). Entferne oder deaktiviere einige Links und übernimm dann erneut."
+    "Not claimed yet: :left (your account is at its limit of :max active links). Remove or switch off some links, then claim again.": "Noch nicht übernommen: :left (dein Konto hat sein Limit von :max aktiven Links erreicht). Entferne oder deaktiviere einige Links und übernimm dann erneut.",
+    "Add at least one app store address.": "Füge mindestens eine App-Store-Adresse hinzu.",
+    "The :store address must be a page of your app in :store, for example :example.": "Die Adresse für :store muss eine Seite deiner App in :store sein, zum Beispiel :example.",
+    ":store: :problem": ":store: :problem",
+    "Pick either the WhatsApp rotator or the app store link, not both.": "Wähle entweder den WhatsApp-Rotator oder den App-Store-Link, nicht beides.",
+    "Routing and app store links are for accounts. Sign in to use them.": "Routing und App-Store-Links sind für Konten. Melde dich an, um sie zu nutzen.",
+    "App store link": "App-Store-Link",
+    "One link for every system: each visitor goes to the app store of their own system.": "Ein Link für jedes System: Jeder Besucher kommt in den App Store seines eigenen Systems.",
+    "Send each system to its app store": "Jedes System in seinen App Store schicken",
+    "Your routing rules are replaced by the store addresses when you save.": "Deine Routing-Regeln werden beim Speichern durch die Store-Adressen ersetzt.",
+    "Google Play (Android)": "Google Play (Android)",
+    "App Store (iPhone and iPad)": "App Store (iPhone und iPad)",
+    "Mac App Store (macOS)": "Mac App Store (macOS)",
+    "Microsoft Store (Windows)": "Microsoft Store (Windows)",
+    "Each address is optional, but add at least one. Everyone else (Linux, ChromeOS, crawlers and any other system) goes to the destination above.": "Jede Adresse ist optional, aber füge mindestens eine hinzu. Alle anderen (Linux, ChromeOS, Crawler und jedes andere System) gehen zum Ziel oben."
 }

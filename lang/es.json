@@ -1184,5 +1184,19 @@
     "You made :count links before signing in.": "Creaste :count enlaces antes de iniciar sesión.",
     "Claim them to manage them from your account: they stop expiring.": "Reclámalos para gestionarlos desde tu cuenta: dejan de caducar.",
     "Claim": "Reclamar",
-    "Not claimed yet: :left (your account is at its limit of :max active links). Remove or switch off some links, then claim again.": "Aún sin reclamar: :left (tu cuenta ha llegado al límite de :max enlaces activos). Elimina o desactiva algunos enlaces y vuelve a reclamar."
+    "Not claimed yet: :left (your account is at its limit of :max active links). Remove or switch off some links, then claim again.": "Aún sin reclamar: :left (tu cuenta ha llegado al límite de :max enlaces activos). Elimina o desactiva algunos enlaces y vuelve a reclamar.",
+    "Add at least one app store address.": "Añade al menos una dirección de tienda de aplicaciones.",
+    "The :store address must be a page of your app in :store, for example :example.": "La dirección de :store debe ser una página de tu app en :store, por ejemplo :example.",
+    ":store: :problem": ":store: :problem",
+    "Pick either the WhatsApp rotator or the app store link, not both.": "Elige el rotador de WhatsApp o el enlace de tienda de aplicaciones, no ambos.",
+    "Routing and app store links are for accounts. Sign in to use them.": "El enrutamiento y los enlaces de tienda de aplicaciones son para cuentas. Inicia sesión para usarlos.",
+    "App store link": "Enlace de tienda de aplicaciones",
+    "One link for every system: each visitor goes to the app store of their own system.": "Un enlace para todos los sistemas: cada visitante va a la tienda de aplicaciones de su propio sistema.",
+    "Send each system to its app store": "Enviar cada sistema a su tienda de aplicaciones",
+    "Your routing rules are replaced by the store addresses when you save.": "Tus reglas de enrutamiento se sustituyen por las direcciones de las tiendas al guardar.",
+    "Google Play (Android)": "Google Play (Android)",
+    "App Store (iPhone and iPad)": "App Store (iPhone y iPad)",
+    "Mac App Store (macOS)": "Mac App Store (macOS)",
+    "Microsoft Store (Windows)": "Microsoft Store (Windows)",
+    "Each address is optional, but add at least one. Everyone else (Linux, ChromeOS, crawlers and any other system) goes to the destination above.": "Cada dirección es opcional, pero añade al menos una. Todos los demás (Linux, ChromeOS, rastreadores y cualquier otro sistema) van al destino de arriba."
 }

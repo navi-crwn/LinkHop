@@ -1184,5 +1184,19 @@
     "You made :count links before signing in.": "Vous avez créé :count liens avant de vous connecter.",
     "Claim them to manage them from your account: they stop expiring.": "Récupérez-les pour les gérer depuis votre compte : ils n’expirent plus.",
     "Claim": "Récupérer",
-    "Not claimed yet: :left (your account is at its limit of :max active links). Remove or switch off some links, then claim again.": "Pas encore récupérés : :left (votre compte a atteint sa limite de :max liens actifs). Supprimez ou désactivez quelques liens, puis récupérez à nouveau."
+    "Not claimed yet: :left (your account is at its limit of :max active links). Remove or switch off some links, then claim again.": "Pas encore récupérés : :left (votre compte a atteint sa limite de :max liens actifs). Supprimez ou désactivez quelques liens, puis récupérez à nouveau.",
+    "Add at least one app store address.": "Ajoutez au moins une adresse de boutique d’applications.",
+    "The :store address must be a page of your app in :store, for example :example.": "L’adresse de :store doit être une page de votre application dans :store, par exemple :example.",
+    ":store: :problem": ":store : :problem",
+    "Pick either the WhatsApp rotator or the app store link, not both.": "Choisissez la rotation WhatsApp ou le lien de boutique d’applications, pas les deux.",
+    "Routing and app store links are for accounts. Sign in to use them.": "Le routage et les liens de boutique d’applications sont réservés aux comptes. Connectez-vous pour les utiliser.",
+    "App store link": "Lien de boutique d’applications",
+    "One link for every system: each visitor goes to the app store of their own system.": "Un seul lien pour tous les systèmes : chaque visiteur est envoyé vers la boutique d’applications de son système.",
+    "Send each system to its app store": "Envoyer chaque système vers sa boutique d’applications",
+    "Your routing rules are replaced by the store addresses when you save.": "Vos règles de routage sont remplacées par les adresses des boutiques à l’enregistrement.",
+    "Google Play (Android)": "Google Play (Android)",
+    "App Store (iPhone and iPad)": "App Store (iPhone et iPad)",
+    "Mac App Store (macOS)": "Mac App Store (macOS)",
+    "Microsoft Store (Windows)": "Microsoft Store (Windows)",
+    "Each address is optional, but add at least one. Everyone else (Linux, ChromeOS, crawlers and any other system) goes to the destination above.": "Chaque adresse est facultative, mais ajoutez-en au moins une. Tous les autres (Linux, ChromeOS, robots d’exploration et tout autre système) vont vers la destination ci-dessus."
 }

@@ -23,7 +23,7 @@
         </div>
         <div class="md:col-span-2">
 @endif
-<div @unless ($model) x-data="{ waMode: @js($savedMode), waNumbers: @js($rows) }" @endunless class="space-y-4">
+<div @unless ($model) x-data="{ waMode: @js($savedMode), waNumbers: @js($rows) }" @endunless @if ($model) x-show="!formData.store_mode" @endif class="space-y-4">
     @if ($problems->isNotEmpty())
         <ul role="alert" class="space-y-1 rounded-xl bg-rose-500/10 px-3 py-2 text-sm text-rose-700 dark:text-rose-300">
             @foreach ($problems as $problem)
