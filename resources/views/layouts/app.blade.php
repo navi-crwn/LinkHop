@@ -4,6 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        {{-- Signed-in pages (dashboard, links, analytics, settings, API docs) are never search results. --}}
+        <meta name="robots" content="noindex, nofollow">
         @php $docTitle = trim((string) ($pageTitle ?? '')) ?: trim($__env->yieldContent('title')); @endphp
         <title>{{ $docTitle !== '' ? $docTitle.' · LinkHop' : config('app.name').' · '.__('Your destination is a hop away') }}</title>
         <meta name="description" content="Manage every short link, analytics card, and quota from the LinkHop workspace.">

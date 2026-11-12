@@ -5,8 +5,10 @@
 <script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-home.js') }}?v={{ substr(md5_file(public_path('hop-home/hop-home.js')), 0, 8) }}" defer></script>
 <script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-hero3d.js') }}?v={{ substr(md5_file(public_path('hop-home/hop-hero3d.js')), 0, 8) }}" defer></script>
 @vite(['resources/css/home.css', 'resources/js/home.js'])
+{{-- Structured data (not a script that runs): this page is the shortener itself. --}}
+<script type="application/ld+json" nonce="{{ Vite::cspNonce() }}">{!! \App\Support\Seo::json(\App\Support\Seo::webApplication('LinkHop', __('Shorten long links for free: your own short address, a QR code for every link and click stats. Start without an account; LinkHop is open source.'), \App\Support\Seo::url())) !!}</script>
 @endpush
-<x-marketing-layout :title="'LinkHop · '.__('Short links')" :themed="true">
+<x-marketing-layout :title="'LinkHop · '.__('Free link shortener with QR codes and click stats')" :themed="true">
     @php
         $idleDays = config('shortener.guest_idle_days', 14);
         $maxDays = config('shortener.guest_max_days', 30);

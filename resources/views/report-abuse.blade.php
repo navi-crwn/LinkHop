@@ -3,6 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        {{-- A form for reporting a link (often with ?slug=), not a page to find in search results. --}}
+        <meta name="robots" content="noindex">
         <title>{{ __('Report abuse') }} · LinkHop</title>
         <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png">
         <x-hop::fonts />

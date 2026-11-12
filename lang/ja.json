@@ -1198,5 +1198,7 @@
     "App Store (iPhone and iPad)": "App Store(iPhone と iPad)",
     "Mac App Store (macOS)": "Mac App Store(macOS)",
     "Microsoft Store (Windows)": "Microsoft Store(Windows)",
-    "Each address is optional, but add at least one. Everyone else (Linux, ChromeOS, crawlers and any other system) goes to the destination above.": "各アドレスは任意ですが、1 つ以上は追加してください。それ以外(Linux、ChromeOS、クローラー、その他のシステム)は上の宛先に移動します。"
+    "Each address is optional, but add at least one. Everyone else (Linux, ChromeOS, crawlers and any other system) goes to the destination above.": "各アドレスは任意ですが、1 つ以上は追加してください。それ以外(Linux、ChromeOS、クローラー、その他のシステム)は上の宛先に移動します。",
+    "Free link shortener with QR codes and click stats": "QRコードとクリック統計つきの無料短縮URLサービス",
+    "Shorten long links for free: your own short address, a QR code for every link and click stats. Start without an account; LinkHop is open source.": "長いURLを無料で短縮。好きな短いアドレス、リンクごとのQRコード、クリック統計が使えます。アカウントなしで始められ、LinkHop はオープンソースです。"
 }

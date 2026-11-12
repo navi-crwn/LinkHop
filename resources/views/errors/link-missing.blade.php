@@ -1,6 +1,6 @@
 {{-- The public "no such short link" page, in the HOP family's look: the marketing shell, light or dark with the
      visitor's theme, the standard buttons. --}}
-<x-marketing-layout :title="(($expired ?? false) ? __('Link expired') : __('Link not found')).' · '.config('app.name', 'LinkHop')" :themed="true">
+<x-marketing-layout :title="(($expired ?? false) ? __('Link expired') : __('Link not found')).' · '.config('app.name', 'LinkHop')" :themed="true" :index="false">
     <div class="mx-auto max-w-xl px-4 py-16 sm:px-6 sm:py-24">
         <div class="text-center">
             <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl dark:text-white">

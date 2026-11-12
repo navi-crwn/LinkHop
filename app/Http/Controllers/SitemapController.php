@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\Seo;
 use Hop\Bio\Models\BioPage;
 use Illuminate\Http\Response;
 
 class SitemapController extends Controller
 {
+    /** Every indexable public page of this host, once each (the bare address). */
+    public const PAGES = ['', 'qr', 'check', 'features', 'about', 'help', 'faq', 'docs', 'status', 'changelog', 'contact', 'terms', 'privacy'];
+
     public function index(): Response
     {
         // A sitemap may only list URLs on the host that serves it. This one is served by the app's own host
-        // (APP_URL, link.hel.ink): its public pages are listed with that host, and the bio pages (PUBLIC_URL/b/{slug})
-        // only when both are one host (a self-hosted install). On hel.ink the bio pages belong to the hub's sitemap.
-        $staticPages = collect(['', 'features', 'faq', 'about', 'help', 'qr', 'check', 'changelog', 'contact', 'terms', 'privacy'])
-            ->map(fn (string $path) => ['loc' => url($path), 'priority' => $path === '' ? '1.0' : '0.5', 'changefreq' => 'monthly']);
-
+        // (APP_URL, link.hel.ink): its public pages are listed with that host, each with its nine language addresses
+        // (?lang=) and x-default (App\Support\Seo, the family rule), and the bio pages (PUBLIC_URL/b/{slug}) only when
+        // both are one host (a self-hosted install). On hel.ink the bio pages belong to the hub's sitemap.
         $sameHost = parse_url(url('/'), PHP_URL_HOST) === parse_url(public_url(), PHP_URL_HOST);
         $bioPages = (! bio_enabled() || ! $sameHost) ? collect() : BioPage::query()
             ->where('is_published', true)
@@ -28,13 +30,16 @@ class SitemapController extends Controller
             ->get(['slug', 'updated_at']);
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>';
-        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">';
 
-        foreach ($staticPages as $page) {
+        foreach (self::PAGES as $path) {
             $xml .= '<url>';
-            $xml .= '<loc>'.htmlspecialchars($page['loc']).'</loc>';
-            $xml .= '<changefreq>'.$page['changefreq'].'</changefreq>';
-            $xml .= '<priority>'.$page['priority'].'</priority>';
+            $xml .= '<loc>'.e(Seo::url($path)).'</loc>';
+            foreach (Seo::alternates($path) as $code => $href) {
+                $xml .= '<xhtml:link rel="alternate" hreflang="'.e($code).'" href="'.e($href).'"/>';
+            }
+            $xml .= '<changefreq>monthly</changefreq>';
+            $xml .= '<priority>'.($path === '' ? '1.0' : '0.5').'</priority>';
             $xml .= '</url>';
         }
 

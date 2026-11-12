@@ -1198,5 +1198,7 @@
     "App Store (iPhone and iPad)": "App Store(iPhone 和 iPad)",
     "Mac App Store (macOS)": "Mac App Store(macOS)",
     "Microsoft Store (Windows)": "Microsoft Store(Windows)",
-    "Each address is optional, but add at least one. Everyone else (Linux, ChromeOS, crawlers and any other system) goes to the destination above.": "每个地址都是可选的,但至少添加一个。其他所有访问者(Linux、ChromeOS、爬虫及任何其他系统)将前往上方的目标地址。"
+    "Each address is optional, but add at least one. Everyone else (Linux, ChromeOS, crawlers and any other system) goes to the destination above.": "每个地址都是可选的,但至少添加一个。其他所有访问者(Linux、ChromeOS、爬虫及任何其他系统)将前往上方的目标地址。",
+    "Free link shortener with QR codes and click stats": "免费短链接工具，附带二维码和点击统计",
+    "Shorten long links for free: your own short address, a QR code for every link and click stats. Start without an account; LinkHop is open source.": "免费缩短长链接：自定义短地址、每个链接都有二维码，还有点击统计。无需账号即可开始；LinkHop 是开源的。"
 }

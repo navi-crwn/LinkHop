@@ -1198,5 +1198,7 @@
     "App Store (iPhone and iPad)": "App Store (iPhone und iPad)",
     "Mac App Store (macOS)": "Mac App Store (macOS)",
     "Microsoft Store (Windows)": "Microsoft Store (Windows)",
-    "Each address is optional, but add at least one. Everyone else (Linux, ChromeOS, crawlers and any other system) goes to the destination above.": "Jede Adresse ist optional, aber füge mindestens eine hinzu. Alle anderen (Linux, ChromeOS, Crawler und jedes andere System) gehen zum Ziel oben."
+    "Each address is optional, but add at least one. Everyone else (Linux, ChromeOS, crawlers and any other system) goes to the destination above.": "Jede Adresse ist optional, aber füge mindestens eine hinzu. Alle anderen (Linux, ChromeOS, Crawler und jedes andere System) gehen zum Ziel oben.",
+    "Free link shortener with QR codes and click stats": "Kostenloser Link-Kürzer mit QR-Codes und Klickstatistik",
+    "Shorten long links for free: your own short address, a QR code for every link and click stats. Start without an account; LinkHop is open source.": "Lange Links kostenlos kürzen: eine eigene Kurzadresse, ein QR-Code für jeden Link und Klickstatistik. Ohne Konto loslegen; LinkHop ist quelloffen."
 }

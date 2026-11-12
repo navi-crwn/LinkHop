@@ -1198,5 +1198,7 @@
     "App Store (iPhone and iPad)": "App Store (iPhone dan iPad)",
     "Mac App Store (macOS)": "Mac App Store (macOS)",
     "Microsoft Store (Windows)": "Microsoft Store (Windows)",
-    "Each address is optional, but add at least one. Everyone else (Linux, ChromeOS, crawlers and any other system) goes to the destination above.": "Tiap alamat bersifat opsional, tetapi tambahkan setidaknya satu. Yang lain (Linux, ChromeOS, crawler, dan sistem lain) menuju tujuan di atas."
+    "Each address is optional, but add at least one. Everyone else (Linux, ChromeOS, crawlers and any other system) goes to the destination above.": "Tiap alamat bersifat opsional, tetapi tambahkan setidaknya satu. Yang lain (Linux, ChromeOS, crawler, dan sistem lain) menuju tujuan di atas.",
+    "Free link shortener with QR codes and click stats": "Pemendek tautan gratis dengan kode QR dan statistik klik",
+    "Shorten long links for free: your own short address, a QR code for every link and click stats. Start without an account; LinkHop is open source.": "Pendekkan tautan panjang secara gratis: alamat pendek pilihan sendiri, kode QR untuk setiap tautan, dan statistik klik. Bisa mulai tanpa akun; LinkHop bersumber terbuka."
 }

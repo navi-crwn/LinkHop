@@ -2,9 +2,12 @@
 @php
     $s = \App\Support\QrStrings::all();
     $demoUrl = public_url('l/menu26').'?src=qr';
+    // Title and description say what the page does (search results), from texts the page already shows.
+    $qrTitle = $s['h1a'].' '.$s['h1b'];
 @endphp
-<x-marketing-layout :themed="true" :title="$s['nav_qr'].' · '.config('app.name')">
+<x-marketing-layout :themed="true" :title="$qrTitle.' · LinkHop'" :description="$s['lead']">
     @push('head')
+        <script type="application/ld+json" nonce="{{ Vite::cspNonce() }}">{!! \App\Support\Seo::json(\App\Support\Seo::webApplication($qrTitle.' · LinkHop', $s['lead'], \App\Support\Seo::url('qr'))) !!}</script>
         @vite(['resources/css/qr.css', 'resources/js/qr/studio.js'])
         <script nonce="{{ Vite::cspNonce() }}" defer src="{{ asset('vendor/qr-code-styling/qr-code-styling.js') }}?v={{ substr((string) @md5_file(public_path('vendor/qr-code-styling/qr-code-styling.js')), 0, 8) }}"></script>
         <script type="application/json" id="qr-i18n">@json($s)</script>

@@ -25,6 +25,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\WebhookController;
+use App\Http\Middleware\NoIndex;
 use App\Support\CspReport;
 use Hop\Auth\Http\Controllers\EventController;
 use Illuminate\Http\Request;
@@ -186,9 +187,10 @@ Route::match(['GET', 'HEAD'], '/l/', function (Request $request) {
 Route::get('/up', fn () => response('ok', 200, ['Content-Type' => 'text/plain; charset=UTF-8', 'Cache-Control' => 'no-store']));
 
 // Short links: hel.ink/l/{slug}. GET opens the link, POST submits a link password.
-Route::middleware('ip.ban')->match(['GET', 'POST'], '/l/{slug}', RedirectController::class)
+// NoIndex: no answer of a short link (redirect, preview, password, ended, missing) is ever a search result.
+Route::middleware(['ip.ban', NoIndex::class])->match(['GET', 'POST'], '/l/{slug}', RedirectController::class)
     ->where('slug', '[A-Za-z0-9._-]+')->name('links.open');
 // The old form hel.ink/{slug}: 301 to /l/{slug} until shortener.legacy_slug_until (LegacySlugController).
 // Registered last, so every app route above wins; a path that is not a slug is a 404.
-Route::middleware('ip.ban')->get('/{slug}', LegacySlugController::class)
+Route::middleware(['ip.ban', NoIndex::class])->get('/{slug}', LegacySlugController::class)
     ->where('slug', '[A-Za-z0-9-]+')->name('links.legacy');
