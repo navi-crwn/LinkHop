@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.1] - 2026-11-12
+
+### Fixed
+- Analytics: the open "All links" list was painted under the stat cards in the default (glass) style, because the filter form's `backdrop-filter` makes it a layer of its own. The form now sits above the cards (`z-20`, under the top bar). Escape closes the list and gives the focus back to its button.
+- Create dialog: on wide screens the folder, QR and preview column stays in view while the advanced options scroll (sticky), and scrolls on its own when it is taller than the dialog.
+- Slug fields (the create dialog, the guest form, the create and edit pages) let the browser pass exactly what the server accepts: letters, digits and hyphens, 3 to 48. The dialog used to allow `_` and any length, so `my_link` or `ab` came back with a 422.
+- API: a hub token with `link:write` ("Edit and delete short links", the scope the hub offers) can delete a link with `DELETE /api/links/{slug}`; `link:delete`, `link:*` and a token without scopes still can, `link:read` cannot. The docs page (nine languages) and the README name `link:write`.
+
+### Changed
+- Search engines: every indexable public page names its canonical address (`APP_URL` and path, plus `?lang=` only when the request asked for one of the nine languages), `og:url`, the nine language addresses and `x-default`, an absolute `og:image` and a twitter card, the family rule the hub uses. The home page and `/qr` say what they do in their title and description (nine languages) and carry `WebApplication` JSON-LD. The sitemap lists every public page once (now with `/docs` and `/status`) with its language alternates. Signed-in pages and the API docs are `noindex, nofollow`; error pages and the abuse form `noindex`; every answer of a short link (redirect, preview, password, ended, missing, the old `/{slug}`) sends `X-Robots-Tag: noindex`.
+- Theme and language are shared with the other HOP apps. The theme lives in the cookie `hop_theme` (`light` or `dark`; absent means the system setting), read before first paint, then the old `localStorage` key, which every toggle keeps writing. `hop_lang` is now set for `Domain=.hel.ink` on hel.ink hosts (host-only elsewhere, so localhost and self-hosted copies work as before); a browser's old host-only `hop_lang` is moved to the domain once (`hop_pref=2`). Both `hop_lang` and `hop_pref` are plain text (not encrypted). No configuration change is needed.
+
 ## [2.3.0] - 2026-11-12
 
 ### Added
