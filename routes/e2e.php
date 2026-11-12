@@ -5,6 +5,7 @@
 | E2E_HOOKS=true and never in production (see routes/web.php).
 */
 
+use App\Models\ActivityLog;
 use App\Models\Folder;
 use App\Models\Link;
 use App\Models\Tag;
@@ -41,6 +42,9 @@ Route::prefix('_e2e')->withoutMiddleware(ValidateCsrfToken::class)->group(functi
         $user->forceFill(['email_verified_at' => now(), 'status' => 'active'])->save();
         $folder = Folder::create(['user_id' => $user->id, 'name' => "F{$token}"]);
         Tag::create(['user_id' => $user->id, 'name' => "T{$token}"]);
+        // One entry in the activity log, so Settings has a time to show from the first visit.
+        ActivityLog::create(['user_id' => $user->id, 'action' => 'created', 'model' => 'Folder', 'model_id' => $folder->id,
+            'description' => "Created folder: F{$token}"]);
         foreach (['a', 'b'] as $suffix) {
             Link::create(['user_id' => $user->id, 'folder_id' => $folder->id, 'slug' => "{$token}{$suffix}",
                 'target_url' => "https://example.com/{$token}/{$suffix}", 'status' => Link::STATUS_ACTIVE]);

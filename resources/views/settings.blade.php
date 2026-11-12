@@ -205,8 +205,9 @@
                                 <div class="flex items-start justify-between gap-3">
                                     <div class="min-w-0">
                                         <p class="text-sm font-medium text-ink break-words">{{ $log->description }}</p>
-                                        {{-- Stored in UTC; shown in the reader's own time zone when a script runs, with the zone named either way. --}}
-                                        <time datetime="{{ $at->toIso8601ZuluString() }}" class="text-xs tabular-nums text-muted" x-data x-text="new Date($el.dateTime).toLocaleString(document.documentElement.lang || undefined, { dateStyle: 'medium', timeStyle: 'short', timeZoneName: 'short' })">{{ $at->format('M d, Y H:i:s') }} UTC</time>
+                                        {{-- Stored in UTC; shown in the reader's own time zone when a script runs, with the zone named either way.
+                                             The parts are listed one by one: dateStyle/timeStyle with timeZoneName makes the formatter throw. --}}
+                                        <time datetime="{{ $at->toIso8601ZuluString() }}" class="text-xs tabular-nums text-muted" x-data x-text="new Date($el.dateTime).toLocaleString(document.documentElement.lang || undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' })">{{ $at->format('M d, Y H:i:s') }} UTC</time>
                                     </div>
                                     <span class="chip-gray shrink-0">
                                         {{ __(ucfirst($log->action)) }}
