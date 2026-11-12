@@ -73,6 +73,52 @@ it('lets ?lang= win over the old value while migrating', function () {
     expect($live->map->getValue()->values()->all())->toBe(['es'])->and($live->first()->getDomain())->toBe('.hel.ink');
 });
 
+/*
+| A browser that holds this host's old host-only hop_lang and a newer .hel.ink one sends both, oldest first
+| ("hop_lang=en; hop_lang=ja"). PHP keeps the first; the last one counts (contract, amended after the audit).
+*/
+function langLive($response): array
+{
+    return collect(prefCookies($response, 'hop_lang'))->reject(fn (Cookie $c) => $c->isCleared())
+        ->map(fn (Cookie $c) => [$c->getDomain(), $c->getValue()])->values()->all();
+}
+
+it('takes the last hop_lang when the browser sends two, for the page and for the clean-up', function () {
+    $response = $this->withHeader('Cookie', 'hop_lang=en; other=1; hop_lang=ja')->get('https://link.hel.ink/about')
+        ->assertOk()->assertSee('lang="ja"', false);
+
+    expect(langLive($response))->toBe([['.hel.ink', 'ja']])
+        ->and(collect(prefCookies($response, 'hop_lang'))->first(fn (Cookie $c) => $c->getDomain() === null)?->isCleared())->toBeTrue()
+        ->and(prefCookies($response, 'hop_pref')[0]->getValue())->toBe('2');
+    // after the clean-up (marker set) the page still follows the newer one
+    $this->flushHeaders()->withHeader('Cookie', 'hop_pref=2; hop_lang=en; hop_lang=fr')->get('https://link.hel.ink/about')->assertSee('lang="fr"', false);
+});
+
+it('keeps the single-cookie behaviour', function () {
+    $response = $this->withHeader('Cookie', 'hop_lang=de')->withUnencryptedCookie('hop_lang', 'de')->get('https://link.hel.ink/about')
+        ->assertOk()->assertSee('lang="de"', false);
+
+    expect(langLive($response))->toBe([['.hel.ink', 'de']]);
+});
+
+it('lets ?lang= win over two cookies', function () {
+    $response = $this->withHeader('Cookie', 'hop_lang=en; hop_lang=ja')->get('https://link.hel.ink/about?lang=ru')
+        ->assertOk()->assertSee('lang="ru"', false);
+
+    expect(langLive($response))->toBe([['.hel.ink', 'ru']]);
+});
+
+it('survives a malformed cookie header', function (string $header, string $lang) {
+    $response = $this->withHeader('Cookie', $header)->get('https://link.hel.ink/about')->assertOk()->assertSee('lang="'.$lang.'"', false);
+
+    expect(langLive($response))->toBe($lang === 'en' ? [] : [['.hel.ink', $lang]]);
+})->with([
+    'no value' => ['hop_lang; hop_lang', 'en'],
+    'empty and junk' => ['=; ;;hop_lang=; hop_lang=%%zz', 'en'],
+    'unknown language last' => ['hop_lang=de; hop_lang=xx', 'en'],
+    'spaces and encoding' => ['  hop_lang = de ;hop_lang=pt%2DBR', 'pt-BR'],
+]);
+
 it('reads the plain hop_lang a Go app or a script wrote', function () {
     $this->withUnencryptedCookie('hop_lang', 'pt-BR')->withUnencryptedCookie('hop_pref', '2')->get('/about')->assertOk()->assertSee('lang="pt-BR"', false);
 });

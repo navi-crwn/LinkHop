@@ -39,7 +39,7 @@ class SetLocale
         $secure = $domain !== null || $request->isSecure();
         if ($domain !== null && $request->cookie(self::MIGRATED) !== '2') {
             $response->headers->setCookie(Cookie::create(self::COOKIE, '', 1, '/', null, $secure, false, false, Cookie::SAMESITE_LAX));
-            $carried = is_string($request->cookie(self::COOKIE)) ? Locales::resolve($request->cookie(self::COOKIE)) : null;
+            $carried = Locales::resolve(self::cookieLanguage($request));
             if ($carried !== null && $requested === null) {
                 $response->headers->setCookie(self::make(self::COOKIE, $carried, $domain, $secure));
             }
@@ -56,9 +56,31 @@ class SetLocale
     public static function apply(Request $request): ?string
     {
         $requested = Locales::resolve(is_string($request->query('lang')) ? $request->query('lang') : '');
-        app()->setLocale($requested ?? Locales::normalize((string) $request->cookie(self::COOKIE, Locales::DEFAULT)));
+        app()->setLocale($requested ?? Locales::normalize(self::cookieLanguage($request) ?? Locales::DEFAULT));
 
         return $requested;
+    }
+
+    /**
+     * The hop_lang the browser sent. A browser that still holds this host's old host-only cookie next to the newer
+     * .hel.ink one sends both, oldest first, and PHP keeps the first: so when the raw Cookie header names hop_lang more
+     * than once, the last one counts (family contract, amended after the LinkHop audit). With one, nothing changes.
+     */
+    public static function cookieLanguage(Request $request): ?string
+    {
+        $values = [];
+        foreach (explode(';', (string) $request->headers->get('Cookie', '')) as $pair) {
+            [$name, $value] = array_pad(explode('=', $pair, 2), 2, null);
+            if ($value !== null && trim($name) === self::COOKIE) {
+                $values[] = urldecode(trim($value));
+            }
+        }
+        if (count($values) > 1) {
+            return end($values);
+        }
+        $value = $request->cookie(self::COOKIE);
+
+        return is_string($value) ? $value : null;
     }
 
     /** `.hel.ink` when the request's host is hel.ink or one of its subdomains, null (host-only) otherwise. */
