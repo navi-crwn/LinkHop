@@ -8,6 +8,9 @@ on:
       - 'resources/js/qr/**'
       - 'public/vendor/qr-code-styling/**'
       - 'tests/js/**'
+      # The first-paint theme reader (tests/js/theme-boot.test.mjs) and the partial that inlines it.
+      - 'resources/js/theme-boot.js'
+      - 'resources/views/partials/theme-boot.blade.php'
       - 'package*.json'
       - '.github/workflows/qr-js.yml'
 
