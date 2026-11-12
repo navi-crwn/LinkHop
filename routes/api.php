@@ -13,14 +13,15 @@ use Illuminate\Support\Facades\Route;
 | API tokens are made and revoked at the hub (hub.hel.ink/settings) and live in
 | the shared api_tokens table; `hop.token:{scope}` from hop/auth validates them.
 | A token without scopes (made before scopes existed) may do everything.
-| Scopes used here: link:create, link:read, link:delete. Documented in README, "API".
+| Scopes used here: link:create, link:read, and link:write for delete (link:delete, which the hub does not offer, is
+| accepted too; ShortenController::destroy checks it). Documented in README, "API".
 */
 // `Idempotency-Key` (IdempotentRequest) makes a retried create safe; it has to run after the token middleware.
 Route::post('/shorten', [ShortenController::class, 'store'])->middleware(['hop.token:link:create', IdempotentRequest::class]);
 Route::get('/links/{slug}', [ShortenController::class, 'show'])->where('slug', '[A-Za-z0-9-]+')->middleware('hop.token:link:read');
 // The caller's own live links, newest first, for pickers in the other HOP apps (BioHop's editor): ?search=&limit=&cursor=.
 Route::get('/me/links', [ShortenController::class, 'index'])->middleware('hop.token:link:read');
-Route::delete('/links/{slug}', [ShortenController::class, 'destroy'])->where('slug', '[A-Za-z0-9-]+')->middleware('hop.token:link:delete');
+Route::delete('/links/{slug}', [ShortenController::class, 'destroy'])->where('slug', '[A-Za-z0-9-]+')->middleware('hop.token');
 // The dashboard's own JavaScript (web session, not an API token).
 Route::middleware(['web', 'hop.auth'])->group(function () {
     Route::get('/links', [LinkController::class, 'index']);
