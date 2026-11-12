@@ -18,8 +18,9 @@
     <div class="space-y-4">
         <x-page-header title="Analytics" subtitle="Last {{ $range }} hours{{ $linkFilter !== 'all' ? ' · /'.($userLinks->firstWhere('id', $linkFilter)?->slug) : '' }}" />
 
-        {{-- Filters --}}
-        <form method="GET" x-ref="form" class="glass grid grid-cols-2 gap-2 rounded-2xl p-2 md:grid-cols-[minmax(0,2fr)_repeat(3,minmax(0,1fr))_auto]">
+        {{-- Filters. relative z-20: .glass has a backdrop-filter, which makes the form its own layer; without a z-index the
+             cards after it are painted over the open link list. z-20 stays under the top bar (z-30) and the menus. --}}
+        <form method="GET" x-ref="form" class="glass relative z-20 grid grid-cols-2 gap-2 rounded-2xl p-2 md:grid-cols-[minmax(0,2fr)_repeat(3,minmax(0,1fr))_auto]">
             <div class="relative col-span-2 md:col-span-1" x-data="{
                     open: false,
                     search: '',
@@ -32,9 +33,9 @@
                         return this.links.filter(l => l.slug.toLowerCase().includes(s) || l.url.toLowerCase().includes(s));
                     },
                     pick(id) { this.$refs.hiddenInput.value = id; this.$refs.form.submit(); }
-                }" @click.outside="open = false">
+                }" @click.outside="open = false" @keydown.escape="if (open) { open = false; $refs.toggle.focus(); }">
                 <input type="hidden" name="link_id" x-ref="hiddenInput" :value="selected">
-                <button type="button" @click="open = !open" data-ctl="select" class="input flex items-center justify-between gap-2 text-left">
+                <button type="button" x-ref="toggle" @click="open = !open" :aria-expanded="open.toString()" data-ctl="select" class="input flex items-center justify-between gap-2 text-left">
                     <span class="truncate" x-text="selectedText"></span>
                     <svg class="ml-2 h-4 w-4 shrink-0 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="m6 9 6 6 6-6"/></svg>
                 </button>
