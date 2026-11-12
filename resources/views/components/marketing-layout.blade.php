@@ -14,17 +14,8 @@
         @include('partials.seo-head', ['title' => $metaTitle, 'description' => $metaDescription, 'index' => $index])
         <link rel="icon" href="{{ route('brand.favicon') }}">
         @if ($themed)
-            {{-- Apply the saved theme before first paint (same key as the app shell) --}}
-            <script nonce="{{ Vite::cspNonce() }}">
-                (function () {
-                    try {
-                        var t = localStorage.getItem('helink-theme');
-                        if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                            document.documentElement.classList.add('dark');
-                        }
-                    } catch (e) {}
-                })();
-            </script>
+            {{-- Apply the saved theme before first paint (the same reader as the app shell) --}}
+            @include('partials.theme-boot')
         @endif
         <x-hop::fonts />
         @vite(['resources/css/app.css', 'resources/js/app.js'])

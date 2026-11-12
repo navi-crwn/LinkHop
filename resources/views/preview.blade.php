@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="{ theme: localStorage.getItem('theme') || 'light' }" x-bind:class="theme">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="{ theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light' }">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    {{-- The family theme (cookie hop_theme), then this page's own old key `theme`, then the system; before first paint. --}}
+    @include('partials.theme-boot', ['oldKey' => 'theme'])
     <title>Link Preview - {{ config('app.name') }}</title>
     <link rel="icon" href="{{ route('brand.favicon') }}" type="image/png">
     <x-hop::fonts />
@@ -105,7 +107,7 @@
                     </div>
                 </div>
                 <div class="mt-6 text-center">
-                    <button @click="theme = (theme === 'dark' ? 'light' : 'dark'); localStorage.setItem('theme', theme)" 
+                    <button @click="theme = (theme === 'dark' ? 'light' : 'dark'); document.documentElement.classList.toggle('dark', theme === 'dark'); window.hopSetTheme(theme)"
                             class="inline-flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                         <svg x-show="theme === 'dark'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />

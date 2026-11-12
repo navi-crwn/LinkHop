@@ -7,6 +7,14 @@ use Tests\TestCase;
 
 class DedicatedPagesLanguageTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        // The tests run on APP_URL (link.hel.ink): a browser that has had its old hop_lang moved to .hel.ink once.
+        // The move itself is FamilyPreferenceCookiesTest's.
+        $this->withUnencryptedCookie('hop_pref', '2');
+    }
+
     public function test_all_eight_language_catalogs_exist_and_have_identical_keys(): void
     {
         $languages = Locales::codes();

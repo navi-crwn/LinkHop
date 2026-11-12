@@ -10,18 +10,9 @@
         <title>{{ $docTitle !== '' ? $docTitle.' · LinkHop' : config('app.name').' · '.__('Your destination is a hop away') }}</title>
         <meta name="description" content="Manage every short link, analytics card, and quota from the LinkHop workspace.">
         <link rel="icon" href="{{ route('brand.favicon') }}">
-        {{-- Apply the saved theme before first paint (no light flash in dark mode) --}}
-        <script nonce="{{ Vite::cspNonce() }}">
-            (function () {
-                try {
-                    if (/(^|; )hop_ui=clean/.test(document.cookie)) document.documentElement.dataset.ui = 'clean';
-                    var t = localStorage.getItem('helink-theme');
-                    if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                        document.documentElement.classList.add('dark');
-                    }
-                } catch (e) {}
-            })();
-        </script>
+        {{-- Apply the saved style and theme before first paint (no light flash in dark mode) --}}
+        <script nonce="{{ Vite::cspNonce() }}">if (/(^|; )hop_ui=clean/.test(document.cookie)) document.documentElement.dataset.ui = 'clean';</script>
+        @include('partials.theme-boot')
         <x-hop::fonts />
         {{-- The family's dialogs and reminder buttons (hop-assets hop-ui, v5 on): loaded once the hub's manifest lists
              them, and only with their SRI hashes. Until then the dashboard asks with the browser's dialogs (resources/js/dialogs.js)
@@ -171,7 +162,8 @@
         <script nonce="{{ Vite::cspNonce() }}">
             window.toggleTheme = function () {
                 const isDark = document.documentElement.classList.toggle('dark');
-                try { localStorage.setItem('helink-theme', isDark ? 'dark' : 'light'); } catch (e) {}
+                // hop_theme for every HOP app, and the old helink-theme key (partials/theme-boot)
+                window.hopSetTheme(isDark ? 'dark' : 'light');
                 window.dispatchEvent(new CustomEvent('theme-changed'));
             };
         </script>
