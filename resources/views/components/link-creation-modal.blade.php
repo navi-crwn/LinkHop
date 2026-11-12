@@ -352,7 +352,10 @@
                         </div>
                     </div>
                     <div class="min-w-0 bg-white dark:bg-slate-800">
-                        <div class="space-y-6 p-4 sm:p-6">
+                        {{-- Two columns share one scroller: on lg the folder, QR and preview stay in view (sticky) while the
+                             options on the left scroll, and scroll on their own when they are taller than the scroller
+                             (90vh minus the header and the footer, about 9.25rem). One column below lg: no sticky. --}}
+                        <div class="space-y-6 p-4 sm:p-6 lg:sticky lg:top-0 lg:max-h-[calc(90vh-10rem)] lg:overflow-y-auto lg:overscroll-contain">
                             <div>
                                 <div class="flex items-center justify-between mb-2">
                                     <div class="flex items-center gap-2">
