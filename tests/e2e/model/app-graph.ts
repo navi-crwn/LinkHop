@@ -234,6 +234,21 @@ export const ACTIONS: Action[] = [
     },
   },
 
+  // ---- settings ----
+  {
+    // The activity log shows each time in the reader's own zone once the script has run; a formatter that
+    // throws leaves the time empty (nightly pair-user-009). Every persona starts with one entry.
+    id: 'settings_activity_times', from: ['user_settings'], to: 'same',
+    run: async ({ page }) => {
+      await page.goto('/settings#activity');
+      const times = page.locator('time[datetime]');
+      await times.first().waitFor({ state: 'attached' }); // an empty time has no box: it never becomes visible
+      const texts = await times.allTextContents();
+      const empty = texts.filter(t => !t.trim()).length;
+      if (empty) throw new Error(`INVARIANT ${empty} of ${texts.length} activity times are empty`);
+    },
+  },
+
   // ---- folders / tags ----
   { id: 'open_folder_modal', from: ['user_folders'], to: 'user_folder_modal', run: async ({ page }) => { await page.locator('button[data-call="openFolderModal"]').first().click(); await page.getByRole('heading', { name: 'Create new folder' }).waitFor(); } },
   { id: 'close_folder_modal', from: ['user_folder_modal'], to: 'user_folders', run: async ({ page }) => { await page.keyboard.press('Escape'); await page.waitForTimeout(400); } },

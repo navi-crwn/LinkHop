@@ -42,7 +42,7 @@ Fails the journey:
 - an empty full-screen layer that blocks the page outside a modal
 - another persona's marker (`zq` + 8 characters) visible to a normal user
 - a password-protected bio page whose HTML contains the protected link
-- action-level invariants (block order survives a reload, other users' links are not readable)
+- action-level invariants (block order survives a reload, other users' links are not readable, activity times are filled in)
 - database invariants after the journey (`GET /_e2e/invariants`)
 
 Reported only (`reports/runs/coverage.md`): report-only CSP violations,

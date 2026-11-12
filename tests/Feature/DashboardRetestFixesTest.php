@@ -122,6 +122,10 @@ it('shows the activity time with its zone, stored in UTC', function () {
     $html = $this->get(route('settings'))->assertOk()->getContent();
 
     expect($html)->toMatch('/<time datetime="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z"/')->toContain(' UTC</time>');
+    // The browser's formatter throws when dateStyle or timeStyle come with a single part such as timeZoneName,
+    // and the time is then left empty.
+    preg_match('/<time datetime[^>]*x-text="([^"]*)"/', $html, $script);
+    expect($script[1] ?? '')->toContain('timeZoneName')->not->toContain('dateStyle')->not->toContain('timeStyle');
 });
 
 it('sends the Settings cards to the matching tabs of the hub settings page', function () {
