@@ -180,7 +180,7 @@
                                         @input="generateQrPreview()"
                                         @input.debounce.350ms="slugCheck.run(formData.slug)"
                                         placeholder="custom-slug"
-                                        pattern="[a-zA-Z0-9_\-]+"
+                                        pattern="[A-Za-z0-9\-]{3,48}" title="{{ __('Slug can only contain letters, numbers, and hyphens.') }}"
                                         class="input min-w-0 flex-1"
                                     >
                                     <button 

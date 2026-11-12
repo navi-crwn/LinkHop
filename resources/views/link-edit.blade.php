@@ -46,7 +46,7 @@
                         <label class="label" for="slug">Slug</label>
                         <div class="flex items-center gap-2">
                             <span class="shrink-0 text-sm text-muted">{{ public_host() }}/l/</span>
-                            <input id="slug" type="text" name="slug" value="{{ old('slug', $link->slug) }}" class="input" autocomplete="off" aria-describedby="slug-check"
+                            <input id="slug" type="text" name="slug" value="{{ old('slug', $link->slug) }}" pattern="[A-Za-z0-9\-]{3,48}" title="{{ __('Slug can only contain letters, numbers, and hyphens.') }}" class="input" autocomplete="off" aria-describedby="slug-check"
                                    @input.debounce.350ms="check.run($event.target.value)">
                         </div>
                         <p id="slug-check" x-show="check.state === 'ok' || check.state === 'bad'" x-cloak x-text="check.message" role="status" aria-live="polite"
