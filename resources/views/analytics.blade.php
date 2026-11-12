@@ -39,7 +39,7 @@
                     <span class="truncate" x-text="selectedText"></span>
                     <svg class="ml-2 h-4 w-4 shrink-0 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="m6 9 6 6 6-6"/></svg>
                 </button>
-                <div x-show="open" x-transition x-cloak class="glass-strong absolute z-50 mt-1 w-full min-w-[240px] rounded-xl p-1.5">
+                <div x-show="open" x-transition x-cloak class="glass-strong glass-popover absolute z-50 mt-1 w-full min-w-[240px] rounded-xl p-1.5">
                     <input type="text" x-model="search" placeholder="Search links…" class="input mb-1" @click.stop>
                     <div class="max-h-64 overflow-y-auto">
                         <button type="button" @click="pick('all')" data-ctl="option" class="option text-ink">All links</button>
