@@ -1,12 +1,12 @@
 <?php
 
 use App\Models\HopApp;
-use App\Models\SeoSetting;
 use App\Support\HopSignature;
 use App\Support\ServerErrorAlert;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
@@ -158,7 +158,7 @@ it('refuses a bad address and saves nothing else from that form', function () {
         alertSetting('PUT', [ServerErrorAlert::SETTING => $bad, 'seo.site_title' => 'Changed'])
             ->assertStatus(422)->assertJsonPath('message', ServerErrorAlert::SETTING.' must be one email address');
     }
-    expect(SeoSetting::first()?->site_title)->not->toBe('Changed');
+    expect(DB::table('seo_settings')->count())->toBe(0);
     expect(ServerErrorAlert::stored())->toBeNull();
 });
 

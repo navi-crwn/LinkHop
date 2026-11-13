@@ -11,7 +11,6 @@ use App\Models\IpBan;
 use App\Models\IpWatchlist;
 use App\Models\Link;
 use App\Models\LinkClick;
-use App\Models\SeoSetting;
 use App\Models\User;
 use App\Services\LinkService;
 use App\Support\GuestDigest;
@@ -104,7 +103,6 @@ class HopContentController extends Controller
             ])),
             'extensions' => ['ip', 'domains', 'queue', 'analytics', 'guest_digest'],
             'settings_schema' => [
-                ...array_map(fn ($k) => ['key' => 'seo.'.$k, 'type' => 'string', 'restart_required' => false], SeoSetting::make()->getFillable()),
                 ['key' => ServerErrorAlert::SETTING, 'type' => 'string', 'restart_required' => false],
             ],
         ]]);
@@ -544,14 +542,10 @@ class HopContentController extends Controller
 
     // ---- settings ---------------------------------------------------------------
 
-    /** GET /api/hop/settings: SEO/site settings (editable) plus read-only facts from .env. */
+    /** GET /api/hop/settings: the editable settings (the server-error address) plus read-only facts from .env. */
     public function settings(): JsonResponse
     {
-        $seo = SeoSetting::first();
         $rows = [];
-        foreach (SeoSetting::make()->getFillable() as $k) {
-            $rows[] = ['key' => 'seo.'.$k, 'type' => 'string', 'value' => $seo?->{$k}, 'default' => null, 'description' => 'Site & SEO: '.str_replace('_', ' ', $k), 'restart_required' => false, 'readonly' => false];
-        }
         $rows[] = ['key' => ServerErrorAlert::SETTING, 'type' => 'string', 'value' => ServerErrorAlert::recipient(), 'default' => null, 'description' => 'Email for server errors (500), at most one per kind of error per hour. Empty on an own install: no mail', 'restart_required' => false, 'readonly' => false];
         $env = [
             'guest_link_max_days' => config('shortener.guest_link_max_days'), 'guest_link_idle_days' => config('shortener.guest_link_idle_days'),
@@ -569,37 +563,32 @@ class HopContentController extends Controller
         return response()->json(['ok' => true, 'data' => $rows]);
     }
 
-    /** PUT /api/hop/settings {"seo.site_title": "…", …} */
+    /**
+     * PUT /api/hop/settings {"alerts.server_error_email": "…"}
+     * The eight "seo.*" keys Imperium used to send were stored but never read by any page; they are retired. A body
+     * that carries only such keys is answered like a save with nothing to change (200, the current settings), so an
+     * older Imperium sees no error; they are not stored.
+     */
     public function saveSettings(Request $request): JsonResponse
     {
-        $changes = [];
-        foreach ((array) $request->all() as $k => $v) {
-            if (str_starts_with($k, 'seo.') && in_array(substr($k, 4), SeoSetting::make()->getFillable(), true)) {
-                $changes[substr($k, 4)] = is_null($v) ? null : mb_substr((string) $v, 0, 500);
-            }
-        }
         $all = (array) $request->all();
         $hasAddress = array_key_exists(ServerErrorAlert::SETTING, $all);
-        if (! $changes && ! $hasAddress) {
-            return $this->fail('bad_params', 'nothing editable in the body', 422);
-        }
-        if ($hasAddress) {
-            $address = $all[ServerErrorAlert::SETTING] ?? '';
-            if (! ServerErrorAlert::validAddress($address)) {
-                return $this->fail('bad_params', ServerErrorAlert::SETTING.' must be one email address', 422);
+        if (! $hasAddress) {
+            $retired = array_filter(array_keys($all), fn ($k) => str_starts_with((string) $k, 'seo.'));
+            if (! $retired) {
+                return $this->fail('bad_params', 'nothing editable in the body', 422);
             }
-            if (! ServerErrorAlert::store(trim($address))) {
-                return $this->fail('not_stored', ServerErrorAlert::SETTING.' could not be stored', 500);
-            }
+
+            return $this->settings();
         }
-        if ($changes) {
-            SeoSetting::updateOrCreate(['id' => 1], $changes);
+        $address = $all[ServerErrorAlert::SETTING] ?? '';
+        if (! ServerErrorAlert::validAddress($address)) {
+            return $this->fail('bad_params', ServerErrorAlert::SETTING.' must be one email address', 422);
         }
-        if ($hasAddress) {
-            $changes[ServerErrorAlert::SETTING] = trim($address);
+        if (! ServerErrorAlert::store(trim($address))) {
+            return $this->fail('not_stored', ServerErrorAlert::SETTING.' could not be stored', 500);
         }
-        Cache::forget('seo.settings');
-        HopAudit::create($this->auditBase($request, 'settings.update', 'settings', 'seo', null) + ['params' => $changes]);
+        HopAudit::create($this->auditBase($request, 'settings.update', 'settings', 'seo', null) + ['params' => [ServerErrorAlert::SETTING => trim($address)]]);
 
         return $this->settings();
     }
