@@ -74,11 +74,15 @@ export default function installInlineActions(root = document) {
         ask(form, submitter || form.querySelector('button[type="submit"], button:not([type])')).then((yes) => {
             if (!yes) return;
             confirmed.add(form);
-            if (typeof form.requestSubmit === 'function') {
-                form.requestSubmit(submitter && submitter.form === form ? submitter : undefined);
-            } else {
-                form.submit();
-            }
+            // The browser's own confirm() answers at once, still inside this submit event, and a form ignores a
+            // submit that is asked for while it is firing one: so go after the event.
+            setTimeout(() => {
+                if (typeof form.requestSubmit === 'function') {
+                    form.requestSubmit(submitter && submitter.form === form ? submitter : undefined);
+                } else {
+                    form.submit();
+                }
+            }, 0);
         });
     }, true);
 
@@ -111,7 +115,8 @@ export default function installInlineActions(root = document) {
                 ask(confirmEl).then((yes) => {
                     if (yes) {
                         confirmed.add(confirmEl);
-                        confirmEl.click();
+                        // after this click event: an element ignores click() while it is being clicked
+                        setTimeout(() => confirmEl.click(), 0);
                     }
                 });
                 return;
