@@ -149,7 +149,7 @@
                 @empty
                     <div class="px-4 py-14 text-center">
                         <p class="text-sm text-muted">{{ $filters['q'] ? 'No links match your search.' : 'No links yet.' }}</p>
-                        <button type="button" data-call="openLinkPanel" class="btn-primary btn-sm mt-3">Create a link</button>
+                        <button type="button" data-call="openLinkPanel" class="btn-primary btn-sm mt-3">{{ __('Create a link') }}</button>
                     </div>
                 @endforelse
             </div>
