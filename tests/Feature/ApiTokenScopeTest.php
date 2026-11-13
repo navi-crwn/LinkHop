@@ -3,6 +3,7 @@
 use App\Models\Link;
 use App\Models\User;
 use Hop\Auth\Models\ApiToken;
+use Illuminate\Support\Facades\Hash;
 
 /*
 | The token API: tokens come from the hub's shared api_tokens table (hop/auth
@@ -102,4 +103,49 @@ test('GET /api/me/links needs link:read and lists only the caller’s live links
 
     // LIKE wildcards are plain text.
     expect($this->withHeaders($read)->getJson('/api/me/links?search=%25')->json('data'))->toBe([]);
+});
+
+/*
+| The API alias rule follows the link form: letters, numbers and hyphens, 3 to 48. The API
+| used to take "_" and up to 255, so my_link could be made but never read or deleted through
+| the API routes. Old links with an underscore keep opening and can still be read and deleted;
+| a new alias follows the form rule. The link password is at least 6 letters here as on the form.
+*/
+
+test('POST /api/shorten follows the link form’s alias rule: 3 to 48 letters, numbers and hyphens', function (string $alias) {
+    $user = User::factory()->create();
+    $this->withHeaders(bearer($user, ['link:create']))->postJson('/api/shorten', ['url' => 'https://example.com', 'alias' => $alias])
+        ->assertStatus(422)->assertJsonPath('success', false)->assertJsonPath('error', 'Validation Error')
+        ->assertJsonStructure(['messages' => ['alias']]);
+    expect(Link::where('slug', $alias)->exists())->toBeFalse($alias);
+})->with(['a_b', 'ab', str_repeat('x', 49), 'my link', 'my.link', 'ünï']);
+
+test('POST /api/shorten still makes a link for a good alias and for no alias at all', function () {
+    $user = User::factory()->create();
+    $token = bearer($user, ['link:create']);
+    $long = str_repeat('x', 48);
+    $this->withHeaders($token)->postJson('/api/shorten', ['url' => 'https://example.com', 'alias' => 'my-link'])->assertCreated()->assertJsonPath('data.slug', 'my-link');
+    $this->withHeaders($token)->postJson('/api/shorten', ['url' => 'https://example.com', 'alias' => $long])->assertCreated()->assertJsonPath('data.slug', $long);
+    $res = $this->withHeaders($token)->postJson('/api/shorten', ['url' => 'https://example.com'])->assertCreated();
+    expect($res->json('data.slug'))->not->toBe('');
+});
+
+test('a link that already has an underscore slug still opens and can be read and deleted through the API', function () {
+    $user = User::factory()->create();
+    Link::create(['user_id' => $user->id, 'slug' => 'my_link', 'target_url' => 'https://example.com/old', 'status' => 'active']);
+
+    $this->get('/l/my_link')->assertRedirect('https://example.com/old');
+    $this->withHeaders(bearer($user, ['link:read']))->getJson('/api/links/my_link')->assertOk()->assertJsonPath('data.slug', 'my_link')->assertJsonPath('data.target_url', 'https://example.com/old');
+    $this->withHeaders(bearer($user, ['link:write']))->deleteJson('/api/links/my_link')->assertOk()->assertJsonPath('success', true);
+    expect(Link::where('slug', 'my_link')->exists())->toBeFalse();
+});
+
+test('POST /api/shorten wants a link password of at least six letters, as the link form does', function () {
+    $user = User::factory()->create();
+    $token = bearer($user, ['link:create']);
+    $this->withHeaders($token)->postJson('/api/shorten', ['url' => 'https://example.com/pw5', 'password' => 'abcde'])
+        ->assertStatus(422)->assertJsonPath('error', 'Validation Error')->assertJsonStructure(['messages' => ['password']]);
+    $res = $this->withHeaders($token)->postJson('/api/shorten', ['url' => 'https://example.com/pw6', 'password' => 'abcdef'])->assertCreated();
+    $hash = Link::where('slug', $res->json('data.slug'))->value('password_hash');
+    expect($hash)->not->toBeNull()->and(Hash::check('abcdef', $hash))->toBeTrue();
 });

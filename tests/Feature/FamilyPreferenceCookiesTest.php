@@ -132,3 +132,40 @@ it('puts the hop_theme reader on every page that can switch the theme', function
     expect(view('errors.500')->render())->toContain($reader);
     expect(view('preview', ['targetUrl' => 'https://example.com'])->render())->toContain($reader)->toContain('data-old-key="theme"');
 });
+
+/*
+| H-1: a request that carries no hop_lang has nothing to move, so it gets no clean-up and no cookie at all (a plain
+| public page stays free of Set-Cookie named hop_*, as in BioHop). The clean-up runs when hop_lang arrives.
+*/
+it('sends no hop_* cookie on a request without hop_lang', function () {
+    foreach (['https://link.hel.ink/about', 'https://link.hel.ink/', 'https://hel.ink/about'] as $url) {
+        $response = $this->get($url)->assertOk();
+
+        expect(prefCookies($response, 'hop_lang'))->toBe([], $url)->and(prefCookies($response, 'hop_pref'))->toBe([], $url);
+    }
+});
+
+it('treats an empty hop_lang like no cookie', function () {
+    $response = $this->withHeader('Cookie', 'hop_lang=')->get('https://link.hel.ink/about')->assertOk();
+
+    expect(prefCookies($response, 'hop_lang'))->toBe([])->and(prefCookies($response, 'hop_pref'))->toBe([]);
+});
+
+it('writes exactly one domain hop_lang and no marker for ?lang= without a cookie', function () {
+    $response = $this->get('https://link.hel.ink/about?lang=de')->assertOk()->assertSee('lang="de"', false);
+    $cookies = prefCookies($response, 'hop_lang');
+
+    expect($cookies)->toHaveCount(1)
+        ->and($cookies[0]->getDomain())->toBe('.hel.ink')
+        ->and($cookies[0]->getValue())->toBe('de')
+        ->and(prefCookies($response, 'hop_pref'))->toBe([]);
+});
+
+it('still cleans up when the request carries a hop_lang, even an unsupported one', function () {
+    foreach (['ja', 'xx'] as $lang) {
+        $response = $this->flushHeaders()->withUnencryptedCookie('hop_lang', $lang)->get('https://link.hel.ink/about')->assertOk();
+
+        expect(prefCookies($response, 'hop_pref'))->toHaveCount(1, $lang)
+            ->and(collect(prefCookies($response, 'hop_lang'))->contains(fn (Cookie $c) => $c->isCleared()))->toBeTrue($lang);
+    }
+});
