@@ -490,7 +490,7 @@
                         .catch(error => {
                             console.error('❌ Map error:', error);
                             document.getElementById('world-map').innerHTML =
-                                '<div class="flex h-full items-center justify-center text-sm text-muted"><p>@js(__('Map unavailable right now'))</p></div>';
+                                '<div class="flex h-full items-center justify-center text-sm text-muted"><p>' + @js(__('Map unavailable right now')) + '</p></div>';
                         });
                 } catch (error) {
                     console.error('❌ Map init error:', error);
