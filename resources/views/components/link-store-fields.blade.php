@@ -31,6 +31,9 @@
         </div>
         <div class="md:col-span-2">
 @endif
+@if ($model)
+    <p x-show="formData.wa_mode" x-cloak class="rounded-xl bg-amber-500/10 px-3 py-2 text-sm text-ink" data-chip-blocked="store">{{ __('The WhatsApp rotator is on, so the app store link is paused. Turn the rotator off in WhatsApp rotator to use the app store link.') }}</p>
+@endif
 <div @unless ($model) x-data="{ storeOn: @js($on), storeLinks: @js($values) }" @endunless @if ($model) x-show="!formData.wa_mode" @endif class="space-y-4" data-store-links>
     @if ($problems->isNotEmpty())
         <ul role="alert" class="space-y-1 rounded-xl bg-rose-500/10 px-3 py-2 text-sm text-rose-700 dark:text-rose-300">

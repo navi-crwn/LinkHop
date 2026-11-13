@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.2] - 2026-11-13
+
+### Changed
+- The create dialog is reworked after the dub.co pattern: a lean core (destination, short link, tags) with the folder and the compact preview column that stays in view while the left side scrolls, and every other option group in its own small sheet that opens from a chip — Campaign tags (UTM), QR code, Social preview, Schedule & limits, Protection (password, redirect type, content warning, comments), Open in the app (deep link and app store link), Routing & A/B split and the WhatsApp rotator. A chip that was filled shows a short summary ("2 set", "3 rules · A/B", "Auto"); every sheet closes with Escape or Done and gives the focus back to its chip. The payload, the server contract and the validation are unchanged, and the edit page keeps its full sectioned form.
+- The top bar action is now "Create": the main button opens the dialog as before, and the caret beside it offers the presets — Link, QR code (switches the QR on and opens its design sheet) and Deep link (starts the app opener in auto mode). On pages without the dialog the presets travel to `/links?create=qr` or `/links?create=deeplink`, which open the dialog with the matching sheet.
+- Analytics is compact, especially on a phone: the page header that repeated the top bar is gone; one toolbar row (the link picker, a segmented 6/12/24/48/72-hour range — a compact select on a phone — and Location and Device together in one Filter popover with a badge for what is active, Reset only when something is filtered); one KPI card with four numbers (the top country now also carries the country count); a shorter chart; and one card with tabs for every breakdown (Locations with the map, Sources including QR vs direct, Technology, Links, Busiest hours, Networks). The active tab stays in the URL, and the map is only built when its tab first shows it. The busiest-hours heatmap uses fixed-size cells, so a phone no longer scrolls sideways.
+- The create dialog and analytics speak the reader's language: the ±150 strings that were English literals in every language are translated in all nine (en, zh-CN, de, id, ja, pt-BR, es, fr, ru), and so are the rank lists' "Show all"/"Show less" buttons on the analytics and link pages.
+
+### Fixed
+- Analytics: the chart, the map and the country focus work again on the reworked page (one script line produced invalid JavaScript, so the whole block failed to load). A test now renders the member pages and has Node parse every inline script.
+- Create dialog: the "QR code" chip only opens its sheet; the QR is switched on with a "Generate QR code" switch inside the sheet (or by the Create ▸ QR code preset) and switches off again for the next link. The dialog and its option sheets are solid surfaces, not half see-through.
+- `?create=…` is read once and removed from the address, so the dialog no longer reopens after the page reloads for a new link. The campaign tag sheet starts from the tags on the new address instead of the previous link's fields, the QR sheet keeps its buttons in view on a short window and the Social preview sheet's buttons can be reached by scrolling, and the WhatsApp rotator and app store link sheets say why they are paused when the other one is on.
+- Analytics: the page has an (invisible) main heading again (the open tab already stays when the filter or the time range changes: the address fragment travels with the form); "24h", "via proxy/VPN" and the empty link list texts follow the reader's language.
+
 ## [2.3.1] - 2026-11-12
 
 ### Fixed
