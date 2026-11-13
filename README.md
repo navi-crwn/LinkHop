@@ -248,7 +248,7 @@ curl -X POST https://link.hel.ink/api/shorten \
 | Field | | |
 | --- | --- | --- |
 | `url` | required | The destination (`https://` is added when the scheme is missing). Refused when the safety check flags it. |
-| `alias` | optional | The slug, 3–255 characters of `A-Z a-z 0-9 _ -`; reserved words and taken slugs are refused. Random when omitted. |
+| `alias` | optional | The slug, 3–48 characters of `A-Z a-z 0-9 -` (the rule of the link form); reserved words and taken slugs are refused. Random when omitted. Links made before this rule may hold `_` and keep working. |
 | `folder` | optional | Folder name on the account; created when it does not exist. |
 | `expires_at` | optional | ISO date-time in the future. |
 | `password` | optional | 4–50 characters; visitors must type it. |

@@ -45,3 +45,13 @@ it('gives every slug field the server rule as its pattern', function () {
         }
     }
 });
+
+it('opens the edit page of a link whose slug has an underscore and refuses it gently, without an error page', function () {
+    $user = User::factory()->create();
+    $link = Link::create(['user_id' => $user->id, 'slug' => 'my_link', 'target_url' => 'https://example.com', 'status' => 'active']);
+
+    $this->actingAs($user)->get('/links/'.$link->id.'/edit')->assertOk();
+    $this->actingAs($user)->put(route('links.update', $link), ['target_url' => 'https://example.com', 'status' => 'active', 'slug' => 'my_link'])
+        ->assertSessionHasErrors('slug');
+    expect($link->fresh()->slug)->toBe('my_link');
+});

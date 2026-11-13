@@ -148,7 +148,8 @@ class ShortenController extends Controller
         $minSlugLength = config('shortener.min_custom_slug_length', 3);
         $validator = Validator::make($request->all(), [
             'url' => 'required|url|max:2048',
-            'alias' => "nullable|string|min:{$minSlugLength}|max:255|regex:/^[a-zA-Z0-9_-]+$/",
+            // The alias rule is the link form's (ManageLinkRequest): letters, numbers and hyphens, 3 to 48.
+            'alias' => "nullable|string|min:{$minSlugLength}|max:48|regex:/^[a-z0-9-]+$/i",
             'folder' => 'nullable|string',
             'content_warning' => 'nullable|string|in:none,sensitive,adult',
             'warning_reason' => 'nullable|string|max:255',
