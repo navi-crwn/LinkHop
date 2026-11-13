@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.3] - 2026-11-14
+
+### Fixed
+- API: the token API follows the link form's alias rule: a new link made with `POST /api/shorten` takes an alias of 3 to 48 letters, numbers and hyphens. Older links with an underscore (or a longer slug) stay readable and can still be deleted through the API.
+- API: a link password set through the token API must be at least six characters, the same as the link form (it used to accept four). The `/api-docs` page and the README now state both rules.
+- Pages now say `Vary: Cookie` (they already carried `Cache-Control: private`), so a cache that follows `Vary` never keeps one visitor's language for another. Public assets with their own `max-age` are left as they were.
+- A request without a language cookie no longer receives the one-time `hop_lang`/`hop_pref` clean-up cookies; the clean-up runs on the first request that carries `hop_lang`. A plain page is now free of preference cookies, like the bio pages.
+
 ## [2.3.2] - 2026-11-13
 
 ### Changed
