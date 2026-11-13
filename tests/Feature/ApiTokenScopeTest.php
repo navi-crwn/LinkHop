@@ -3,6 +3,7 @@
 use App\Models\Link;
 use App\Models\User;
 use Hop\Auth\Models\ApiToken;
+use Illuminate\Support\Facades\Hash;
 
 /*
 | The token API: tokens come from the hub's shared api_tokens table (hop/auth
@@ -137,4 +138,14 @@ test('a link that already has an underscore slug still opens and can be read and
     $this->withHeaders(bearer($user, ['link:read']))->getJson('/api/links/my_link')->assertOk()->assertJsonPath('data.slug', 'my_link')->assertJsonPath('data.target_url', 'https://example.com/old');
     $this->withHeaders(bearer($user, ['link:write']))->deleteJson('/api/links/my_link')->assertOk()->assertJsonPath('success', true);
     expect(Link::where('slug', 'my_link')->exists())->toBeFalse();
+});
+
+test('POST /api/shorten wants a link password of at least six letters, as the link form does', function () {
+    $user = User::factory()->create();
+    $token = bearer($user, ['link:create']);
+    $this->withHeaders($token)->postJson('/api/shorten', ['url' => 'https://example.com/pw5', 'password' => 'abcde'])
+        ->assertStatus(422)->assertJsonPath('error', 'Validation Error')->assertJsonStructure(['messages' => ['password']]);
+    $res = $this->withHeaders($token)->postJson('/api/shorten', ['url' => 'https://example.com/pw6', 'password' => 'abcdef'])->assertCreated();
+    $hash = Link::where('slug', $res->json('data.slug'))->value('password_hash');
+    expect($hash)->not->toBeNull()->and(Hash::check('abcdef', $hash))->toBeTrue();
 });

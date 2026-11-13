@@ -251,7 +251,7 @@ curl -X POST https://link.hel.ink/api/shorten \
 | `alias` | optional | The slug, 3–48 characters of `A-Z a-z 0-9 -` (the rule of the link form); reserved words and taken slugs are refused. Random when omitted. Links made before this rule may hold `_` and keep working. |
 | `folder` | optional | Folder name on the account; created when it does not exist. |
 | `expires_at` | optional | ISO date-time in the future. |
-| `password` | optional | 4–50 characters; visitors must type it. |
+| `password` | optional | 6–50 characters, as on the link form; visitors must type it. |
 
 ```json
 HTTP 201

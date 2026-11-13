@@ -154,7 +154,8 @@ class ShortenController extends Controller
             'content_warning' => 'nullable|string|in:none,sensitive,adult',
             'warning_reason' => 'nullable|string|max:255',
             'expires_at' => 'nullable|date|after:now',
-            'password' => 'nullable|string|min:4|max:50',
+            // The link password rule is the link form's (ManageLinkRequest): at least 6 letters.
+            'password' => 'nullable|string|min:6|max:50',
             'redirect_type' => 'nullable|in:301,302,307,308',
             ...LinkLimits::rules(),
             ...LinkRouting::rules(),
