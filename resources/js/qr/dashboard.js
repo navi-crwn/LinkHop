@@ -89,7 +89,10 @@ function main() {
     tab = next;
     ['wifi', 'vcard', 'text'].forEach(function (k) {
       var on = k === tab;
-      $('qc-tab-' + k).setAttribute('aria-selected', String(on)); $('qc-tab-' + k).tabIndex = on ? 0 : -1;
+      var b = $('qc-tab-' + k);
+      b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1;
+      ['bg-slate-900/5', 'text-ink', 'dark:bg-white/10'].forEach(function (c) { b.classList.toggle(c, on); });
+      ['text-muted', 'hover:text-ink'].forEach(function (c) { b.classList.toggle(c, !on); });
       $('qc-panel-' + k).hidden = !on;
     });
     render();

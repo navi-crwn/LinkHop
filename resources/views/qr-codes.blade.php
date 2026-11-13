@@ -32,7 +32,7 @@
                 <div class="min-w-0 space-y-4">
                     <div class="flex flex-wrap gap-0.5" role="tablist" aria-label="{{ $s['qr_type'] }}">
                         @foreach ($typeName as $key => $name)
-                            <button type="button" role="tab" class="tab" data-qc-tab="{{ $key }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}" id="qc-tab-{{ $key }}" aria-controls="qc-panel-{{ $key }}" data-ctl="tab">{{ $name }}</button>
+                            <button type="button" role="tab" class="tab {{ $loop->first ? 'bg-slate-900/5 text-ink dark:bg-white/10' : 'text-muted hover:text-ink' }}" data-qc-tab="{{ $key }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}" id="qc-tab-{{ $key }}" aria-controls="qc-panel-{{ $key }}" data-ctl="tab">{{ $name }}</button>
                         @endforeach
                     </div>
 
