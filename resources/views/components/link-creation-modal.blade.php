@@ -211,7 +211,7 @@
                                     </button>
                                 </div>
                                 {{-- Escape here closes only this list (see the window handler above). --}}
-                                <div class="relative" @click.outside="if (activeDropdown === 'tags') { activeDropdown = null; tagSearch = ''; }" @keydown.escape.stop="activeDropdown = null; tagSearch = ''">
+                                <div class="relative" @click.outside="if (activeDropdown === 'tags') { activeDropdown = null; tagSearch = ''; }">
                                     <button
                                         type="button"
                                         @click="activeDropdown = activeDropdown === 'tags' ? null : 'tags'; tagSearch = ''"
@@ -344,7 +344,7 @@
                                         {{ __('+ New folder') }}
                                     </button>
                                 </div>
-                                <div class="relative" @click.outside="if (activeDropdown === 'folders') { activeDropdown = null; folderSearch = ''; }" @keydown.escape.stop="activeDropdown = null; folderSearch = ''">
+                                <div class="relative" @click.outside="if (activeDropdown === 'folders') { activeDropdown = null; folderSearch = ''; }">
                                     <button
                                         type="button"
                                         @click="activeDropdown = activeDropdown === 'folders' ? null : 'folders'; folderSearch = ''"
