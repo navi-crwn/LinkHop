@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0] - 2026-11-14
+
+### Added
+- QR codes: the "QR codes" entry in the dashboard menu now opens a page inside the dashboard instead of the public tool. It lists the QR codes of your short links and the codes you keep yourself (Wi-Fi, contact card, link or text). "Create QR" makes a new one, Save keeps it, and each saved code can be viewed, downloaded as PNG or SVG, renamed or deleted. What a saved code carries, such as a Wi-Fi password, is stored encrypted and shown only to you; up to 50 codes per account. Asked for because the menu used to leave the dashboard and a made code could not be kept.
+
+### Changed
+- Create dialog: the Folder picker is now on the left, next to Tags, and the right side shows only the link preview. This is the same for the QR and Deep link entries of the Create menu. Reported by a user: the folder belongs with the other fields you fill in.
+- Analytics: the list of links is now as wide as its button instead of stretching across the page. On wide screens (1280 px and up) the chart sits beside the four key numbers and is taller. The smaller tabs under a tab (Countries, Domains, Devices, Links) now look smaller, sit right under their tab on the left, and the main tabs wrap onto a second line on a phone instead of scrolling sideways. Reported by a user: the page looked stretched and the two rows of tabs looked alike.
+- "Part of Hop Easy Link" is now at the bottom of the sidebar on every dashboard page, and no longer under the page content, where its place changed with the length of the page.
+- Public pages (information pages, the changelog, the public QR tool, the link checker): when you are signed in, the logo and the back link now take you to the dashboard and say so; visitors still go to the front page.
+- Public top bar on a phone: the Sign up (or Dashboard) button now lives in the menu on small screens. In German and Russian the bar was wider than the screen and pushed the menu button out of sight.
+
+### Fixed
+- QR sheet in the create dialog: Reset now only restores the colours and logo; it used to switch the QR code off as well. After the sheet closes, the keyboard focus returns to a control you can see.
+- Confirm questions (for example "Delete this QR code?") did nothing when the family's own dialogs could not load and the browser's plain question was used instead; the action now goes ahead after you confirm.
+- The control center (Imperium) no longer lists eight site and search settings that never changed any page; an older control center that still sends them gets no error and nothing is stored.
+
 ## [2.3.3] - 2026-11-14
 
 ### Fixed
