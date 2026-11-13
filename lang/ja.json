@@ -1347,5 +1347,12 @@
     "Default OG": "デフォルトOG",
     "Create options": "作成オプション",
     "Deep link": "ディープリンク",
-    "Create a link": "リンクを作成"
+    "Create a link": "リンクを作成",
+    "Generate QR code": "QR コードを作成",
+    "The app store link is on, so the WhatsApp rotator is paused. Turn the app store link off in Open in the app to use the rotator.": "アプリストアリンクがオンのため、WhatsApp ローテーターは一時停止中です。ローテーターを使うには「アプリで開く」でアプリストアリンクをオフにしてください。",
+    "The WhatsApp rotator is on, so the app store link is paused. Turn the rotator off in WhatsApp rotator to use the app store link.": "WhatsApp ローテーターがオンのため、アプリストアリンクは一時停止中です。アプリストアリンクを使うには「WhatsApp ローテーター」でローテーターをオフにしてください。",
+    ":count h": ":count 時間",
+    ":count via proxy/VPN": "プロキシ/VPN 経由 :count 件",
+    "No links match your search.": "検索に一致するリンクはありません。",
+    "No links yet.": "まだリンクがありません。"
 }

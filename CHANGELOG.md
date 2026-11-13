@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Analytics is compact, especially on a phone: the page header that repeated the top bar is gone; one toolbar row (the link picker, a segmented 6/12/24/48/72-hour range — a compact select on a phone — and Location and Device together in one Filter popover with a badge for what is active, Reset only when something is filtered); one KPI card with four numbers (the top country now also carries the country count); a shorter chart; and one card with tabs for every breakdown (Locations with the map, Sources including QR vs direct, Technology, Links, Busiest hours, Networks). The active tab stays in the URL, and the map is only built when its tab first shows it. The busiest-hours heatmap uses fixed-size cells, so a phone no longer scrolls sideways.
 - The create dialog and analytics speak the reader's language: the ±150 strings that were English literals in every language are translated in all nine (en, zh-CN, de, id, ja, pt-BR, es, fr, ru), and so are the rank lists' "Show all"/"Show less" buttons on the analytics and link pages.
 
+### Fixed
+- Analytics: the chart, the map and the country focus work again on the reworked page (one script line produced invalid JavaScript, so the whole block failed to load). A test now renders the member pages and has Node parse every inline script.
+- Create dialog: the "QR code" chip only opens its sheet; the QR is switched on with a "Generate QR code" switch inside the sheet (or by the Create ▸ QR code preset) and switches off again for the next link. The dialog panel is a solid surface, not half see-through.
+- `?create=…` is read once and removed from the address, so the dialog no longer reopens after the page reloads for a new link. The campaign tag sheet starts from the tags on the new address instead of the previous link's fields, the QR and Social preview sheets keep their buttons in view on a short window, and the WhatsApp rotator and app store link sheets say why they are paused when the other one is on.
+- Analytics: the open tab (Locations, Sources, …) stays when the filter or the time range changes; the page has an (invisible) main heading again; "24h", "via proxy/VPN" and the empty link list texts follow the reader's language.
+
 ## [2.3.1] - 2026-11-12
 
 ### Fixed

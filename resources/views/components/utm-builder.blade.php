@@ -28,6 +28,13 @@
             this.message = '';
             if (this.open) { this.read(); }
         },
+        // The create dialog opens this sheet for every new link: forget the last link's fields and message first.
+        reopen() {
+            this.message = '';
+            this.preset = '';
+            for (const k of Object.keys(this.f)) { this.f[k] = ''; }
+            this.read();
+        },
         read() {
             // Start from the tags already on the address.
             try {
@@ -69,7 +76,7 @@
         },
     }"
     x-init="if (open) { read(); }"
-    x-on:open-utm.window="read()"
+    x-on:open-utm.window="reopen()"
     {{ $attributes->class($plain ? [] : ['rounded-xl border border-slate-500/20 p-3']) }}
 >
     @unless ($plain)

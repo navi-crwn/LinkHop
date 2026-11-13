@@ -1347,5 +1347,12 @@
     "Default OG": "OG padrão",
     "Create options": "Opções de criação",
     "Deep link": "Link profundo",
-    "Create a link": "Criar um link"
+    "Create a link": "Criar um link",
+    "Generate QR code": "Gerar QR code",
+    "The app store link is on, so the WhatsApp rotator is paused. Turn the app store link off in Open in the app to use the rotator.": "O link de loja de aplicativos está ativo, então o rodízio de WhatsApp está pausado. Desative o link de loja em “Abrir no app” para usar o rodízio.",
+    "The WhatsApp rotator is on, so the app store link is paused. Turn the rotator off in WhatsApp rotator to use the app store link.": "O rodízio de WhatsApp está ativo, então o link de loja de aplicativos está pausado. Desative o rodízio em “Rodízio de WhatsApp” para usar o link de loja.",
+    ":count h": ":count h",
+    ":count via proxy/VPN": ":count via proxy/VPN",
+    "No links match your search.": "Nenhum link corresponde à sua busca.",
+    "No links yet.": "Ainda não há links."
 }

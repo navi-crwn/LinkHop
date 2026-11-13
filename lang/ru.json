@@ -1347,5 +1347,12 @@
     "Default OG": "OG по умолчанию",
     "Create options": "Параметры создания",
     "Deep link": "Глубокая ссылка",
-    "Create a link": "Создать ссылку"
+    "Create a link": "Создать ссылку",
+    "Generate QR code": "Создать QR-код",
+    "The app store link is on, so the WhatsApp rotator is paused. Turn the app store link off in Open in the app to use the rotator.": "Ссылка на магазин приложений включена, поэтому ротатор WhatsApp приостановлен. Отключите ссылку на магазин в разделе «Открыть в приложении», чтобы использовать ротатор.",
+    "The WhatsApp rotator is on, so the app store link is paused. Turn the rotator off in WhatsApp rotator to use the app store link.": "Ротатор WhatsApp включён, поэтому ссылка на магазин приложений приостановлена. Отключите ротатор в разделе «Ротатор WhatsApp», чтобы использовать ссылку на магазин.",
+    ":count h": ":count ч",
+    ":count via proxy/VPN": ":count через прокси/VPN",
+    "No links match your search.": "Нет ссылок, подходящих под поиск.",
+    "No links yet.": "Ссылок пока нет."
 }

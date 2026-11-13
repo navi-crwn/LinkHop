@@ -1347,5 +1347,12 @@
     "Default OG": "OG bawaan",
     "Create options": "Opsi pembuatan",
     "Deep link": "Tautan mendalam",
-    "Create a link": "Buat tautan"
+    "Create a link": "Buat tautan",
+    "Generate QR code": "Buat kode QR",
+    "The app store link is on, so the WhatsApp rotator is paused. Turn the app store link off in Open in the app to use the rotator.": "Tautan toko aplikasi sedang menyala, sehingga rotator WhatsApp dijeda. Matikan tautan toko aplikasi di “Buka di aplikasi” untuk memakai rotator.",
+    "The WhatsApp rotator is on, so the app store link is paused. Turn the rotator off in WhatsApp rotator to use the app store link.": "Rotator WhatsApp sedang menyala, sehingga tautan toko aplikasi dijeda. Matikan rotator di “Rotator WhatsApp” untuk memakai tautan toko aplikasi.",
+    ":count h": ":count jam",
+    ":count via proxy/VPN": ":count lewat proxy/VPN",
+    "No links match your search.": "Tidak ada tautan yang cocok dengan pencarianmu.",
+    "No links yet.": "Belum ada tautan."
 }

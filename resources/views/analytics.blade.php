@@ -19,9 +19,12 @@
     @endphp
 
     <div class="space-y-4">
+        <h1 class="sr-only">{{ __('Analytics') }}</h1>
         {{-- Filters. relative z-20: .glass has a backdrop-filter, which makes the form its own layer; without a z-index the
              cards after it are painted over the open link list. z-20 stays under the top bar (z-30) and the menus. --}}
         <form method="GET" x-ref="form" class="glass relative z-20 flex flex-wrap items-center gap-2 rounded-2xl p-2">
+            {{-- The open tab rides along with every filter or range change (a GET form drops the address fragment). --}}
+            <input type="hidden" name="tab" id="analytics-tab" value="{{ in_array(request('tab'), ['locations', 'sources', 'technology', 'links', 'hours', 'networks'], true) ? request('tab') : 'locations' }}">
             <div class="relative w-full md:min-w-56 md:flex-1" x-data="{
                     open: false,
                     search: '',
@@ -58,7 +61,7 @@
             <div class="hidden items-center gap-0.5 rounded-xl bg-slate-900/5 p-0.5 dark:bg-white/10 md:flex" role="group" aria-label="{{ __('Time range') }}"
                  x-data="{ pick(hours) { const form = this.$el.closest('form'); form.querySelector('[name=hours]').value = hours; form.requestSubmit(); } }">
                 @foreach ([6, 12, 24, 48, 72] as $option)
-                    <button type="button" @click="pick({{ $option }})" data-ctl="tab" class="{{ $tabBtn }}" @class([$tabOn => $range == $option, $tabOff => $range != $option])>{{ $option }}h</button>
+                    <button type="button" @click="pick({{ $option }})" data-ctl="tab" class="{{ $tabBtn }}" @class([$tabOn => $range == $option, $tabOff => $range != $option])>{{ __(':count h', ['count' => $option]) }}</button>
                 @endforeach
             </div>
             <select name="hours" data-autosubmit class="input w-auto md:hidden" aria-label="{{ __('Time range') }}">
@@ -151,7 +154,7 @@
             x-data="{
                 valid: ['locations', 'sources', 'technology', 'links', 'hours', 'networks'],
                 get initial() {
-                    const wanted = new URLSearchParams(location.hash.replace(/^#/, '')).get('tab');
+                    const wanted = new URLSearchParams(location.hash.replace(/^#/, '')).get('tab') || new URLSearchParams(location.search).get('tab');
                     return this.valid.includes(wanted) ? wanted : 'locations';
                 },
                 tab: 'locations',
@@ -160,6 +163,8 @@
                 setTab(name) {
                     this.tab = name;
                     history.replaceState(null, '', '#tab=' + name);
+                    const field = document.getElementById('analytics-tab');
+                    if (field) { field.value = name; }
                     if (name === 'locations') { this.$nextTick(() => this.openMap()); }
                 },
                 openMap() {
@@ -303,7 +308,7 @@
                 <div class="mb-3 flex items-center justify-between gap-2">
                     <h3 class="section-title">{{ __('Internet providers') }}</h3>
                     @if (($proxyStats['total'] ?? 0) > 0)
-                        <span class="chip-amber" title="{{ __('Clicks from VPN / proxy / hosting networks') }}">{{ number_format($proxyStats['total']) }} {{ __('via proxy/VPN') }}</span>
+                        <span class="chip-amber" title="{{ __('Clicks from VPN / proxy / hosting networks') }}">{{ __(':count via proxy/VPN', ['count' => number_format($proxyStats['total'])]) }}</span>
                     @endif
                 </div>
                 <x-analytics.rank-list :limit="5" :items="collect($isps)->take(20)->map(fn ($i) => ['label' => ((object) $i)->isp, 'value' => (int) ((object) $i)->total])" color="bg-rose-500/60" :empty="__('No network data.')" />

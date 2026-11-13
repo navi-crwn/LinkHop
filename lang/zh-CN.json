@@ -1347,5 +1347,12 @@
     "Default OG": "默认 OG",
     "Create options": "创建选项",
     "Deep link": "深度链接",
-    "Create a link": "创建链接"
+    "Create a link": "创建链接",
+    "Generate QR code": "生成二维码",
+    "The app store link is on, so the WhatsApp rotator is paused. Turn the app store link off in Open in the app to use the rotator.": "应用商店链接已开启，因此 WhatsApp 轮换已暂停。请在“在应用中打开”中关闭应用商店链接后再使用轮换。",
+    "The WhatsApp rotator is on, so the app store link is paused. Turn the rotator off in WhatsApp rotator to use the app store link.": "WhatsApp 轮换已开启，因此应用商店链接已暂停。请在“WhatsApp 轮换”中关闭轮换后再使用应用商店链接。",
+    ":count h": ":count 小时",
+    ":count via proxy/VPN": ":count 来自代理/VPN",
+    "No links match your search.": "没有与搜索匹配的链接。",
+    "No links yet.": "还没有链接。"
 }

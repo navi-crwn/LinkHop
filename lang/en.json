@@ -1347,5 +1347,12 @@
     "Default OG": "Default OG",
     "Create options": "Create options",
     "Deep link": "Deep link",
-    "Create a link": "Create a link"
+    "Create a link": "Create a link",
+    "Generate QR code": "Generate QR code",
+    "The app store link is on, so the WhatsApp rotator is paused. Turn the app store link off in Open in the app to use the rotator.": "The app store link is on, so the WhatsApp rotator is paused. Turn the app store link off in Open in the app to use the rotator.",
+    "The WhatsApp rotator is on, so the app store link is paused. Turn the rotator off in WhatsApp rotator to use the app store link.": "The WhatsApp rotator is on, so the app store link is paused. Turn the rotator off in WhatsApp rotator to use the app store link.",
+    ":count h": ":count h",
+    ":count via proxy/VPN": ":count via proxy/VPN",
+    "No links match your search.": "No links match your search.",
+    "No links yet.": "No links yet."
 }

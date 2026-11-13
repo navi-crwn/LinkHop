@@ -23,7 +23,7 @@
         x-transition:leave="transition ease-in duration-150"
         x-transition:leave-start="opacity-100 scale-100"
         x-transition:leave-end="opacity-0 scale-95"
-        class="relative z-10 w-full max-w-5xl max-h-[90vh] rounded-2xl glass-strong no-skin flex flex-col"
+        class="relative z-10 w-full max-w-5xl max-h-[90vh] rounded-2xl glass-strong glass-popover no-skin flex flex-col"
         role="dialog"
         aria-modal="true"
         aria-label="{{ __('Create new link') }}"
@@ -277,7 +277,7 @@
                                         <span class="text-sm">{{ __('Campaign tags (UTM)') }}</span>
                                         <span x-show="chipSummary('utm')" x-cloak x-text="chipSummary('utm')" class="rounded-full bg-emerald-600/15 px-1.5 text-[11px] font-semibold"></span>
                                     </button>
-                                    <button type="button" @click="if (!qrSettings.generateQr) { qrSettings.generateQr = true; } openSheet('qr', $el)" data-chip="qr"
+                                    <button type="button" @click="openSheet('qr', $el)" data-chip="qr"
                                         class="btn-soft btn-dense inline-flex items-center gap-1.5"
                                         :class="chipSummary('qr') ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400' : ''">
                                         <span class="text-sm">{{ __('QR code') }}</span>
@@ -764,9 +764,9 @@
             role="dialog"
             aria-modal="true"
             aria-label="{{ __('Custom link preview') }}"
-            class="relative z-210 w-full max-w-4xl rounded-xl bg-white dark:bg-slate-800 shadow-2xl max-h-[85vh] overflow-hidden"
+            class="relative z-210 flex w-full max-w-4xl max-h-[85vh] flex-col overflow-hidden rounded-xl bg-white dark:bg-slate-800 shadow-2xl"
         >
-            <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-4 bg-white dark:bg-slate-800">
+            <div class="flex shrink-0 items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-4 bg-white dark:bg-slate-800">
                 <h4 class="text-lg font-semibold text-slate-900 dark:text-white">{{ __('Custom link preview') }}</h4>
                 <button type="button" aria-label="{{ __('Close') }}" @click="closeSheet()" class="icon-btn">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -775,7 +775,7 @@
                 </button>
             </div>
             {{-- One column below sm: two narrow columns hid the Save button behind the preview card on a phone. --}}
-            <div class="grid max-h-[calc(85vh-80px)] gap-6 overflow-y-auto p-4 sm:grid-cols-2 sm:p-6">
+            <div class="grid min-h-0 flex-1 gap-6 overflow-y-auto p-4 sm:grid-cols-2 sm:p-6">
                 <div class="min-w-0 space-y-4">
                     <div>
                         <label class="label">
@@ -885,9 +885,9 @@
             role="dialog"
             aria-modal="true"
             aria-label="{{ __('QR code design') }}"
-            class="relative z-210 w-full max-w-md rounded-2xl bg-white dark:bg-slate-800 shadow-2xl overflow-hidden max-h-[85vh]"
+            class="relative z-210 flex w-full max-w-md max-h-[85vh] flex-col rounded-2xl bg-white dark:bg-slate-800 shadow-2xl overflow-hidden"
         >
-            <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-4">
+            <div class="flex shrink-0 items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-4">
                 <div>
                     <h4 class="text-lg font-semibold text-slate-900 dark:text-white">{{ __('QR code design') }}</h4>
                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ __('Customize your QR code appearance') }}</p>
@@ -898,7 +898,11 @@
                     </svg>
                 </button>
             </div>
-            <div class="p-5 space-y-4 overflow-y-auto max-h-[70vh]">
+            <div class="min-h-0 flex-1 space-y-4 overflow-y-auto p-5">
+                <label class="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-slate-200 px-3 py-2.5 dark:border-slate-700">
+                    <span class="text-sm font-medium text-slate-900 dark:text-white">{{ __('Generate QR code') }}</span>
+                    <input type="checkbox" x-model="qrSettings.generateQr" data-qr-toggle class="h-5 w-5 shrink-0 rounded border-slate-300 accent-blue-600">
+                </label>
                 <div class="text-center">
                     <label class="label">{{ __('Preview') }}</label>
                     <div class="relative inline-block">
@@ -1019,8 +1023,8 @@
                     </div>
                 </div>
             </div>
-            <div class="form-actions border-t border-slate-200 pt-4 dark:border-slate-700 px-5 pb-5">
-                <button 
+            <div class="form-actions shrink-0 border-t border-slate-200 pt-4 dark:border-slate-700 px-5 pb-5">
+                <button
                     type="button"
                     @click="resetQrSettings()"
                     class="btn-outline"
@@ -1204,8 +1208,13 @@ function linkCreationModal() {
                 this.applyPreset(preset);
             };
             // Pages without this modal send "Create" here with ?create=1 (or ?create=qr / ?create=deeplink).
-            const create = new URLSearchParams(window.location.search).get('create');
+            const params = new URLSearchParams(window.location.search);
+            const create = params.get('create');
             if (create) {
+                // Read once: drop it from the address so a reload after creating a link does not reopen the dialog.
+                params.delete('create');
+                const rest = params.toString();
+                try { window.history.replaceState(window.history.state, '', window.location.pathname + (rest ? '?' + rest : '') + window.location.hash); } catch (e) {}
                 this.$nextTick(() => window.openLinkPanel(create === '1' ? undefined : create));
             }
         },
@@ -1310,6 +1319,7 @@ function linkCreationModal() {
                 image: ''
             };
             this.qrPreviewUrl = null;
+            this.resetQrSettings();
             this.slugCheck.run('');
         },
         resetSchedule() {
