@@ -112,10 +112,34 @@
                                     <span class="hidden sm:inline">New tag</span>
                                 </button>
                             @else
-                                <button type="button" data-call="openLinkPanel" data-fallback-href="{{ route('links.index') }}?create=1" aria-label="{{ __('New link') }}" class="create-link-trigger btn-primary btn-sm">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
-                                    <span class="hidden sm:inline">New link</span>
-                                </button>
+                                {{-- Create: the main button opens the lean create dialog; the caret offers the presets
+                                     (QR code, deep link). Pages without the dialog fall back to /links?create=... --}}
+                                <div class="relative flex items-center" x-data="{
+                                        createMenu: false,
+                                        move(step) {
+                                            const items = [...this.$refs.createMenu.querySelectorAll('button')];
+                                            const i = items.indexOf(document.activeElement);
+                                            const next = items[(i + step + items.length) % items.length] ?? items[0];
+                                            next?.focus();
+                                        },
+                                    }"
+                                    @click.outside="createMenu = false"
+                                    @keydown.escape.window="createMenu = false"
+                                    @keydown.arrow-down.prevent="createMenu && move(1)"
+                                    @keydown.arrow-up.prevent="createMenu && move(-1)">
+                                    <button type="button" data-call="openLinkPanel" data-fallback-href="{{ route('links.index') }}?create=1" aria-label="{{ __('Create') }}" class="create-link-trigger btn-primary btn-sm rounded-r-none!">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
+                                        <span class="hidden sm:inline">{{ __('Create') }}</span>
+                                    </button>
+                                    <button type="button" @click="createMenu = !createMenu" :aria-expanded="createMenu.toString()" aria-haspopup="true" aria-label="{{ __('Create options') }}" class="btn-primary btn-sm rounded-l-none! border-l border-white/30 px-1.5!">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="m6 9 6 6 6-6"/></svg>
+                                    </button>
+                                    <div x-ref="createMenu" x-show="createMenu" x-transition x-cloak class="glass-strong glass-popover absolute right-0 top-full z-50 mt-1 w-48 rounded-xl p-1.5">
+                                        <button type="button" data-call="openLinkPanel" data-args='["link"]' data-fallback-href="{{ route('links.index') }}?create=1" @click="createMenu = false" class="option w-full text-left text-ink">{{ __('Link') }}</button>
+                                        <button type="button" data-call="openLinkPanel" data-args='["qr"]' data-fallback-href="{{ route('links.index') }}?create=qr" @click="createMenu = false" class="option w-full text-left text-ink">{{ __('QR code') }}</button>
+                                        <button type="button" data-call="openLinkPanel" data-args='["deeplink"]' data-fallback-href="{{ route('links.index') }}?create=deeplink" @click="createMenu = false" class="option w-full text-left text-ink">{{ __('Deep link') }}</button>
+                                    </div>
+                                </div>
                             @endif
                             <x-hop::language-switcher />
                             <button type="button" data-call="toggleTheme" id="theme-toggle-button" class="icon-btn" aria-label="Toggle theme" title="Toggle theme">

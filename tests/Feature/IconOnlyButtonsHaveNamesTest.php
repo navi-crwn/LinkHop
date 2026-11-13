@@ -14,7 +14,7 @@ it('names the main action of a page when only its icon shows', function (string 
         $name = e(trans($label, [], $lang));
         expect($html)->toContain('aria-label="'.$name.'"');
     }
-})->with([['/dashboard', 'New link'], ['/links', 'New link'], ['/analytics', 'New link'], ['/settings', 'New link'], ['/folders', 'New folder'], ['/tags', 'New tag']]);
+})->with([['/dashboard', 'Create'], ['/links', 'Create'], ['/analytics', 'Create'], ['/settings', 'Create'], ['/folders', 'New folder'], ['/tags', 'New tag']]);
 
 it('names the main action of the bio pages', function () {
     $html = $this->actingAs(User::factory()->create())->get('/bio')->assertOk()->getContent();

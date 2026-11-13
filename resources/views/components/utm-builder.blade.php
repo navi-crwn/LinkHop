@@ -1,5 +1,6 @@
-@props(['target' => 'target_url'])
+@props(['target' => 'target_url', 'plain' => false])
 @php
+    // $plain: inside the create dialog's own sheet, where the disclosure header would repeat the sheet's title.
     // Presets live here, in code: nothing is stored on the server. Each fills the source and the medium.
     $presets = [
         ['key' => 'newsletter', 'label' => __('Newsletter'), 'source' => 'newsletter', 'medium' => 'email'],
@@ -15,7 +16,7 @@
 @endphp
 <div
     x-data="{
-        open: false,
+        open: @js((bool) $plain),
         target: @js($target),
         presets: @js($presets),
         preset: '',
@@ -26,6 +27,13 @@
             this.open = !this.open;
             this.message = '';
             if (this.open) { this.read(); }
+        },
+        // The create dialog opens this sheet for every new link: forget the last link's fields and message first.
+        reopen() {
+            this.message = '';
+            this.preset = '';
+            for (const k of Object.keys(this.f)) { this.f[k] = ''; }
+            this.read();
         },
         read() {
             // Start from the tags already on the address.
@@ -67,13 +75,17 @@
             }
         },
     }"
-    {{ $attributes->class(['rounded-xl border border-slate-500/20 p-3']) }}
+    x-init="if (open) { read(); }"
+    x-on:open-utm.window="reopen()"
+    {{ $attributes->class($plain ? [] : ['rounded-xl border border-slate-500/20 p-3']) }}
 >
+    @unless ($plain)
     <button type="button" x-on:click="toggle()" x-bind:aria-expanded="open" data-ctl="disclosure" class="flex min-h-9 pointer-coarse:min-h-11 w-full items-center justify-between gap-2 rounded-lg text-left text-sm font-medium text-ink">
         <span>{{ __('Campaign tags (UTM)') }}</span>
         <span class="text-xs text-muted" x-text="open ? @js(__('Hide')) : @js(__('Show'))">{{ __('Show') }}</span>
     </button>
-    <div x-show="open" x-cloak class="mt-3 space-y-3">
+    @endunless
+    <div x-show="open" x-cloak class="{{ $plain ? 'space-y-3' : 'mt-3 space-y-3' }}">
         <p class="text-xs text-muted">{{ __('Add tags to the destination so your analytics can tell where visitors came from. Nothing is saved except the address itself.') }}</p>
         <div>
             <label class="label">{{ __('Preset') }}</label>

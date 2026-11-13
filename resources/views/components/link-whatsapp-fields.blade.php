@@ -23,6 +23,9 @@
         </div>
         <div class="md:col-span-2">
 @endif
+@if ($model)
+    <p x-show="formData.store_mode" x-cloak class="rounded-xl bg-amber-500/10 px-3 py-2 text-sm text-ink" data-chip-blocked="wa">{{ __('The app store link is on, so the WhatsApp rotator is paused. Turn the app store link off in Open in the app to use the rotator.') }}</p>
+@endif
 <div @unless ($model) x-data="{ waMode: @js($savedMode), waNumbers: @js($rows) }" @endunless @if ($model) x-show="!formData.store_mode" @endif class="space-y-4">
     @if ($problems->isNotEmpty())
         <ul role="alert" class="space-y-1 rounded-xl bg-rose-500/10 px-3 py-2 text-sm text-rose-700 dark:text-rose-300">

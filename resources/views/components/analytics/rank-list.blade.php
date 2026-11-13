@@ -38,7 +38,7 @@
         @endforeach
         @if ($items->count() > $limit)
             <li>
-                <button type="button" class="btn-ghost btn-dense" @click="all = !all" x-text="all ? 'Show less' : 'Show all ({{ $items->count() }})'"></button>
+                <button type="button" class="btn-ghost btn-dense" @click="all = !all" x-text="all ? @js(__('Show less')) : @js(__('Show all (:count)')).replace(':count', {{ $items->count() }})"></button>
             </li>
         @endif
     </ul>
