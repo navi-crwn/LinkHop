@@ -234,6 +234,10 @@
     .help { margin-top: 6px; font-size: 13px; line-height: 1.4; color: rgb(var(--muted)); }
     /* Tabs and the rows of a pick list: one row each, the dense height. */
     .tab { display: inline-flex; align-items: center; justify-content: center; min-width: 0; height: var(--hop-ctl-h-sm); padding: 0 12px; border-radius: var(--hop-ctl-radius); font-size: 13px; font-weight: 500; white-space: nowrap; transition: background-color .15s ease, color .15s ease; }
+    /* Sub-tabs under a tab bar: a smaller segmented control, left-aligned right under the tab above, so it reads as its child. */
+    .subtab-row { display: flex; flex-wrap: wrap; width: fit-content; max-width: 100%; gap: 2px; padding: 2px; margin-bottom: 12px; border-radius: var(--hop-ctl-radius); background-color: var(--hop-fill); }
+    .subtab { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: calc(var(--hop-ctl-radius) - 2px); font-size: 12px; font-weight: 500; white-space: nowrap; transition: background-color .15s ease, color .15s ease; }
+    @media (pointer: coarse) { .subtab { height: 32px; padding: 0 12px; } }
     .option { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: var(--hop-ctl-h); padding: 0 var(--hop-ctl-px); border-radius: var(--hop-ctl-radius-sm); font-size: var(--hop-ctl-font); text-align: left; cursor: pointer; }
     .option:hover { background-color: var(--hop-fill); }
 
@@ -256,7 +260,7 @@
         .icon-btn { min-width: 44px; min-height: 44px; }
     }
     @media (prefers-reduced-motion: reduce) {
-        .input, .btn, .btn-primary, .btn-ghost, .btn-soft, .btn-outline, .btn-danger, .btn-danger-outline, .icon-btn, .tab { transition: none; }
+        .input, .btn, .btn-primary, .btn-ghost, .btn-soft, .btn-outline, .btn-danger, .btn-danger-outline, .icon-btn, .tab, .subtab { transition: none; }
         :is(.btn, .btn-primary, .btn-ghost, .btn-soft, .btn-outline, .btn-danger, .btn-danger-outline):active { transform: none; }
     }
 
@@ -456,7 +460,6 @@ button.input { max-width: var(--hop-field-max); }
 .hop-family-row img { width: 20px; height: 20px; border-radius: 4px; flex: none; }
 .hop-family-row b { color: rgb(var(--ink)); font-weight: 500; }
 .hop-family-row:hover b { text-decoration: underline; text-underline-offset: 2px; }
-.hop-family-footer { max-width: 1180px; margin: 24px auto 0; padding: 16px 24px 24px; border-top: 1px solid rgb(var(--muted) / 0.2); }
 /*
 | Optional "Clean" style (coss surfaces), on only under <html data-ui="clean"> (cookie hop_ui=clean), after the control standard: flat neutral app background, solid
 | cards with a 1px low-contrast border and a barely-there shadow, a flat sidebar and top bar divided by a hairline,

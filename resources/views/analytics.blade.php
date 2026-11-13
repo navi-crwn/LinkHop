@@ -13,6 +13,9 @@
         $tabBtn = 'tab';
         $tabOn = 'bg-slate-900/5 text-ink dark:bg-white/10';
         $tabOff = 'text-muted hover:text-ink';
+        // The tabs under a tab bar are a smaller segmented control (.subtab-row), so they read as the child of the tab above.
+        $subOn = 'bg-white text-ink shadow-xs dark:bg-white/15';
+        $subOff = 'text-muted hover:text-ink';
         // The toolbar answers "how many clicks, from where, when" without scrolling: one row of filters, one KPI
         // card, the chart, and one card with tabs for every breakdown (the page header lives in the top bar).
         $filterCount = ($countryFilter !== 'all' ? 1 : 0) + ($deviceFilter !== 'all' ? 1 : 0);
@@ -23,7 +26,7 @@
         {{-- Filters. relative z-20: .glass has a backdrop-filter, which makes the form its own layer; without a z-index the
              cards after it are painted over the open link list. z-20 stays under the top bar (z-30) and the menus. --}}
         <form method="GET" x-ref="form" class="glass relative z-20 flex flex-wrap items-center gap-2 rounded-2xl p-2">
-            <div class="relative w-full md:min-w-56 md:flex-1" x-data="{
+            <div class="relative w-full md:w-[min(100%,28rem)] md:flex-none" x-data="{
                     open: false,
                     search: '',
                     selected: @js((string) $linkFilter),
@@ -102,8 +105,11 @@
             @endif
         </form>
 
+        {{-- Key metrics and the chart: one column below 1280 px; from 1280 px they share a row (the chart takes two
+             thirds, the four numbers a 2 x 2 card beside it). --}}
+        <div class="grid gap-4 xl:grid-cols-3">
         {{-- Key metrics: one card, four numbers --}}
-        <div class="glass grid grid-cols-2 rounded-2xl md:grid-cols-4">
+        <div class="glass grid grid-cols-2 rounded-2xl md:grid-cols-4 xl:order-2 xl:grid-cols-2 xl:grid-rows-2">
             <div class="p-4">
                 <p class="stat-label">{{ __('Clicks') }}</p>
                 <p class="stat-value">{{ number_format($totalClicks) }}</p>
@@ -119,7 +125,7 @@
                 <p class="stat-value">{{ number_format($insights['unique']) }}</p>
                 <p class="mt-0.5 text-xs text-muted" title="{{ __('Counted once per day') }}">{{ __('Counted once per day') }}</p>
             </div>
-            <div class="border-t border-slate-500/15 p-4 md:border-t-0">
+            <div class="border-t border-slate-500/15 p-4 md:border-t-0 xl:border-t">
                 <p class="stat-label">{{ __('Top country') }}</p>
                 <div class="mt-0.5 flex items-center gap-2">
                     @if ($topCountryCode)<span class="[&_img]:rounded-xs">{!! country_flag($topCountryCode) !!}</span>@endif
@@ -127,7 +133,7 @@
                 </div>
                 <p class="mt-0.5 text-xs text-muted">{{ __(':count countries', ['count' => number_format($countryCount)]) }}</p>
             </div>
-            <div class="border-l border-t border-slate-500/15 p-4 md:border-t-0">
+            <div class="border-l border-t border-slate-500/15 p-4 md:border-t-0 xl:border-t">
                 <p class="stat-label">{{ __('Top device') }}</p>
                 <p class="stat-value">{{ $topDevice ?? '—' }}
                     @if ($topDevice && $totalClicks)
@@ -138,13 +144,14 @@
         </div>
 
         {{-- Timeline --}}
-        <section class="glass-card min-w-0">
+        <section class="glass-card min-w-0 xl:order-1 xl:col-span-2">
             <div class="mb-2 flex items-center justify-between">
                 <h2 class="section-title">{{ __('Clicks over time') }}</h2>
                 <span class="hidden text-[11px] text-muted sm:inline">{{ __('Scroll or pinch to zoom') }}</span>
             </div>
-            <div class="relative h-36 sm:h-40"><canvas id="analyticsChart"></canvas></div>
+            <div class="relative h-44 sm:h-52 xl:h-56"><canvas id="analyticsChart"></canvas></div>
         </section>
+        </div>
 
         {{-- Every breakdown in one card with tabs: one panel visible at a time, the active tab kept in the URL.
              The map is built the first time the Locations tab shows it (a Leaflet map in a hidden panel measures 0). --}}
@@ -175,8 +182,8 @@
             }"
             x-init="tab = initial; if (tab === 'locations') { $nextTick(() => openMap()); }">
             <h2 id="breakdown-title" class="sr-only">{{ __('Breakdown') }}</h2>
-            <div class="mb-3 -mx-1 overflow-x-auto px-1">
-                <div class="flex min-w-max gap-0.5" role="tablist" aria-label="{{ __('Breakdown') }}">
+            <div class="mb-3">
+                <div class="flex flex-wrap gap-0.5" role="tablist" aria-label="{{ __('Breakdown') }}">
                     @foreach (['locations' => __('Locations'), 'sources' => __('Sources'), 'technology' => __('Technology'), 'links' => __('Links'), 'hours' => __('Busiest hours'), 'networks' => __('Networks')] as $key => $label)
                         <button type="button" role="tab" :aria-selected="(tab === '{{ $key }}').toString()" @click="setTab('{{ $key }}')" data-ctl="tab" class="{{ $tabBtn }}" :class="tab === '{{ $key }}' ? '{{ $tabOn }}' : '{{ $tabOff }}'">{{ $label }}</button>
                     @endforeach
@@ -184,7 +191,12 @@
             </div>
 
             {{-- Locations: the ranked list first on a phone, the map beside it on wide screens (toggle below lg). --}}
-            <div x-show="tab === 'locations'">
+            <div x-show="tab === 'locations'" x-data="{ sub: 'countries' }">
+                <div class="subtab-row" role="group" aria-label="{{ __('Locations') }}">
+                    @foreach (['countries' => __('Countries'), 'cities' => __('Cities'), 'regions' => __('Regions')] as $key => $label)
+                        <button type="button" @click="sub = '{{ $key }}'" :aria-pressed="(sub === '{{ $key }}').toString()" data-ctl="tab" class="subtab" :class="sub === '{{ $key }}' ? '{{ $subOn }}' : '{{ $subOff }}'">{{ $label }}</button>
+                    @endforeach
+                </div>
                 <div class="grid gap-4 lg:grid-cols-5">
                     <div class="min-w-0 order-2 lg:order-1 lg:col-span-3">
                         <button type="button" @click="toggleMap()" class="btn-ghost btn-dense mb-2 lg:hidden" x-text="showMap ? @js(__('Hide map')) : @js(__('Show map'))">{{ __('Show map') }}</button>
@@ -196,19 +208,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="min-w-0 order-1 lg:order-2 lg:col-span-2" x-data="{ tab: 'countries' }">
-                        <div class="mb-3 flex items-center justify-end gap-0.5">
-                            @foreach (['countries' => __('Countries'), 'cities' => __('Cities'), 'regions' => __('Regions')] as $key => $label)
-                                <button type="button" @click="tab = '{{ $key }}'" data-ctl="tab" class="{{ $tabBtn }}" :class="tab === '{{ $key }}' ? '{{ $tabOn }}' : '{{ $tabOff }}'">{{ $label }}</button>
-                            @endforeach
-                        </div>
-                        <div x-show="tab === 'countries'">
+                    <div class="min-w-0 order-1 lg:order-2 lg:col-span-2">
+                        <div x-show="sub === 'countries'">
                             <x-analytics.rank-list :limit="5" :items="collect($countries)->take(50)->map(fn ($v, $k) => ['label' => country_name($k), 'value' => (int) $v, 'flag' => $k])" :empty="__('No location data yet.')" />
                         </div>
-                        <div x-show="tab === 'cities'" x-cloak>
+                        <div x-show="sub === 'cities'" x-cloak>
                             <x-analytics.rank-list :limit="5" :items="collect($cities)->take(50)->map(fn ($c) => ['label' => $c['city'], 'sub' => country_name($c['country']), 'value' => (int) $c['total'], 'flag' => $c['country']])" :empty="__('No city data yet.')" />
                         </div>
-                        <div x-show="tab === 'regions'" x-cloak>
+                        <div x-show="sub === 'regions'" x-cloak>
                             <x-analytics.rank-list :limit="5" :items="collect($regions)->take(50)->map(fn ($r) => ['label' => $r['region'], 'sub' => country_name($r['country']), 'value' => (int) $r['total'], 'flag' => $r['country']])" :empty="__('No region data yet.')" />
                         </div>
                     </div>
@@ -218,18 +225,16 @@
             {{-- Sources: referrers and the QR/direct split --}}
             <div x-show="tab === 'sources'" x-cloak>
                 <div class="grid gap-4 md:grid-cols-2">
-                    <div class="min-w-0" x-data="{ tab: 'domains' }">
-                        <div class="mb-3 flex items-center justify-between gap-2">
-                            <h3 class="section-title">{{ __('Referrers') }}</h3>
-                            <div class="flex gap-0.5">
-                                <button type="button" @click="tab = 'domains'" data-ctl="tab" class="{{ $tabBtn }}" :class="tab === 'domains' ? '{{ $tabOn }}' : '{{ $tabOff }}'">{{ __('Domains') }}</button>
-                                <button type="button" @click="tab = 'urls'" data-ctl="tab" class="{{ $tabBtn }}" :class="tab === 'urls' ? '{{ $tabOn }}' : '{{ $tabOff }}'">{{ __('URLs') }}</button>
-                            </div>
+                    <div class="min-w-0" x-data="{ sub: 'domains' }">
+                        <h3 class="sr-only">{{ __('Referrers') }}</h3>
+                        <div class="subtab-row" role="group" aria-label="{{ __('Referrers') }}">
+                            <button type="button" @click="sub = 'domains'" :aria-pressed="(sub === 'domains').toString()" data-ctl="tab" class="subtab" :class="sub === 'domains' ? '{{ $subOn }}' : '{{ $subOff }}'">{{ __('Domains') }}</button>
+                            <button type="button" @click="sub = 'urls'" :aria-pressed="(sub === 'urls').toString()" data-ctl="tab" class="subtab" :class="sub === 'urls' ? '{{ $subOn }}' : '{{ $subOff }}'">{{ __('URLs') }}</button>
                         </div>
-                        <div x-show="tab === 'domains'">
+                        <div x-show="sub === 'domains'">
                             <x-analytics.rank-list :limit="5" :items="$rows($domainBreakdown)" color="bg-sky-500/70" :empty="__('No referrers yet.')" />
                         </div>
-                        <div x-show="tab === 'urls'" x-cloak>
+                        <div x-show="sub === 'urls'" x-cloak>
                             <x-analytics.rank-list :limit="5" :items="$rows($referers)" color="bg-sky-500/70" :empty="__('No referrers yet.')" />
                         </div>
                     </div>
@@ -246,35 +251,35 @@
             </div>
 
             {{-- Technology: devices, browsers, systems and in-app browsers --}}
-            <div x-show="tab === 'technology'" x-cloak x-data="{ tab: 'devices' }">
-                <div class="mb-3 flex flex-wrap items-center justify-end gap-0.5">
+            <div x-show="tab === 'technology'" x-cloak x-data="{ sub: 'devices' }">
+                <div class="subtab-row" role="group" aria-label="{{ __('Technology') }}">
                     @foreach (['devices' => __('Devices'), 'browsers' => __('Browsers'), 'os' => __('OS'), 'inapp' => __('In-app browsers')] as $key => $label)
-                        <button type="button" @click="tab = '{{ $key }}'" data-ctl="tab" class="{{ $tabBtn }}" :class="tab === '{{ $key }}' ? '{{ $tabOn }}' : '{{ $tabOff }}'">{{ $label }}</button>
+                        <button type="button" @click="sub = '{{ $key }}'" :aria-pressed="(sub === '{{ $key }}').toString()" data-ctl="tab" class="subtab" :class="sub === '{{ $key }}' ? '{{ $subOn }}' : '{{ $subOff }}'">{{ $label }}</button>
                     @endforeach
                 </div>
-                <div x-show="tab === 'devices'"><x-analytics.rank-list :limit="5" :items="$rows($devices)" color="bg-emerald-500/70" :empty="__('No device data.')" /></div>
-                <div x-show="tab === 'browsers'" x-cloak><x-analytics.rank-list :limit="5" :items="$rows($browserStats)" color="bg-violet-500/70" :empty="__('No browser data.')" /></div>
-                <div x-show="tab === 'os'" x-cloak><x-analytics.rank-list :limit="5" :items="$rows($osStats)" color="bg-amber-500/70" :empty="__('No OS data.')" /></div>
-                <div x-show="tab === 'inapp'" x-cloak>
+                <div x-show="sub === 'devices'"><x-analytics.rank-list :limit="5" :items="$rows($devices)" color="bg-emerald-500/70" :empty="__('No device data.')" /></div>
+                <div x-show="sub === 'browsers'" x-cloak><x-analytics.rank-list :limit="5" :items="$rows($browserStats)" color="bg-violet-500/70" :empty="__('No browser data.')" /></div>
+                <div x-show="sub === 'os'" x-cloak><x-analytics.rank-list :limit="5" :items="$rows($osStats)" color="bg-amber-500/70" :empty="__('No OS data.')" /></div>
+                <div x-show="sub === 'inapp'" x-cloak>
                     <p class="mb-2 text-xs text-muted">{{ __('Visits opened inside another app, such as Instagram or WeChat: :count of :total.', ['count' => number_format($insights['in_app_total']), 'total' => number_format($totalClicks)]) }}</p>
                     <x-analytics.rank-list :limit="5" :items="$rows($insights['in_app'])" color="bg-fuchsia-500/70" :empty="__('No in-app browser visits.')" />
                 </div>
             </div>
 
             {{-- Links: the account's own links, their destinations and the ended ones --}}
-            <div x-show="tab === 'links'" x-cloak x-data="{ tab: 'links' }">
-                <div class="mb-3 flex items-center justify-end gap-0.5">
-                    <button type="button" @click="tab = 'links'" data-ctl="tab" class="{{ $tabBtn }}" :class="tab === 'links' ? '{{ $tabOn }}' : '{{ $tabOff }}'">{{ __('Links') }}</button>
-                    <button type="button" @click="tab = 'dest'" data-ctl="tab" class="{{ $tabBtn }}" :class="tab === 'dest' ? '{{ $tabOn }}' : '{{ $tabOff }}'">{{ __('Destinations') }}</button>
-                    <button type="button" @click="tab = 'ended'" data-ctl="tab" class="{{ $tabBtn }}" :class="tab === 'ended' ? '{{ $tabOn }}' : '{{ $tabOff }}'">{{ __('Expired') }}</button>
+            <div x-show="tab === 'links'" x-cloak x-data="{ sub: 'links' }">
+                <div class="subtab-row" role="group" aria-label="{{ __('Links') }}">
+                    @foreach (['links' => __('Links'), 'dest' => __('Destinations'), 'ended' => __('Expired')] as $key => $label)
+                        <button type="button" @click="sub = '{{ $key }}'" :aria-pressed="(sub === '{{ $key }}').toString()" data-ctl="tab" class="subtab" :class="sub === '{{ $key }}' ? '{{ $subOn }}' : '{{ $subOff }}'">{{ $label }}</button>
+                    @endforeach
                 </div>
-                <div x-show="tab === 'links'">
+                <div x-show="sub === 'links'">
                     <x-analytics.rank-list :limit="5" :items="collect($topLinks)->filter(fn ($r) => $r->link)->map(fn ($r) => ['label' => '/'.$r->link->slug, 'sub' => $r->link->target_url, 'value' => (int) $r->total, 'href' => route('links.show', $r->link)])" :empty="__('No clicks in this range.')" />
                 </div>
-                <div x-show="tab === 'dest'" x-cloak>
+                <div x-show="sub === 'dest'" x-cloak>
                     <x-analytics.rank-list :limit="5" :items="$rows($topDestinations)" :empty="__('No destination data.')" />
                 </div>
-                <div x-show="tab === 'ended'" x-cloak>
+                <div x-show="sub === 'ended'" x-cloak>
                     <p class="mb-2 text-xs text-muted">{{ __('Expired or disabled links that still got clicks in this range.') }}</p>
                     <x-analytics.rank-list :limit="5" :items="collect($endedLinks)->filter(fn ($r) => $r->link)->map(fn ($r) => ['label' => '/'.$r->link->slug, 'sub' => $r->link->target_url, 'value' => (int) $r->total, 'href' => route('links.show', $r->link)])" color="bg-slate-400/60" :empty="__('No clicks on expired links.')" />
                 </div>
