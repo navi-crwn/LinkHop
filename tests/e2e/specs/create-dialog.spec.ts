@@ -164,7 +164,7 @@ test('Escape closes one layer at a time: sheet, then the tag list, then the dial
   await page.keyboard.press('Escape');
   await expect(sheet(page, 'utm')).toBeHidden();
   await expect(dialog(page)).toBeVisible();
-  await dialog(page).locator('button[data-ctl="select"]').first().click();
+  await dialog(page).locator('button[data-select="tags"]').click();
   await page.keyboard.press('Escape');
   await expect(dialog(page)).toBeVisible();
   await page.keyboard.press('Escape');
