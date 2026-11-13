@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Domain=.hel.ink, so one choice holds in every app; elsewhere (localhost, a self-hosted copy) it stays host-only.
  * A browser that still holds this host's old host-only hop_lang sends it before the domain one, so the old one would
  * win: once per browser (no hop_pref=2 yet) the old cookie is expired, its value moved to the domain cookie, and
- * hop_pref=2 set. Other hosts are not migrated.
+ * hop_pref=2 set. A request with no hop_lang is skipped. Other hosts are not migrated.
  */
 class SetLocale
 {
@@ -35,9 +35,16 @@ class SetLocale
     {
         $requested = self::apply($request);
         $response = $next($request);
+        // The page follows the hop_lang cookie, so a cache that keeps it must key on Cookie. A public answer (an
+        // asset with its own max-age) does not follow it and is left alone.
+        if (! $response->headers->hasCacheControlDirective('public')) {
+            $response->setVary('Cookie', false);
+        }
         $domain = self::familyDomain($request);
         $secure = $domain !== null || $request->isSecure();
-        if ($domain !== null && $request->cookie(self::MIGRATED) !== '2') {
+        // A request without hop_lang has nothing to move: no clean-up and no cookie, so a plain page stays free of
+        // Set-Cookie named hop_* (same as BioHop). The clean-up runs on the first request that carries hop_lang.
+        if ($domain !== null && $request->cookie(self::MIGRATED) !== '2' && (string) self::cookieLanguage($request) !== '') {
             $response->headers->setCookie(Cookie::create(self::COOKIE, '', 1, '/', null, $secure, false, false, Cookie::SAMESITE_LAX));
             $carried = Locales::resolve(self::cookieLanguage($request));
             if ($carried !== null && $requested === null) {
