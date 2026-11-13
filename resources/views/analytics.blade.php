@@ -23,8 +23,6 @@
         {{-- Filters. relative z-20: .glass has a backdrop-filter, which makes the form its own layer; without a z-index the
              cards after it are painted over the open link list. z-20 stays under the top bar (z-30) and the menus. --}}
         <form method="GET" x-ref="form" class="glass relative z-20 flex flex-wrap items-center gap-2 rounded-2xl p-2">
-            {{-- The open tab rides along with every filter or range change (a GET form drops the address fragment). --}}
-            <input type="hidden" name="tab" id="analytics-tab" value="{{ in_array(request('tab'), ['locations', 'sources', 'technology', 'links', 'hours', 'networks'], true) ? request('tab') : 'locations' }}">
             <div class="relative w-full md:min-w-56 md:flex-1" x-data="{
                     open: false,
                     search: '',
@@ -154,7 +152,7 @@
             x-data="{
                 valid: ['locations', 'sources', 'technology', 'links', 'hours', 'networks'],
                 get initial() {
-                    const wanted = new URLSearchParams(location.hash.replace(/^#/, '')).get('tab') || new URLSearchParams(location.search).get('tab');
+                    const wanted = new URLSearchParams(location.hash.replace(/^#/, '')).get('tab');
                     return this.valid.includes(wanted) ? wanted : 'locations';
                 },
                 tab: 'locations',
@@ -163,8 +161,6 @@
                 setTab(name) {
                     this.tab = name;
                     history.replaceState(null, '', '#tab=' + name);
-                    const field = document.getElementById('analytics-tab');
-                    if (field) { field.value = name; }
                     if (name === 'locations') { this.$nextTick(() => this.openMap()); }
                 },
                 openMap() {
