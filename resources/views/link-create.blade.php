@@ -19,7 +19,7 @@
             <label for="flinkcr-2" class="label">Custom slug (optional)</label>
             <div class="flex items-center gap-2">
                 <span class="shrink-0 text-sm text-muted">{{ public_host() }}/l/</span>
-                <input id="flinkcr-2" type="text" name="slug" value="{{ old('slug') }}" class="input" placeholder="custom-slug">
+                <input id="flinkcr-2" type="text" name="slug" value="{{ old('slug') }}" pattern="[A-Za-z0-9\-]{3,48}" title="{{ __('Slug can only contain letters, numbers, and hyphens.') }}" class="input" placeholder="custom-slug">
             </div>
         </div>
         @if ($folders->isNotEmpty())

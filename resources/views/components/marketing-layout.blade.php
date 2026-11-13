@@ -1,37 +1,21 @@
-@props(['title' => null, 'themed' => false])
+@props(['title' => null, 'themed' => false, 'description' => null, 'index' => true])
+{{-- $index false: an error or link page (404, 429, link missing or ended), kept out of search results. --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="ltr" @class(['h-full', 'dark' => ! $themed])>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         @php
-            $metaTitle = $seoSettings->site_title ?? ($title ?? config('app.name'));
-            $metaDescription = $seoSettings->meta_description ?? 'LinkHop keeps hel.ink lightweight for guests and teams.';
-            $metaKeywords = $seoSettings->meta_keywords ?? 'shortlink, helink, qr, analytics';
-            $ogTitle = $seoSettings->og_title ?? $metaTitle;
-            $ogDescription = $seoSettings->og_description ?? $metaDescription;
-            $ogImage = $seoSettings->og_image ?? route('brand.logo.dark');
-            $favicon = $seoSettings->favicon ?? route('brand.favicon');
+            $metaTitle = $title ?? config('app.name');
+            $metaDescription = $description ?? __('Shorten long links for free: your own short address, a QR code for every link and click stats. Start without an account; LinkHop is open source.');
         @endphp
         <title>{{ $metaTitle }}</title>
-        <meta name="description" content="{{ $metaDescription }}">
-        <meta name="keywords" content="{{ $metaKeywords }}">
-        <meta property="og:title" content="{{ $ogTitle }}">
-        <meta property="og:description" content="{{ $ogDescription }}">
-        <meta property="og:image" content="{{ $ogImage }}">
-        <link rel="icon" href="{{ $favicon }}">
+        <meta name="keywords" content="shortlink, helink, qr, analytics">
+        @include('partials.seo-head', ['title' => $metaTitle, 'description' => $metaDescription, 'index' => $index])
+        <link rel="icon" href="{{ route('brand.favicon') }}">
         @if ($themed)
-            {{-- Apply the saved theme before first paint (same key as the app shell) --}}
-            <script nonce="{{ Vite::cspNonce() }}">
-                (function () {
-                    try {
-                        var t = localStorage.getItem('helink-theme');
-                        if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                            document.documentElement.classList.add('dark');
-                        }
-                    } catch (e) {}
-                })();
-            </script>
+            {{-- Apply the saved theme before first paint (the same reader as the app shell) --}}
+            @include('partials.theme-boot')
         @endif
         <x-hop::fonts />
         @vite(['resources/css/app.css', 'resources/js/app.js'])

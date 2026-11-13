@@ -6,7 +6,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{{ $title ?? config('app.name') }}</title>
-        <meta name="description" content="LinkHop: short links, QR codes and click analytics, a HOP app.">
+        @include('partials.seo-head', ['title' => $title ?? config('app.name'), 'description' => 'LinkHop: short links, QR codes and click analytics, a HOP app.'])
         <link rel="icon" href="{{ route('brand.favicon') }}">
         <x-hop::fonts />
         @vite(['resources/css/app.css', 'resources/js/app.js'])

@@ -6,8 +6,8 @@ use Hop\Auth\Models\ApiToken;
 
 /*
 | The token API: tokens come from the hub's shared api_tokens table (hop/auth
-| validates them); scopes link:create, link:read, link:delete. A token with no
-| scopes (older than scopes) may do everything.
+| validates them); scopes link:create, link:read, and link:write to delete (link:delete is
+| accepted too). A token with no scopes (older than scopes) may do everything.
 */
 function bearer(User $user, ?array $scopes): array
 {
@@ -29,7 +29,7 @@ test('a token without scopes keeps working everywhere (made before scopes existe
     $this->withHeaders(bearer($user, null))->postJson('/api/shorten', ['url' => 'https://example.com'])->assertCreated();
 });
 
-test('GET and DELETE /api/links/{slug} need link:read and link:delete and only see the caller’s links', function () {
+test('GET /api/links/{slug} needs link:read and only sees the caller’s links', function () {
     $user = User::factory()->create();
     $other = User::factory()->create();
     Link::create(['user_id' => $user->id, 'slug' => 'mine01', 'target_url' => 'https://example.com/m', 'status' => 'active']);
@@ -38,11 +38,36 @@ test('GET and DELETE /api/links/{slug} need link:read and link:delete and only s
     $read = bearer($user, ['link:read']);
     $this->withHeaders($read)->getJson('/api/links/mine01')->assertOk()->assertJsonPath('data.target_url', 'https://example.com/m')->assertJsonPath('data.clicks', 0);
     $this->withHeaders($read)->getJson('/api/links/theirs1')->assertNotFound();
-    $this->withHeaders($read)->deleteJson('/api/links/mine01')->assertForbidden();
+    $this->withHeaders(bearer($user, ['link:create']))->getJson('/api/links/mine01')->assertForbidden();
+});
 
-    $this->withHeaders(bearer($user, ['link:delete']))->deleteJson('/api/links/theirs1')->assertNotFound();
-    $this->withHeaders(bearer($user, ['link:delete']))->deleteJson('/api/links/mine01')->assertOk();
-    expect(Link::where('slug', 'mine01')->exists())->toBeFalse()->and(Link::where('slug', 'theirs1')->exists())->toBeTrue();
+test('DELETE /api/links/{slug} takes link:write, the scope the hub offers, as well as link:delete, link:* and an unscoped token', function () {
+    // The hub's token form offers link:write as "Edit and delete short links" (hop/auth ApiToken::SCOPES).
+    expect(ApiToken::SCOPES)->toHaveKey('link:write');
+    $user = User::factory()->create();
+    $other = User::factory()->create();
+    Link::create(['user_id' => $other->id, 'slug' => 'theirs1', 'target_url' => 'https://example.com/t', 'status' => 'active']);
+
+    foreach (['write' => ['link:write'], 'delete' => ['link:delete'], 'star' => ['link:*'], 'all' => null] as $name => $scopes) {
+        Link::create(['user_id' => $user->id, 'slug' => "del-{$name}", 'target_url' => 'https://example.com/'.$name, 'status' => 'active']);
+        $token = bearer($user, $scopes);
+        $this->withHeaders($token)->deleteJson('/api/links/theirs1')->assertNotFound();
+        $this->withHeaders($token)->deleteJson("/api/links/del-{$name}")->assertOk()->assertJsonPath('success', true);
+        expect(Link::where('slug', "del-{$name}")->exists())->toBeFalse($name);
+    }
+    expect(Link::where('slug', 'theirs1')->exists())->toBeTrue();
+});
+
+test('DELETE /api/links/{slug} refuses link:read and the other scopes with the usual JSON', function () {
+    $user = User::factory()->create();
+    Link::create(['user_id' => $user->id, 'slug' => 'mine01', 'target_url' => 'https://example.com/m', 'status' => 'active']);
+
+    foreach ([['link:read'], ['link:create'], ['bio:write', 'bio:*']] as $scopes) {
+        $this->withHeaders(bearer($user, $scopes))->deleteJson('/api/links/mine01')
+            ->assertForbidden()->assertJsonPath('success', false)->assertJsonPath('error', 'Forbidden');
+    }
+    $this->flushHeaders()->deleteJson('/api/links/mine01')->assertUnauthorized();
+    expect(Link::where('slug', 'mine01')->exists())->toBeTrue();
 });
 
 test('an invalid, expired or missing token is refused with the usual JSON shape', function () {

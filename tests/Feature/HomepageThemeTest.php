@@ -1,9 +1,11 @@
 <?php
 
-test('homepage follows the saved or system theme and offers a toggle', function () {
+test('homepage follows the family theme cookie, the old saved theme or the system, and offers a toggle', function () {
     $this->get('/')
         ->assertOk()
-        ->assertSee("localStorage.getItem('helink-theme')", false)
+        ->assertSee('hop_theme=', false)
+        ->assertSee('data-old-key="helink-theme"', false)
+        ->assertSee('localStorage.getItem(oldKey)', false)
         ->assertSee('aria-label="Toggle theme"', false)
         ->assertDontSee('<html lang="en" class="h-full dark">', false)
         ->assertSee('id="target_url"', false);

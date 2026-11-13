@@ -134,6 +134,9 @@
     .dark :is(.glass, .glass-card, .glass-strong, .btn-soft, .stat) { box-shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 8px 32px -12px rgb(0 0 0 / 0.6); }
     .glass-card { @apply p-4 sm:p-5; border-radius: var(--hop-card-radius); }
     .glass-strong { background-color: rgb(var(--glass) / 0.85); }
+    /* An open list over other content (the Analytics link picker): a solid surface, so nothing behind it shows
+       through. The Clean style sets its own solid surface for .glass-strong further down. */
+    .glass-popover { background-color: rgb(var(--glass)); -webkit-backdrop-filter: none; backdrop-filter: none; }
     .glass-inset {
         background-color: rgb(var(--glass) / 0.45);
         border: 1px solid rgb(var(--glass-border) / calc(var(--glass-border-alpha) * 0.8));

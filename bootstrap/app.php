@@ -41,7 +41,8 @@ return Application::configure(basePath: dirname(__DIR__))
             ContentSecurityPolicyMiddleware::class,
             NoStoreWhenSignedIn::class,
         ]);
-        $middleware->encryptCookies(except: [SetLocale::COOKIE]);
+        // Plain text: the family's hop_lang is read by scripts and the Go apps too; hop_pref marks its one-time move.
+        $middleware->encryptCookies(except: [SetLocale::COOKIE, SetLocale::MIGRATED]);
         // Browsers POST CSP reports without a CSRF token; hub server-to-server calls are HMAC-signed.
         $middleware->validateCsrfTokens(except: ['csp-report', 'internal/*', 'hop/events']);
         $middleware->alias([

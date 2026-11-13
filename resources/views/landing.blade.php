@@ -5,8 +5,10 @@
 <script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-home.js') }}?v={{ substr(md5_file(public_path('hop-home/hop-home.js')), 0, 8) }}" defer></script>
 <script nonce="{{ Vite::cspNonce() }}" src="{{ asset('hop-home/hop-hero3d.js') }}?v={{ substr(md5_file(public_path('hop-home/hop-hero3d.js')), 0, 8) }}" defer></script>
 @vite(['resources/css/home.css', 'resources/js/home.js'])
+{{-- Structured data (not a script that runs): this page is the shortener itself. --}}
+<script type="application/ld+json" nonce="{{ Vite::cspNonce() }}">{!! \App\Support\Seo::json(\App\Support\Seo::webApplication('LinkHop', __('Shorten long links for free: your own short address, a QR code for every link and click stats. Start without an account; LinkHop is open source.'), \App\Support\Seo::url())) !!}</script>
 @endpush
-<x-marketing-layout :title="'LinkHop · '.__('Short links')" :themed="true">
+<x-marketing-layout :title="'LinkHop · '.__('Free link shortener with QR codes and click stats')" :themed="true">
     @php
         $idleDays = config('shortener.guest_idle_days', 14);
         $maxDays = config('shortener.guest_max_days', 30);
@@ -51,7 +53,7 @@
                         <label for="slug" class="label">{{ __('Custom slug (optional)') }}</label>
                         <div class="flex items-center gap-2">
                             <span class="text-sm text-slate-400 dark:text-white/45">{{ public_host() }}/l/</span>
-                            <input id="slug" type="text" name="slug" value="{{ old('slug') }}" placeholder="my-link" pattern="[A-Za-z0-9\-]+"
+                            <input id="slug" type="text" name="slug" value="{{ old('slug') }}" placeholder="my-link" pattern="[A-Za-z0-9\-]{3,48}" title="{{ __('Slug can only contain letters, numbers, and hyphens.') }}"
                                 class="h-10 min-w-0 flex-1 rounded-xl border-0 bg-slate-100 px-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-400/50 dark:bg-white/6 dark:text-white dark:placeholder-white/30">
                         </div>
                         <div class="py-4"><x-content-warning-fields prefix="guest-warning" /></div>

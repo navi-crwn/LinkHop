@@ -46,7 +46,7 @@ it('lists only URLs on the host that serves the sitemap', function () {
     $xml = $this->get('/sitemap.xml')->assertOk()->getContent();
     preg_match_all('~<loc>([^<]+)</loc>~', $xml, $m);
 
-    expect($m[1])->toContain('https://link.hel.ink', 'https://link.hel.ink/qr', 'https://link.hel.ink/faq');
+    expect($m[1])->toContain('https://link.hel.ink/', 'https://link.hel.ink/qr', 'https://link.hel.ink/faq');
     foreach ($m[1] as $loc) {
         expect(parse_url($loc, PHP_URL_HOST))->toBe('link.hel.ink');
     }

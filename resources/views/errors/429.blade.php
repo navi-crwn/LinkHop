@@ -27,7 +27,7 @@
         })();
     </script>
 @endpush
-<x-marketing-layout :title="__('Too many requests').' · LinkHop'" :themed="true">
+<x-marketing-layout :title="__('Too many requests').' · LinkHop'" :themed="true" :index="false">
     <div class="mx-auto max-w-xl px-4 py-20 text-center sm:px-6 sm:py-28">
         <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl dark:text-white">{{ __('429: Too many requests') }}</h1>
         <p class="mt-4 text-lg text-slate-600 dark:text-white/70">{{ __('Too many requests or attempts came from your connection in a short time. This helps keep LinkHop stable for everyone.') }}</p>

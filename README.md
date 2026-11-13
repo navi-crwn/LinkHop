@@ -234,7 +234,7 @@ Bio pages are made in BioHop: sign in at [bio.hel.ink](https://bio.hel.ink) with
 
 ## API
 
-API tokens are made at the hub (**HOP ID → Settings → API**) and work in every HOP app; this app reads them from the shared `api_tokens` table through `hop/auth`. A token carries **scopes**: `link:create`, `link:read`, `link:delete` (a token made before scopes existed has none and may do everything). The API answers at `link.hel.ink/api` (and at `hel.ink/api`, which forwards there until 27 November 2026). The rate limit is per token (100 requests an hour by default).
+API tokens are made at the hub (**HOP ID → Settings → API**) and work in every HOP app; this app reads them from the shared `api_tokens` table through `hop/auth`. A token carries **scopes**: `link:create`, `link:read`, `link:write` (edit and delete; `link:delete` is accepted for delete too) or `link:*` for all of them (a token made before scopes existed has none and may do everything). The API answers at `link.hel.ink/api` (and at `hel.ink/api`, which forwards there until 27 November 2026). The rate limit is per token (100 requests an hour by default).
 
 **Create a short link** (`link:create`). This is the call BioHop makes when a bio block wants a short link.
 
@@ -262,7 +262,7 @@ HTTP 201
 
 Errors keep one shape, `{"success": false, "error": "…", "message": "…"}`: `401` unknown or expired token, `403` missing scope, suspended or unverified account, `422` validation (`messages` lists the fields), `429` quota or rate limit.
 
-**List your links** (`link:read`): `GET /api/me/links?search=&limit=&cursor=` → `{data: [{id, slug, title, url, short_url, created_at}], next}`, only links that still resolve, newest first, up to 50 a page. **Read a link** (`link:read`): `GET /api/links/{slug}` → the same `data` plus `clicks`. **Delete a link** (`link:delete`): `DELETE /api/links/{slug}` → `{"success": true}`. Both answer `404` for a slug that is not on the token's account.
+**List your links** (`link:read`): `GET /api/me/links?search=&limit=&cursor=` → `{data: [{id, slug, title, url, short_url, created_at}], next}`, only links that still resolve, newest first, up to 50 a page. **Read a link** (`link:read`): `GET /api/links/{slug}` → the same `data` plus `clicks`. **Delete a link** (`link:write`): `DELETE /api/links/{slug}` → `{"success": true}`. Both answer `404` for a slug that is not on the token's account.
 
 A ShareX config is ready to download on the **API docs** page of the dashboard.
 

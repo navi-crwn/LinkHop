@@ -79,9 +79,17 @@ class ShortenController extends Controller
         return response()->json(['success' => true, 'data' => $this->payload($link) + ['clicks' => $link->clicks()->count()]]);
     }
 
-    /** DELETE /api/links/{slug}: remove one of the caller's links (and its QR code). */
+    /**
+     * DELETE /api/links/{slug}: remove one of the caller's links (and its QR code). The hub offers `link:write`
+     * ("Edit and delete short links") and no `link:delete`, so either scope may delete; `link:*` and a token without
+     * scopes cover both. The route checks only the token (hop.token takes one scope), the scope is checked here.
+     */
     public function destroy(Request $request, string $slug): JsonResponse
     {
+        $token = $request->attributes->get('api_token');
+        if (! $token?->can('link:write') && ! $token?->can('link:delete')) {
+            return response()->json(['success' => false, 'error' => 'Forbidden', 'message' => 'This token does not have the link:write scope'], 403);
+        }
         $link = $this->ownLink($request, $slug);
         if ($link->qr_code_path) {
             Storage::disk('public')->delete($link->qr_code_path);
