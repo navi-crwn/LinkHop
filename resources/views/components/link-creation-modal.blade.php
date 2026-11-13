@@ -508,7 +508,7 @@
             role="dialog"
             aria-modal="true"
             aria-label="{{ __('Campaign tags (UTM)') }}"
-            class="relative z-210 flex max-h-[85vh] w-full max-w-lg flex-col rounded-2xl bg-white shadow-2xl dark:bg-slate-800"
+            class="relative z-210 no-skin flex max-h-[85vh] w-full max-w-lg flex-col rounded-2xl bg-white shadow-2xl dark:bg-slate-800"
         >
             <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-4">
                 <h4 class="text-lg font-semibold text-slate-900 dark:text-white">{{ __('Campaign tags (UTM)') }}</h4>
@@ -540,7 +540,7 @@
             role="dialog"
             aria-modal="true"
             aria-label="{{ __('Schedule & limits') }}"
-            class="relative z-210 flex max-h-[85vh] w-full max-w-lg flex-col rounded-2xl bg-white shadow-2xl dark:bg-slate-800"
+            class="relative z-210 no-skin flex max-h-[85vh] w-full max-w-lg flex-col rounded-2xl bg-white shadow-2xl dark:bg-slate-800"
         >
             <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-4">
                 <h4 class="text-lg font-semibold text-slate-900 dark:text-white">{{ __('Schedule & limits') }}</h4>
@@ -597,7 +597,7 @@
             role="dialog"
             aria-modal="true"
             aria-label="{{ __('Protection') }}"
-            class="relative z-210 flex max-h-[85vh] w-full max-w-lg flex-col rounded-2xl bg-white shadow-2xl dark:bg-slate-800"
+            class="relative z-210 no-skin flex max-h-[85vh] w-full max-w-lg flex-col rounded-2xl bg-white shadow-2xl dark:bg-slate-800"
         >
             <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-4">
                 <h4 class="text-lg font-semibold text-slate-900 dark:text-white">{{ __('Protection') }}</h4>
@@ -667,7 +667,7 @@
             role="dialog"
             aria-modal="true"
             aria-label="{{ __('Open in the app') }}"
-            class="relative z-210 flex max-h-[85vh] w-full max-w-lg flex-col rounded-2xl bg-white shadow-2xl dark:bg-slate-800"
+            class="relative z-210 no-skin flex max-h-[85vh] w-full max-w-lg flex-col rounded-2xl bg-white shadow-2xl dark:bg-slate-800"
         >
             <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-4">
                 <h4 class="text-lg font-semibold text-slate-900 dark:text-white">{{ __('Open in the app') }}</h4>
@@ -700,7 +700,7 @@
             role="dialog"
             aria-modal="true"
             aria-label="{{ __('Routing and split') }}"
-            class="relative z-210 flex max-h-[85vh] w-full max-w-lg flex-col rounded-2xl bg-white shadow-2xl dark:bg-slate-800"
+            class="relative z-210 no-skin flex max-h-[85vh] w-full max-w-lg flex-col rounded-2xl bg-white shadow-2xl dark:bg-slate-800"
         >
             <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-4">
                 <h4 class="text-lg font-semibold text-slate-900 dark:text-white">{{ __('Routing and split') }}</h4>
@@ -732,7 +732,7 @@
             role="dialog"
             aria-modal="true"
             aria-label="{{ __('WhatsApp rotator') }}"
-            class="relative z-210 flex max-h-[85vh] w-full max-w-lg flex-col rounded-2xl bg-white shadow-2xl dark:bg-slate-800"
+            class="relative z-210 no-skin flex max-h-[85vh] w-full max-w-lg flex-col rounded-2xl bg-white shadow-2xl dark:bg-slate-800"
         >
             <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-4">
                 <h4 class="text-lg font-semibold text-slate-900 dark:text-white">{{ __('WhatsApp rotator') }}</h4>
@@ -764,7 +764,7 @@
             role="dialog"
             aria-modal="true"
             aria-label="{{ __('Custom link preview') }}"
-            class="relative z-210 flex w-full max-w-4xl max-h-[85vh] flex-col overflow-hidden rounded-xl bg-white dark:bg-slate-800 shadow-2xl"
+            class="relative z-210 no-skin flex w-full max-w-4xl max-h-[85vh] flex-col overflow-hidden rounded-xl bg-white dark:bg-slate-800 shadow-2xl"
         >
             <div class="flex shrink-0 items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-4 bg-white dark:bg-slate-800">
                 <h4 class="text-lg font-semibold text-slate-900 dark:text-white">{{ __('Custom link preview') }}</h4>
@@ -885,7 +885,7 @@
             role="dialog"
             aria-modal="true"
             aria-label="{{ __('QR code design') }}"
-            class="relative z-210 flex w-full max-w-md max-h-[85vh] flex-col rounded-2xl bg-white dark:bg-slate-800 shadow-2xl overflow-hidden"
+            class="relative z-210 no-skin flex w-full max-w-md max-h-[85vh] flex-col rounded-2xl bg-white dark:bg-slate-800 shadow-2xl overflow-hidden"
         >
             <div class="flex shrink-0 items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-4">
                 <div>
@@ -1054,7 +1054,7 @@
             role="dialog"
             aria-modal="true"
             aria-label="{{ __('Create new folder') }}"
-            class="relative z-210 w-full rounded-xl bg-white dark:bg-slate-800 shadow-2xl p-5"
+            class="relative z-210 no-skin w-full rounded-xl bg-white dark:bg-slate-800 shadow-2xl p-5"
             style="max-width: 400px;"
         >
             <h4 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">{{ __('Create new folder') }}</h4>
@@ -1097,7 +1097,7 @@
             role="dialog"
             aria-modal="true"
             aria-label="{{ __('Create new tag') }}"
-            class="relative z-210 w-full rounded-xl bg-white dark:bg-slate-800 shadow-2xl p-5"
+            class="relative z-210 no-skin w-full rounded-xl bg-white dark:bg-slate-800 shadow-2xl p-5"
             style="max-width: 400px;"
         >
             <h4 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">{{ __('Create new tag') }}</h4>

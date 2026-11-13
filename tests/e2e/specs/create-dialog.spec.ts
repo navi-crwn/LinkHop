@@ -190,3 +190,27 @@ test('analytics keeps its open tab when the filter or the time range changes, an
   expect(errors).toEqual([]);
   await context.close();
 });
+
+test('the dialog and its sheets are solid surfaces in the light and the dark theme', async ({ browser }) => {
+  for (const theme of ['light', 'dark']) {
+    const { page, context } = await signIn(browser);
+    await context.addCookies([{ name: 'hop_theme', value: theme, url: baseURL }]);
+    await page.goto('/dashboard');
+    await page.locator('.create-link-trigger').first().click();
+    const surfaces = async (selector: string) => page.locator(selector).first().evaluate(el => {
+      const cs = getComputedStyle(el);
+      const parts = cs.backgroundColor.match(/[\d.]+/g)!.map(Number);
+      return { alpha: parts.length > 3 ? parts[3] : 1, blur: cs.backdropFilter };
+    });
+    const core = await surfaces('[aria-label="Create new link"]');
+    expect(core, `dialog ${theme}`).toEqual({ alpha: 1, blur: 'none' });
+    for (const name of ['utm', 'schedule', 'og', 'qr']) {
+      await page.locator(`[data-chip="${name}"]`).click();
+      await expect(sheet(page, name)).toBeVisible();
+      expect(await surfaces(`[data-sheet="${name}"]`), `${name} sheet ${theme}`).toEqual({ alpha: 1, blur: 'none' });
+      await page.keyboard.press('Escape');
+      await expect(sheet(page, name)).toBeHidden();
+    }
+    await context.close();
+  }
+});

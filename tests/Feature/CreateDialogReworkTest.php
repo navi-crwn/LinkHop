@@ -35,7 +35,7 @@ test('the create dialog keeps a slim core and renders every option sheet in the 
     // the presets open the matching sheet, and ?create=1|qr|deeplink reaches the same dialog
     expect($html)->toContain('window.openLinkPanel = (preset)')
         ->toContain("openSheet('qr')")->toContain("openSheet('app')")
-        ->toContain("URLSearchParams(window.location.search).get('create')");
+        ->toContain("params.get('create')")->toContain("params.delete('create')");
     // the helpers the e2e suite and other tests select are still there
     expect($html)->toContain('x-model="formData.target_url"')
         ->toContain('hopSlugChecker(')->toContain('slugCheck.run(formData.slug)')

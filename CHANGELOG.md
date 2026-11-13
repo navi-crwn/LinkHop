@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Analytics: the chart, the map and the country focus work again on the reworked page (one script line produced invalid JavaScript, so the whole block failed to load). A test now renders the member pages and has Node parse every inline script.
-- Create dialog: the "QR code" chip only opens its sheet; the QR is switched on with a "Generate QR code" switch inside the sheet (or by the Create ▸ QR code preset) and switches off again for the next link. The dialog panel is a solid surface, not half see-through.
+- Create dialog: the "QR code" chip only opens its sheet; the QR is switched on with a "Generate QR code" switch inside the sheet (or by the Create ▸ QR code preset) and switches off again for the next link. The dialog and its option sheets are solid surfaces, not half see-through.
 - `?create=…` is read once and removed from the address, so the dialog no longer reopens after the page reloads for a new link. The campaign tag sheet starts from the tags on the new address instead of the previous link's fields, the QR and Social preview sheets keep their buttons in view on a short window, and the WhatsApp rotator and app store link sheets say why they are paused when the other one is on.
 - Analytics: the page has an (invisible) main heading again (the open tab already stays when the filter or the time range changes: the address fragment travels with the form); "24h", "via proxy/VPN" and the empty link list texts follow the reader's language.
 
