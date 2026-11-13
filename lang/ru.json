@@ -1354,5 +1354,22 @@
     ":count h": ":count ч",
     ":count via proxy/VPN": ":count через прокси/VPN",
     "No links match your search.": "Нет ссылок, подходящих под поиск.",
-    "No links yet.": "Ссылок пока нет."
+    "No links yet.": "Ссылок пока нет.",
+    "Create QR": "Создать QR",
+    "Saved QR codes": "Сохранённые QR-коды",
+    "From your short links": "Из ваших коротких ссылок",
+    "No saved QR codes yet. Create one for Wi-Fi, a contact card or any text.": "Сохранённых QR-кодов пока нет. Создайте код для Wi-Fi, визитки или любого текста.",
+    "No short link has a QR code yet.": "Ни у одной короткой ссылки пока нет QR-кода.",
+    "Label": "Название",
+    "Download": "Скачать",
+    "Rename": "Переименовать",
+    "View": "Открыть",
+    "QR code saved.": "QR-код сохранён.",
+    "QR code renamed.": "QR-код переименован.",
+    "QR code deleted.": "QR-код удалён.",
+    "Delete this QR code?": "Удалить этот QR-код?",
+    "Only the saved entry goes; copies you already printed or shared keep working.": "Удаляется только сохранённая запись; уже напечатанные или отправленные копии продолжат работать.",
+    "You can keep up to :count saved QR codes. Delete one to save another.": "Можно сохранить до :count QR-кодов. Удалите один, чтобы сохранить другой.",
+    "Saved codes are stored encrypted and shown only to you. Nothing is stored until you press Save.": "Сохранённые коды хранятся в зашифрованном виде и видны только вам. Пока вы не нажмёте «Сохранить», ничего не сохраняется.",
+    "Could not save the QR code (:status).": "Не удалось сохранить QR-код (:status)."
 }

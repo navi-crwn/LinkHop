@@ -1354,5 +1354,22 @@
     ":count h": ":count h",
     ":count via proxy/VPN": ":count via proxy/VPN",
     "No links match your search.": "Aucun lien ne correspond à votre recherche.",
-    "No links yet.": "Aucun lien pour le moment."
+    "No links yet.": "Aucun lien pour le moment.",
+    "Create QR": "Créer un QR",
+    "Saved QR codes": "QR codes enregistrés",
+    "From your short links": "De vos liens courts",
+    "No saved QR codes yet. Create one for Wi-Fi, a contact card or any text.": "Aucun QR code enregistré. Créez-en un pour le Wi-Fi, une carte de contact ou n’importe quel texte.",
+    "No short link has a QR code yet.": "Aucun lien court n’a encore de QR code.",
+    "Label": "Nom",
+    "Download": "Télécharger",
+    "Rename": "Renommer",
+    "View": "Voir",
+    "QR code saved.": "QR code enregistré.",
+    "QR code renamed.": "QR code renommé.",
+    "QR code deleted.": "QR code supprimé.",
+    "Delete this QR code?": "Supprimer ce QR code ?",
+    "Only the saved entry goes; copies you already printed or shared keep working.": "Seule l’entrée enregistrée disparaît ; les copies déjà imprimées ou partagées continuent de fonctionner.",
+    "You can keep up to :count saved QR codes. Delete one to save another.": "Vous pouvez enregistrer jusqu’à :count QR codes. Supprimez-en un pour en enregistrer un autre.",
+    "Saved codes are stored encrypted and shown only to you. Nothing is stored until you press Save.": "Les codes enregistrés sont chiffrés et visibles par vous seul. Rien n’est conservé avant d’appuyer sur Enregistrer.",
+    "Could not save the QR code (:status).": "Impossible d’enregistrer le QR code (:status)."
 }

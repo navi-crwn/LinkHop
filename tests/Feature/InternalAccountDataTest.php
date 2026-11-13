@@ -4,6 +4,7 @@ use App\Http\Middleware\VerifyHubRequest;
 use App\Models\Comment;
 use App\Models\Folder;
 use App\Models\Link;
+use App\Models\QrCode;
 use App\Models\Tag;
 use App\Models\User;
 use App\Models\WebhookEndpoint;
@@ -276,4 +277,21 @@ test('purging first and deleting the user row after leaves no ownerless link beh
     hubSigned('DELETE', "/internal/accounts/{$second->id}")->assertOk()->assertJsonPath('data.links', 1);
     DB::table('users')->where('id', $second->id)->delete();
     expect(Link::where('slug', 'ord003')->exists())->toBeFalse();
+});
+
+test('the export and the purge cover the saved QR codes', function () {
+    $user = User::factory()->create();
+    $other = User::factory()->create();
+    $style = ['fg' => '#000000', 'bg' => '#ffffff', 'dots' => 'square', 'corners' => 'square'];
+    QrCode::create(['user_id' => $user->id, 'type' => 'wifi', 'label' => 'Cafe', 'payload' => 'WIFI:T:WPA;S:Cafe;P:made-up-pass;;', 'style' => $style]);
+    QrCode::create(['user_id' => $other->id, 'type' => 'text', 'label' => 'Theirs', 'payload' => 'https://example.com/theirs', 'style' => $style]);
+
+    hubSigned('GET', "/internal/accounts/{$user->id}/export")->assertOk()
+        ->assertJsonCount(1, 'data.qr_codes')
+        ->assertJsonPath('data.qr_codes.0.label', 'Cafe')
+        ->assertJsonPath('data.qr_codes.0.content', 'WIFI:T:WPA;S:Cafe;P:made-up-pass;;');
+
+    hubSigned('DELETE', "/internal/accounts/{$user->id}")->assertOk();
+
+    expect(QrCode::where('user_id', $user->id)->count())->toBe(0)->and(QrCode::where('user_id', $other->id)->count())->toBe(1);
 });

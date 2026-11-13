@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Internal;
 
 use App\Http\Controllers\Controller;
 use App\Models\LinkClick;
+use App\Models\QrCode;
 use App\Models\User;
 use App\Services\UserDeletion;
 use Illuminate\Http\JsonResponse;
@@ -37,6 +38,10 @@ class AccountDataController extends Controller
             'links' => $links,
             'folders' => $user->folders()->orderBy('name')->get(['name', 'is_default', 'created_at']),
             'tags' => $user->tags()->orderBy('name')->get(['name', 'created_at']),
+            // the member's own saved codes, with what they carry (the hub bundles this into the member's own download)
+            'qr_codes' => QrCode::where('user_id', $user->id)->orderBy('created_at')->get()->map(fn (QrCode $q) => [
+                'type' => $q->type, 'label' => $q->label, 'content' => $q->payload, 'created_at' => $q->created_at?->toIso8601String(),
+            ])->values(),
         ]]);
     }
 

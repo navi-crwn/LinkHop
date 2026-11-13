@@ -1354,5 +1354,22 @@
     ":count h": ":count h",
     ":count via proxy/VPN": ":count via proxy/VPN",
     "No links match your search.": "Nenhum link corresponde à sua busca.",
-    "No links yet.": "Ainda não há links."
+    "No links yet.": "Ainda não há links.",
+    "Create QR": "Criar QR",
+    "Saved QR codes": "QR codes salvos",
+    "From your short links": "Dos seus links curtos",
+    "No saved QR codes yet. Create one for Wi-Fi, a contact card or any text.": "Nenhum QR code salvo ainda. Crie um para o Wi-Fi, um cartão de contato ou qualquer texto.",
+    "No short link has a QR code yet.": "Nenhum link curto tem QR code ainda.",
+    "Label": "Nome",
+    "Download": "Baixar",
+    "Rename": "Renomear",
+    "View": "Ver",
+    "QR code saved.": "QR code salvo.",
+    "QR code renamed.": "QR code renomeado.",
+    "QR code deleted.": "QR code excluído.",
+    "Delete this QR code?": "Excluir este QR code?",
+    "Only the saved entry goes; copies you already printed or shared keep working.": "Só a entrada salva some; cópias já impressas ou compartilhadas continuam funcionando.",
+    "You can keep up to :count saved QR codes. Delete one to save another.": "Você pode salvar até :count QR codes. Exclua um para salvar outro.",
+    "Saved codes are stored encrypted and shown only to you. Nothing is stored until you press Save.": "Os códigos salvos ficam criptografados e só você os vê. Nada é guardado até você tocar em Salvar.",
+    "Could not save the QR code (:status).": "Não foi possível salvar o QR code (:status)."
 }

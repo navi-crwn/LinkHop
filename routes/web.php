@@ -17,6 +17,7 @@ use App\Http\Controllers\LinkImportController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PublicLinkController;
 use App\Http\Controllers\QrController;
+use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\QrStudioController;
 use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\ReminderController;
@@ -75,6 +76,13 @@ Route::middleware('ip.ban')->group(function () {
         Route::get('/dashboard', [LinkController::class, 'index'])->name('dashboard');
         Route::get('/links', [LinkController::class, 'myLinks'])->name('links.index');
         Route::get('/analytics', AnalyticsController::class)->name('analytics');
+        // Saved QR codes: the codes of the member's short links and the Wi-Fi, contact and text codes they keep.
+        Route::get('/qr-codes', [QrCodeController::class, 'index'])->name('qr-codes.index');
+        Route::middleware('throttle:20,1,qr-codes')->group(function () {
+            Route::post('/qr-codes', [QrCodeController::class, 'store'])->name('qr-codes.store');
+            Route::patch('/qr-codes/{id}', [QrCodeController::class, 'update'])->where('id', '[0-9A-Za-z]{26}')->name('qr-codes.update');
+            Route::delete('/qr-codes/{id}', [QrCodeController::class, 'destroy'])->where('id', '[0-9A-Za-z]{26}')->name('qr-codes.destroy');
+        });
         Route::get('links/create', [LinkController::class, 'create'])->name('links.create');
         // Guest links made in this browser before signing in (hop_claim cookie): one claim, rate limited.
         Route::post('links/claim', GuestClaimController::class)->middleware('throttle:6,1,link-claim')->name('links.claim');
@@ -89,7 +97,6 @@ Route::middleware('ip.ban')->group(function () {
         Route::get('links/{link}/qr/{format}', [LinkController::class, 'downloadQr'])
             ->where('format', 'png|svg|jpg')
             ->name('links.qr.download');
-        Route::post('links/{link}/qr/save', [LinkController::class, 'saveCustomQr'])->name('links.qr.save');
         Route::post('links/{link}/qr', [LinkController::class, 'updateQr'])->name('links.qr.update');
         Route::resource('links', LinkController::class)->except(['index']);
         Route::post('links/{link}/comments', [LinkCommentController::class, 'store'])->name('links.comments.store');

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Folder;
 use App\Models\Link;
+use App\Models\QrCode;
 use App\Models\Tag;
 use App\Models\User;
 use App\Models\WebhookDelivery;
@@ -69,6 +70,8 @@ class UserDeletion
         WebhookEndpoint::whereKey($endpointIds)->delete();
         DB::table('api_idempotency_keys')->where('user_id', $userId)->delete();
         Reminders::forget($userId);
+        // the saved Wi-Fi, contact and text codes (their payload is encrypted at rest; the rows go with the account)
+        QrCode::where('user_id', $userId)->delete();
 
         $bioPages = bio_enabled() ? BioPage::where('user_id', $userId)->get() : collect();
         $bioFiles = $bioPages->flatMap(fn (BioPage $page) => BioUploads::ofPage($page))->all();
