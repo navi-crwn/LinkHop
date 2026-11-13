@@ -9,27 +9,28 @@ use Illuminate\Http\Request;
  * What search engines read on LinkHop's public pages (APP_URL, link.hel.ink): one canonical address per page and
  * language, the language alternates and the structured data of the tool pages. The language of a page is chosen by
  * ?lang= (SetLocale; it wins over the cookie), so ?lang={code} is the address of a page in one language. The family
- * rule (train 4, KONTRAK-SEO-BAHASA): canonical = APP_URL + path, plus ?lang= only when the request carried one of the
- * nine codes; nine alternates ?lang={code} plus x-default on the bare address. Never built from the request host.
+ * rule (train 4, KONTRAK-SEO-BAHASA, as amended 2026-11-13): English is the default language and lives at the bare
+ * address; canonical = APP_URL + path, plus ?lang= only when the request carried one of the eight other codes; nine
+ * alternates (en and x-default on the bare address, the rest ?lang={code}). Never built from the request host.
  */
 final class Seo
 {
-    /** The public address of a path, in one language when $locale is one of the nine, without any other query. */
+    /** The public address of a path, in one language when $locale is one of the eight non-English codes, without any other query. */
     public static function url(string $path = '', ?string $locale = null): string
     {
         $url = rtrim((string) config('app.url'), '/').'/'.trim($path, '/');
         $locale = Locales::resolve($locale);
 
-        return $locale === null ? $url : $url.'?lang='.$locale;
+        return $locale === null || $locale === Locales::DEFAULT ? $url : $url.'?lang='.$locale;
     }
 
-    /** The canonical address of the page being served: its path, plus ?lang= when the request asked for a language. */
+    /** The canonical address of the page being served: its path, plus ?lang= when the request asked for a language other than English. */
     public static function canonical(Request $request): string
     {
         return self::url($request->path(), is_string($request->query('lang')) ? $request->query('lang') : null);
     }
 
-    /** @return array<string, string> hreflang => address: the nine languages, then x-default */
+    /** @return array<string, string> hreflang => address: the nine languages (en on the bare address), then x-default */
     public static function alternates(string $path = ''): array
     {
         $out = [];

@@ -1,5 +1,5 @@
 {{-- What search engines and link previews read on a public page (App\Support\Seo, family rule KONTRAK-SEO-BAHASA):
-     an indexable page names its canonical address (APP_URL + path, ?lang= only when asked for), og:url, the nine
+     an indexable page names its canonical address (APP_URL + path, ?lang= only when one of the eight non-English languages was asked for), og:url, the nine
      language addresses and x-default; a page that is not (an error, a missing link) says noindex and names none.
      Needs $title and $description; $index defaults to true. --}}
 @php($index = $index ?? true)

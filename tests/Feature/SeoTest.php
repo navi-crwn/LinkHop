@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Hash;
 
 /*
 | What search engines read: every public page names one absolute canonical address (its path, plus ?lang= for a
-| language other than English, never another query string), the nine language alternates and x-default, og:url,
+| language other than English, never another query string; English lives at the bare address), the nine language
+| alternates (en on the bare address, like x-default) and x-default, og:url,
 | an absolute og:image and a twitter card. The home page and /qr say what they do and carry WebApplication JSON-LD.
 | Signed-in pages and every short-link answer (redirect, preview, password, ended, missing) are noindex, and the
 | sitemap lists the public pages and nothing else.
@@ -47,7 +48,11 @@ it('names an absolute canonical without the query string, og:url, an absolute og
         ->and($meta['og:image'] ?? '')->toStartWith('http')
         ->and($meta['twitter:card'] ?? null)->toBe('summary')
         ->and($meta['robots'] ?? null)->toBeNull();
-    // Family rule (KONTRAK-SEO-BAHASA): ?lang= with one of the nine codes is kept, nothing else.
+    // Family rule (KONTRAK-SEO-BAHASA): ?lang= with one of the eight non-English codes is kept, nothing else; English
+    // (?lang=en) is the default language and has the bare address as its canonical and og:url.
+    $en = $this->get($path.'?lang=en&utm_source=x')->assertOk()->getContent();
+    expect(seoCanonical($en))->toBe($expected)
+        ->and(seoMeta($en)['og:url'] ?? null)->toBe($expected);
     expect(seoCanonical($this->get($path.'?lang=de')->getContent()))->toBe($expected.'?lang=de')
         ->and(seoCanonical($this->get($path.'?lang=de&utm_source=x')->getContent()))->toBe($expected.'?lang=de')
         ->and(seoCanonical($this->get($path.'?utm_source=x&lang=pt')->getContent()))->toBe($expected.'?lang=pt-BR')
@@ -61,16 +66,21 @@ it('builds the canonical from APP_URL, never from the host the request came in o
         ->and(seoMeta($html)['og:url'])->toBe('https://link.hel.ink/faq?lang=fr');
 });
 
-it('lists the nine languages and x-default as alternates, because ?lang= serves each language at its own address', function () {
+it('lists the nine languages and x-default as alternates: en and x-default on the bare address, the other eight at ?lang=', function () {
     $html = $this->withUnencryptedCookie('hop_lang', 'de')->get('/qr')->assertOk()->getContent();
     preg_match_all('~<link rel="alternate" hreflang="([^"]+)" href="([^"]+)">~', $html, $m);
     $alternates = array_combine($m[1], array_map('html_entity_decode', $m[2]));
 
     expect($alternates)->toHaveCount(10)
         ->and(array_keys($alternates))->toBe([...Locales::codes(), 'x-default'])
-        ->and($alternates['en'])->toBe('https://link.hel.ink/qr?lang=en')
+        ->and($alternates['en'])->toBe('https://link.hel.ink/qr')
+        ->and($alternates['en'])->toBe($alternates['x-default'])
         ->and($alternates['ja'])->toBe('https://link.hel.ink/qr?lang=ja')
         ->and($alternates['x-default'])->toBe('https://link.hel.ink/qr');
+    expect(collect($alternates)->except(['en', 'x-default'])->every(fn ($href, $code) => $href === 'https://link.hel.ink/qr?lang='.$code))->toBeTrue();
+    // a request for ?lang=en lists the same ten alternates
+    preg_match_all('~<link rel="alternate" hreflang="([^"]+)" href="([^"]+)">~', $this->get('/qr?lang=en')->getContent(), $e);
+    expect(array_combine($e[1], array_map('html_entity_decode', $e[2])))->toBe($alternates);
     // and ?lang= gives that language whatever the cookie says
     $this->get('/qr?lang=ja')->assertOk()->assertSee('lang="ja"', false);
     $this->get('/qr?lang=en')->assertOk()->assertSee('lang="en"', false);
@@ -154,6 +164,8 @@ it('lists every public page in the sitemap, with its language alternates, and no
         expect($locs)->not->toContain('https://link.hel.ink/'.$path);
     }
     expect($xml)->toContain('<xhtml:link rel="alternate" hreflang="de" href="https://link.hel.ink/qr?lang=de"/>')
+        ->toContain('<xhtml:link rel="alternate" hreflang="en" href="https://link.hel.ink/qr"/>')
+        ->not->toContain('?lang=en')
         ->toContain('<xhtml:link rel="alternate" hreflang="x-default" href="https://link.hel.ink/qr"/>')
         ->and(count($locs))->toBe(count(array_unique($locs)));
     // each <url> carries the ten alternates

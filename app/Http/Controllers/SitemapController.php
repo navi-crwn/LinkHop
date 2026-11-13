@@ -15,7 +15,7 @@ class SitemapController extends Controller
     {
         // A sitemap may only list URLs on the host that serves it. This one is served by the app's own host
         // (APP_URL, link.hel.ink): its public pages are listed with that host, each with its nine language addresses
-        // (?lang=) and x-default (App\Support\Seo, the family rule), and the bio pages (PUBLIC_URL/b/{slug}) only when
+        // (en on the bare address, the other eight ?lang=) and x-default (App\Support\Seo, the family rule), and the bio pages (PUBLIC_URL/b/{slug}) only when
         // both are one host (a self-hosted install). On hel.ink the bio pages belong to the hub's sitemap.
         $sameHost = parse_url(url('/'), PHP_URL_HOST) === parse_url(public_url(), PHP_URL_HOST);
         $bioPages = (! bio_enabled() || ! $sameHost) ? collect() : BioPage::query()
