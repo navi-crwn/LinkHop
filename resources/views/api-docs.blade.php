@@ -40,10 +40,10 @@ Content-Type: application/json</code></pre>
                             <thead><tr><th>Field</th><th>Required</th><th>Notes</th></tr></thead>
                             <tbody class="text-xs">
                                 <tr><td class="font-mono text-ink">url</td><td><span class="chip-amber">Yes</span></td><td class="text-muted">Destination URL</td></tr>
-                                <tr><td class="font-mono text-ink">alias</td><td class="text-muted">No</td><td class="text-muted">At least {{ config('shortener.min_custom_slug_length', 3) }} characters (letters, numbers, - and _). Leave empty for a random 6-character slug.</td></tr>
+                                <tr><td class="font-mono text-ink">alias</td><td class="text-muted">No</td><td class="text-muted">{{ config('shortener.min_custom_slug_length', 3) }} to 48 characters (letters, numbers and -), the rule of the link form. Leave empty for a random 6-character slug.</td></tr>
                                 <tr><td class="font-mono text-ink">folder</td><td class="text-muted">No</td><td class="text-muted">Folder name</td></tr>
                                 <tr><td class="font-mono text-ink">expires_at</td><td class="text-muted">No</td><td class="text-muted">Date the link stops working</td></tr>
-                                <tr><td class="font-mono text-ink">password</td><td class="text-muted">No</td><td class="text-muted">Visitors must enter it first</td></tr>
+                                <tr><td class="font-mono text-ink">password</td><td class="text-muted">No</td><td class="text-muted">6 to 50 characters. Visitors must enter it first</td></tr>
                                 <tr><td class="font-mono text-ink">starts_at</td><td class="text-muted">No</td><td class="text-muted">The link says "not live yet" until this moment</td></tr>
                                 <tr><td class="font-mono text-ink">max_clicks</td><td class="text-muted">No</td><td class="text-muted">Stops after this many counted clicks (crawlers and preview bots are not counted)</td></tr>
                                 <tr><td class="font-mono text-ink">fallback_url</td><td class="text-muted">No</td><td class="text-muted">Where visitors go after the expiry date or when the clicks run out; cannot be another short link</td></tr>
