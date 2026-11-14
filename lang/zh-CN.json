@@ -1371,5 +1371,12 @@
     "Only the saved entry goes; copies you already printed or shared keep working.": "只会移除已保存的条目；已打印或已分享的副本仍可使用。",
     "You can keep up to :count saved QR codes. Delete one to save another.": "最多可保存 :count 个二维码。删除一个后才能保存新的。",
     "Saved codes are stored encrypted and shown only to you. Nothing is stored until you press Save.": "已保存的二维码会加密存放，只有你能看到。点击“保存”之前不会保存任何内容。",
-    "Could not save the QR code (:status).": "无法保存二维码（:status）。"
+    "Could not save the QR code (:status).": "无法保存二维码（:status）。",
+    "What changed in each HOP app, newest first.": "每个 HOP 应用的更新内容，最新的在前。",
+    "Technical details": "技术详情",
+    "Latest release of each app": "各应用的最新版本",
+    "Changed": "变更",
+    "Fixed": "修复",
+    "Removed": "移除",
+    "Deprecated": "已弃用"
 }

@@ -1371,5 +1371,12 @@
     "Only the saved entry goes; copies you already printed or shared keep working.": "Hanya entri tersimpan yang hilang; salinan yang sudah dicetak atau dibagikan tetap berfungsi.",
     "You can keep up to :count saved QR codes. Delete one to save another.": "Kamu bisa menyimpan hingga :count kode QR. Hapus satu untuk menyimpan yang lain.",
     "Saved codes are stored encrypted and shown only to you. Nothing is stored until you press Save.": "Kode tersimpan disimpan terenkripsi dan hanya tampil untukmu. Tidak ada yang disimpan sebelum kamu menekan Simpan.",
-    "Could not save the QR code (:status).": "Kode QR tidak bisa disimpan (:status)."
+    "Could not save the QR code (:status).": "Kode QR tidak bisa disimpan (:status).",
+    "What changed in each HOP app, newest first.": "Apa yang berubah di setiap app HOP, yang terbaru di atas.",
+    "Technical details": "Detail teknis",
+    "Latest release of each app": "Rilis terbaru tiap app",
+    "Changed": "Diubah",
+    "Fixed": "Diperbaiki",
+    "Removed": "Dihapus",
+    "Deprecated": "Usang"
 }

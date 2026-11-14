@@ -1371,5 +1371,12 @@
     "Only the saved entry goes; copies you already printed or shared keep working.": "Só a entrada salva some; cópias já impressas ou compartilhadas continuam funcionando.",
     "You can keep up to :count saved QR codes. Delete one to save another.": "Você pode salvar até :count QR codes. Exclua um para salvar outro.",
     "Saved codes are stored encrypted and shown only to you. Nothing is stored until you press Save.": "Os códigos salvos ficam criptografados e só você os vê. Nada é guardado até você tocar em Salvar.",
-    "Could not save the QR code (:status).": "Não foi possível salvar o QR code (:status)."
+    "Could not save the QR code (:status).": "Não foi possível salvar o QR code (:status).",
+    "What changed in each HOP app, newest first.": "O que mudou em cada app HOP, do mais recente ao mais antigo.",
+    "Technical details": "Detalhes técnicos",
+    "Latest release of each app": "Versão mais recente de cada app",
+    "Changed": "Alterado",
+    "Fixed": "Corrigido",
+    "Removed": "Removido",
+    "Deprecated": "Obsoleto"
 }

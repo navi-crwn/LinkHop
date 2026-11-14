@@ -1371,5 +1371,12 @@
     "Only the saved entry goes; copies you already printed or shared keep working.": "Удаляется только сохранённая запись; уже напечатанные или отправленные копии продолжат работать.",
     "You can keep up to :count saved QR codes. Delete one to save another.": "Можно сохранить до :count QR-кодов. Удалите один, чтобы сохранить другой.",
     "Saved codes are stored encrypted and shown only to you. Nothing is stored until you press Save.": "Сохранённые коды хранятся в зашифрованном виде и видны только вам. Пока вы не нажмёте «Сохранить», ничего не сохраняется.",
-    "Could not save the QR code (:status).": "Не удалось сохранить QR-код (:status)."
+    "Could not save the QR code (:status).": "Не удалось сохранить QR-код (:status).",
+    "What changed in each HOP app, newest first.": "Что изменилось в каждом приложении HOP, сначала новое.",
+    "Technical details": "Технические подробности",
+    "Latest release of each app": "Последний выпуск каждого приложения",
+    "Changed": "Изменено",
+    "Fixed": "Исправлено",
+    "Removed": "Удалено",
+    "Deprecated": "Устарело"
 }
