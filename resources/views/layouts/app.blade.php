@@ -77,17 +77,24 @@
                                 <kbd class="font-mono text-[11px] text-muted" x-text="/Mac|iPhone|iPad/.test(navigator.platform) ? '⌘K' : 'Ctrl K'">Ctrl K</kbd>
                             </button>
                         </div>
-                        <nav class="flex-1 overflow-y-auto px-3 pb-3">
-                            @include('components.partials.nav', ['isAdmin' => $isAdmin, 'abuseCount' => $abuseCount])
-                        </nav>
-                        <div class="space-y-2.5 border-t border-slate-500/10 px-5 py-3 text-xs text-muted">
-                            <div>
-                                <a href="{{ route('changelog') }}" class="hover:underline">{{ __('Changelog') }}</a>
-                                <span aria-hidden="true"> · </span>
-                                <a href="https://github.com/navi-crwn/LinkHop" rel="noopener" class="hover:underline">GitHub</a>
+                        {{-- One scrolling area: on a phone the footer scrolls with the menu instead of squeezing it into a small box. --}}
+                        <div class="flex min-h-0 flex-1 flex-col overflow-y-auto">
+                            <nav class="px-3 pb-3">
+                                @include('components.partials.nav', ['isAdmin' => $isAdmin, 'abuseCount' => $abuseCount])
+                            </nav>
+                            <div data-sidebar-footer class="mt-auto space-y-2 border-t border-slate-500/10 px-5 py-3 text-[13px] text-muted">
+                                {{-- The same footer in every dashboard of the family: six lines, then the family row. --}}
+                                <ul>
+                                    <li><a href="{{ route('pages.help') }}" class="block leading-7 hover:text-ink hover:underline">{{ __('Help') }}</a></li>
+                                    <li><a href="{{ route('pages.terms') }}" class="block leading-7 hover:text-ink hover:underline">{{ __('Terms') }}</a></li>
+                                    <li><a href="{{ route('pages.privacy') }}" class="block leading-7 hover:text-ink hover:underline">{{ __('Privacy') }}</a></li>
+                                    <li><a href="{{ route('changelog') }}" class="block leading-7 hover:text-ink hover:underline">{{ __('Changelog') }}</a></li>
+                                    <li><a href="https://github.com/navi-crwn/LinkHop" rel="noopener" class="block leading-7 hover:text-ink hover:underline">GitHub</a></li>
+                                    <li><a href="https://hel.ink/announcements" rel="noopener" class="block leading-7 hover:text-ink hover:underline">{{ __('Announcement') }}</a></li>
+                                </ul>
+                                {{-- The family row is the last thing in the sidebar, on every dashboard of the family. --}}
+                                @include('partials.family-row')
                             </div>
-                            {{-- The family row is the last thing in the sidebar, on every dashboard of the family. --}}
-                            @include('partials.family-row')
                         </div>
                     </div>
                 </aside>

@@ -253,6 +253,8 @@ test('"Part of Hop Easy Link" is the last thing in the sidebar and appears once,
     if (mobile) { await page.getByRole('button', { name: 'Open menu' }).click(); }
     await expect(page.locator('.hop-family-row')).toHaveCount(1);
     await expect(page.locator('main .hop-family-row')).toHaveCount(0);
+    // the footer scrolls with the menu, so on a short screen the end of the sidebar has to be scrolled into view first
+    await page.locator('.hop-family-row').scrollIntoViewIfNeeded();
     // the drawer slides in over 300 ms: read the sidebar, the row and the menu items together once it has stopped
     const g = await settledRead(() => page.evaluate(() => {
       const sideEl = document.querySelector('aside > div') as HTMLElement | null;
