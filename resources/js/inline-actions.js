@@ -74,7 +74,7 @@ export default function installInlineActions(root = document) {
         ask(form, submitter || form.querySelector('button[type="submit"], button:not([type])')).then((yes) => {
             if (!yes) return;
             confirmed.add(form);
-            // The browser's own confirm() answers at once, still inside this submit event, and a form ignores a
+            // The browser's own question answers at once, still inside this submit event, and a form ignores a
             // submit that is asked for while it is firing one: so go after the event.
             setTimeout(() => {
                 if (typeof form.requestSubmit === 'function') {

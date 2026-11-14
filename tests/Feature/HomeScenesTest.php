@@ -68,7 +68,7 @@ test('a family app the 3D engine has no block map for keeps its flat mark instea
 test('top bar buttons keep their text on one line, and the bars fit a 320 px phone without squeezing the logo', function () {
     $nav = file_get_contents(base_path('resources/views/partials/marketing-nav.blade.php'));
     $public = file_get_contents(base_path('resources/views/components/public-layout.blade.php'));
-    expect($nav)->toContain('whitespace-nowrap rounded-xl bg-slate-900')->toContain('flex shrink-0 items-center')->toContain('max-[380px]:hidden');
+    expect($nav)->toContain('whitespace-nowrap max-sm:hidden rounded-xl bg-slate-900')->toContain('flex shrink-0 items-center')->toContain('max-[380px]:hidden');
     expect($public)->toContain('whitespace-nowrap rounded-xl bg-white')->not->toContain('<x-hop::badge />');
 });
 
