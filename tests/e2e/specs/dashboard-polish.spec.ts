@@ -29,12 +29,34 @@ async function open(browser: Browser, o: Opts = {}) {
   }
   const page = await context.newPage();
   page.on('dialog', d => d.accept().catch(() => {}));
+  // E2E_CPU_THROTTLE=6 makes this PC as slow as a CI runner, to reproduce timing-dependent failures
+  if (process.env.E2E_CPU_THROTTLE) { await (await context.newCDPSession(page)).send('Emulation.setCPUThrottlingRate', { rate: Number(process.env.E2E_CPU_THROTTLE) }); }
   return { page, context };
 }
 
 const dialog = (page: Page) => page.locator('[x-data="linkCreationModal()"] [aria-label="Create new link"]');
 const sheet = (page: Page, name: string) => page.locator(`[data-sheet="${name}"]`);
 const box = async (loc: ReturnType<Page['locator']>) => (await loc.boundingBox())!;
+
+/**
+ * A measurement taken in one go inside the page, repeated until two reads in a row agree. The phone drawer slides in
+ * (300 ms) and a tab switch repaints, so a single read on a slow machine can land mid-move: two separate reads of
+ * two boxes can then disagree by the distance travelled between them. Returns the settled value, or fails with the
+ * last value read.
+ */
+async function settledRead<T>(read: () => Promise<T | null>, what: string): Promise<T> {
+  let last = '';
+  let value: T | null = null;
+  await expect.poll(async () => {
+    value = await read();
+    const now = JSON.stringify(value);
+    const same = value !== null && now === last;
+    last = now;
+    return same;
+  }, { message: `${what} settles`, timeout: 15_000, intervals: [120] }).toBe(true);
+
+  return value as unknown as T;
+}
 
 function capturePosts(page: Page) {
   const bodies: Record<string, unknown>[] = [];
@@ -159,16 +181,20 @@ test('analytics: every sub-tab row sits left, right under its tab, and looks sma
     await expect(page.locator('#analyticsChart')).toBeVisible(slow);
     for (const tab of ['Locations', 'Sources', 'Technology', 'Links']) {
       await page.getByRole('tab', { name: tab, exact: true }).click();
-      const list = await box(page.getByRole('tablist', { name: 'Breakdown' }));
-      const tabBtn = await box(page.getByRole('tab', { name: tab, exact: true }));
-      const row = page.locator('.subtab-row:visible').first();
-      await expect(row, `${tab} has sub-tabs`).toBeVisible();
-      const r = await box(row);
-      expect(Math.abs(r.x - list.x), `${tab} sub-tabs start at the left edge of the tabs (${width})`).toBeLessThan(2);
-      expect(r.y - (list.y + list.height), `${tab} sub-tabs sit right under the tabs (${width})`).toBeLessThan(24);
-      expect(r.y, `${tab} sub-tabs are under, not beside`).toBeGreaterThan(list.y + list.height - 1);
-      const sub = await box(row.locator('.subtab').first());
-      expect(sub.height, `${tab} sub-tabs are smaller than the tabs`).toBeLessThan(tabBtn.height);
+      await expect(page.getByRole('tab', { name: tab, exact: true })).toHaveAttribute('aria-selected', 'true');
+      const m = await settledRead(() => page.evaluate((name) => {
+        const list = document.querySelector('[role="tablist"][aria-label="Breakdown"]') as HTMLElement | null;
+        const tabBtn = [...document.querySelectorAll('[role="tab"]')].find(e => e.textContent?.trim() === name) as HTMLElement | undefined;
+        const rowEl = [...document.querySelectorAll('.subtab-row')].find(e => (e as HTMLElement).checkVisibility()) as HTMLElement | undefined;
+        const subEl = rowEl?.querySelector('.subtab') as HTMLElement | null | undefined;
+        if (!list || !tabBtn || !rowEl || !subEl) return null;
+        const l = list.getBoundingClientRect(), r = rowEl.getBoundingClientRect();
+        return { dx: Math.round(r.x - l.x), gap: Math.round(r.y - (l.y + l.height)), subH: Math.round(subEl.getBoundingClientRect().height), tabH: Math.round(tabBtn.getBoundingClientRect().height) };
+      }, tab), `${tab} sub-tabs (${width})`);
+      expect(Math.abs(m.dx), `${tab} sub-tabs start at the left edge of the tabs (${width})`).toBeLessThan(2);
+      expect(m.gap, `${tab} sub-tabs sit right under the tabs (${width})`).toBeLessThan(24);
+      expect(m.gap, `${tab} sub-tabs are under, not beside`).toBeGreaterThan(-1);
+      expect(m.subH, `${tab} sub-tabs are smaller than the tabs`).toBeLessThan(m.tabH);
     }
     await context.close();
   }
@@ -227,15 +253,21 @@ test('"Part of Hop Easy Link" is the last thing in the sidebar and appears once,
     if (mobile) { await page.getByRole('button', { name: 'Open menu' }).click(); }
     await expect(page.locator('.hop-family-row')).toHaveCount(1);
     await expect(page.locator('main .hop-family-row')).toHaveCount(0);
-    const side = await box(page.locator('aside > div'));
-    const row = await box(page.locator('.hop-family-row'));
-    expect(row.y, `the row is inside the sidebar (${width})`).toBeGreaterThan(side.y);
-    expect(row.y + row.height, `the row is inside the sidebar (${width})`).toBeLessThanOrEqual(side.y + side.height);
-    expect(side.y + side.height - (row.y + row.height), `the row is at the bottom of the sidebar (${width})`).toBeLessThan(24);
-    expect(row.x - side.x, `the row is at the left (${width})`).toBeLessThan(40);
+    // the drawer slides in over 300 ms: read the sidebar, the row and the menu items together once it has stopped
+    const g = await settledRead(() => page.evaluate(() => {
+      const sideEl = document.querySelector('aside > div') as HTMLElement | null;
+      const rowEl = document.querySelector('.hop-family-row') as HTMLElement | null;
+      if (!sideEl || !rowEl) return null;
+      const s = sideEl.getBoundingClientRect(), r = rowEl.getBoundingClientRect();
+      const bottoms = [...document.querySelectorAll('aside nav a, aside nav button')].map(e => e.getBoundingClientRect()).filter(b => b.height > 0).map(b => b.bottom);
+      return { sx: s.x, sy: s.y, sh: s.height, rx: r.x, ry: r.y, rh: r.height, lowest: Math.max(...bottoms) };
+    }), `the sidebar (${width})`);
+    expect(g.ry, `the row is inside the sidebar (${width})`).toBeGreaterThan(g.sy);
+    expect(g.ry + g.rh, `the row is inside the sidebar (${width})`).toBeLessThanOrEqual(g.sy + g.sh);
+    expect(g.sy + g.sh - (g.ry + g.rh), `the row is at the bottom of the sidebar (${width})`).toBeLessThan(24);
+    expect(g.rx - g.sx, `the row is at the left (${width})`).toBeLessThan(40);
     // nothing in the sidebar lies under it
-    const others = await page.locator('aside nav a, aside nav button').evaluateAll(els => els.map(e => { const r = e.getBoundingClientRect(); return { b: r.bottom, vis: r.height > 0 }; }));
-    for (const o of others.filter(o => o.vis)) { expect(o.b).toBeLessThanOrEqual(row.y + 1); }
+    expect(g.lowest).toBeLessThanOrEqual(g.ry + 1);
     await context.close();
   }
 });
