@@ -8,6 +8,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.0] - 2026-11-14 - Announcements, Library and a lighter Analytics
+
+News from the HOP team now reaches you on the dashboard, the sidebar is tidier, and Analytics opens quickly even with thousands of links.
+
+### Added
+
+- **Dashboard announcement.** When the HOP team posts an announcement for LinkHop or for all of HOP, one card with its title and a short text shows on your dashboard, and the title opens the full message. Hide it and it stays away for a week; an urgent one cannot be hidden. If the announcement service cannot be reached, the dashboard simply shows no card and opens as fast as before. Asked for so that one message written once reaches every HOP app.
+
+### Changed
+
+- **Sidebar menu.** The group that held My links, QR codes, Import CSV, Folders and Tags is now called Library, in all nine languages, because it holds more than links. The word Links is unchanged where it means links, such as the Analytics tab.
+- **Sidebar footer.** The small links at the bottom of the sidebar are now one list, a line each: Help, Terms, Privacy, Changelog, GitHub and Announcement, with "Part of Hop Easy Link" below. On a phone the list scrolls together with the menu. Asked for so that every HOP dashboard has the same footer.
+- **Analytics link list.** The list of links above the charts now loads the newest few and finds the rest as you type, instead of sending every link you own along with the page. With 5,000 links the page is about 85% smaller and opens faster; choosing a link works as before.
+
+### Fixed
+
+- **Analytics map.** Leaving the Analytics page while the world map was still loading no longer counts as a map error; a map that truly fails to load still says so. This was causing a false alarm in the nightly automatic checks.
+
+### Removed
+
+- **Short links notice on the dashboard.** The fixed card about short links moving to the new address is gone from the dashboard; the same message can be posted as a HOP announcement, and the explanation page stays available.
+
 ## [2.4.0] - 2026-11-14 - QR codes page and calmer analytics
 
 A new QR codes page inside the dashboard, and a tidier create dialog, analytics page and sidebar.
