@@ -419,6 +419,9 @@
                 document.getElementById('map-country-clicks').textContent = clicks ? clicksLabel.replace(':count', clicks.toLocaleString()) : noClicksYet;
             };
             let map;
+            // A request cut short because the visitor is already moving to another page is not a map error.
+            let leaving = false;
+            window.addEventListener('pagehide', () => { leaving = true; });
             window.analyticsMapResize = () => { try { map?.invalidateSize(); } catch (e) {} };
             window.initAnalyticsMap = function () {
                 if (map) { window.analyticsMapResize(); return; }
@@ -437,7 +440,10 @@
                         noWrap: false
                     }).addTo(map);
                     fetch(@js(asset('vendor/geo/countries.geo.json')))
-                        .then(response => response.json())
+                        .then(response => {
+                            if (!response.ok) throw new Error('Country shapes returned HTTP ' + response.status);
+                            return response.json();
+                        })
                         .then(geoData => {
                             function getColor(countryCode) {
                                 const code = normalizeCountryCode(countryCode);
@@ -494,6 +500,7 @@
                             window.analyticsMapResize();
                         })
                         .catch(error => {
+                            if (leaving) return;
                             console.error('❌ Map error:', error);
                             document.getElementById('world-map').innerHTML =
                                 '<div class="flex h-full items-center justify-center text-sm text-muted"><p>' + @js(__('Map unavailable right now')) + '</p></div>';
