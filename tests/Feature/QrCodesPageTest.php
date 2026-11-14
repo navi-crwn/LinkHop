@@ -4,6 +4,7 @@ use App\Http\Controllers\LinkController;
 use App\Models\Link;
 use App\Models\QrCode;
 use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
@@ -211,7 +212,7 @@ test('a row that cannot be opened is listed with a Delete button and does not br
     $user = User::factory()->create();
     $good = qcSave($user, ['label' => 'Still fine']);
     // a row sealed with another key, as after an APP_KEY change without APP_PREVIOUS_KEYS
-    $bad = (string) \Illuminate\Support\Str::ulid();
+    $bad = (string) Str::ulid();
     DB::table('qr_codes')->insert(['id' => $bad, 'user_id' => $user->id, 'type' => 'wifi', 'label' => 'not-a-sealed-value', 'payload' => 'eyJpdiI6ImJhZCJ9', 'style' => json_encode(qcWifi()['style']), 'created_at' => now()->subDay(), 'updated_at' => now()->subDay()]);
 
     $res = $this->actingAs($user)->get('/qr-codes')->assertOk();
@@ -239,7 +240,7 @@ test('two saves at the same moment cannot both pass the cap: the count and the w
         qcSave($user, ['label' => "Code $i"]);
     }
     // another request is saving for this account right now: this one waits, then gives up instead of racing past the cap
-    $held = \Illuminate\Support\Facades\Cache::lock('qr-codes:'.$user->id, 10);
+    $held = Cache::lock('qr-codes:'.$user->id, 10);
     expect($held->get())->toBeTrue();
     $this->actingAs($user)->postJson('/qr-codes', qcWifi())->assertStatus(429);
     expect(QrCode::where('user_id', $user->id)->count())->toBe(QrCode::MAX_PER_USER - 1);

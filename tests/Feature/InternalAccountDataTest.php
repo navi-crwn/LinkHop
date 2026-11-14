@@ -14,6 +14,7 @@ use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /*
 | The hub's door into this app: export what an account holds here, and purge
@@ -301,7 +302,7 @@ test('the export skips a saved code that cannot be opened (the app key changed) 
     $style = ['fg' => '#000000', 'bg' => '#ffffff', 'dots' => 'square', 'corners' => 'square'];
     QrCode::create(['user_id' => $user->id, 'type' => 'text', 'label' => 'Readable', 'payload' => 'https://example.com/r', 'style' => $style]);
     // a row sealed with another key
-    DB::table('qr_codes')->insert(['id' => (string) \Illuminate\Support\Str::ulid(), 'user_id' => $user->id, 'type' => 'wifi', 'label' => 'not-a-sealed-value', 'payload' => 'eyJpdiI6ImJhZCJ9',
+    DB::table('qr_codes')->insert(['id' => (string) Str::ulid(), 'user_id' => $user->id, 'type' => 'wifi', 'label' => 'not-a-sealed-value', 'payload' => 'eyJpdiI6ImJhZCJ9',
         'style' => json_encode($style), 'created_at' => now()->subDay(), 'updated_at' => now()->subDay()]);
 
     hubSigned('GET', "/internal/accounts/{$user->id}/export")->assertOk()
