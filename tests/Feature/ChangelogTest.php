@@ -91,4 +91,12 @@ class ChangelogTest extends TestCase
         exec(escapeshellarg($python).' '.escapeshellarg(base_path('scripts/build-changelog.py')).' --repo LinkHop --check 2>&1', $out, $code);
         $this->assertSame(0, $code, implode("\n", $out));
     }
+
+    public function test_no_public_page_carries_a_banned_word_in_its_html(): void
+    {
+        foreach (['/', '/about', '/changelog', '/qr', '/check', '/faq'] as $path) {
+            $html = $this->get($path)->assertOk()->getContent();
+            $this->assertSame(0, preg_match(self::FORBIDDEN, $html), "$path carries a banned word in its HTML");
+        }
+    }
 }
