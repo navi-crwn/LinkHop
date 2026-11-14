@@ -21,6 +21,11 @@
           "text": "When the HOP team posts an announcement for LinkHop or for all of HOP, one card with its title and a short text shows on your dashboard, and the title opens the full message. Hide it and it stays away for a week; an urgent one cannot be hidden. If the announcement service cannot be reached, the dashboard simply shows no card and opens as fast as before. Asked for so that one message written once reaches every HOP app."
         },
         {
+          "type": "added",
+          "where": "Colour sets",
+          "text": "At the bottom of the dashboard sidebar you can now choose Classic, Mist or Sand. Mist and Sand change the accent colour and the soft background and card colours, in light and dark, and your choice is remembered in this browser and shared with the other HOP apps that offer it. Classic looks exactly as before, and public pages stay Classic. Asked for so that the whole HOP family can share one look."
+        },
+        {
           "type": "changed",
           "where": "Sidebar menu",
           "text": "The group that held My links, QR codes, Import CSV, Folders and Tags is now called Library, in all nine languages, because it holds more than links. The word Links is unchanged where it means links, such as the Analytics tab."

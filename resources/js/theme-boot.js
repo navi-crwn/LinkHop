@@ -31,4 +31,21 @@
     if (theme === 'dark' || (theme !== 'light' && w.matchMedia && w.matchMedia('(prefers-color-scheme: dark)').matches)) {
         d.documentElement.classList.add('dark');
     }
+    // The family colour set (cookie hop_palette: classic | mist | sand), for the dashboard only: the layout turns it on
+    // with a data-palette attribute on this script tag. Classic is no attribute at all; any other value, or no cookie, is classic. The cookie is
+    // written like hop_theme, by script only; the server never reads it. It never touches the theme above.
+    if (script && script.getAttribute('data-palette') === 'on') {
+        var set = function (value) {
+            if (value === 'mist' || value === 'sand') { d.documentElement.setAttribute('data-palette', value); }
+            else { d.documentElement.removeAttribute('data-palette'); }
+        };
+        var saved = /(?:^|;\s*)hop_palette=([^;]*)/.exec(d.cookie);
+        set(saved ? saved[1] : 'classic');
+        w.hopSetPalette = function (value) {
+            var choice = value === 'mist' || value === 'sand' ? value : 'classic';
+            var domain = /(^|\.)hel\.ink$/.test(w.location.hostname) ? '; domain=.hel.ink; Secure' : '';
+            d.cookie = 'hop_palette=' + choice + '; Path=/; Max-Age=31536000; SameSite=Lax' + domain;
+            set(choice);
+        };
+    }
 })(window, document);

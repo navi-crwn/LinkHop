@@ -81,3 +81,21 @@ test('the sidebar footer is in every language', function () {
         }
     }
 });
+
+test('the colour picker sits above the footer on the dashboard, in every language, and not on public pages', function () {
+    foreach (['/', '/about', '/qr'] as $path) {
+        $public = $this->get($path)->assertOk()->getContent();
+        expect($public)->not->toContain('data-palette="on"')->not->toContain('data-palette-picker');
+    }
+    foreach (['en', 'zh-CN', 'de', 'id', 'ja', 'pt-BR', 'es', 'fr', 'ru'] as $lang) {
+        $html = $this->actingAs(User::factory()->create())->withUnencryptedCookie('hop_lang', $lang)->get('/dashboard')->assertOk()->getContent();
+        $picker = substr($html, strpos($html, 'data-palette-picker'), strpos($html, 'data-sidebar-footer') - strpos($html, 'data-palette-picker'));
+
+        expect(strpos($html, 'data-palette-picker'))->toBeLessThan(strpos($html, 'data-sidebar-footer'))
+            ->and(substr_count($picker, 'data-palette-choice='))->toBe(3)
+            ->and($picker)->toContain('>'.e(trans('Colours', [], $lang)).'<')->toContain('>'.e(trans('Classic', [], $lang)).'<')
+            ->toContain('>'.e(trans('Mist', [], $lang)).'<')->toContain('>'.e(trans('Sand', [], $lang)).'<');
+        // read before first paint by the script, never by the server
+        expect($html)->toContain('data-palette="on"');
+    }
+});
