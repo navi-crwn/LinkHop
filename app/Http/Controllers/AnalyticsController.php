@@ -212,7 +212,10 @@ class AnalyticsController extends Controller
             ->latest()
             ->limit(20)
             ->get(['country', 'created_at']);
-        $userLinks = Link::where('user_id', $user->id)->orderBy('created_at', 'desc')->get(['id', 'slug', 'target_url']);
+        // The picker searches through analytics.links, so the page only needs the one link that is already chosen.
+        $selectedLink = $linkFilter !== 'all' && ctype_digit($linkFilter)
+            ? Link::where('user_id', $user->id)->whereKey((int) $linkFilter)->first(['id', 'slug'])
+            : null;
 
         return view('analytics', compact(
             'topLinks',
@@ -236,7 +239,7 @@ class AnalyticsController extends Controller
             'timeline',
             'totalClicks',
             'countryCount',
-            'userLinks',
+            'selectedLink',
             'linkFilter',
             'recentIps',
             'previousClicks',

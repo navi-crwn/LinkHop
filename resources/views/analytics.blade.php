@@ -30,31 +30,43 @@
                     open: false,
                     search: '',
                     selected: @js((string) $linkFilter),
-                    selectedText: @js($linkFilter === 'all' ? __('All links') : '/'.($userLinks->firstWhere('id', $linkFilter)?->slug ?? '')),
-                    links: @js($userLinks->map(fn ($l) => ['id' => $l->id, 'slug' => $l->slug, 'url' => \Illuminate\Support\Str::limit($l->target_url, 40)])),
-                    get filteredLinks() {
-                        if (!this.search) return this.links;
-                        const s = this.search.toLowerCase();
-                        return this.links.filter(l => l.slug.toLowerCase().includes(s) || l.url.toLowerCase().includes(s));
+                    selectedText: @js($linkFilter === 'all' ? __('All links') : '/'.($selectedLink?->slug ?? '')),
+                    links: [],
+                    loaded: false,
+                    busy: false,
+                    timer: null,
+                    request: null,
+                    // The list is fetched, not shipped with the page: a few of the newest links at first, then whatever the search finds.
+                    load() {
+                        this.request?.abort();
+                        const request = this.request = new AbortController();
+                        this.busy = true;
+                        fetch(@js(route('analytics.links')) + '?q=' + encodeURIComponent(this.search.trim()), { headers: { Accept: 'application/json' }, signal: request.signal })
+                            .then(response => response.ok ? response.json() : Promise.reject(new Error('HTTP ' + response.status)))
+                            .then(data => { this.links = data.links; this.loaded = true; this.busy = false; })
+                            .catch(error => { if (error.name !== 'AbortError') { this.loaded = true; this.busy = false; } });
                     },
+                    toggle() { this.open = !this.open; if (this.open && !this.loaded) this.load(); },
+                    typed() { clearTimeout(this.timer); this.busy = true; this.timer = setTimeout(() => this.load(), 250); },
                     pick(id) { this.$refs.hiddenInput.value = id; this.$refs.form.submit(); }
                 }" @click.outside="open = false" @keydown.escape="if (open) { open = false; $refs.toggle.focus(); }">
                 <input type="hidden" name="link_id" x-ref="hiddenInput" :value="selected">
-                <button type="button" x-ref="toggle" @click="open = !open" :aria-expanded="open.toString()" data-ctl="select" class="input flex items-center justify-between gap-2 text-left">
+                <button type="button" x-ref="toggle" @click="toggle()" :aria-expanded="open.toString()" data-ctl="select" class="input flex items-center justify-between gap-2 text-left">
                     <span class="truncate" x-text="selectedText"></span>
                     <svg class="ml-2 h-4 w-4 shrink-0 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="m6 9 6 6 6-6"/></svg>
                 </button>
                 <div x-show="open" x-transition x-cloak class="glass-strong glass-popover absolute z-50 mt-1 w-full min-w-[240px] rounded-xl p-1.5">
-                    <input type="text" x-model="search" placeholder="{{ __('Search links…') }}" aria-label="{{ __('Search links') }}" class="input mb-1" @click.stop>
+                    <input type="text" x-model="search" @input="typed()" placeholder="{{ __('Search links…') }}" aria-label="{{ __('Search links') }}" class="input mb-1" @click.stop>
                     <div class="max-h-64 overflow-y-auto">
                         <button type="button" @click="pick('all')" data-ctl="option" class="option text-ink">{{ __('All links') }}</button>
-                        <template x-for="link in filteredLinks" :key="link.id">
+                        <template x-for="link in links" :key="link.id">
                             <button type="button" @click="pick(link.id)" data-ctl="option" class="option" :class="selected == link.id && 'bg-indigo-500/10'">
                                 <div class="text-sm font-medium text-ink" x-text="'/' + link.slug"></div>
                                 <div class="truncate text-xs text-muted" x-text="link.url"></div>
                             </button>
                         </template>
-                        <p x-show="filteredLinks.length === 0" class="px-3 py-4 text-center text-sm text-muted">{{ __('No links found') }}</p>
+                        <p x-show="busy" role="status" class="px-3 py-4 text-center text-sm text-muted">{{ __('Searching…') }}</p>
+                        <p x-show="!busy && loaded && links.length === 0" class="px-3 py-4 text-center text-sm text-muted">{{ __('No links found') }}</p>
                     </div>
                 </div>
             </div>
