@@ -32,7 +32,7 @@ const settled = async <T>(read: () => Promise<T>) => {
   return value;
 };
 
-for (const [width, height, mobile] of [[1440, 900, false], [390, 800, true], [390, 600, true]] as const) {
+for (const [width, height, mobile] of [[1440, 900, false], [1280, 720, false], [390, 800, true], [390, 600, true]] as const) {
   test(`footer is a column of six links with "Part of" below, ${width}x${height}`, async ({ browser }) => {
     const { page, context } = await open(browser, width, height, mobile, 'light');
     const links = page.locator('[data-sidebar-footer] li a');
