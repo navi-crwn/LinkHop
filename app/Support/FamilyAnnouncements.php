@@ -13,7 +13,7 @@ use Throwable;
  * The announcement card of the dashboard. The text is written once on the hub (HOP ID) and every app of the family
  * reads it: GET {hub}/announcements.json?app=linkhop, a public list with title, body, level and link.
  *
- * It is read by the server, never by the browser, and it can never cost a member a page: two seconds at most, a
+ * It is read by the server, never by the browser, and it can never cost a member a page: under two seconds at most (1.5 s wait), a
  * copy kept for five minutes, a failed read remembered for a minute (so a hub that is down is asked once a minute,
  * not once per page), and the last good list served while the hub is away. No hub address, no request at all.
  */
@@ -58,7 +58,7 @@ final class FamilyAnnouncements
             return [];
         }
         try {
-            $response = Http::acceptJson()->timeout(2)->connectTimeout(1)->get($hub.'/announcements.json', ['app' => config('hop.current')]);
+            $response = Http::acceptJson()->timeout(1.5)->connectTimeout(1)->get($hub.'/announcements.json', ['app' => config('hop.current')]);
             $list = $response->successful() ? $response->json('items') : null;
         } catch (Throwable) {
             $list = null;
