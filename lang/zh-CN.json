@@ -954,6 +954,8 @@
     "No activity logs found for the selected date range.": "所选日期范围内没有活动记录。",
     "Not started yet": "尚未开始",
     "Notice": "通知",
+    "Warning": "警告",
+    "Important": "重要",
     "Notification preferences": "通知偏好",
     "Notifications": "通知",
     "Oldest first": "最早优先",

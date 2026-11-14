@@ -954,6 +954,8 @@
     "No activity logs found for the selected date range.": "選択した期間にアクティビティはありません。",
     "Not started yet": "まだ開始していません",
     "Notice": "お知らせ",
+    "Warning": "警告",
+    "Important": "重要",
     "Notification preferences": "通知の設定",
     "Notifications": "通知",
     "Oldest first": "古い順",

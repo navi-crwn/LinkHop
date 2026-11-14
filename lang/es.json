@@ -954,6 +954,8 @@
     "No activity logs found for the selected date range.": "No hay actividad en el intervalo de fechas seleccionado.",
     "Not started yet": "Aún no ha empezado",
     "Notice": "Aviso",
+    "Warning": "Aviso",
+    "Important": "Importante",
     "Notification preferences": "Preferencias de notificaciones",
     "Notifications": "Notificaciones",
     "Oldest first": "Más antiguos primero",

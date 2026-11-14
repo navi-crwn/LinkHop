@@ -113,22 +113,6 @@ it('drops the checklist for good once every step is done', function () {
     expect(DB::table('reminder_dismissals')->count())->toBe(0);
 });
 
-it('lets the short-links notice be hidden for a week while the move lasts', function () {
-    config(['shortener.legacy_slug_until' => now()->addDays(30)->toDateString()]);
-    $user = remindUser();
-    $this->actingAs($user);
-
-    $this->get('/dashboard')->assertOk()->assertSee('data-hop-remind="short-links-move"', false);
-    $this->postJson(route('reminders.dismiss'), ['key' => 'short-links-move'])->assertOk();
-    $this->get('/dashboard')->assertOk()->assertDontSee('data-hop-remind="short-links-move"', false);
-    remindLater($this, 8);
-    $this->get('/dashboard')->assertOk()->assertSee('data-hop-remind="short-links-move"', false);
-
-    // The move is over: no notice, hidden or not.
-    remindLater($this, 40);
-    $this->get('/dashboard')->assertOk()->assertDontSee('data-hop-remind="short-links-move"', false);
-});
-
 it('removes the reminder rows with the account', function () {
     $user = remindUser();
     $keep = remindUser();

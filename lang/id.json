@@ -954,6 +954,8 @@
     "No activity logs found for the selected date range.": "Tidak ada log aktivitas pada rentang tanggal yang dipilih.",
     "Not started yet": "Belum dimulai",
     "Notice": "Pemberitahuan",
+    "Warning": "Peringatan",
+    "Important": "Penting",
     "Notification preferences": "Preferensi notifikasi",
     "Notifications": "Notifikasi",
     "Oldest first": "Terlama dulu",
