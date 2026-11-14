@@ -2,8 +2,8 @@
  * layout); what goes into a code comes from payloads.js (the same pure functions the public /qr page uses). Nothing is
  * sent to the server until "Save": then one JSON request carries the content, the look and a label. The saved codes
  * arrive in #qc-data (the page is no-store and shown only to its owner). */
-import * as P from './payloads.js';
-import { qrStyleOptions } from './options.js';
+import * as P from './qr/payloads.js';
+import { qrStyleOptions } from './qr/options.js';
 
 function main() {
   var dataEl = document.getElementById('qc-data');

@@ -1,10 +1,13 @@
 <?php
 
+use App\Http\Controllers\LinkController;
 use App\Models\Link;
 use App\Models\QrCode;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 /*
 | The dashboard's "QR codes" page (/qr-codes): the codes of the member's short links and the Wi-Fi, contact and text
@@ -69,7 +72,7 @@ test('the code of someone else is answered like a code that does not exist, for 
     $owner = User::factory()->create();
     $attacker = User::factory()->create();
     $qr = qcSave($owner);
-    $missing = (string) \Illuminate\Support\Str::ulid();
+    $missing = (string) Str::ulid();
 
     foreach ([$qr->id, $missing] as $id) {
         $this->actingAs($attacker)->patch('/qr-codes/'.$id, ['label' => 'Hijacked'])->assertNotFound();
@@ -161,7 +164,7 @@ test('saving and the other actions are rate limited', function () {
     $user = User::factory()->create();
     $last = null;
     foreach (range(1, 22) as $i) {
-        $last = $this->actingAs($user)->deleteJson('/qr-codes/'.(string) \Illuminate\Support\Str::ulid());
+        $last = $this->actingAs($user)->deleteJson('/qr-codes/'.(string) Str::ulid());
     }
 
     $last->assertStatus(429);
@@ -179,6 +182,6 @@ test('the dashboard menu entry opens the member page, and the public bar keeps t
 
 test('the dead route that saved a custom QR image into a column that does not exist is gone', function () {
     expect(Route::has('links.qr.save'))->toBeFalse()
-        ->and(method_exists(\App\Http\Controllers\LinkController::class, 'saveCustomQr'))->toBeFalse()
-        ->and(\Illuminate\Support\Facades\Schema::hasColumn('links', 'qr_settings'))->toBeFalse();
+        ->and(method_exists(LinkController::class, 'saveCustomQr'))->toBeFalse()
+        ->and(Schema::hasColumn('links', 'qr_settings'))->toBeFalse();
 });

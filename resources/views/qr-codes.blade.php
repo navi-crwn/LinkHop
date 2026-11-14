@@ -1,5 +1,5 @@
 {{-- The dashboard's QR codes page: a list (saved codes, then the codes of the short links) and one "Create QR" form for
-     Wi-Fi, contact card and link or text. Codes are drawn in the browser (resources/js/qr/dashboard.js); the server keeps
+     Wi-Fi, contact card and link or text. Codes are drawn in the browser (resources/js/qr-dashboard.js); the server keeps
      the encrypted content of the codes the member chose to save. --}}
 @php
     $s = \App\Support\QrStrings::all();
@@ -13,7 +13,7 @@
 @endphp
 <x-app-layout>
     <x-slot name="pageTitle">{{ __('QR codes') }}</x-slot>
-    @vite(['resources/js/qr/dashboard.js'])
+    @vite(['resources/js/qr-dashboard.js'])
     <div class="space-y-4" id="qc-root">
         <h1 class="sr-only">{{ __('QR codes') }}</h1>
         @if (session('status'))
