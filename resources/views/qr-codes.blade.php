@@ -9,7 +9,9 @@
         'saving_failed' => __('Could not save the QR code (:status).'),
         'download' => __('Download'),
     ];
-    $savedData = $saved->map(fn ($q) => ['id' => $q->id, 'type' => $q->type, 'label' => $q->label, 'payload' => $q->payload, 'style' => $q->style])->values();
+    // Only the codes that can be opened go to the script; one that cannot (the app key changed) is listed apart, with Delete.
+    $savedData = $saved->filter(fn ($q) => $q['open'] !== null)
+        ->map(fn ($q) => ['id' => $q['id'], 'type' => $q['type'], 'label' => $q['open']['label'], 'payload' => $q['open']['payload'], 'style' => $q['style']])->values();
 @endphp
 <x-app-layout>
     <x-slot name="pageTitle">{{ __('QR codes') }}</x-slot>
@@ -102,26 +104,40 @@
         @else
             <ul class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3" id="qc-saved">
                 @foreach ($saved as $q)
-                    <li class="glass-card flex min-w-0 gap-3" data-qc-item="{{ $q->id }}">
-                        <div class="h-24 w-24 shrink-0 overflow-hidden rounded-lg border border-slate-500/15 bg-white p-0.5" data-qc-thumb="{{ $q->id }}" aria-hidden="true"></div>
+                    @if ($q['open'] === null)
+                        <li class="glass-card flex min-w-0 gap-3" data-qc-item="{{ $q['id'] }}" data-qc-unreadable>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-sm text-muted">{{ __('This code cannot be opened any more. You can delete it.') }}</p>
+                                <p class="mt-1"><span class="chip-gray">{{ $typeName[$q['type']] ?? $q['type'] }}</span></p>
+                                <form method="POST" action="{{ route('qr-codes.destroy', $q['id']) }}" class="mt-2" data-confirm="{{ __('Delete this QR code?') }}" data-confirm-message="{{ __('Only the saved entry goes; copies you already printed or shared keep working.') }}" data-confirm-danger>
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="btn-ghost btn-sm text-rose-600 dark:text-rose-400">{{ __('Delete') }}</button>
+                                </form>
+                            </div>
+                        </li>
+                        @continue
+                    @endif
+                    @php($label = $q['open']['label'])
+                    <li class="glass-card flex min-w-0 gap-3" data-qc-item="{{ $q['id'] }}">
+                        <div class="h-24 w-24 shrink-0 overflow-hidden rounded-lg border border-slate-500/15 bg-white p-0.5" data-qc-thumb="{{ $q['id'] }}" aria-hidden="true"></div>
                         <div class="min-w-0 flex-1">
-                            <p class="truncate text-sm font-medium text-ink" title="{{ $q->label }}">{{ $q->label }}</p>
-                            <p class="mt-0.5"><span class="chip-gray">{{ $typeName[$q->type] ?? $q->type }}</span></p>
+                            <p class="truncate text-sm font-medium text-ink" title="{{ $label }}">{{ $label }}</p>
+                            <p class="mt-0.5"><span class="chip-gray">{{ $typeName[$q['type']] ?? $q['type'] }}</span></p>
                             <div class="mt-2 flex flex-wrap gap-1.5">
-                                <button type="button" class="btn-soft btn-sm" data-qc-view="{{ $q->id }}">{{ __('View') }}</button>
-                                <button type="button" class="btn-soft btn-sm" data-qc-dl="png" data-qc-id="{{ $q->id }}">PNG</button>
-                                <button type="button" class="btn-soft btn-sm" data-qc-dl="svg" data-qc-id="{{ $q->id }}">SVG</button>
+                                <button type="button" class="btn-soft btn-sm" data-qc-view="{{ $q['id'] }}">{{ __('View') }}</button>
+                                <button type="button" class="btn-soft btn-sm" data-qc-dl="png" data-qc-id="{{ $q['id'] }}">PNG</button>
+                                <button type="button" class="btn-soft btn-sm" data-qc-dl="svg" data-qc-id="{{ $q['id'] }}">SVG</button>
                             </div>
                             <div class="mt-2 flex flex-wrap items-center gap-1.5">
                                 <details class="min-w-0">
                                     <summary class="btn-ghost btn-sm cursor-pointer list-none">{{ __('Rename') }}</summary>
-                                    <form method="POST" action="{{ route('qr-codes.update', $q->id) }}" class="mt-2 flex gap-1.5">
+                                    <form method="POST" action="{{ route('qr-codes.update', $q['id']) }}" class="mt-2 flex gap-1.5">
                                         @csrf @method('PATCH')
-                                        <input name="label" value="{{ $q->label }}" maxlength="80" required class="input input-dense min-w-0 flex-1" aria-label="{{ __('Label') }}">
+                                        <input name="label" value="{{ $label }}" maxlength="80" required class="input input-dense min-w-0 flex-1" aria-label="{{ __('Label') }}">
                                         <button type="submit" class="btn-primary btn-sm">{{ __('Save') }}</button>
                                     </form>
                                 </details>
-                                <form method="POST" action="{{ route('qr-codes.destroy', $q->id) }}" data-confirm="{{ __('Delete this QR code?') }}" data-confirm-message="{{ __('Only the saved entry goes; copies you already printed or shared keep working.') }}" data-confirm-danger data-confirm-subject="{{ $q->label }}">
+                                <form method="POST" action="{{ route('qr-codes.destroy', $q['id']) }}" data-confirm="{{ __('Delete this QR code?') }}" data-confirm-message="{{ __('Only the saved entry goes; copies you already printed or shared keep working.') }}" data-confirm-danger data-confirm-subject="{{ $label }}">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="btn-ghost btn-sm text-rose-600 dark:text-rose-400">{{ __('Delete') }}</button>
                                 </form>
@@ -173,6 +189,7 @@
             </div>
         </dialog>
 
-        <script type="application/json" id="qc-data">@json(['saved' => $savedData, 't' => $texts, 'storeUrl' => route('qr-codes.store')])</script>
+        {{-- JSON_HEX_*: angle brackets, ampersands and quotes inside a label or a code become escapes, so nothing a member typed can close or open a tag here. --}}
+        <script type="application/json" id="qc-data">{!! json_encode(['saved' => $savedData, 't' => $texts, 'storeUrl' => route('qr-codes.store')], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR) !!}</script>
     </div>
 </x-app-layout>

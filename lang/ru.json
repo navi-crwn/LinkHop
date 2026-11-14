@@ -1378,5 +1378,6 @@
     "Changed": "Изменено",
     "Fixed": "Исправлено",
     "Removed": "Удалено",
-    "Deprecated": "Устарело"
+    "Deprecated": "Устарело",
+    "This code cannot be opened any more. You can delete it.": "Этот код больше нельзя открыть. Его можно удалить."
 }

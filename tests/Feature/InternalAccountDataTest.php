@@ -295,3 +295,15 @@ test('the export and the purge cover the saved QR codes', function () {
 
     expect(QrCode::where('user_id', $user->id)->count())->toBe(0)->and(QrCode::where('user_id', $other->id)->count())->toBe(1);
 });
+
+test('the export skips a saved code that cannot be opened (the app key changed) and says how many', function () {
+    $user = User::factory()->create();
+    $style = ['fg' => '#000000', 'bg' => '#ffffff', 'dots' => 'square', 'corners' => 'square'];
+    QrCode::create(['user_id' => $user->id, 'type' => 'text', 'label' => 'Readable', 'payload' => 'https://example.com/r', 'style' => $style]);
+    // a row sealed with another key
+    DB::table('qr_codes')->insert(['id' => (string) \Illuminate\Support\Str::ulid(), 'user_id' => $user->id, 'type' => 'wifi', 'label' => 'not-a-sealed-value', 'payload' => 'eyJpdiI6ImJhZCJ9',
+        'style' => json_encode($style), 'created_at' => now()->subDay(), 'updated_at' => now()->subDay()]);
+
+    hubSigned('GET', "/internal/accounts/{$user->id}/export")->assertOk()
+        ->assertJsonCount(1, 'data.qr_codes')->assertJsonPath('data.qr_codes.0.label', 'Readable')->assertJsonPath('data.qr_codes_unreadable', 1);
+});

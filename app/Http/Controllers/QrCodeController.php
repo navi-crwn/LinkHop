@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Link;
 use App\Models\QrCode;
 use App\Support\EncryptedNoteLink;
+use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -22,7 +24,9 @@ class QrCodeController extends Controller
     public function index(Request $request): View
     {
         $userId = (int) $request->user()->getAuthIdentifier();
-        $saved = QrCode::where('user_id', $userId)->latest()->latest('id')->get();
+        // A row that cannot be opened is shown as such (with a Delete button), never as a 500 for the whole page.
+        $saved = QrCode::where('user_id', $userId)->latest()->latest('id')->get()
+            ->map(fn (QrCode $q) => ['id' => $q->id, 'type' => $q->type, 'style' => $q->style, 'open' => $q->opened()]);
         $links = Link::where('user_id', $userId)->whereNotNull('qr_code_path')->latest('updated_at')->limit(60)->get();
 
         return view('qr-codes', ['saved' => $saved, 'links' => $links, 'max' => QrCode::MAX_PER_USER]);
@@ -47,20 +51,31 @@ class QrCodeController extends Controller
             return response()->json(['message' => __('Could not save the QR code (:status).', ['status' => 422])], 422);
         }
         $userId = (int) $request->user()->getAuthIdentifier();
-        if (QrCode::where('user_id', $userId)->count() >= QrCode::MAX_PER_USER) {
+        $label = trim((string) ($data['label'] ?? ''));
+        // Count and write under one lock per account, so two requests made together cannot both pass the cap.
+        try {
+            $qr = Cache::lock('qr-codes:'.$userId, 10)->block(3, function () use ($userId, $data, $label) {
+                if (QrCode::where('user_id', $userId)->count() >= QrCode::MAX_PER_USER) {
+                    return null;
+                }
+
+                return QrCode::create([
+                    'user_id' => $userId,
+                    'type' => $data['type'],
+                    'label' => $label !== '' ? $label : $this->typeName($data['type']),
+                    'payload' => $data['payload'],
+                    'style' => [
+                        'fg' => strtolower($data['style']['fg']), 'bg' => strtolower($data['style']['bg']),
+                        'dots' => $data['style']['dots'], 'corners' => $data['style']['corners'],
+                    ],
+                ]);
+            });
+        } catch (LockTimeoutException) {
+            return response()->json(['message' => __('Could not save the QR code (:status).', ['status' => 429])], 429);
+        }
+        if ($qr === null) {
             return response()->json(['message' => __('You can keep up to :count saved QR codes. Delete one to save another.', ['count' => QrCode::MAX_PER_USER])], 422);
         }
-        $label = trim((string) ($data['label'] ?? ''));
-        $qr = QrCode::create([
-            'user_id' => $userId,
-            'type' => $data['type'],
-            'label' => $label !== '' ? $label : $this->typeName($data['type']),
-            'payload' => $data['payload'],
-            'style' => [
-                'fg' => strtolower($data['style']['fg']), 'bg' => strtolower($data['style']['bg']),
-                'dots' => $data['style']['dots'], 'corners' => $data['style']['corners'],
-            ],
-        ]);
         $request->session()->flash('status', __('QR code saved.'));
 
         return response()->json(['id' => $qr->id], 201);
@@ -70,6 +85,9 @@ class QrCodeController extends Controller
     public function update(Request $request, string $id): RedirectResponse
     {
         $qr = $this->owned($request, $id);
+        if ($qr->opened() === null) {
+            abort(404); // a code that cannot be opened can only be deleted
+        }
         $data = $request->validate(['label' => ['required', 'string', 'max:80', EncryptedNoteLink::rule()]]);
         $qr->update(['label' => trim($data['label'])]);
 

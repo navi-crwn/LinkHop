@@ -1378,5 +1378,6 @@
     "Changed": "変更",
     "Fixed": "修正",
     "Removed": "削除",
-    "Deprecated": "非推奨"
+    "Deprecated": "非推奨",
+    "This code cannot be opened any more. You can delete it.": "このコードはもう開けません。削除できます。"
 }

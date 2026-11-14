@@ -185,3 +185,83 @@ test('the dead route that saved a custom QR image into a column that does not ex
         ->and(method_exists(LinkController::class, 'saveCustomQr'))->toBeFalse()
         ->and(Schema::hasColumn('links', 'qr_settings'))->toBeFalse();
 });
+
+/*
+| The second reader's findings: the label is sealed like the content, one unreadable row cannot take the page or the
+| export down, a refused form never puts what the code carries into the session, the cap holds under a lock, and
+| nothing a member typed can end the data block of the page.
+*/
+
+test('the label is encrypted as well, so nothing taken from the content is readable in the database', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user)->postJson('/qr-codes', qcWifi('Cafe Hop Lt 2'))->assertCreated();
+    $this->actingAs($user)->postJson('/qr-codes', ['type' => 'vcard', 'label' => 'Dewi Lestari', 'payload' => "BEGIN:VCARD\nVERSION:3.0\nFN:Dewi Lestari\nEND:VCARD", 'style' => qcWifi()['style']])->assertCreated();
+    $this->actingAs($user)->postJson('/qr-codes', ['type' => 'text', 'label' => 'https://example.com/private-menu', 'payload' => 'https://example.com/private-menu', 'style' => qcWifi()['style']])->assertCreated();
+
+    $rows = DB::table('qr_codes')->get(['label', 'payload'])->map(fn ($r) => $r->label.' '.$r->payload)->implode(' ');
+    expect($rows)->not->toContain('Cafe Hop')->not->toContain('Dewi')->not->toContain('private-menu')->not->toContain(QC_PASS)
+        ->and(QrCode::orderBy('created_at')->first()->label)->toBe('Cafe Hop Lt 2');
+    // a rename seals the new label too
+    $id = QrCode::first()->id;
+    $this->actingAs($user)->patch('/qr-codes/'.$id, ['label' => 'Renamed Lobby Wi-Fi'])->assertRedirect();
+    expect((string) DB::table('qr_codes')->where('id', $id)->value('label'))->not->toContain('Lobby');
+});
+
+test('a row that cannot be opened is listed with a Delete button and does not break the page, the export or the rest', function () {
+    $user = User::factory()->create();
+    $good = qcSave($user, ['label' => 'Still fine']);
+    // a row sealed with another key, as after an APP_KEY change without APP_PREVIOUS_KEYS
+    $bad = (string) \Illuminate\Support\Str::ulid();
+    DB::table('qr_codes')->insert(['id' => $bad, 'user_id' => $user->id, 'type' => 'wifi', 'label' => 'not-a-sealed-value', 'payload' => 'eyJpdiI6ImJhZCJ9', 'style' => json_encode(qcWifi()['style']), 'created_at' => now()->subDay(), 'updated_at' => now()->subDay()]);
+
+    $res = $this->actingAs($user)->get('/qr-codes')->assertOk();
+    $res->assertSee('Still fine')->assertSee('This code cannot be opened any more. You can delete it.');
+    expect($res->getContent())->toContain('data-qc-unreadable')->toContain(route('qr-codes.destroy', $bad));
+    // it cannot be renamed, but it can be deleted
+    $this->actingAs($user)->patch('/qr-codes/'.$bad, ['label' => 'x'])->assertNotFound();
+    $this->actingAs($user)->delete('/qr-codes/'.$bad)->assertRedirect(route('qr-codes.index'));
+    expect(QrCode::count())->toBe(1)->and(QrCode::first()->id)->toBe($good->id);
+});
+
+test('a refused form never puts what a code carries into the session as old input', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)->from('/qr-codes')->post('/qr-codes', ['type' => 'wifi', 'label' => 'Secret net', 'payload' => 'WIFI:T:WPA;S:Secret net;P:'.QC_PASS.';;', 'style' => ['fg' => 'not-a-colour']])
+        ->assertSessionHasErrors();
+
+    expect(session()->hasOldInput('payload'))->toBeFalse()->and(session()->hasOldInput('label'))->toBeFalse()
+        ->and(json_encode(session()->all()))->not->toContain(QC_PASS)->not->toContain('Secret net');
+});
+
+test('two saves at the same moment cannot both pass the cap: the count and the write sit under one lock', function () {
+    $user = User::factory()->create();
+    foreach (range(1, QrCode::MAX_PER_USER - 1) as $i) {
+        qcSave($user, ['label' => "Code $i"]);
+    }
+    // another request is saving for this account right now: this one waits, then gives up instead of racing past the cap
+    $held = \Illuminate\Support\Facades\Cache::lock('qr-codes:'.$user->id, 10);
+    expect($held->get())->toBeTrue();
+    $this->actingAs($user)->postJson('/qr-codes', qcWifi())->assertStatus(429);
+    expect(QrCode::where('user_id', $user->id)->count())->toBe(QrCode::MAX_PER_USER - 1);
+    $held->release();
+
+    $this->actingAs($user)->postJson('/qr-codes', qcWifi())->assertCreated();
+    $this->actingAs($user)->postJson('/qr-codes', qcWifi())->assertStatus(422);
+    expect(QrCode::where('user_id', $user->id)->count())->toBe(QrCode::MAX_PER_USER);
+});
+
+test('a label or content that holds </script> cannot end the data block of the page', function () {
+    $user = User::factory()->create();
+    $evil = '</script><script>window.pwned=1</script>';
+    qcSave($user, ['type' => 'text', 'label' => $evil, 'payload' => 'https://example.com/'.$evil]);
+
+    $html = $this->actingAs($user)->get('/qr-codes')->assertOk()->getContent();
+    preg_match('~<script type="application/json" id="qc-data">(.*?)</script>~s', $html, $block);
+
+    expect($block)->not->toBeEmpty()
+        ->and($block[1])->toContain('\\u003C')->not->toContain('<')->not->toContain('>')
+        ->and($html)->not->toContain('window.pwned=1</script>')
+        ->and(json_decode($block[1], true)['saved'][0]['label'])->toBe($evil);
+    // and as text on the page it is escaped
+    expect($html)->not->toContain('<script>window.pwned');
+});

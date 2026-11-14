@@ -85,10 +85,15 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->withInput(EncryptedNoteLink::scrubInput($request->except(['_token', 'password', 'password_confirmation', 'current_password', 'token', 'code', 'recovery_code'])))
                 ->with('session_expired', __('Your session expired. Please try again.'));
         });
+        $exceptions->dontFlash(['payload']);
         // A refused form comes back with what was typed, kept in the session: without the key of an encrypted note.
         $exceptions->render(function (ValidationException $e, Request $request) {
             if (! $request->expectsJson()) {
                 $request->merge(EncryptedNoteLink::scrubInput($request->input()));
+            }
+            // What a saved QR code carries (a Wi-Fi password, a contact) and its label never go back into the session as old input.
+            if ($request->is('qr-codes', 'qr-codes/*')) {
+                $request->replace($request->except(['payload', 'label']));
             }
 
             return null;

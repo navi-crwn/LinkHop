@@ -1378,5 +1378,6 @@
     "Changed": "Alterado",
     "Fixed": "Corrigido",
     "Removed": "Removido",
-    "Deprecated": "Obsoleto"
+    "Deprecated": "Obsoleto",
+    "This code cannot be opened any more. You can delete it.": "Este código não pode mais ser aberto. Você pode excluí-lo."
 }

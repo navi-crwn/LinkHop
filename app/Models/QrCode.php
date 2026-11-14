@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,10 +28,25 @@ class QrCode extends Model
 
     protected $fillable = ['user_id', 'type', 'label', 'payload', 'style'];
 
-    protected $hidden = ['payload'];
+    protected $hidden = ['payload', 'label'];
 
     protected function casts(): array
     {
-        return ['payload' => 'encrypted', 'style' => 'array'];
+        return ['label' => 'encrypted', 'payload' => 'encrypted', 'style' => 'array'];
+    }
+
+    /**
+     * The label and the content, or null when this row cannot be opened (the app key changed and the old key is not
+     * kept in APP_PREVIOUS_KEYS): one such row must not take down the page or the account export.
+     *
+     * @return array{label: string, payload: string}|null
+     */
+    public function opened(): ?array
+    {
+        try {
+            return ['label' => (string) $this->label, 'payload' => (string) $this->payload];
+        } catch (DecryptException) {
+            return null;
+        }
     }
 }

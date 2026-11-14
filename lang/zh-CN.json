@@ -1378,5 +1378,6 @@
     "Changed": "变更",
     "Fixed": "修复",
     "Removed": "移除",
-    "Deprecated": "已弃用"
+    "Deprecated": "已弃用",
+    "This code cannot be opened any more. You can delete it.": "此二维码已无法打开，可以将其删除。"
 }

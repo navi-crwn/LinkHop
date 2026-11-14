@@ -34,14 +34,19 @@ class AccountDataController extends Controller
             'expires_at' => $l->expires_at?->toIso8601String(),
         ]);
 
+        $codes = QrCode::where('user_id', $user->id)->orderBy('created_at')->get()
+            ->map(fn (QrCode $q) => ['type' => $q->type, 'created_at' => $q->created_at?->toIso8601String(), 'open' => $q->opened()]);
+
         return response()->json(['ok' => true, 'app' => 'linkhop', 'data' => [
             'links' => $links,
             'folders' => $user->folders()->orderBy('name')->get(['name', 'is_default', 'created_at']),
             'tags' => $user->tags()->orderBy('name')->get(['name', 'created_at']),
             // the member's own saved codes, with what they carry (the hub bundles this into the member's own download)
-            'qr_codes' => QrCode::where('user_id', $user->id)->orderBy('created_at')->get()->map(fn (QrCode $q) => [
-                'type' => $q->type, 'label' => $q->label, 'content' => $q->payload, 'created_at' => $q->created_at?->toIso8601String(),
+            'qr_codes' => $codes->filter(fn (array $c) => $c['open'] !== null)->map(fn (array $c) => [
+                'type' => $c['type'], 'label' => $c['open']['label'], 'content' => $c['open']['payload'], 'created_at' => $c['created_at'],
             ])->values(),
+            // saved codes that could not be opened (the app key changed): counted, not exported
+            'qr_codes_unreadable' => $codes->filter(fn (array $c) => $c['open'] === null)->count(),
         ]]);
     }
 
