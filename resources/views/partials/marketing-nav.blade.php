@@ -10,7 +10,7 @@
 @endphp
 <header class="sticky top-0 z-40 px-3 pt-3 sm:px-5" x-data="{ open: false }" @keydown.escape.window="open = false">
     <nav class="mx-auto flex h-14 max-w-6xl items-center justify-between rounded-2xl border border-slate-200/80 bg-white/70 px-3 shadow-xs shadow-slate-900/5 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/50 dark:shadow-none sm:px-4">
-        <a href="{{ route('home') }}" class="flex shrink-0 items-center gap-2.5 text-slate-900 dark:text-white">
+        <a href="{{ auth()->check() ? route('dashboard') : route('home') }}" data-logo class="flex shrink-0 items-center gap-2.5 text-slate-900 dark:text-white">
             <x-wordmark class="h-11 w-auto max-[400px]:h-9" />
         </a>
         <div class="hidden items-center gap-1 text-sm text-slate-600 xl:flex dark:text-white/70">
@@ -29,10 +29,10 @@
                 </button>
             @endif
             @auth
-                <a href="{{ route('dashboard') }}" class="whitespace-nowrap rounded-xl bg-slate-900 px-3.5 py-1.5 font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-white/90">{{ __('Dashboard') }}</a>
+                <a href="{{ route('dashboard') }}" class="whitespace-nowrap max-sm:hidden rounded-xl bg-slate-900 px-3.5 py-1.5 font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-white/90">{{ __('Dashboard') }}</a>
             @else
                 <a href="{{ route('login') }}" class="hidden rounded-xl px-3 py-1.5 text-slate-600 transition hover:text-slate-900 sm:inline-block dark:text-white/80 dark:hover:text-white">{{ __('Log in') }}</a>
-                <a href="{{ route('register') }}" class="whitespace-nowrap rounded-xl bg-slate-900 px-3.5 py-1.5 font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-white/90">{{ __('Sign up') }}</a>
+                <a href="{{ route('register') }}" class="whitespace-nowrap max-sm:hidden rounded-xl bg-slate-900 px-3.5 py-1.5 font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-white/90">{{ __('Sign up') }}</a>
             @endauth
             <button type="button" class="inline-flex h-9 w-9 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-900/5 xl:hidden dark:text-white/80 dark:hover:bg-white/10" @click="open = !open" :aria-expanded="open" aria-controls="app-menu" aria-label="{{ __('Menu') }}">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path x-show="!open" stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/><path x-show="open" x-cloak stroke-linecap="round" d="M6 6l12 12M18 6 6 18"/></svg>
@@ -45,6 +45,11 @@
         @endforeach
         @guest
             <a href="{{ route('login') }}" class="block rounded-xl px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-900/5 hover:text-slate-900 dark:text-white/80 dark:hover:bg-white/10 dark:hover:text-white">{{ __('Log in') }}</a>
+            {{-- On a phone the bar keeps only the icons, so the main action (a label of any length in nine languages) lives here. --}}
+            <a href="{{ route('register') }}" class="mt-1 block rounded-xl bg-slate-900 px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-slate-800 sm:hidden dark:bg-white dark:text-slate-900 dark:hover:bg-white/90">{{ __('Sign up') }}</a>
         @endguest
+        @auth
+            <a href="{{ route('dashboard') }}" class="mt-1 block rounded-xl bg-slate-900 px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-slate-800 sm:hidden dark:bg-white dark:text-slate-900 dark:hover:bg-white/90">{{ __('Dashboard') }}</a>
+        @endauth
     </div>
 </header>

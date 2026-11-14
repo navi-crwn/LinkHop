@@ -18,9 +18,9 @@
         </div>
         <header class="px-3 pt-3 sm:px-5">
             <nav class="mx-auto flex h-14 max-w-6xl items-center justify-between gap-2 rounded-2xl border border-white/10 bg-slate-900/50 px-2.5 backdrop-blur-xl sm:px-4">
-                <a href="{{ route('home') }}" class="flex items-center gap-2.5 text-white" aria-label="LinkHop"><x-wordmark class="h-9 w-auto sm:h-11" /></a>
+                <a href="{{ auth()->check() ? route('dashboard') : route('home') }}" data-logo class="flex items-center gap-2.5 text-white" aria-label="LinkHop"><x-wordmark class="h-9 w-auto sm:h-11" /></a>
                 <div class="flex min-w-0 items-center gap-2 text-sm">
-                    <a href="{{ route('home') }}" class="whitespace-nowrap text-white/70 hover:text-white max-sm:hidden">&larr; Back to LinkHop</a>
+                    <a href="{{ auth()->check() ? route('dashboard') : route('home') }}" class="whitespace-nowrap text-white/70 hover:text-white max-sm:hidden">&larr; {{ auth()->check() ? __('Go to dashboard') : 'Back to LinkHop' }}</a>
                     <span class="max-sm:hidden"><x-hop::badge class="whitespace-nowrap" /></span>
                     @auth
                         <a href="{{ route('dashboard') }}" class="whitespace-nowrap rounded-xl bg-white px-3.5 py-1.5 font-semibold text-slate-900 hover:bg-white/90">Dashboard</a>

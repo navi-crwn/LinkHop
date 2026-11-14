@@ -80,10 +80,14 @@
                         <nav class="flex-1 overflow-y-auto px-3 pb-3">
                             @include('components.partials.nav', ['isAdmin' => $isAdmin, 'abuseCount' => $abuseCount])
                         </nav>
-                        <div class="border-t border-slate-500/10 px-5 py-3 text-xs text-muted">
-                            <a href="{{ route('changelog') }}" class="hover:underline">{{ __('Changelog') }}</a>
-                            <span aria-hidden="true"> · </span>
-                            <a href="https://github.com/navi-crwn/LinkHop" rel="noopener" class="hover:underline">GitHub</a>
+                        <div class="space-y-2.5 border-t border-slate-500/10 px-5 py-3 text-xs text-muted">
+                            <div>
+                                <a href="{{ route('changelog') }}" class="hover:underline">{{ __('Changelog') }}</a>
+                                <span aria-hidden="true"> · </span>
+                                <a href="https://github.com/navi-crwn/LinkHop" rel="noopener" class="hover:underline">GitHub</a>
+                            </div>
+                            {{-- The family row is the last thing in the sidebar, on every dashboard of the family. --}}
+                            @include('partials.family-row')
                         </div>
                     </div>
                 </aside>
@@ -162,7 +166,6 @@
                             {{ $slot ?? '' }}
                         @endif
                     </div>
-                    <footer class="hop-family-footer">@include('partials.family-row')</footer>
                 </main>
                 <x-command-palette />
             </div>

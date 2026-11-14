@@ -63,9 +63,10 @@ test('the QR texts exist in all nine lang files and none is left in English', fu
     app()->setLocale('en');
 });
 
-test('the account menu and the public top bar link to QR codes', function () {
-    $this->get('/')->assertSee(route('qr'), false);
-    $this->actingAs(User::factory()->create())->get('/links')->assertSee(route('qr'), false);
+test('the public top bar links to the public QR page and the dashboard menu to the member page', function () {
+    $this->get('/')->assertSee('href="'.route('qr').'"', false);
+    $html = $this->actingAs(User::factory()->create())->get('/links')->getContent();
+    expect($html)->toContain('href="'.route('qr-codes.index').'"')->not->toContain('href="'.route('qr').'"');
 });
 
 test('qr is a reserved slug and /qr is the page, not a short link', function () {

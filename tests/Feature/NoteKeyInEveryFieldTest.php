@@ -190,13 +190,16 @@ it('refuses a key in a comment on a link, a folder name and a tag name', functio
         ->and(DB::table('tags')->count())->toBe(0);
 });
 
-it('refuses a key in saved QR settings, a webhook address and the folder or tags of a CSV row', function () {
+it('refuses a key in a saved QR code, a webhook address and the folder or tags of a CSV row', function () {
     Http::fake();
     $user = User::factory()->create();
     $link = Link::create(['user_id' => $user->id, 'slug' => 'efqr', 'target_url' => 'https://example.com/ok', 'status' => 'active']);
     $address = 'https://note.hel.ink/Ab3dEf#k='.EF_KEY;
-    $this->actingAs($user)->postJson("/links/{$link->id}/qr/save", ['qr_image' => 'data:image/png;base64,AAAA', 'settings' => ['logo' => $address]])
-        ->assertStatus(422)->assertJsonValidationErrors('settings');
+    $style = ['fg' => '#000000', 'bg' => '#ffffff', 'dots' => 'square', 'corners' => 'square'];
+    $this->actingAs($user)->postJson('/qr-codes', ['type' => 'text', 'label' => 'note', 'payload' => $address, 'style' => $style])
+        ->assertStatus(422)->assertJsonValidationErrors('payload');
+    $this->actingAs($user)->postJson('/qr-codes', ['type' => 'text', 'label' => $address, 'payload' => 'https://example.com/ok', 'style' => $style])
+        ->assertStatus(422)->assertJsonValidationErrors('label');
     $this->actingAs($user)->postJson('/settings/webhooks', ['url' => $address])->assertStatus(422)->assertJsonValidationErrors('url');
     expect(efStored())->toBe([])->and(DB::table('webhook_endpoints')->count())->toBe(0);
     $rows = [['line' => '2', 'destination' => 'https://example.com/a', 'slug' => '', 'tags' => $address, 'folder' => '', 'expires_at' => '', 'max_clicks' => ''],

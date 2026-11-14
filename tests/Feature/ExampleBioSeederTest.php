@@ -54,7 +54,7 @@ test('every example short link opens its target instead of an app page', functio
         expect(ReservedSlugs::isReserved($slug))->toBeFalse("/{$slug} is reserved");
         $this->get("/l/{$slug}")->assertRedirect($target);
         if ($slug === 'changelog') {
-            $this->get('/changelog')->assertOk()->assertSee('Commits, releases');
+            $this->get('/changelog')->assertOk()->assertSee('What changed in each HOP app');
         } else {
             $this->get("/{$slug}")->assertRedirect(public_url("l/{$slug}"))->assertStatus(301);
         }

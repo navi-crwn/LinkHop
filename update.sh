@@ -319,12 +319,12 @@ upd "Building the front end" npm run build --silent
 [ "$DRY" = 1 ] || STATE=migrating
 upd "Updating the database tables" "$PHP_BIN" artisan migrate --force
 upd "Linking the storage folder" "$PHP_BIN" artisan storage:link --force
-# The /changelog page reads storage/app/changelog.json when it exists (else the snapshot in the repository). Needs
-# python3 and an authenticated gh; without them, or when GitHub is unreachable, the committed snapshot stays in use.
+# The /changelog page reads storage/app/changelog.json when it exists (else the snapshot in the repository). It is
+# built from CHANGELOG.md alone (no network, no GitHub login); without python3 the committed snapshot stays in use.
 if [ "$DRY" != 1 ]; then
-  if have python3 && have gh; then
+  if have python3; then
     # The script's own errors stay visible: a changelog that cannot be built should say why.
-    if python3 scripts/build-changelog.py --repo LinkHop --output storage/app/changelog.json >/dev/null; then ok "Changelog built from GitHub"; else warn "Could not build the changelog (see above); the committed one is shown."; fi
+    if python3 scripts/build-changelog.py --repo LinkHop --output storage/app/changelog.json >/dev/null; then ok "Changelog built from CHANGELOG.md"; else warn "Could not build the changelog (see above); the committed one is shown."; fi
   fi
 fi
 upd "Clearing and warming caches" "$PHP_BIN" artisan optimize:clear

@@ -1,5 +1,5 @@
 /*
- * The family theme, read before first paint (HOP preference contract, train 4): the cookie hop_theme, then this
+ * The family theme, read before first paint (the HOP preference contract): the cookie hop_theme, then this
  * app's old localStorage key, then the system setting. hop_theme is shared by every *.hel.ink app (Domain=.hel.ink),
  * host-only elsewhere (localhost, self-hosted). An old saved choice without the cookie is copied into it once.
  * window.hopSetTheme('light' | 'dark') is what every theme toggle calls: it writes the cookie and keeps the old key.

@@ -546,47 +546,6 @@ class LinkController extends Controller
         return redirect()->route('links.show', $link)->with('status', __('QR code colours saved.'));
     }
 
-    public function saveCustomQr(Request $request, Link $link)
-    {
-        $this->authorizeLink($link);
-        $validated = $request->validate([
-            'qr_image' => 'required|string',
-            'settings' => ['nullable', 'array', EncryptedNoteLink::rule()],
-        ]);
-        try {
-            $imageData = $validated['qr_image'];
-            if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $type)) {
-                $imageData = substr($imageData, strpos($imageData, ',') + 1);
-                $type = strtolower($type[1]); // jpg, png, gif
-            } else {
-                return response()->json(['error' => 'Invalid image format'], 400);
-            }
-            $imageData = base64_decode($imageData);
-            if ($imageData === false) {
-                return response()->json(['error' => 'Failed to decode image'], 400);
-            }
-            if (strlen($imageData) > 5 * 1024 * 1024) {
-                return response()->json(['error' => 'Image too large (max 5MB)'], 400);
-            }
-            $path = "qrcodes/{$link->slug}-custom.png";
-            Storage::disk('public')->put($path, $imageData);
-            $link->update([
-                'qr_code_path' => $path,
-                'qr_settings' => $validated['settings'] ?? null,
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'path' => Storage::disk('public')->url($path),
-                'message' => 'QR code saved successfully',
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Failed to save QR code: '.$e->getMessage(),
-            ], 500);
-        }
-    }
-
     protected function hexToRgb(string $hex): array
     {
         $hex = ltrim($hex, '#');

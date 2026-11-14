@@ -9,11 +9,12 @@ use App\Models\HopAudit;
 use App\Models\IpBan;
 use App\Models\Link;
 use App\Models\LinkClick;
-use App\Models\SeoSetting;
 use App\Models\User;
 use App\Support\HopSignature;
+use App\Support\ServerErrorAlert;
 use Hop\Bio\Models\BioPage;
 use Hop\Safety\Models\DomainBlacklist;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Process;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
@@ -197,12 +198,26 @@ class HopContentApiTest extends TestCase
     {
         $res = $this->signed('GET', '/api/hop/settings')->assertOk();
         $keys = collect($res->json('data'))->pluck('key')->all();
-        $this->assertContains('seo.site_title', $keys);
         $this->assertContains('abuse.threshold_disable', $keys);
-        $this->signed('PUT', '/api/hop/settings', ['seo.site_title' => 'LinkHop test', 'abuse.threshold_disable' => 5])->assertOk();
-        $this->assertSame('LinkHop test', SeoSetting::first()->site_title);
+        $this->assertContains(ServerErrorAlert::SETTING, $keys);
+        $this->assertSame([], array_values(array_filter($keys, fn ($k) => str_starts_with($k, 'seo.'))), 'the retired seo.* settings are not offered');
+        $manifest = collect($this->signed('GET', '/api/hop/manifest')->assertOk()->json('data.settings_schema'))->pluck('key')->all();
+        $this->assertSame([ServerErrorAlert::SETTING], $manifest);
+        $this->signed('PUT', '/api/hop/settings', ['abuse.threshold_disable' => 5, ServerErrorAlert::SETTING => 'owner@example.test'])->assertOk();
         $this->assertSame(60, config('safety.thresholds.disable'), 'read-only keys are ignored');
+        $this->assertSame('owner@example.test', ServerErrorAlert::stored());
         $this->signed('PUT', '/api/hop/settings', ['nothing' => 1])->assertStatus(422);
+    }
+
+    public function test_an_older_imperium_that_still_sends_seo_keys_gets_no_error_and_nothing_is_stored(): void
+    {
+        // Only retired keys: answered like a save with nothing to change.
+        $res = $this->signed('PUT', '/api/hop/settings', ['seo.site_title' => 'LinkHop test', 'seo.logo' => 'x'])->assertOk();
+        $this->assertTrue($res->json('ok'));
+        // Mixed with the address: the address is saved, the retired keys are dropped.
+        $this->signed('PUT', '/api/hop/settings', ['seo.site_title' => 'LinkHop test', ServerErrorAlert::SETTING => 'ops@example.test'])->assertOk();
+        $this->assertSame('ops@example.test', ServerErrorAlert::stored());
+        $this->assertSame(0, DB::table('seo_settings')->count(), 'no row is written for the retired keys');
     }
 
     public function test_needs_admin_client(): void

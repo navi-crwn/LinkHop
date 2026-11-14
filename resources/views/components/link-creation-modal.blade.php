@@ -126,7 +126,7 @@
                 </div>
             </div>
         </div>
-        {{-- The form wraps both columns, so on a phone the folder and preview come before the Create button
+        {{-- The form wraps both columns, so on a phone the preview comes before the Create button
              (one column below lg) instead of after it. --}}
         <form x-show="!createdLink" @submit.prevent="submitForm()" class="flex min-h-0 flex-col overflow-hidden">
             <div class="flex items-center justify-between border-b border-slate-200 px-4 py-4 sm:px-6 dark:border-slate-800">
@@ -198,6 +198,68 @@
                                 <div class="flex items-center justify-between mb-2">
                                     <div class="flex items-center gap-2">
                                         <label class="label mb-0!">
+                                            {{ __('Folder') }}
+                                        </label>
+                                        <span x-show="folderSuccess" x-transition class="text-xs text-emerald-600 dark:text-emerald-400">{{ __('Folder created.') }}</span>
+                                    </div>
+                                    <button 
+                                        type="button"
+                                        @click="showFolderModal = true"
+                                        class="btn-link" data-ctl="link"
+                                    >
+                                        {{ __('+ New folder') }}
+                                    </button>
+                                </div>
+                                <div class="relative" @click.outside="if (activeDropdown === 'folders') { activeDropdown = null; folderSearch = ''; }">
+                                    <button
+                                        type="button"
+                                        @click="activeDropdown = activeDropdown === 'folders' ? null : 'folders'; folderSearch = ''"
+                                        class="input flex items-center justify-between gap-2 text-left" data-ctl="select" data-select="folders"
+                                    >
+                                        <span class="text-sm" x-text="folders.find(f => f.id == formData.folder_id)?.name || @js(__('Select folder'))"></span>
+                                        <svg class="w-4 h-4 transition-transform" :class="activeDropdown === 'folders' ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                    <div 
+                                        x-show="activeDropdown === 'folders'"
+                                        x-transition
+                                        class="absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg shadow-xl overflow-hidden"
+                                    >
+                                        <div class="p-2 border-b border-slate-200 dark:border-slate-700">
+                                            <input 
+                                                type="text" 
+                                                x-model="folderSearch"
+                                                autocomplete="new-password"
+                                                placeholder="{{ __('Search folders...') }}"
+                                                aria-label="{{ __('Search folders') }}"
+                                                class="input input-dense"
+                                                @click.stop
+                                                @keydown.enter.prevent
+                                            >
+                                        </div>
+                                        <div class="overflow-y-auto" style="max-height: 160px;">
+                                            <template x-for="folder in folders.filter(f => !folderSearch || f.name.toLowerCase().includes(folderSearch.toLowerCase()))" :key="folder.id">
+                                                <button
+                                                    type="button"
+                                                    @click="formData.folder_id = folder.id; activeDropdown = null; folderSearch = ''"
+                                                    class="option" data-ctl="option"
+                                                    :class="formData.folder_id == folder.id ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'text-slate-700 dark:text-slate-300'"
+                                                >
+                                                    <span class="text-sm" x-text="folder.name"></span>
+                                                </button>
+                                            </template>
+                                            <template x-if="folders.filter(f => !folderSearch || f.name.toLowerCase().includes(folderSearch.toLowerCase())).length === 0">
+                                                <p class="text-xs text-slate-500 dark:text-slate-400 text-center py-4">{{ __('No folders found') }}</p>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <label class="label mb-0!">
                                             {{ __('Tags') }}
                                         </label>
                                         <span x-show="tagSuccess" x-transition class="text-xs text-emerald-600 dark:text-emerald-400">{{ __('Tag created.') }}</span>
@@ -215,7 +277,7 @@
                                     <button
                                         type="button"
                                         @click="activeDropdown = activeDropdown === 'tags' ? null : 'tags'; tagSearch = ''"
-                                        class="input flex items-center justify-between gap-2 text-left" data-ctl="select"
+                                        class="input flex items-center justify-between gap-2 text-left" data-ctl="select" data-select="tags"
                                     >
                                         <span class="text-sm" x-text="tagsLabel()"></span>
                                         <svg class="w-4 h-4 transition-transform" :class="activeDropdown === 'tags' ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -324,72 +386,10 @@
                         </div>
                     </div>
                     <div class="min-w-0 bg-white dark:bg-slate-800">
-                        {{-- Two columns share one scroller: on lg the folder and preview stay in view (sticky) while the
-                             options on the left scroll, and scroll on their own when they are taller than the scroller
+                        {{-- Two columns share one scroller: on lg the preview stays in view (sticky) while the
+                             fields and options on the left scroll, and scrolls on its own when it is taller than the scroller
                              (90vh minus the header and the footer, about 9.25rem). One column below lg: no sticky. --}}
                         <div class="space-y-6 p-4 sm:p-6 lg:sticky lg:top-0 lg:max-h-[calc(90vh-10rem)] lg:overflow-y-auto lg:overscroll-contain">
-                            <div>
-                                <div class="flex items-center justify-between mb-2">
-                                    <div class="flex items-center gap-2">
-                                        <label class="label mb-0!">
-                                            {{ __('Folder') }}
-                                        </label>
-                                        <span x-show="folderSuccess" x-transition class="text-xs text-emerald-600 dark:text-emerald-400">{{ __('Folder created.') }}</span>
-                                    </div>
-                                    <button 
-                                        type="button"
-                                        @click="showFolderModal = true"
-                                        class="btn-link" data-ctl="link"
-                                    >
-                                        {{ __('+ New folder') }}
-                                    </button>
-                                </div>
-                                <div class="relative" @click.outside="if (activeDropdown === 'folders') { activeDropdown = null; folderSearch = ''; }">
-                                    <button
-                                        type="button"
-                                        @click="activeDropdown = activeDropdown === 'folders' ? null : 'folders'; folderSearch = ''"
-                                        class="input flex items-center justify-between gap-2 text-left" data-ctl="select"
-                                    >
-                                        <span class="text-sm" x-text="folders.find(f => f.id == formData.folder_id)?.name || @js(__('Select folder'))"></span>
-                                        <svg class="w-4 h-4 transition-transform" :class="activeDropdown === 'folders' ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                    </button>
-                                    <div 
-                                        x-show="activeDropdown === 'folders'"
-                                        x-transition
-                                        class="absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg shadow-xl overflow-hidden"
-                                    >
-                                        <div class="p-2 border-b border-slate-200 dark:border-slate-700">
-                                            <input 
-                                                type="text" 
-                                                x-model="folderSearch"
-                                                autocomplete="new-password"
-                                                placeholder="{{ __('Search folders...') }}"
-                                                aria-label="{{ __('Search folders') }}"
-                                                class="input input-dense"
-                                                @click.stop
-                                                @keydown.enter.prevent
-                                            >
-                                        </div>
-                                        <div class="overflow-y-auto" style="max-height: 160px;">
-                                            <template x-for="folder in folders.filter(f => !folderSearch || f.name.toLowerCase().includes(folderSearch.toLowerCase()))" :key="folder.id">
-                                                <button
-                                                    type="button"
-                                                    @click="formData.folder_id = folder.id; activeDropdown = null; folderSearch = ''"
-                                                    class="option" data-ctl="option"
-                                                    :class="formData.folder_id == folder.id ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'text-slate-700 dark:text-slate-300'"
-                                                >
-                                                    <span class="text-sm" x-text="folder.name"></span>
-                                                </button>
-                                            </template>
-                                            <template x-if="folders.filter(f => !folderSearch || f.name.toLowerCase().includes(folderSearch.toLowerCase())).length === 0">
-                                                <p class="text-xs text-slate-500 dark:text-slate-400 text-center py-4">{{ __('No folders found') }}</p>
-                                            </template>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             {{-- QR preview: the "QR code" chip switches it on, this shows what will be generated. --}}
                             <div x-show="qrSettings.generateQr" x-cloak>
                                 <div class="flex items-center justify-between mb-3">
@@ -1026,7 +1026,7 @@
             <div class="form-actions shrink-0 border-t border-slate-200 pt-4 dark:border-slate-700 px-5 pb-5">
                 <button
                     type="button"
-                    @click="resetQrSettings()"
+                    @click="resetQrDesign(); generateQrPreview();"
                     class="btn-outline"
                 >
                     {{ __('Reset') }}
@@ -1239,12 +1239,16 @@ function linkCreationModal() {
             });
         },
         closeSheet() {
+            const name = this.sheet;
             this.sheet = null;
             const trigger = this.sheetTrigger;
             this.sheetTrigger = null;
-            if (trigger) {
-                this.$nextTick(() => trigger.focus());
-            }
+            // Back to what opened the sheet; a sheet opened by a preset has no trigger, and a trigger that is hidden
+            // by now (the "Customize QR" button hides with the QR) cannot take focus: use the option chip instead.
+            this.$nextTick(() => {
+                const target = trigger && trigger.offsetParent !== null ? trigger : document.querySelector(`[data-chip="${name}"]`);
+                target?.focus();
+            });
         },
         closePanel() {
             this.panel = false;
@@ -1597,6 +1601,11 @@ function linkCreationModal() {
             const fgColor = this.qrSettings.fgColor.replace('#', '');
             const bgColor = this.qrSettings.bgColor.replace('#', '');
             return `{{ route('api.qr.generate') }}?size=400&data=${encodeURIComponent(shortUrl)}&color=${fgColor}&bgcolor=${bgColor}`;
+        },
+        // The sheet's Reset: back to the default look; whether the QR is on stays as the person set it.
+        resetQrDesign() {
+            this.qrSettings = { ...this.qrSettings, fgColor: '#000000', bgColor: '#ffffff', logo: '', showLogo: false };
+            this.showColorPicker = false;
         },
         resetQrSettings() {
             this.qrSettings = {
