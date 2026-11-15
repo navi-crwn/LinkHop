@@ -52,3 +52,50 @@ test('on a phone the main action of the public top bar is in the menu, not in th
     $member = $this->actingAs(User::factory()->create())->get('/about')->assertOk()->getContent();
     expect($member)->toContain('max-sm:hidden rounded-xl bg-slate-900');
 });
+
+test('the sidebar footer lists Help, Terms, Privacy, Changelog, GitHub and Announcement in that order, then the family row', function () {
+    $html = $this->actingAs(User::factory()->create())->get('/dashboard')->assertOk()->getContent();
+    $aside = substr($html, strpos($html, '<aside'), strpos($html, '</aside>') - strpos($html, '<aside'));
+
+    $order = [route('pages.help'), route('pages.terms'), route('pages.privacy'), route('changelog'), 'https://github.com/navi-crwn/LinkHop', 'https://hel.ink/announcements', 'class="hop-family-row"'];
+    $last = 0;
+    foreach ($order as $needle) {
+        $at = strpos($aside, 'href="'.$needle.'"') ?: strpos($aside, $needle, $last);
+        expect($at)->toBeGreaterThan($last, $needle);
+        $last = $at;
+    }
+    // one entry per line, and nothing else in the footer (the old "Source" and "Licenses" never lived here)
+    $footer = substr($aside, strpos($aside, 'data-sidebar-footer'));
+    expect(substr_count($footer, '<li'))->toBe(6);
+});
+
+test('the sidebar footer is in every language', function () {
+    foreach (['en', 'zh-CN', 'de', 'id', 'ja', 'pt-BR', 'es', 'fr', 'ru'] as $lang) {
+        $html = $this->actingAs(User::factory()->create())->withUnencryptedCookie('hop_lang', $lang)->get('/dashboard')->assertOk()->getContent();
+        $footer = substr($html, strpos($html, 'data-sidebar-footer'));
+        foreach (['Help', 'Terms', 'Privacy', 'Changelog', 'Announcement'] as $key) {
+            expect($footer)->toContain('>'.e(trans($key, [], $lang)).'</a>');
+        }
+        if ($lang !== 'en') {
+            expect(trans('Announcement', [], $lang))->not->toBe('Announcement');
+        }
+    }
+});
+
+test('the colour picker sits above the footer on the dashboard, in every language, and not on public pages', function () {
+    foreach (['/', '/about', '/qr'] as $path) {
+        $public = $this->get($path)->assertOk()->getContent();
+        expect($public)->not->toContain('data-palette="on"')->not->toContain('data-palette-picker');
+    }
+    foreach (['en', 'zh-CN', 'de', 'id', 'ja', 'pt-BR', 'es', 'fr', 'ru'] as $lang) {
+        $html = $this->actingAs(User::factory()->create())->withUnencryptedCookie('hop_lang', $lang)->get('/dashboard')->assertOk()->getContent();
+        $picker = substr($html, strpos($html, 'data-palette-picker'), strpos($html, 'data-sidebar-footer') - strpos($html, 'data-palette-picker'));
+
+        expect(strpos($html, 'data-palette-picker'))->toBeLessThan(strpos($html, 'data-sidebar-footer'))
+            ->and(substr_count($picker, 'data-palette-choice='))->toBe(3)
+            ->and($picker)->toContain('>'.e(trans('Colours', [], $lang)).'<')->toContain('>'.e(trans('Classic', [], $lang)).'<')
+            ->toContain('>'.e(trans('Mist', [], $lang)).'<')->toContain('>'.e(trans('Sand', [], $lang)).'<');
+        // read before first paint by the script, never by the server
+        expect($html)->toContain('data-palette="on"');
+    }
+});

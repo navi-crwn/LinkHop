@@ -23,6 +23,9 @@ return [
     'public_url' => rtrim((string) (env('PUBLIC_URL') ?: env('APP_URL', 'http://localhost')), '/'),
     'hub_url' => rtrim((string) env('HOP_HUB_URL', 'https://hub.hel.ink'), '/'),
 
+    // Show the hub's family announcement on the dashboard (App\Support\FamilyAnnouncements). Off: no request to the hub.
+    'family_announcements' => (bool) env('HOP_ANNOUNCEMENTS', true),
+
     // The HOP control center (Imperium): where moderation lives. Null hides the
     // sidebar item and /admin explains where the admin pages went.
     'control_url' => env('HOP_CONTROL_URL'),

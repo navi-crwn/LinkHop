@@ -19,17 +19,20 @@
 
     <x-claim-notice />
 
-    @if ($showMoveNotice)
-        {{-- Short links moved to hel.ink/l/{slug}; the old form redirects until the date below.
-             A reminder card: hop-ui adds "Hide · Shows again next week"; it is back after a week while the move lasts. --}}
-        <div class="glass flex flex-wrap items-center gap-3 rounded-2xl px-4 py-3 text-sm" data-hop-remind="short-links-move" data-hop-remind-url="{{ route('reminders.dismiss') }}">
-            <span class="chip-blue">{{ __('Notice') }}</span>
-            <span class="min-w-0 flex-1 text-muted">{!! __('Short links now live at :new The old form (:old) keeps redirecting until :until, then stops.', [
-                'new' => '<strong class="text-ink">'.e(public_host()).'/l/&hellip;</strong>',
-                'old' => e(public_host()).'/&hellip;',
-                'until' => '<strong class="text-ink">'.e(\App\Support\ShortLinkMove::untilLabel()).'</strong>',
-            ]) !!}</span>
-            <a href="{{ route('announcements.short-links') }}" class="font-medium text-indigo-600 hover:underline dark:text-indigo-300">{{ __('What to do') }} &rarr;</a>
+    @if ($announcement)
+        {{-- The family announcement written on the hub. A reminder card: hop-ui adds "Hide · Shows again next week" (not on a
+             critical one). Title and text are plain text from another service, so they are only ever printed escaped. --}}
+        @php $critical = $announcement['level'] === 'critical'; @endphp
+        <div class="glass flex flex-wrap items-center gap-3 rounded-2xl px-4 py-3 text-sm" @unless ($critical) data-hop-remind="ann-{{ $announcement['id'] }}" data-hop-remind-url="{{ route('reminders.dismiss') }}" @endunless>
+            <span class="{{ ['info' => 'chip-blue', 'warning' => 'chip-amber', 'critical' => 'chip-red'][$announcement['level']] }}">{{ ['info' => __('Notice'), 'warning' => __('Warning'), 'critical' => __('Important')][$announcement['level']] }}</span>
+            <span class="min-w-0 flex-1 text-muted">
+                @if ($announcement['url'])
+                    <a href="{{ $announcement['url'] }}" rel="noopener" class="font-semibold text-ink hover:underline">{{ $announcement['title'] }}</a>
+                @else
+                    <strong class="text-ink">{{ $announcement['title'] }}</strong>
+                @endif
+                {{ $announcement['body'] }}
+            </span>
         </div>
     @endif
 

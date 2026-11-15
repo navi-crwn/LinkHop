@@ -15,11 +15,11 @@ use App\Support\ClickInsights;
 use App\Support\DashboardStats;
 use App\Support\DeepLinks;
 use App\Support\EncryptedNoteLink;
+use App\Support\FamilyAnnouncements;
 use App\Support\LinkRouting;
 use App\Support\QrPng;
 use App\Support\Reminders;
 use App\Support\RemoteUrl;
-use App\Support\ShortLinkMove;
 use App\Support\WhatsAppRotator;
 use GuzzleHttp\Client;
 use Hop\Safety\UrlGuard;
@@ -195,7 +195,8 @@ class LinkController extends Controller
             'checklist' => $checklist = DashboardStats::checklist($user),
             // Reminder cards: gone for good once their task is done, away for a week after "Hide" (App\Support\Reminders).
             'showChecklist' => $checklist['done'] < count($checklist['items']) && ! Reminders::hidden($user, 'checklist'),
-            'showMoveNotice' => ShortLinkMove::active() && ! Reminders::hidden($user, 'short-links-move'),
+            // The hub's family announcement (App\Support\FamilyAnnouncements): at most one card.
+            'announcement' => FamilyAnnouncements::card($user),
         ];
 
         return view('dashboard', $data);

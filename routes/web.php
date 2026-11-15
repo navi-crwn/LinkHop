@@ -94,6 +94,8 @@ Route::middleware('ip.ban')->group(function () {
         Route::post('links/import/confirm', [LinkImportController::class, 'commit'])->middleware('throttle:10,1,link-import')->name('links.import.commit');
         Route::get('links/slug-check', [EditorToolsController::class, 'slugCheck'])->middleware('throttle:90,1,slug-check')->name('links.slug-check');
         Route::get('palette/links', [EditorToolsController::class, 'links'])->middleware('throttle:90,1,palette')->name('palette.links');
+        // The same lookup for the Analytics link picker, with its own limit so typing in both places cannot starve one of them.
+        Route::get('analytics/links', [EditorToolsController::class, 'links'])->middleware('throttle:90,1,analytics-links')->name('analytics.links');
         Route::get('links/{link}/qr/{format}', [LinkController::class, 'downloadQr'])
             ->where('format', 'png|svg|jpg')
             ->name('links.qr.download');

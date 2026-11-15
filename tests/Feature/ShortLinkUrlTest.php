@@ -56,11 +56,11 @@ test('the API, the dashboard and the sitemap use the /l/ form', function () {
     $this->actingAs($user)->get('/links/create')->assertOk()->assertSee(public_host().'/l/');
 });
 
-test('the dashboard announces the move until the legacy date, with the date', function () {
+test('the explanation page gives the legacy date; the dashboard no longer carries a fixed card for it', function () {
     $user = User::factory()->create();
     config(['shortener.legacy_slug_until' => '2026-11-27']);
     Carbon::setTestNow('2026-11-01');
-    $this->actingAs($user)->get('/dashboard')->assertOk()->assertSee(public_host().'/l/')->assertSee('27 November 2026');
+    $this->actingAs($user)->get('/dashboard')->assertOk()->assertDontSee('27 November 2026');
     $this->actingAs($user)->get('/changes/short-links')->assertOk()->assertSee('27 November 2026');
     Carbon::setTestNow();
 });

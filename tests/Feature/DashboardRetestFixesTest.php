@@ -241,3 +241,15 @@ it('redirects a deleted link in the bulk flow to a 404 the page treats as alread
 
     $this->actingAs($user)->deleteJson(route('links.destroy', $link->id))->assertNotFound();
 });
+
+it('names the links group of the sidebar "Library" in every language, and keeps "Links" for the places that mean links', function () {
+    foreach (['en', 'zh-CN', 'de', 'id', 'ja', 'pt-BR', 'es', 'fr', 'ru'] as $lang) {
+        $html = $this->actingAs(User::factory()->create())->withUnencryptedCookie('hop_lang', $lang)->get(route('dashboard'))->assertOk()->getContent();
+        $aside = substr($html, strpos($html, '<aside'), strpos($html, '</aside>') - strpos($html, '<aside'));
+
+        expect($aside)->toContain('<span class="flex-1 text-left">'.e(trans('Library', [], $lang)).'</span>')
+            ->not->toContain('<span class="flex-1 text-left">'.e(trans('Links', [], $lang)).'</span>');
+    }
+    // The word "Links" keeps its own meaning (the analytics tab, the dashboard figure), so its translation is not touched.
+    expect(trans('Links', [], 'de'))->toBe('Links')->and(trans('Library', [], 'de'))->toBe('Bibliothek')->and(trans('Library', [], 'ru'))->not->toBe('Library');
+});

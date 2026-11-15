@@ -13,8 +13,14 @@ use Illuminate\Support\Facades\DB;
  */
 final class Reminders
 {
-    /** The cards this app has. checklist: "Get the most out of LinkHop". short-links-move: the /l/ notice. */
-    public const KEYS = ['checklist', 'short-links-move'];
+    /** The cards this app has. checklist: "Get the most out of LinkHop". The hub's announcements are ann-<id>. */
+    public const KEYS = ['checklist'];
+
+    /** A card this app knows: one of KEYS, or a family announcement (ann-<id>, at most 44 characters). */
+    public static function known(string $key): bool
+    {
+        return in_array($key, self::KEYS, true) || preg_match('/^ann-[A-Za-z0-9_-]{1,40}$/', $key) === 1;
+    }
 
     public const HIDE_DAYS = 7;
 

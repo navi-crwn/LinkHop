@@ -12,7 +12,7 @@
         <link rel="icon" href="{{ route('brand.favicon') }}">
         {{-- Apply the saved style and theme before first paint (no light flash in dark mode) --}}
         <script nonce="{{ Vite::cspNonce() }}">if (/(^|; )hop_ui=clean/.test(document.cookie)) document.documentElement.dataset.ui = 'clean';</script>
-        @include('partials.theme-boot')
+        @include('partials.theme-boot', ['palette' => true])
         <x-hop::fonts />
         {{-- The family's dialogs and reminder buttons (hop-assets hop-ui, v5 on): loaded once the hub's manifest lists
              them, and only with their SRI hashes. Until then the dashboard asks with the browser's dialogs (resources/js/dialogs.js)
@@ -77,17 +77,39 @@
                                 <kbd class="font-mono text-[11px] text-muted" x-text="/Mac|iPhone|iPad/.test(navigator.platform) ? '⌘K' : 'Ctrl K'">Ctrl K</kbd>
                             </button>
                         </div>
-                        <nav class="flex-1 overflow-y-auto px-3 pb-3">
-                            @include('components.partials.nav', ['isAdmin' => $isAdmin, 'abuseCount' => $abuseCount])
-                        </nav>
-                        <div class="space-y-2.5 border-t border-slate-500/10 px-5 py-3 text-xs text-muted">
-                            <div>
-                                <a href="{{ route('changelog') }}" class="hover:underline">{{ __('Changelog') }}</a>
-                                <span aria-hidden="true"> · </span>
-                                <a href="https://github.com/navi-crwn/LinkHop" rel="noopener" class="hover:underline">GitHub</a>
+                        {{-- One scrolling area: on a phone the footer scrolls with the menu instead of squeezing it into a small box. --}}
+                        <div class="flex min-h-0 flex-1 flex-col overflow-y-auto">
+                            <nav class="px-3 pb-3">
+                                @include('components.partials.nav', ['isAdmin' => $isAdmin, 'abuseCount' => $abuseCount])
+                            </nav>
+                            <div class="mt-auto">
+                            {{-- The family colour set: one choice for every HOP dashboard (cookie hop_palette, written by theme-boot.js). --}}
+                            <div data-palette-picker class="px-5 pb-3"
+                                 x-data="{ p: document.documentElement.getAttribute('data-palette') || 'classic', set(v) { window.hopSetPalette?.(v); this.p = v; } }">
+                                <p id="palette-label" class="pb-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted">{{ __('Colours') }}</p>
+                                <div role="group" aria-labelledby="palette-label" class="grid grid-cols-3 gap-1.5">
+                                    @foreach (['classic' => __('Classic'), 'mist' => __('Mist'), 'sand' => __('Sand')] as $choice => $name)
+                                        <button type="button" data-palette-choice="{{ $choice }}" :aria-pressed="(p === '{{ $choice }}').toString()" @click="set('{{ $choice }}')" class="palette-choice">
+                                            <span class="palette-dot palette-dot-{{ $choice }}" aria-hidden="true"></span>
+                                            <span>{{ $name }}</span>
+                                        </button>
+                                    @endforeach
+                                </div>
                             </div>
-                            {{-- The family row is the last thing in the sidebar, on every dashboard of the family. --}}
-                            @include('partials.family-row')
+                            <div data-sidebar-footer class="space-y-2 border-t border-slate-500/10 px-5 py-3 text-[13px] text-muted">
+                                {{-- The same footer in every dashboard of the family: six lines, then the family row. --}}
+                                <ul>
+                                    <li><a href="{{ route('pages.help') }}" class="block leading-7 hover:text-ink hover:underline">{{ __('Help') }}</a></li>
+                                    <li><a href="{{ route('pages.terms') }}" class="block leading-7 hover:text-ink hover:underline">{{ __('Terms') }}</a></li>
+                                    <li><a href="{{ route('pages.privacy') }}" class="block leading-7 hover:text-ink hover:underline">{{ __('Privacy') }}</a></li>
+                                    <li><a href="{{ route('changelog') }}" class="block leading-7 hover:text-ink hover:underline">{{ __('Changelog') }}</a></li>
+                                    <li><a href="https://github.com/navi-crwn/LinkHop" rel="noopener" class="block leading-7 hover:text-ink hover:underline">GitHub</a></li>
+                                    <li><a href="https://hel.ink/announcements" rel="noopener" class="block leading-7 hover:text-ink hover:underline">{{ __('Announcement') }}</a></li>
+                                </ul>
+                                {{-- The family row is the last thing in the sidebar, on every dashboard of the family. --}}
+                                @include('partials.family-row')
+                            </div>
+                            </div>
                         </div>
                     </div>
                 </aside>

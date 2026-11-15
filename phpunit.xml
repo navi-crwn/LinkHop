@@ -31,6 +31,7 @@
         <env name="BROADCAST_CONNECTION" value="null"/>
         <env name="CACHE_STORE" value="array"/>
         <env name="HOP_RECHECK" value="false"/>
+        <env name="HOP_ANNOUNCEMENTS" value="false"/>
         <env name="DB_CONNECTION" value="sqlite"/>
         <env name="DB_DATABASE" value=":memory:"/>
         <env name="SUPERADMIN_EMAIL" value="admin@hel.ink"/>

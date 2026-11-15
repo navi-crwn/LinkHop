@@ -549,3 +549,53 @@ button.input { max-width: var(--hop-field-max); }
 /* Features boxes: the icon chip gives one calm nudge when its box scrolls into view (hop-bento sets --scene-play). */
 @keyframes hb-nudge { 0% { transform: scale(.9) rotate(-6deg); } 60% { transform: scale(1.06) rotate(2deg); } 100% { transform: none; } }
 .hop-bento > [data-spot] > [data-scene] { animation: hb-nudge .6s cubic-bezier(.23, 1, .32, 1) 1 both; animation-play-state: var(--scene-play, paused); }
+
+/*
+| Family colour sets (cookie hop_palette -> <html data-palette="mist|sand">, dashboard only; Classic is no attribute and is
+| not touched by anything below). Same values as every HOP app (dokumen KONTRAK L-10): accent and soft surfaces.
+| The accent is poured through the indigo and violet scales that Tailwind reads as variables (var(--color-indigo-500) ...),
+| the main buttons through --hop-accent-fill, and the surfaces through --bg, --glass and the border.
+*/
+:root[data-palette="mist"] {
+    --color-indigo-50: #eef0fc; --color-indigo-100: #e0e4f9; --color-indigo-200: #c7cef4; --color-indigo-300: #b4c2ff; --color-indigo-400: #9aaeff;
+    --color-indigo-500: #6672e0; --color-indigo-600: #4f5bd5; --color-indigo-700: #3f4fc4; --color-indigo-800: #343fa3; --color-indigo-900: #2b3482; --color-indigo-950: #1b2054;
+    --color-violet-50: #eef0fc; --color-violet-100: #e0e4f9; --color-violet-200: #c7cef4; --color-violet-300: #b4c2ff; --color-violet-400: #9aaeff;
+    --color-violet-500: #6672e0; --color-violet-600: #4f5bd5; --color-violet-700: #3f4fc4; --color-violet-800: #343fa3; --color-violet-900: #2b3482; --color-violet-950: #1b2054;
+    --accent: 63 79 196; --accent-2: 47 116 184;
+    --hop-accent-fill: #4f5bd5; --hop-accent-fill-hover: #3f4fc4;
+    --bg: 244 246 252; --glass: 255 255 255; --panel2: 238 241 250; --glass-alpha: 0.94; --glass-border: 221 226 241; --glass-border-alpha: 1;
+}
+:root[data-palette="mist"].dark {
+    --accent: 154 174 255; --accent-2: 134 200 243;
+    --bg: 13 17 32; --glass: 20 26 46; --panel2: 26 33 56; --glass-border: 38 46 74;
+}
+:root[data-palette="sand"] {
+    --color-indigo-50: #fdf3ee; --color-indigo-100: #fbe6dc; --color-indigo-200: #f6cdb8; --color-indigo-300: #f3b48c; --color-indigo-400: #e8946a;
+    --color-indigo-500: #c96a3a; --color-indigo-600: #b4532a; --color-indigo-700: #a8481f; --color-indigo-800: #8c3b1a; --color-indigo-900: #6f2f16; --color-indigo-950: #3f1a0c;
+    --color-violet-50: #fdf3ee; --color-violet-100: #fbe6dc; --color-violet-200: #f6cdb8; --color-violet-300: #f3b48c; --color-violet-400: #e8946a;
+    --color-violet-500: #c96a3a; --color-violet-600: #b4532a; --color-violet-700: #a8481f; --color-violet-800: #8c3b1a; --color-violet-900: #6f2f16; --color-violet-950: #3f1a0c;
+    --accent: 168 72 31; --accent-2: 162 64 111;
+    --hop-accent-fill: #b4532a; --hop-accent-fill-hover: #a8481f;
+    --bg: 250 246 241; --glass: 255 255 255; --panel2: 245 238 230; --glass-alpha: 0.94; --glass-border: 236 226 214; --glass-border-alpha: 1;
+}
+:root[data-palette="sand"].dark {
+    --accent: 243 180 140; --accent-2: 234 159 176;
+    --bg: 23 17 13; --glass: 31 24 20; --panel2: 39 31 25; --glass-border: 58 46 37;
+}
+:root[data-palette] .app-bg {
+    background-image:
+        radial-gradient(40rem 28rem at 8% -6%, rgb(var(--accent) / 0.10), transparent 60%),
+        radial-gradient(42rem 30rem at 85% 105%, rgb(var(--accent-2) / 0.08), transparent 60%);
+}
+:root[data-palette] aside > .glass { background-color: rgb(var(--panel2) / var(--glass-alpha)); }
+
+/* The colour picker at the foot of the sidebar: three equal boxes in one row, the dot above the name, the chosen one framed in the accent. */
+.palette-choice { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; padding: 6px 4px; border: 1px solid rgb(var(--muted) / 0.3); border-radius: 8px; font-size: 12px; line-height: 16px; color: rgb(var(--muted)); background: transparent; cursor: pointer; }
+.palette-choice > span:last-child { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.palette-choice:hover { color: rgb(var(--ink)); }
+.palette-choice[aria-pressed="true"] { color: rgb(var(--ink)); border-color: rgb(var(--accent)); background-color: rgb(var(--accent) / 0.08); }
+.palette-choice:focus-visible { outline: 2px solid rgb(var(--accent)); outline-offset: 2px; }
+.palette-dot { width: 14px; height: 14px; border-radius: 9999px; }
+.palette-dot-classic { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+.palette-dot-mist { background: linear-gradient(135deg, #4f5bd5, #2f74b8); }
+.palette-dot-sand { background: linear-gradient(135deg, #b4532a, #a2406f); }

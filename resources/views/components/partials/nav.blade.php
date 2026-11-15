@@ -21,7 +21,7 @@
     $groups = array_filter([
         ['label' => __('Dashboard'), 'icon' => 'home', 'route' => 'dashboard', 'active' => 'dashboard'],
         ['label' => __('Analytics'), 'icon' => 'chart', 'route' => 'analytics', 'active' => 'analytics'],
-        ['label' => __('Links'), 'icon' => 'link', 'active' => ['links*', 'folders*', 'tags*'], 'children' => [
+        ['label' => __('Library'), 'icon' => 'link', 'active' => ['links*', 'folders*', 'tags*'], 'children' => [
             ['label' => __('My links'), 'route' => 'links.index', 'active' => ['links.index', 'links.create', 'links.show', 'links.edit']],
             ['label' => __('QR codes'), 'route' => 'qr-codes.index', 'active' => 'qr-codes*'],
             ['label' => __('Import CSV'), 'route' => 'links.import', 'active' => 'links.import*'],
