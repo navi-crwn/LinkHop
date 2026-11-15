@@ -33,7 +33,7 @@ env:
 
 jobs:
   journeys:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: ${{ github.event_name == 'pull_request' && 30 || 120 }}
     services:
       mariadb:
