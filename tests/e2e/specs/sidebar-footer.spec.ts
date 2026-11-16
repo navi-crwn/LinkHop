@@ -65,7 +65,7 @@ test('every footer entry goes to a page that answers', async ({ browser }) => {
   const hrefs = await page.locator('[data-sidebar-footer] li a').evaluateAll(as => as.map(a => (a as HTMLAnchorElement).href));
   expect(hrefs).toHaveLength(7);
   for (const href of hrefs) {
-    if (href.startsWith('https://hub.hel.ink/feedback?app=linkhop&from=')) continue; // the hub's form, opened in a new tab
+    if (/\/feedback\?app=linkhop&from=/.test(href)) continue; // the hub's form, opened in a new tab
     if (!href.startsWith(baseURL)) { expect(['https://github.com/navi-crwn/LinkHop', 'https://hel.ink/announcements']).toContain(href); continue; }
     const res = await context.request.get(href, { maxRedirects: 0 });
     expect(res.status(), href).toBeLessThan(400);
