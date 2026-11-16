@@ -82,7 +82,7 @@ class HopContentController extends Controller
                 'links_live' => Link::live()->count(),
                 'clicks_today' => LinkClick::where('clicked_at', '>=', $now->copy()->startOfDay())->count(),
                 'clicks_30d' => LinkClick::where('clicked_at', '>=', $now->copy()->subDays(30))->count(),
-                'open_reports' => AbuseReport::where('status', 'open')->count(),
+                'open_reports' => AbuseReport::aboutLinks()->where('status', 'open')->count(),
                 'open_flags' => AbuseFlag::where('status', 'open')->count(),
                 'guest_links_24h' => Link::whereNull('user_id')->where('created_at', '>=', $now->copy()->subDay())->count(),
                 'guest_links_pending' => Link::where('safety_status', Link::SAFETY_PENDING)->where('status', Link::STATUS_ACTIVE)->count(),
@@ -185,7 +185,7 @@ class HopContentController extends Controller
                 'custom_title' => $l->custom_title,
                 'safety' => ['status' => $l->safety_status, 'threat' => $l->safety_threat_type, 'scanned_at' => $l->last_safety_scan_at],
                 'findings' => $this->flagsFor('link', $l->id),
-                'reports' => AbuseReport::where('slug', $l->slug)->latest()->limit(20)->get()->map(fn ($r) => $this->reportRow($r))->all(),
+                'reports' => AbuseReport::aboutLinks()->where('slug', $l->slug)->latest()->limit(20)->get()->map(fn ($r) => $this->reportRow($r))->all(),
                 'clicks_30d' => \DB::table('link_clicks')->where('link_id', $l->id)->where('clicked_at', '>=', now()->subDays(30))->count(),
             ];
         } elseif ($type === 'bio' && bio_enabled()) {
@@ -323,7 +323,7 @@ class HopContentController extends Controller
     {
         $status = (string) $request->query('status', 'open');
         $limit = min(200, max(1, (int) $request->query('limit', 50)));
-        $reports = AbuseReport::query()->latest('id')
+        $reports = AbuseReport::aboutLinks()->latest('id')
             ->when($status === 'open', fn ($q) => $q->whereIn('status', ['open', 'investigating']))
             ->when($status === 'closed', fn ($q) => $q->where('status', 'closed'))
             ->limit($limit)->get()->map(fn ($r) => $this->reportRow($r));

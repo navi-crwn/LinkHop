@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Services\NotificationService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 
 class AbuseReport extends Model
 {
@@ -17,7 +19,20 @@ class AbuseReport extends Model
         'reason',
         'ip_address',
         'status',
+        'source',
     ];
+
+    /**
+     * Reports about LinkHop short links only. abuse_reports is shared with BioHop, whose reports about bio pages
+     * carry source = 'biohop' and belong in BioHop's own queue. Before the `source` migration has run there is
+     * nothing to filter on, so every report counts as a LinkHop one, as it always did.
+     */
+    public function scopeAboutLinks(Builder $query): Builder
+    {
+        return Schema::hasColumn($query->getModel()->getTable(), 'source')
+            ? $query->where('source', 'linkhop')
+            : $query;
+    }
 
     protected static function booted()
     {
