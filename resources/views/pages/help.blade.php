@@ -1,4 +1,4 @@
-<x-info-page title="Help" lead="How to do the common things. General questions are in the FAQ.">
+<x-info-page description="Step-by-step help for LinkHop: shorten a link, see clicks and manage links, keep a guest link, use the API, check and report links." title="Help" lead="How to do the common things. General questions are in the FAQ.">
     <div class="space-y-8">
         <section class="rounded-3xl border border-slate-200/80 bg-white/70 p-6 dark:border-white/10 dark:bg-white/[0.03]">
             <h2 id="shorten" class="text-xl font-bold">{{ __('Shorten a link') }}</h2>

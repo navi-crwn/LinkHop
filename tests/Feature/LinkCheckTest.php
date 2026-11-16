@@ -24,6 +24,6 @@ test('link checker warns about blocked destinations and rejects other hosts', fu
     Link::create(['slug' => 'bad123', 'target_url' => 'https://evil.test/x', 'status' => 'active']);
 
     $this->get('/check?url=bad123')->assertOk()->assertSee('Unsafe destination')->assertDontSee('Open destination');
-    $this->get('/check?url='.urlencode('https://bit.ly/xyz'))->assertOk()->assertSee("isn't a", false);
+    $this->get('/check?url='.urlencode('https://bit.ly/xyz'))->assertOk()->assertSee("isn't a");
     $this->get('/check?url=nope999')->assertOk()->assertSee('No link found');
 });

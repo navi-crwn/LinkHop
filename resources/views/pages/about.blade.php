@@ -1,4 +1,4 @@
-<x-info-page title="About LinkHop" lead="LinkHop is the free, open-source link shortener of the HOP family.">
+<x-info-page description="LinkHop is a free, open-source link shortener from the HOP family: short links, QR codes and click stats, with no ads and no trackers." title="About LinkHop" lead="LinkHop is the free, open-source link shortener of the HOP family.">
     <h2>{{ __('Why') }}</h2>
     <p>{{ __('Long links are hard to share and you never know who clicks them. LinkHop makes them short, counts every click without tracking the people behind them, and protects visitors from harmful links.') }}</p>
     <h2>{{ __('Who runs it') }}</h2>

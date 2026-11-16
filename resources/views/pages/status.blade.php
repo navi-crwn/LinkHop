@@ -1,4 +1,4 @@
-<x-info-page title="Status">
+<x-info-page title="Status" description="Live status of LinkHop: whether short links, the dashboard and background jobs are working right now, with a link to the status of every HOP app.">
     <p class="info-status">
         <span @class(['info-dot', 'is-ok' => $db]) aria-hidden="true"></span>
         <span><strong>{{ $db ? __('LinkHop is up.') : __('LinkHop is having trouble.') }}</strong> {{ __('This page was made by the server just now.') }}</span>

@@ -1,4 +1,4 @@
-<x-info-page title="Contact" lead="LinkHop is open source, so most conversations happen on GitHub.">
+<x-info-page description="Contact LinkHop: report bugs and ideas on GitHub, report harmful links, manage your HOP ID account, or email us when GitHub does not fit." title="Contact" lead="LinkHop is open source, so most conversations happen on GitHub.">
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div class="rounded-3xl border border-slate-200/80 bg-white/70 p-6 dark:border-white/10 dark:bg-white/[0.03]">
             <h2 class="text-base font-bold text-slate-900 dark:text-white">{{ __('Issues & Ideas') }}</h2>

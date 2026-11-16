@@ -1,4 +1,4 @@
-<x-info-page title="API" lead="Create, read and delete short links from scripts and apps.">
+<x-info-page description="The LinkHop API: create, read and delete short links from your own scripts and apps with a scoped token, plus a ready-made ShareX config." title="API" lead="Create, read and delete short links from scripts and apps.">
     <h2 id="token">{{ __('Tokens') }}</h2>
     <p>{!! __('Create a token at the hub (<strong>HOP ID → Settings → API</strong>). A token carries scopes: <code>link:create</code>, <code>link:read</code>, <code>link:write</code>. Send it as <code>Authorization: Bearer YOUR_TOKEN</code>.') !!}</p>
     <h2 id="create">{{ __('Create a short link') }}</h2>
