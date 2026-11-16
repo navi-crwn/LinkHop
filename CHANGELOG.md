@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.1] - 2026-11-16 - Public pages in your language
+
+Every public page now speaks the language you picked, and each one has a proper short summary in search results.
+
 ### Fixed
 
 - **Pages in your language.** The About, FAQ, API, Features, Help, Contact, Terms and Privacy pages, and the link checker, now show their title, short summary and headings in the language you picked, in all nine languages. Before, some of them stayed in English even with the German or Indonesian address, and the link checker was English only. Fixed so that search engines and visitors get the language the address promises.
