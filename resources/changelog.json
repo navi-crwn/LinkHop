@@ -1,9 +1,52 @@
 {
   "schema": 2,
   "sources": {
-    "LinkHop": "2.5.1"
+    "LinkHop": "2.6.0"
   },
   "entries": [
+    {
+      "kind": "tag",
+      "date": "2026-11-16T00:00:00Z",
+      "title": "A Feedback link in the sidebar and the footer",
+      "url": "https://github.com/navi-crwn/LinkHop/releases/tag/v2.6.0",
+      "id": "v2.6.0",
+      "app": "LinkHop",
+      "repo": "LinkHop",
+      "version": "2.6.0",
+      "summary": "You can now tell us about a problem or an idea from inside LinkHop, without sending an email.",
+      "items": [
+        {
+          "type": "added",
+          "where": "Dashboard, sidebar footer",
+          "text": "A new \"Feedback\" link sits right under \"Help\" and opens the HOP ID feedback form in a new tab, so what you were doing here stays open. Reason: you can reach us from any dashboard screen in one click."
+        },
+        {
+          "type": "added",
+          "where": "Public pages, footer",
+          "text": "The footer of the home page, Help, FAQ, Contact, About, Features, API, Status, Terms, Privacy, Changelog, the QR page and the link checker has the same \"Feedback\" link next to \"Help\". Reason: visitors who are not signed in can reach the form too. The pages that belong to a short link (the link that has ended, the link that was not found) do not get it, because they are the link owner's pages, not ours."
+        },
+        {
+          "type": "added",
+          "where": "Help and Contact pages",
+          "text": "One \"Send feedback\" link on each page opens the same form. Reason: these are the places where people look for a way to reach us."
+        },
+        {
+          "type": "added",
+          "where": "Privacy page",
+          "text": "One sentence says that the Feedback link opens a form on the HOP ID site, that LinkHop itself receives nothing from it, and points to the HOP ID privacy policy for what the form keeps and for how long. Reason: the form belongs to HOP ID, not to LinkHop, so its rules are written there."
+        },
+        {
+          "type": "added",
+          "where": "All nine languages",
+          "text": "The new words are translated into every language LinkHop offers. Reason: the link should read naturally for everyone."
+        },
+        {
+          "type": "changed",
+          "where": "Short link names",
+          "text": "\"feedback\" can no longer be chosen as the name of a new short link. Reason: that word is the address of the feedback form, and a short link with the same name would be confused with it. Links that already exist are not touched."
+        }
+      ]
+    },
     {
       "kind": "tag",
       "date": "2026-11-16T00:00:00Z",

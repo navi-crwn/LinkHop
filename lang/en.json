@@ -1450,5 +1450,9 @@
     "What LinkHop keeps and what it does not: what a click records, what we store when you make links, and the privacy policy for every HOP app.": "What LinkHop keeps and what it does not: what a click records, what we store when you make links, and the privacy policy for every HOP app.",
     "Live status of LinkHop: whether short links, the dashboard and background jobs are working right now, with a link to the status of every HOP app.": "Live status of LinkHop: whether short links, the dashboard and background jobs are working right now, with a link to the status of every HOP app.",
     "What changed in each HOP app, LinkHop included, written in plain words with the newest changes first, and filterable by app.": "What changed in each HOP app, LinkHop included, written in plain words with the newest changes first, and filterable by app.",
-    "Paste a short link to see where it goes before you open it. LinkHop shows the destination and warns about unsafe links, without clicking or tracking.": "Paste a short link to see where it goes before you open it. LinkHop shows the destination and warns about unsafe links, without clicking or tracking."
+    "Paste a short link to see where it goes before you open it. LinkHop shows the destination and warns about unsafe links, without clicking or tracking.": "Paste a short link to see where it goes before you open it. LinkHop shows the destination and warns about unsafe links, without clicking or tracking.",
+    "Feedback": "Feedback",
+    "Send feedback": "Send feedback",
+    "The Feedback link opens a form on the HOP ID site this app is connected to. This app receives nothing from that form; what the form stores and for how long is described in the :link.": "The Feedback link opens a form on the HOP ID site this app is connected to. This app receives nothing from that form; what the form stores and for how long is described in the :link.",
+    "HOP ID privacy policy": "HOP ID privacy policy"
 }

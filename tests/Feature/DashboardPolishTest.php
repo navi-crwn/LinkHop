@@ -53,11 +53,11 @@ test('on a phone the main action of the public top bar is in the menu, not in th
     expect($member)->toContain('max-sm:hidden rounded-xl bg-slate-900');
 });
 
-test('the sidebar footer lists Help, Terms, Privacy, Changelog, GitHub and Announcement in that order, then the family row', function () {
+test('the sidebar footer lists Help, Feedback, Terms, Privacy, Changelog, GitHub and Announcement in that order, then the family row', function () {
     $html = $this->actingAs(User::factory()->create())->get('/dashboard')->assertOk()->getContent();
     $aside = substr($html, strpos($html, '<aside'), strpos($html, '</aside>') - strpos($html, '<aside'));
 
-    $order = [route('pages.help'), route('pages.terms'), route('pages.privacy'), route('changelog'), 'https://github.com/navi-crwn/LinkHop', 'https://hel.ink/announcements', 'class="hop-family-row"'];
+    $order = [route('pages.help'), 'https://hub.hel.ink/feedback?app=linkhop&amp;from=dashboard', route('pages.terms'), route('pages.privacy'), route('changelog'), 'https://github.com/navi-crwn/LinkHop', 'https://hel.ink/announcements', 'class="hop-family-row"'];
     $last = 0;
     foreach ($order as $needle) {
         $at = strpos($aside, 'href="'.$needle.'"') ?: strpos($aside, $needle, $last);
@@ -66,14 +66,14 @@ test('the sidebar footer lists Help, Terms, Privacy, Changelog, GitHub and Annou
     }
     // one entry per line, and nothing else in the footer (the old "Source" and "Licenses" never lived here)
     $footer = substr($aside, strpos($aside, 'data-sidebar-footer'));
-    expect(substr_count($footer, '<li'))->toBe(6);
+    expect(substr_count($footer, '<li'))->toBe(7);
 });
 
 test('the sidebar footer is in every language', function () {
     foreach (['en', 'zh-CN', 'de', 'id', 'ja', 'pt-BR', 'es', 'fr', 'ru'] as $lang) {
         $html = $this->actingAs(User::factory()->create())->withUnencryptedCookie('hop_lang', $lang)->get('/dashboard')->assertOk()->getContent();
         $footer = substr($html, strpos($html, 'data-sidebar-footer'));
-        foreach (['Help', 'Terms', 'Privacy', 'Changelog', 'Announcement'] as $key) {
+        foreach (['Help', 'Feedback', 'Terms', 'Privacy', 'Changelog', 'Announcement'] as $key) {
             expect($footer)->toContain('>'.e(trans($key, [], $lang)).'</a>');
         }
         if ($lang !== 'en') {

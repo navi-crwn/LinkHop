@@ -150,6 +150,8 @@ return [
         'l', 'b', 'api',
         // Words the family's other apps and tools use as a path or product name.
         'qr', 'wifi', 'vcard', 'pay', 'payhop', 'split', 'send', 'secret', 'embargo',
+        // The hub's Feedback form lives at /feedback; a short link with that word would be confused with it.
+        'feedback',
         // Single characters (reserved for future use)
         'a', 'i', 'x', 'v',
         // Two characters - Common brands & abbreviations

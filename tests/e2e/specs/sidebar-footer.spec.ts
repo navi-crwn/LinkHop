@@ -33,11 +33,11 @@ const settled = async <T>(read: () => Promise<T>) => {
 };
 
 for (const [width, height, mobile] of [[1440, 900, false], [1280, 720, false], [390, 800, true], [390, 600, true]] as const) {
-  test(`footer is a column of six links with "Part of" below, ${width}x${height}`, async ({ browser }) => {
+  test(`footer is a column of seven links with "Part of" below, ${width}x${height}`, async ({ browser }) => {
     const { page, context } = await open(browser, width, height, mobile, 'light');
     const links = page.locator('[data-sidebar-footer] li a');
-    await expect(links).toHaveCount(6);
-    await expect(links).toHaveText(['Help', 'Terms', 'Privacy', 'Changelog', 'GitHub', 'Announcement']);
+    await expect(links).toHaveCount(7);
+    await expect(links).toHaveText(['Help', 'Feedback', 'Terms', 'Privacy', 'Changelog', 'GitHub', 'Announcement']);
 
     // the phone drawer slides in over 300 ms, and a short phone scrolls: bring "Part of" into view first
     await page.locator('.hop-family-row').scrollIntoViewIfNeeded();
@@ -52,7 +52,7 @@ for (const [width, height, mobile] of [[1440, 900, false], [1280, 720, false], [
       expect(g.li[i].left, `entry ${i} starts at the same left edge`).toBe(g.li[0].left);
     }
     for (const row of g.li) { expect(row.h).toBeGreaterThanOrEqual(26); expect(row.h).toBeLessThanOrEqual(30); }
-    expect(g.part.top, '"Part of" is below the last entry').toBeGreaterThan(g.li[5].top);
+    expect(g.part.top, '"Part of" is below the last entry').toBeGreaterThan(g.li[6].top);
     expect(g.part.bottom, '"Part of" is inside the sidebar').toBeLessThanOrEqual(g.side.bottom);
     expect(g.part.top).toBeGreaterThanOrEqual(g.side.top);
     expect(g.wide, 'no sideways scroll').toBe(false);
@@ -63,8 +63,9 @@ for (const [width, height, mobile] of [[1440, 900, false], [1280, 720, false], [
 test('every footer entry goes to a page that answers', async ({ browser }) => {
   const { page, context } = await open(browser, 1440, 900, false, 'light');
   const hrefs = await page.locator('[data-sidebar-footer] li a').evaluateAll(as => as.map(a => (a as HTMLAnchorElement).href));
-  expect(hrefs).toHaveLength(6);
+  expect(hrefs).toHaveLength(7);
   for (const href of hrefs) {
+    if (href.startsWith('https://hub.hel.ink/feedback?app=linkhop&from=')) continue; // the hub's form, opened in a new tab
     if (!href.startsWith(baseURL)) { expect(['https://github.com/navi-crwn/LinkHop', 'https://hel.ink/announcements']).toContain(href); continue; }
     const res = await context.request.get(href, { maxRedirects: 0 });
     expect(res.status(), href).toBeLessThan(400);

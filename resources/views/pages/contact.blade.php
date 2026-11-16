@@ -3,6 +3,9 @@
         <div class="rounded-3xl border border-slate-200/80 bg-white/70 p-6 dark:border-white/10 dark:bg-white/[0.03]">
             <h2 class="text-base font-bold text-slate-900 dark:text-white">{{ __('Issues & Ideas') }}</h2>
             <p class="mt-2 text-sm text-slate-600 dark:text-white/70">{!! __('<strong>Found a bug or have an idea?</strong> <a href="https://github.com/navi-crwn/LinkHop/issues/new/choose" rel="noopener">Open an issue</a>.') !!}</p>
+            @if ($feedbackUrl = \App\Support\Feedback::url())
+                <p class="mt-2 text-sm text-slate-600 dark:text-white/70"><a href="{{ $feedbackUrl }}" target="_blank" rel="noopener" class="font-medium text-sky-600 underline dark:text-sky-400">{{ __('Send feedback') }}</a></p>
+            @endif
         </div>
 
         <div class="rounded-3xl border border-slate-200/80 bg-white/70 p-6 dark:border-white/10 dark:bg-white/[0.03]">

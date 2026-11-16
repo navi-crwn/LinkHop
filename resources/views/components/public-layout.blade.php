@@ -34,7 +34,7 @@
             {{ $slot }}
         </main>
         <footer class="mx-auto max-w-6xl px-4 py-8 text-center text-xs text-white/50">
-            <a href="{{ route('pages.terms') }}" class="hover:text-white">Terms</a> · <a href="{{ route('pages.privacy') }}" class="hover:text-white">Privacy</a> · <a href="{{ route('report.create') }}" class="hover:text-white">Report abuse</a> · <a href="{{ hub_url('help') }}" class="hover:text-white">Help</a>
+            <a href="{{ route('pages.terms') }}" class="hover:text-white">Terms</a> · <a href="{{ route('pages.privacy') }}" class="hover:text-white">Privacy</a> · <a href="{{ route('report.create') }}" class="hover:text-white">Report abuse</a> · <a href="{{ hub_url('help') }}" class="hover:text-white">Help</a>@if ($feedbackUrl = \App\Support\Feedback::url()) · <a href="{{ $feedbackUrl }}" target="_blank" rel="noopener" class="hover:text-white">{{ __('Feedback') }}</a>@endif
         </footer>
         <x-cookie-consent />
     </body>

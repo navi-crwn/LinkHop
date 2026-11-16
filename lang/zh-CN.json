@@ -1450,5 +1450,9 @@
     "What LinkHop keeps and what it does not: what a click records, what we store when you make links, and the privacy policy for every HOP app.": "LinkHop 会保留什么、不会保留什么：一次点击记录的内容、创建链接时我们保存的信息，以及所有 HOP 应用的隐私政策。",
     "Live status of LinkHop: whether short links, the dashboard and background jobs are working right now, with a link to the status of every HOP app.": "LinkHop 实时状态：短链接、控制台和后台任务现在是否正常运行，并附有所有 HOP 应用状态的链接。",
     "What changed in each HOP app, LinkHop included, written in plain words with the newest changes first, and filterable by app.": "每个 HOP 应用（包括 LinkHop）的更新内容，用通俗的话写成，最新的在前，并可按应用筛选。",
-    "Paste a short link to see where it goes before you open it. LinkHop shows the destination and warns about unsafe links, without clicking or tracking.": "粘贴一个短链接，在打开之前查看它通向哪里。LinkHop 会显示目的地并提醒不安全的链接，不会点击，也不会追踪。"
+    "Paste a short link to see where it goes before you open it. LinkHop shows the destination and warns about unsafe links, without clicking or tracking.": "粘贴一个短链接，在打开之前查看它通向哪里。LinkHop 会显示目的地并提醒不安全的链接，不会点击，也不会追踪。",
+    "Feedback": "反馈",
+    "Send feedback": "发送反馈",
+    "The Feedback link opens a form on the HOP ID site this app is connected to. This app receives nothing from that form; what the form stores and for how long is described in the :link.": "“反馈”链接会打开本应用所连接的 HOP ID 站点上的表单。本应用不会从该表单接收任何内容；表单保存什么、保存多久，详见:link。",
+    "HOP ID privacy policy": "HOP ID 隐私政策"
 }

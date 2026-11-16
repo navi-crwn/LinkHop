@@ -1450,5 +1450,9 @@
     "What LinkHop keeps and what it does not: what a click records, what we store when you make links, and the privacy policy for every HOP app.": "Apa yang disimpan LinkHop dan apa yang tidak: yang dicatat satu klik, yang kami simpan saat kamu membuat tautan, dan kebijakan privasi semua app HOP.",
     "Live status of LinkHop: whether short links, the dashboard and background jobs are working right now, with a link to the status of every HOP app.": "Status langsung LinkHop: apakah tautan pendek, dasbor, dan tugas latar belakang sedang berjalan, dengan tautan ke status semua app HOP.",
     "What changed in each HOP app, LinkHop included, written in plain words with the newest changes first, and filterable by app.": "Apa yang berubah di setiap app HOP, termasuk LinkHop, ditulis dengan kata sederhana, perubahan terbaru di atas, dan bisa disaring per app.",
-    "Paste a short link to see where it goes before you open it. LinkHop shows the destination and warns about unsafe links, without clicking or tracking.": "Tempel tautan pendek untuk melihat tujuannya sebelum dibuka. LinkHop menampilkan tujuan dan memperingatkan tautan tidak aman, tanpa klik atau pelacakan."
+    "Paste a short link to see where it goes before you open it. LinkHop shows the destination and warns about unsafe links, without clicking or tracking.": "Tempel tautan pendek untuk melihat tujuannya sebelum dibuka. LinkHop menampilkan tujuan dan memperingatkan tautan tidak aman, tanpa klik atau pelacakan.",
+    "Feedback": "Masukan",
+    "Send feedback": "Kirim masukan",
+    "The Feedback link opens a form on the HOP ID site this app is connected to. This app receives nothing from that form; what the form stores and for how long is described in the :link.": "Tautan Masukan membuka formulir di situs HOP ID yang terhubung dengan aplikasi ini. Aplikasi ini tidak menerima apa pun dari formulir itu; apa yang disimpan formulir dan berapa lama dijelaskan di :link.",
+    "HOP ID privacy policy": "kebijakan privasi HOP ID"
 }

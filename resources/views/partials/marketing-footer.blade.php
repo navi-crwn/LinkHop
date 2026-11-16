@@ -13,6 +13,7 @@
             'title' => 'Support',
             'items' => [
                 ['label' => 'Help', 'route' => route('pages.help')],
+                ...(($withFeedback ?? true) && \App\Support\Feedback::url() ? [['label' => 'Feedback', 'route' => \App\Support\Feedback::url(), 'external' => true]] : []),
                 ['label' => 'FAQ', 'route' => route('pages.faq')],
                 ['label' => 'Contact', 'route' => route('pages.contact')],
                 ['label' => 'Request a feature', 'route' => 'https://github.com/navi-crwn/LinkHop/issues/new/choose', 'external' => true],
