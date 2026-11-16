@@ -9,6 +9,7 @@ use App\Services\LinkService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Symfony\Component\HttpFoundation\Cookie;
 
 /**
@@ -88,7 +89,9 @@ class GuestClaim
             ->where('status', Link::STATUS_ACTIVE)
             ->where(fn ($q) => $q->whereNull('safety_status')->orWhere('safety_status', '!=', Link::SAFETY_FLAGGED))
             ->whereNot(fn ($q) => $q->guestExpired())
-            ->whereNotExists(fn ($q) => $q->from('abuse_reports')->whereColumn('abuse_reports.slug', 'links.slug')->where('abuse_reports.status', '!=', 'dismissed'))
+            ->whereNotExists(fn ($q) => $q->from('abuse_reports')->whereColumn('abuse_reports.slug', 'links.slug')->where('abuse_reports.status', '!=', 'dismissed')
+                // a report about a bio page that happens to share the slug says nothing about this link
+                ->when(Schema::hasColumn('abuse_reports', 'source'), fn ($r) => $r->where('abuse_reports.source', 'linkhop')))
             ->whereNotExists(fn ($q) => $q->from('abuse_flags')->where('abuse_flags.subject_type', 'link')->whereColumn('abuse_flags.subject_id', 'links.id')
                 ->where('abuse_flags.action', AbuseFlag::ACTION_DISABLED)->where('abuse_flags.status', '!=', AbuseFlag::STATUS_DISMISSED));
     }
