@@ -14,8 +14,17 @@ use Tests\TestCase;
  */
 class PublicPagesSeoLanguageTest extends TestCase
 {
-    /** Strings that are legitimately the same in another language (names, acronyms). */
-    private const SAME_AS_ENGLISH = ['FAQ', 'API', 'Status', 'Contact', 'FAQ · LinkHop', 'API · LinkHop', 'Status · LinkHop', 'Contact · LinkHop'];
+    /** Strings that are genuinely the same as English, and only in the languages where the real word is identical. */
+    private const SAME_AS_ENGLISH = [
+        'FAQ' => ['de', 'fr', 'ru'],
+        'FAQ · LinkHop' => ['de', 'fr', 'ru'],
+        'API' => ['de', 'id', 'ja', 'pt-BR', 'es', 'fr', 'ru', 'zh-CN'],
+        'API · LinkHop' => ['de', 'id', 'ja', 'pt-BR', 'es', 'fr', 'ru', 'zh-CN'],
+        'Status' => ['de', 'id', 'pt-BR'],
+        'Status · LinkHop' => ['de', 'id', 'pt-BR'],
+        'Contact' => ['fr'],
+        'Contact · LinkHop' => ['fr'],
+    ];
 
     protected function setUp(): void
     {
@@ -55,7 +64,7 @@ class PublicPagesSeoLanguageTest extends TestCase
                 }
                 $page = $this->read($path, $lang);
                 foreach (['title', 'description', 'h1'] as $field) {
-                    if ($page[$field] !== '' && $page[$field] === $en[$field] && ! in_array($en[$field], self::SAME_AS_ENGLISH, true)) {
+                    if ($page[$field] !== '' && $page[$field] === $en[$field] && ! in_array($lang, self::SAME_AS_ENGLISH[$en[$field]] ?? [], true)) {
                         $left[] = "/{$path}?lang={$lang} {$field}: {$en[$field]}";
                     }
                 }
