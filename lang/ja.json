@@ -1450,5 +1450,9 @@
     "What LinkHop keeps and what it does not: what a click records, what we store when you make links, and the privacy policy for every HOP app.": "LinkHopが保存するものと保存しないもの。クリックで記録される内容、リンク作成時に保存する情報、HOP全アプリ共通のプライバシーポリシーを説明します。",
     "Live status of LinkHop: whether short links, the dashboard and background jobs are working right now, with a link to the status of every HOP app.": "LinkHopの現在の稼働状況。短縮リンク、ダッシュボード、バックグラウンド処理が今動いているかを確認でき、HOP全アプリの状況へのリンクもあります。",
     "What changed in each HOP app, LinkHop included, written in plain words with the newest changes first, and filterable by app.": "LinkHopを含むHOPの各アプリで何が変わったかを、やさしい言葉で新しい順に掲載しています。アプリごとの絞り込みもできます。",
-    "Paste a short link to see where it goes before you open it. LinkHop shows the destination and warns about unsafe links, without clicking or tracking.": "短縮リンクを貼り付けると、開く前にリンク先を確認できます。LinkHopはリンク先を表示し、危険なリンクを警告します。クリックも追跡もしません。"
+    "Paste a short link to see where it goes before you open it. LinkHop shows the destination and warns about unsafe links, without clicking or tracking.": "短縮リンクを貼り付けると、開く前にリンク先を確認できます。LinkHopはリンク先を表示し、危険なリンクを警告します。クリックも追跡もしません。",
+    "Feedback": "フィードバック",
+    "Send feedback": "フィードバックを送る",
+    "The Feedback link opens a form on the HOP ID site this app is connected to. This app receives nothing from that form; what the form stores and for how long is described in the :link.": "「フィードバック」リンクは、このアプリが接続している HOP ID サイト上のフォームを開きます。このアプリはそのフォームから何も受け取りません。フォームが何をどれだけの期間保存するかは、:linkに記載されています。",
+    "HOP ID privacy policy": "HOP ID のプライバシーポリシー"
 }

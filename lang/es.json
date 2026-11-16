@@ -1450,5 +1450,9 @@
     "What LinkHop keeps and what it does not: what a click records, what we store when you make links, and the privacy policy for every HOP app.": "Qué guarda LinkHop y qué no: qué registra un clic, qué almacenamos cuando creas enlaces y la política de privacidad de todas las apps de HOP.",
     "Live status of LinkHop: whether short links, the dashboard and background jobs are working right now, with a link to the status of every HOP app.": "Estado en vivo de LinkHop: si los enlaces cortos, el panel y las tareas en segundo plano funcionan ahora, con enlace al estado de todas las apps de HOP.",
     "What changed in each HOP app, LinkHop included, written in plain words with the newest changes first, and filterable by app.": "Qué ha cambiado en cada app de HOP, incluida LinkHop, en palabras sencillas, con los cambios más recientes primero y filtro por app.",
-    "Paste a short link to see where it goes before you open it. LinkHop shows the destination and warns about unsafe links, without clicking or tracking.": "Pega un enlace corto para ver adónde lleva antes de abrirlo. LinkHop muestra el destino y avisa de enlaces no seguros, sin hacer clic ni rastrear."
+    "Paste a short link to see where it goes before you open it. LinkHop shows the destination and warns about unsafe links, without clicking or tracking.": "Pega un enlace corto para ver adónde lleva antes de abrirlo. LinkHop muestra el destino y avisa de enlaces no seguros, sin hacer clic ni rastrear.",
+    "Feedback": "Comentarios",
+    "Send feedback": "Enviar comentarios",
+    "The Feedback link opens a form on the HOP ID site this app is connected to. This app receives nothing from that form; what the form stores and for how long is described in the :link.": "El enlace Comentarios abre un formulario en el sitio de HOP ID al que está conectada esta app. Esta app no recibe nada de ese formulario; lo que el formulario guarda y durante cuánto tiempo se describe en la :link.",
+    "HOP ID privacy policy": "política de privacidad de HOP ID"
 }

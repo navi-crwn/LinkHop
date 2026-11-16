@@ -1450,5 +1450,9 @@
     "What LinkHop keeps and what it does not: what a click records, what we store when you make links, and the privacy policy for every HOP app.": "Was LinkHop speichert und was nicht: was ein Klick erfasst, was wir beim Erstellen von Links speichern, und die Datenschutzerklärung für alle HOP-Apps.",
     "Live status of LinkHop: whether short links, the dashboard and background jobs are working right now, with a link to the status of every HOP app.": "Live-Status von LinkHop: ob Kurzlinks, Dashboard und Hintergrundaufgaben gerade funktionieren, mit Link zum Status aller HOP-Apps.",
     "What changed in each HOP app, LinkHop included, written in plain words with the newest changes first, and filterable by app.": "Was sich in jeder HOP-App geändert hat, auch in LinkHop, in einfachen Worten, die neuesten Änderungen zuerst und nach App filterbar.",
-    "Paste a short link to see where it goes before you open it. LinkHop shows the destination and warns about unsafe links, without clicking or tracking.": "Füge einen Kurzlink ein und sieh, wohin er führt, bevor du ihn öffnest. LinkHop zeigt das Ziel und warnt vor unsicheren Links, ohne zu klicken."
+    "Paste a short link to see where it goes before you open it. LinkHop shows the destination and warns about unsafe links, without clicking or tracking.": "Füge einen Kurzlink ein und sieh, wohin er führt, bevor du ihn öffnest. LinkHop zeigt das Ziel und warnt vor unsicheren Links, ohne zu klicken.",
+    "Feedback": "Feedback",
+    "Send feedback": "Feedback senden",
+    "The Feedback link opens a form on the HOP ID site this app is connected to. This app receives nothing from that form; what the form stores and for how long is described in the :link.": "Der Link „Feedback“ öffnet ein Formular auf der HOP-ID-Seite, mit der diese App verbunden ist. Diese App erhält aus diesem Formular nichts; was das Formular speichert und wie lange, steht in der :link.",
+    "HOP ID privacy policy": "Datenschutzerklärung von HOP-ID"
 }

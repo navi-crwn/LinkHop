@@ -40,5 +40,9 @@
                 <p class="mt-2 text-sm text-slate-600 dark:text-white/70">{!! __('Short links moved to <code>hel.ink/l/slug</code> on 28 October 2026. The old form <code>hel.ink/slug</code> redirects there until 27 November 2026.') !!}</p>
             </section>
         </div>
+
+        @if ($feedbackUrl = \App\Support\Feedback::url())
+            <p class="text-sm text-slate-600 dark:text-white/70"><a href="{{ $feedbackUrl }}" target="_blank" rel="noopener" class="font-medium text-sky-600 underline dark:text-sky-400">{{ __('Send feedback') }}</a></p>
+        @endif
     </div>
 </x-info-page>

@@ -82,3 +82,15 @@ test('every app in the family manifest, and PayHop by name, is a reserved userna
     }
     expect(config('hop.reserved_username_prefixes'))->toContain('payhop-');
 });
+
+test('feedback is a reserved word: no short link can take the name of the hub form', function () {
+    $rules = (new ManageLinkRequest)->rules();
+    foreach (['feedback', 'Feedback', 'FEEDBACK'] as $slug) {
+        expect(ReservedSlugs::isReserved($slug))->toBeTrue($slug)
+            ->and(Validator::make(['target_url' => 'https://example.com', 'slug' => $slug], ['slug' => $rules['slug']])->fails())->toBeTrue("{$slug} was accepted as a new slug");
+    }
+    $user = User::factory()->create();
+    $this->actingAs($user)->post('/links', ['target_url' => 'https://example.com', 'slug' => 'feedback', 'status' => 'active'])
+        ->assertSessionHasErrors('slug');
+    expect(Link::where('slug', 'feedback')->exists())->toBeFalse();
+});

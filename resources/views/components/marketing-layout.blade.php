@@ -1,4 +1,4 @@
-@props(['title' => null, 'themed' => false, 'description' => null, 'index' => true])
+@props(['title' => null, 'themed' => false, 'description' => null, 'index' => true, 'feedback' => true])
 {{-- $index false: an error or link page (404, 429, link missing or ended), kept out of search results. --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="ltr" @class(['h-full', 'dark' => ! $themed])>
@@ -41,7 +41,7 @@
         <main id="main">
             {{ $slot }}
         </main>
-        @include('partials.marketing-footer')
+        @include('partials.marketing-footer', ['withFeedback' => $feedback])
         @stack('scripts')
     </body>
 </html>

@@ -97,9 +97,12 @@
                                 </div>
                             </div>
                             <div data-sidebar-footer class="space-y-2 border-t border-slate-500/10 px-5 py-3 text-[13px] text-muted">
-                                {{-- The same footer in every dashboard of the family: six lines, then the family row. --}}
+                                {{-- The same footer in every dashboard of the family: seven lines (six where no hub address is set, since Feedback is the hub's form), then the family row. --}}
                                 <ul>
                                     <li><a href="{{ route('pages.help') }}" class="block leading-7 hover:text-ink hover:underline">{{ __('Help') }}</a></li>
+                                    @if ($feedbackUrl = \App\Support\Feedback::url())
+                                        <li><a href="{{ $feedbackUrl }}" target="_blank" rel="noopener" class="block leading-7 hover:text-ink hover:underline">{{ __('Feedback') }}</a></li>
+                                    @endif
                                     <li><a href="{{ route('pages.terms') }}" class="block leading-7 hover:text-ink hover:underline">{{ __('Terms') }}</a></li>
                                     <li><a href="{{ route('pages.privacy') }}" class="block leading-7 hover:text-ink hover:underline">{{ __('Privacy') }}</a></li>
                                     <li><a href="{{ route('changelog') }}" class="block leading-7 hover:text-ink hover:underline">{{ __('Changelog') }}</a></li>

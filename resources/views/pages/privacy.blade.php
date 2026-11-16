@@ -15,5 +15,8 @@
     </ul>
     <h2>{{ __('Your data') }}</h2>
     <p>{!! __('Download or delete everything from your <a href=":url">HOP ID settings</a>. Deleting the account deletes your links and their stats in LinkHop too.', ['url' => hub_url('settings')]) !!}</p>
+    @if ($feedbackPolicy = \App\Support\Feedback::privacyUrl())
+        <p>{!! __('The Feedback link opens a form on the HOP ID site this app is connected to. This app receives nothing from that form; what the form stores and for how long is described in the :link.', ['link' => '<a href="'.e($feedbackPolicy).'" rel="noopener">'.e(__('HOP ID privacy policy')).'</a>']) !!}</p>
+    @endif
     <p>{!! __('The full policy: <a href="https://hel.ink/privacy">hel.ink/privacy</a>. Questions or deletion requests: <!--email_off--><a href="mailto:support@hel.ink">support@hel.ink</a><!--/email_off-->.') !!}</p>
 </x-info-page>

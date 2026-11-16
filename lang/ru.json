@@ -1450,5 +1450,9 @@
     "What LinkHop keeps and what it does not: what a click records, what we store when you make links, and the privacy policy for every HOP app.": "Что LinkHop хранит и чего не хранит: что записывает клик, что мы сохраняем при создании ссылок, и политика конфиденциальности для всех приложений HOP.",
     "Live status of LinkHop: whether short links, the dashboard and background jobs are working right now, with a link to the status of every HOP app.": "Текущее состояние LinkHop: работают ли сейчас короткие ссылки, панель и фоновые задачи, со ссылкой на состояние всех приложений HOP.",
     "What changed in each HOP app, LinkHop included, written in plain words with the newest changes first, and filterable by app.": "Что изменилось в каждом приложении HOP, включая LinkHop, простыми словами: сначала новые изменения, с фильтром по приложению.",
-    "Paste a short link to see where it goes before you open it. LinkHop shows the destination and warns about unsafe links, without clicking or tracking.": "Вставьте короткую ссылку и узнайте, куда она ведёт, до открытия. LinkHop показывает адрес и предупреждает о небезопасных ссылках, без кликов."
+    "Paste a short link to see where it goes before you open it. LinkHop shows the destination and warns about unsafe links, without clicking or tracking.": "Вставьте короткую ссылку и узнайте, куда она ведёт, до открытия. LinkHop показывает адрес и предупреждает о небезопасных ссылках, без кликов.",
+    "Feedback": "Отзыв",
+    "Send feedback": "Отправить отзыв",
+    "The Feedback link opens a form on the HOP ID site this app is connected to. This app receives nothing from that form; what the form stores and for how long is described in the :link.": "Ссылка «Отзыв» открывает форму на сайте HOP ID, к которому подключено это приложение. Это приложение ничего не получает из этой формы; что форма сохраняет и как долго, описано в :link.",
+    "HOP ID privacy policy": "политике конфиденциальности HOP ID"
 }
