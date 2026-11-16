@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.1] - 2026-11-16 - Public pages in your language
+
+Every public page now speaks the language you picked, and each one has a proper short summary in search results.
+
+### Fixed
+
+- **Pages in your language.** The About, FAQ, API, Features, Help, Contact, Terms and Privacy pages, and the link checker, now show their title, short summary and headings in the language you picked, in all nine languages. Before, some of them stayed in English even with the German or Indonesian address, and the link checker was English only. Fixed so that search engines and visitors get the language the address promises.
+- **Page summaries.** The short text that search results show under each LinkHop page is now written for every page, 70 to 155 characters long, in all nine languages. The FAQ and Changelog summaries were too short to be useful, and the Status page shared its summary with the home page.
+
 ## [2.5.0] - 2026-11-14 - Announcements, Library and a lighter Analytics
 
 News from the HOP team now reaches you on the dashboard, the sidebar is tidier, and Analytics opens quickly even with thousands of links.

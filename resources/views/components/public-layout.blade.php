@@ -1,4 +1,4 @@
-@props(['title' => null])
+@props(['title' => null, 'description' => null])
 {{-- Shell for the few public pages left in this app (the link checker); the home page and marketing pages are the hub's. --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full dark">
@@ -6,7 +6,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{{ $title ?? config('app.name') }}</title>
-        @include('partials.seo-head', ['title' => $title ?? config('app.name'), 'description' => 'LinkHop: short links, QR codes and click analytics, a HOP app.'])
+        @include('partials.seo-head', ['title' => $title ?? config('app.name'), 'description' => $description ?? config('app.name')])
         <link rel="icon" href="{{ route('brand.favicon') }}">
         <x-hop::fonts />
         @vite(['resources/css/app.css', 'resources/js/app.js'])

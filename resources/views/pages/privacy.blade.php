@@ -1,4 +1,4 @@
-<x-info-page title="Privacy" lead="What LinkHop keeps, and what it does not. The privacy policy for every HOP app is at hel.ink/privacy.">
+<x-info-page description="What LinkHop keeps and what it does not: what a click records, what we store when you make links, and the privacy policy for every HOP app." title="Privacy" lead="What LinkHop keeps, and what it does not. The privacy policy for every HOP app is at hel.ink/privacy.">
     <div class="mb-6 rounded-2xl border border-sky-500/30 bg-sky-50/50 p-4 text-sm text-sky-900 dark:border-sky-500/20 dark:bg-sky-950/20 dark:text-sky-200">
         <p class="font-semibold">{{ __('Master HOP Privacy Policy') }}</p>
         <p class="mt-1">{!! __('This policy explains LinkHop-specific data processing. It operates alongside the Master HOP Privacy Policy at <a href="https://hel.ink/privacy" class="underline font-medium">hel.ink/privacy</a>. Both documents govern your data protection rights across the HOP ecosystem.') !!}</p>

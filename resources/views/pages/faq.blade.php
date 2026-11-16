@@ -1,4 +1,4 @@
-<x-info-page title="FAQ" lead="Common questions. How-to steps are in Help.">
+<x-info-page description="Answers to common questions about LinkHop: whether it is free, what a click records, if you need an account, and how to report a bad link." title="FAQ" lead="Common questions. How-to steps are in Help.">
     <h2>{{ __('Is it really free?') }}</h2>
     <p>{{ __('Yes. There is no paid plan and no locked feature, and the code is MIT licensed.') }}</p>
     <h2>{{ __('Do I need an account?') }}</h2>
