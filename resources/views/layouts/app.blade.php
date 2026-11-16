@@ -46,7 +46,7 @@
                 $user = auth()->user();
                 $isAdmin = $user->isAdmin();
                 $abuseCount = $isAdmin
-                    ? \App\Models\AbuseReport::where('status', 'open')->count()
+                    ? \App\Models\AbuseReport::aboutLinks()->where('status', 'open')->count()
                         + \App\Models\AbuseFlag::where('status', 'open')->count()
                     : 0;
                 $sectionTitle = $docTitle !== '' ? $docTitle : 'LinkHop';

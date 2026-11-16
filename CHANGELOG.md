@@ -23,6 +23,15 @@ You can now tell us about a problem or an idea from inside LinkHop, without send
 ### Changed
 
 - **Short link names.** "feedback" can no longer be chosen as the name of a new short link. Reason: that word is the address of the feedback form, and a short link with the same name would be confused with it. Links that already exist are not touched.
+
+## [2.5.2] - 2026-11-16 - Reports about bio pages stay out of the link list
+
+A report that a visitor sends about a bio page is no longer listed as if it were about a short link.
+
+### Fixed
+
+- **Report list in the HOP control center.** Visitors report a bio page with the report form on the bio site, and that report is saved in the same place as reports about short links. Until now it showed up in LinkHop's report list and was labelled as a short link, so the people handling reports saw the wrong kind of item. Every report now remembers which app it is about, and LinkHop's list, its count of open reports and the check that stops a reported guest link from being claimed only use reports about short links. Older reports whose address points to a bio page are sorted the same way once, as a best guess. Nothing is deleted. Bio pages get their own report list, with a button to switch the page off, in a later BioHop update.
+
 ## [2.5.1] - 2026-11-16 - Public pages in your language
 
 Every public page now speaks the language you picked, and each one has a proper short summary in search results.

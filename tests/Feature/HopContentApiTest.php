@@ -14,8 +14,10 @@ use App\Support\HopSignature;
 use App\Support\ServerErrorAlert;
 use Hop\Bio\Models\BioPage;
 use Hop\Safety\Models\DomainBlacklist;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Process;
+use Illuminate\Support\Facades\Schema;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
@@ -159,6 +161,54 @@ class HopContentApiTest extends TestCase
         $this->assertSame('active', $link->fresh()->status, 'restoring a finding re-enables the link');
         $this->signed('GET', '/api/hop/reports?status=open')->assertOk()->assertJsonPath('page.total', 0);
         $this->signed('GET', '/api/hop/reports?status=closed')->assertOk()->assertJsonPath('page.total', 2);
+    }
+
+    public function test_a_bio_page_report_is_not_in_the_link_queue_the_link_detail_or_the_open_count(): void
+    {
+        $u = User::factory()->create();
+        $link = Link::create(['slug' => 'same', 'target_url' => 'https://example.com/a', 'user_id' => $u->id]);
+        $about = AbuseReport::create(['slug' => 'same', 'url' => 'https://hel.ink/same', 'reason' => 'phishing link', 'status' => 'open']);
+        $bio = AbuseReport::create(['slug' => 'same', 'url' => 'https://hel.ink/b/same', 'reason' => 'bad bio page', 'status' => 'open', 'source' => 'biohop']);
+        $this->assertSame('linkhop', $about->fresh()->source, 'a report made through LinkHop is a LinkHop report without anyone setting it');
+
+        $ids = fn ($res) => collect($res->json('data'))->where('kind', 'report')->pluck('id')->all();
+        $this->assertSame([(string) $about->id], $ids($this->signed('GET', '/api/hop/reports')->assertOk()));
+        $this->assertSame([(string) $about->id], $ids($this->signed('GET', '/api/hop/reports?status=open')->assertOk()));
+        $this->signed('GET', '/api/hop/stats')->assertOk()->assertJsonPath('data.kpi.open_reports', 1);
+        $detail = $this->signed('GET', '/api/hop/content/link/'.$link->id)->assertOk();
+        $this->assertSame([(string) $about->id], collect($detail->json('data.reports'))->pluck('id')->all());
+
+        $this->signed('POST', "/api/hop/reports/report/{$about->id}/actions", ['action' => 'close'])->assertOk();
+        $this->signed('GET', '/api/hop/stats')->assertOk()->assertJsonPath('data.kpi.open_reports', 0);
+        $this->assertSame([(string) $about->id], $ids($this->signed('GET', '/api/hop/reports?status=closed')->assertOk()));
+        $this->assertSame('open', $bio->fresh()->status, 'LinkHop never touches the status of a bio page report');
+    }
+
+    public function test_a_bio_page_report_cannot_be_acted_on_through_the_link_queue(): void
+    {
+        $bio = AbuseReport::create(['slug' => 'page', 'url' => 'https://hel.ink/b/page', 'reason' => 'bad bio page', 'status' => 'open', 'source' => 'biohop']);
+        $about = AbuseReport::create(['slug' => 'page', 'url' => 'https://hel.ink/page', 'reason' => 'bad link', 'status' => 'open']);
+
+        foreach (['investigate', 'close', 'reopen', 'dismiss', 'resolve'] as $action) {
+            $this->signed('POST', "/api/hop/reports/report/{$bio->id}/actions", ['action' => $action])->assertNotFound()->assertJsonPath('error', 'not_found');
+        }
+        $this->assertSame('open', $bio->fresh()->status, 'the bio page report is untouched');
+        $this->assertSame(0, HopAudit::count(), 'and nothing is audited as if it had been handled');
+
+        $this->signed('POST', "/api/hop/reports/report/{$about->id}/actions", ['action' => 'investigate'])->assertOk()->assertJsonPath('data.status', 'investigating');
+    }
+
+    public function test_the_report_queue_still_works_before_the_source_migration_has_run(): void
+    {
+        $r = AbuseReport::create(['slug' => 'spam', 'url' => 'https://hel.ink/spam', 'reason' => 'phishing', 'status' => 'open']);
+        Schema::table('abuse_reports', function (Blueprint $table) {
+            $table->dropIndex(['source']);
+            $table->dropColumn('source');
+        });
+
+        $this->assertSame([(string) $r->id], collect($this->signed('GET', '/api/hop/reports')->assertOk()->json('data'))->pluck('id')->all());
+        $this->signed('GET', '/api/hop/stats')->assertOk()->assertJsonPath('data.kpi.open_reports', 1);
+        $this->signed('GET', '/api/hop/content?type=link')->assertOk();
     }
 
     public function test_unban_and_a_changed_ban_take_effect_on_the_next_request(): void
