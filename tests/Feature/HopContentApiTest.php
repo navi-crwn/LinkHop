@@ -184,6 +184,20 @@ class HopContentApiTest extends TestCase
         $this->assertSame('open', $bio->fresh()->status, 'LinkHop never touches the status of a bio page report');
     }
 
+    public function test_a_bio_page_report_cannot_be_acted_on_through_the_link_queue(): void
+    {
+        $bio = AbuseReport::create(['slug' => 'page', 'url' => 'https://hel.ink/b/page', 'reason' => 'bad bio page', 'status' => 'open', 'source' => 'biohop']);
+        $about = AbuseReport::create(['slug' => 'page', 'url' => 'https://hel.ink/page', 'reason' => 'bad link', 'status' => 'open']);
+
+        foreach (['investigate', 'close', 'reopen', 'dismiss', 'resolve'] as $action) {
+            $this->signed('POST', "/api/hop/reports/report/{$bio->id}/actions", ['action' => $action])->assertNotFound()->assertJsonPath('error', 'not_found');
+        }
+        $this->assertSame('open', $bio->fresh()->status, 'the bio page report is untouched');
+        $this->assertSame(0, HopAudit::count(), 'and nothing is audited as if it had been handled');
+
+        $this->signed('POST', "/api/hop/reports/report/{$about->id}/actions", ['action' => 'investigate'])->assertOk()->assertJsonPath('data.status', 'investigating');
+    }
+
     public function test_the_report_queue_still_works_before_the_source_migration_has_run(): void
     {
         $r = AbuseReport::create(['slug' => 'spam', 'url' => 'https://hel.ink/spam', 'reason' => 'phishing', 'status' => 'open']);

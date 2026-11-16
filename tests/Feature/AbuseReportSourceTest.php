@@ -31,18 +31,38 @@ test('the column is there, indexed, and a report made without a source is a Link
 test('the migration fills old reports about bio pages in, leaves the rest and deletes nothing', function () {
     $migration = require base_path('database/migrations/2026_11_16_000001_add_source_to_abuse_reports_table.php');
     dropAbuseReportSource();
-    $row = fn (string $url) => DB::table('abuse_reports')->insertGetId(['url' => $url, 'reason' => 'spam spam spam', 'status' => 'open', 'created_at' => now(), 'updated_at' => now()]);
-    $bio = $row('https://hel.ink/b/some-page');
-    $short = $row('https://hel.ink/abc123');
-    $none = DB::table('abuse_reports')->insertGetId(['url' => null, 'reason' => 'spam spam spam', 'status' => 'open', 'created_at' => now(), 'updated_at' => now()]);
+    $row = fn (?string $url, ?string $slug = null) => DB::table('abuse_reports')->insertGetId(['slug' => $slug, 'url' => $url, 'reason' => 'spam spam spam', 'status' => 'open', 'created_at' => now(), 'updated_at' => now()]);
+    $bio = $row('https://hel.ink/b/some-page', 'some-page');
+    $bioHost = $row('https://bio.hel.ink/b/other', 'other');
+    $bioNoSlug = $row('https://hel.ink/b/noslug');
+    $bioUpper = $row('HTTPS://Hel.Ink/B/MixedCase?utm=1#top', 'mixedcase');
+    $short = $row('https://hel.ink/abc123', 'abc123');
+    $none = $row(null);
+    $evil = $row('https://evil.example/b/login', 'login');
+    $evilNoSlug = $row('https://evil.example/b/x');
+    $lookalike = $row('https://hel.ink.evil.example/b/x', 'x');
+    $http = $row('http://hel.ink/b/plain', 'plain');
+    $otherSlug = $row('https://hel.ink/b/victim-page', 'some-short-link'); // slug and address disagree: not proven to be a bio report
+    $linkQuery = $row('https://hel.ink/abc123?next=https://hel.ink/b/x', 'abc123');
 
     $migration->up();
 
+    $source = fn (int $id) => DB::table('abuse_reports')->where('id', $id)->value('source');
     expect(Schema::hasColumn('abuse_reports', 'source'))->toBeTrue()->and(Schema::hasIndex('abuse_reports', ['source']))->toBeTrue()
-        ->and(DB::table('abuse_reports')->count())->toBe(3)
-        ->and(DB::table('abuse_reports')->where('id', $bio)->value('source'))->toBe('biohop')
-        ->and(DB::table('abuse_reports')->where('id', $short)->value('source'))->toBe('linkhop')
-        ->and(DB::table('abuse_reports')->where('id', $none)->value('source'))->toBe('linkhop');
+        ->and(DB::table('abuse_reports')->count())->toBe(12)
+        ->and([$source($bio), $source($bioHost), $source($bioNoSlug), $source($bioUpper)])->toBe(['biohop', 'biohop', 'biohop', 'biohop'])
+        ->and([$source($short), $source($none), $source($evil), $source($evilNoSlug), $source($lookalike), $source($http), $source($otherSlug), $source($linkQuery)])
+        ->toBe(array_fill(0, 8, 'linkhop'));
+});
+
+test('a pasted address with /b/ in it stays a LinkHop report and shows in the LinkHop queue count', function () {
+    $migration = require base_path('database/migrations/2026_11_16_000001_add_source_to_abuse_reports_table.php');
+    dropAbuseReportSource();
+    DB::table('abuse_reports')->insert(['slug' => 'login', 'url' => 'https://evil.example/b/login', 'reason' => 'phishing page', 'status' => 'open', 'created_at' => now(), 'updated_at' => now()]);
+
+    $migration->up();
+
+    expect(AbuseReport::aboutLinks()->where('status', 'open')->count())->toBe(1);
 });
 
 test('running the migration again, or on a table that already has the column, changes nothing', function () {

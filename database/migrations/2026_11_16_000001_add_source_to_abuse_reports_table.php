@@ -23,9 +23,36 @@ return new class extends Migration
             $table->string('source', 20)->default('linkhop')->index();
         });
 
-        // Back-fill is approximate and only for reports made before this column existed: a stored address with
-        // "/b/" in it is a bio page (https://hel.ink/b/<slug>). New reports carry the right source themselves.
-        DB::table('abuse_reports')->where('url', 'like', '%/b/%')->update(['source' => 'biohop']);
+        // Back-fill, only for reports made before this column existed (new reports carry their own source).
+        // BioHop's form stores the public address of the page: https://hel.ink/b/<slug> (or on bio.hel.ink). LinkHop's
+        // own form accepts any address, so "/b/" somewhere in a pasted URL proves nothing. A row becomes biohop only
+        // when the address starts with one of those two bio addresses and the slug column is empty or is the slug in
+        // the address. The check is done here and not in SQL so it behaves the same on SQLite and MySQL/MariaDB.
+        DB::table('abuse_reports')
+            ->where(fn ($q) => $q->whereRaw('lower(url) like ?', ['https://hel.ink/b/%'])->orWhereRaw('lower(url) like ?', ['https://bio.hel.ink/b/%']))
+            ->select(['id', 'url', 'slug'])->orderBy('id')
+            ->chunkById(500, function ($rows) {
+                $ids = [];
+                foreach ($rows as $row) {
+                    $slug = self::bioSlug((string) $row->url);
+                    if ($slug !== null && ($row->slug === null || $row->slug === '' || strtolower($row->slug) === $slug)) {
+                        $ids[] = $row->id;
+                    }
+                }
+                if ($ids) {
+                    DB::table('abuse_reports')->whereIn('id', $ids)->update(['source' => 'biohop']);
+                }
+            });
+    }
+
+    /** The slug of https://hel.ink/b/<slug> or https://bio.hel.ink/b/<slug> (lower case), null for any other address. */
+    private static function bioSlug(string $url): ?string
+    {
+        if (! preg_match('~^https://(?:bio\.)?hel\.ink/b/([^/?#]+)~i', $url, $m)) {
+            return null;
+        }
+
+        return strtolower(rawurldecode($m[1]));
     }
 
     public function down(): void

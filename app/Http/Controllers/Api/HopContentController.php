@@ -342,7 +342,8 @@ class HopContentController extends Controller
         $action = (string) $request->input('action', '');
         $audit = $this->auditBase($request, $action, $kind, (string) $id, $request->input('reason'));
         if ($kind === 'report') {
-            $r = AbuseReport::find($id);
+            // a report about a bio page is BioHop's to handle: from here it does not exist
+            $r = AbuseReport::aboutLinks()->find($id);
             if (! $r) {
                 return $this->fail('not_found', 'no such report', 404);
             }
